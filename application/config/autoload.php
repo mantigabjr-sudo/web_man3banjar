@@ -7,4 +7,4 @@ $autoload['drivers'] = array();
 $autoload['helper'] = array('url', 'file', 'form', 'text', 'security', 'string');
 $autoload['config'] = array();
 $autoload['language'] = array();
-$autoload['model'] = array('Website_model', 'Ppdb_model', 'Auth_model');
+$autoload['model'] = array();

@@ -1,10 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-// Auto detect base URL fleksibel untuk domain DomaiNesia atau localhost testing
-$root = "http://".$_SERVER['HTTP_HOST'];
-$root .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']);
-$config['base_url'] = $root;
+$config['base_url'] = 'https://man3banjar.sch.id/';
 
 $config['index_page'] = '';
 $config['uri_protocol']	= 'REQUEST_URI';
