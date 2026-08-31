@@ -1,0 +1,192 @@
+/* Polish khusus halaman admin Kelola Berita.
+   File ini aman dimuat global karena semua selector memakai prefix .news-. */
+
+.news-admin-hero{
+    position:relative;
+    overflow:hidden;
+}
+
+.news-admin-hero::after{
+    content:"";
+    position:absolute;
+    right:-42px;
+    bottom:-58px;
+    width:180px;
+    height:180px;
+    border-radius:999px;
+    background:rgba(34,197,94,.10);
+}
+
+.news-admin-hero-row{
+    position:relative;
+    z-index:2;
+}
+
+.news-admin-summary{
+    align-items:stretch;
+}
+
+.news-admin-stat{
+    position:relative;
+    overflow:hidden;
+}
+
+.news-admin-stat::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:4px;
+    background:linear-gradient(90deg,#16a34a,#86efac);
+}
+
+.news-admin-stat small{
+    letter-spacing:.2px;
+}
+
+.news-admin-card .table{
+    margin-bottom:0;
+}
+
+.news-admin-card .table thead th{
+    border-bottom:0;
+    vertical-align:middle;
+    font-size:12px;
+    letter-spacing:.3px;
+    text-transform:uppercase;
+    color:#14532d;
+    background:#ecfdf5 !important;
+}
+
+.news-admin-card .table tbody td{
+    vertical-align:middle;
+}
+
+.news-admin-card .table tbody tr{
+    transition:.16s ease;
+}
+
+.news-admin-card .table tbody tr:hover{
+    background:#f8fafc;
+}
+
+.news-thumb,
+.news-thumb-empty{
+    box-shadow:0 10px 22px rgba(15,23,42,.08);
+}
+
+.news-thumb{
+    transition:.2s ease;
+}
+
+.news-admin-card tr:hover .news-thumb{
+    transform:scale(1.04);
+}
+
+.news-title{
+    max-width:520px;
+}
+
+.news-sub{
+    line-height:1.55;
+}
+
+.news-actions .btn,
+.news-actions .news-action{
+    border:0 !important;
+    border-radius:13px !important;
+    min-height:36px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:0 12px !important;
+    font-size:12px;
+    font-weight:950;
+    box-shadow:none !important;
+    white-space:nowrap;
+}
+
+.news-actions .btn-warning{
+    background:#fef3c7 !important;
+    color:#92400e !important;
+}
+
+.news-actions .btn-success{
+    background:#dcfce7 !important;
+    color:#166534 !important;
+}
+
+.news-actions .btn-info{
+    background:#e0f2fe !important;
+    color:#075985 !important;
+}
+
+.news-actions .btn-primary{
+    background:#dbeafe !important;
+    color:#1d4ed8 !important;
+}
+
+.news-status{
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.55);
+}
+
+.news-date-pill{
+    border:1px solid #e2e8f0;
+}
+
+.news-upload{
+    transition:.18s ease;
+}
+
+.news-upload:hover{
+    border-color:#22c55e;
+    background:#ecfdf5;
+}
+
+.news-preview{
+    position:relative;
+}
+
+.news-preview::after{
+    content:"Rasio landscape disarankan agar tampilan homepage lebih rapi";
+    position:absolute;
+    left:12px;
+    right:12px;
+    bottom:10px;
+    padding:7px 9px;
+    border-radius:12px;
+    background:rgba(15,23,42,.62);
+    color:#fff;
+    font-size:11px;
+    font-weight:800;
+    text-align:center;
+    opacity:0;
+    transform:translateY(6px);
+    transition:.18s ease;
+    pointer-events:none;
+}
+
+.news-preview:hover::after{
+    opacity:1;
+    transform:translateY(0);
+}
+
+@media(max-width:768px){
+    .news-admin-hero-row{
+        display:grid;
+        grid-template-columns:1fr;
+    }
+
+    .news-admin-btn{
+        width:100%;
+    }
+
+    .news-admin-card .table-responsive{
+        border-radius:18px;
+    }
+
+    .news-title{
+        max-width:100%;
+    }
+}
