@@ -2,6 +2,48 @@
 
 <style>
 /* Custom Style Keadaan Siswa */
+.web-archive-hero {
+    background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.35), transparent 50%),
+                radial-gradient(circle at bottom left, rgba(2, 44, 34, 0.5), transparent 50%),
+                linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%) !important;
+    color: #ffffff !important;
+    padding: 50px 0 45px 0 !important;
+    position: relative;
+    overflow: hidden;
+}
+.web-archive-hero h1 {
+    color: #ffffff !important;
+    font-weight: 900 !important;
+    font-size: clamp(1.8rem, 3.5vw, 2.4rem) !important;
+    letter-spacing: -0.02em !important;
+    margin-bottom: 8px !important;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.15) !important;
+}
+.web-archive-hero p {
+    color: #ecfdf5 !important;
+    font-size: 14.5px !important;
+    line-height: 1.6 !important;
+    margin: 0 !important;
+    font-weight: 500 !important;
+}
+.web-archive-hero .detail-breadcrumb {
+    font-size: 13px !important;
+    margin-bottom: 14px !important;
+}
+.web-archive-hero .detail-breadcrumb a {
+    color: #a7f3d0 !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+}
+.web-archive-hero .detail-breadcrumb span {
+    color: rgba(255,255,255,0.4) !important;
+    margin: 0 6px !important;
+}
+.web-archive-hero .detail-breadcrumb strong {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
 .stat-card-siswa {
     background: #ffffff;
     border-radius: 18px;
