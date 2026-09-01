@@ -42,7 +42,7 @@ if ($conn->connect_error) {
     $tables = [
         'website_profil', 'website_banner', 'website_video', 'website_pamflet', 'website_galeri', 
         'berita', 'ptk', 'settings', 'ppdb',
-        'kelas', 'mapel', 'jadwal_pelajaran', 'jadwal_jam', 'guru_mengajar', 'absensi_guru'
+        'kelas', 'mapel', 'jadwal_mengajar', 'jadwal_jam', 'jadwal_piket', 'absensi_kelas'
     ];
     $ada_yang_kurang = false;
     echo "<ul>";
