@@ -391,7 +391,7 @@ CREATE TABLE `users` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `users` VALUES 
 ('1', NULL, 'admin', '3b297a5113893e788faa01ca9c1f94dc', 'Administrator MAN 3 Banjar', 'admin', '2026-05-13 16:17:09'),
@@ -401,7 +401,8 @@ INSERT INTO `users` VALUES
 ('9', NULL, 'operator_humas', '3c15133e19346048ad1a51d4e5801e52', 'Operator Humas', 'Operator Humas', '2026-05-21 10:38:01'),
 ('10', NULL, 'kesiswaan', 'accc7841ce41b0f788a737bf9798ea4f', 'Wakamad Kesiswaan', 'admin_kesiswaan', '2026-05-21 10:38:01'),
 ('11', NULL, 'kurikulum', '4e7f2477836fa0c289105740fee0ebb1', 'Wakamad Kurikulum', 'admin_kurikulum', '2026-05-21 10:38:01'),
-('12', NULL, 'sarpras', '379563d4cc020b27338863c063b9368d', 'Admin Sarpras', 'admin_sarpras', '2026-05-21 10:38:01');
+('12', NULL, 'sarpras', '379563d4cc020b27338863c063b9368d', 'Admin Sarpras', 'admin_sarpras', '2026-05-21 10:38:01'),
+('16', NULL, 'admin_pmb', '21232f297a57a5a743894a0e4a801fc3', 'Panitia PMB MAN 3 Banjar', '', '2026-09-01 11:37:25');
 
 SET FOREIGN_KEY_CHECKS=1;
 COMMIT;

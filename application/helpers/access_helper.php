@@ -12,6 +12,8 @@ if(!function_exists('admin_panel_roles')){
         return [
             'admin',
             'admin_master',
+            'admin_pmb',
+            'admin_ppdb',
             'admin_humas',
             'wakil_humas',
             'operator_humas',
@@ -66,7 +68,7 @@ if(!function_exists('can_admin_menu')){
             'website'   => ['admin_humas', 'wakil_humas', 'operator_humas'],
             'berita'    => ['admin_humas', 'wakil_humas', 'operator_humas'],
 
-            'ppdb'      => ['admin_kesiswaan'],
+            'ppdb'      => ['admin_kesiswaan', 'admin_pmb', 'admin_ppdb'],
             'akademik'  => ['admin_kesiswaan'],
 
             'kurikulum' => ['admin_kurikulum'],
@@ -108,6 +110,8 @@ if(!function_exists('role_label')){
         $labels = [
             'admin' => 'Admin Master',
             'admin_master' => 'Kepala Madrasah',
+            'admin_pmb' => 'Panitia PMB',
+            'admin_ppdb' => 'Panitia PMB',
             'admin_humas' => 'Wakamad Humas',
             'wakil_humas' => 'Wakil Humas',
             'operator_humas' => 'Operator Humas',

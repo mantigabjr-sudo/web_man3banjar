@@ -7,13 +7,6 @@ class Admin_ppdb extends CI_Controller {
         parent::__construct();
 		$this->load->helper('access');
 		require_admin_module('ppdb');
-        if(!$this->session->userdata('logged_in')){
-            redirect('auth');
-        }
-
-        if($this->session->userdata('role') != 'admin'){
-            redirect('dashboard');
-        }
     }
 
     private function getTahunAjaran(){

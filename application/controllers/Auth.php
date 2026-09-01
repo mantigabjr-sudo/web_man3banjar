@@ -32,7 +32,9 @@ class Auth extends CI_Controller {
 
            $this->load->helper('access');
 
-			if(is_admin_role_value($user->role)){
+			if($user->role == 'admin_pmb' || $user->role == 'admin_ppdb'){
+				redirect('admin_ppdb/dashboard');
+			} elseif(is_admin_role_value($user->role)){
 				redirect('dashboard');
 			} elseif($user->role == 'siswa') {
                 redirect('siswa_dashboard');
