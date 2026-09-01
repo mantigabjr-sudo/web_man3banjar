@@ -102,11 +102,11 @@ if(!function_exists('web_clean')){
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        PPDB Online
+                        PMB Online
                     </a>
                     <ul class="dropdown-menu shadow-sm">
-                        <li><a class="dropdown-item" href="<?= base_url('ppdb') ?>">Informasi Pendaftaran</a></li>
-                        <li><a class="dropdown-item" href="<?= base_url('ppdb') ?>">Cek Status Kelulusan</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('pmb') ?>">Informasi Pendaftaran</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('pmb/login') ?>">Login Calon Siswa</a></li>
                     </ul>
                 </li>
 

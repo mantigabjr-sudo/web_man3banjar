@@ -12,7 +12,8 @@ if(!function_exists('ppdb_dash_value')){
     }
 }
 
-$nama_lengkap    = $siswa->nama_lengkap ?? 'Peserta ' . htmlspecialchars($nama_ppdb ?? 'PPDB');
+$nama            = htmlspecialchars($nama_ppdb ?? 'PMB');
+$nama_lengkap    = $siswa->nama_lengkap ?? 'Calon Siswa ' . $nama;
 $no_pendaftaran  = $siswa->no_pendaftaran ?? '-';
 $nisn            = $siswa->nisn ?? '-';
 $asal_sekolah    = $siswa->asal_sekolah ?? '-';
@@ -22,7 +23,7 @@ $status_text     = $status_text ?? ($siswa->status ?? '-');
 $status_seleksi  = $status_seleksi ?? '-';
 $progress        = isset($progress) ? (int)$progress : 0;
 $desc            = $desc ?? 'Silakan lengkapi data pendaftaran Anda.';
-$action_link     = $action_link ?? base_url('ppdb/biodata');
+$action_link     = $action_link ?? base_url('pmb/biodata');
 $action_text     = $action_text ?? 'Lanjutkan Pendaftaran';
 
 if($progress < 0) $progress = 0;
@@ -50,12 +51,14 @@ $foto_url  = !empty($siswa->foto) ? base_url('uploads/temp/ppdb/'.$siswa->foto) 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Dashboard Peserta <?= htmlspecialchars($nama_ppdb ?? 'PPDB') ?></title>
+<title>Dashboard Calon Siswa <?= $nama ?> | MAN 3 Banjar</title>
 
 <link rel="icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
 <link rel="shortcut icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
+<link rel="apple-touch-icon" href="<?= base_url('assets/img/favicon.png') ?>">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 <link rel="stylesheet" href="<?= base_url('assets/css/ppdb-peserta.css?v=1') ?>">
 </head>
 

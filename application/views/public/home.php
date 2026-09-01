@@ -535,23 +535,25 @@ if(!empty($profil_website->whatsapp)){
 
         <div class="web-ptk-grid reveal">
             <?php foreach(array_slice($ptk_website, 0, 8) as $p): ?>
-                <?php $foto_file = !empty($p->foto) ? FCPATH.'uploads/ptk/foto/'.$p->foto : ''; ?>
+                <?php 
+                $foto_file = !empty($p->foto) ? FCPATH.'uploads/ptk/foto/'.$p->foto : ''; 
+                $is_kependidikan = (isset($p->jenis_ptk) && strtolower($p->jenis_ptk) == 'kependidikan');
+                ?>
                 <div class="web-ptk-card">
                     <?php if(!empty($p->foto) && file_exists($foto_file)): ?>
                         <img src="<?= base_url('uploads/ptk/foto/'.$p->foto) ?>" alt="<?= web_clean($p->nama_lengkap ?? 'PTK') ?>">
                     <?php else: ?>
-                        <div class="web-ptk-avatar">
+                        <div class="web-ptk-avatar <?= $is_kependidikan ? 'kependidikan' : '' ?>">
                             <?= !empty($p->nama_lengkap) ? strtoupper(substr($p->nama_lengkap,0,1)) : 'P' ?>
                         </div>
                     <?php endif; ?>
                     <h5><?= web_clean($p->nama_lengkap ?? '-') ?></h5>
                     <p><?= !empty($p->jabatan) ? web_clean($p->jabatan) : 'PTK Madrasah' ?></p>
-                    <?php if(!empty($p->mapel_utama)): ?>
-                        <span><?= web_clean($p->mapel_utama) ?></span>
-                    <?php elseif(!empty($p->tugas_utama)): ?>
-                        <span><?= web_clean($p->tugas_utama) ?></span>
-                    <?php elseif(!empty($p->jenis_ptk)): ?>
-                        <span><?= web_clean($p->jenis_ptk) ?></span>
+                    
+                    <?php if($is_kependidikan): ?>
+                        <span class="web-ptk-role-badge role-kependidikan">Kependidikan</span>
+                    <?php else: ?>
+                        <span class="web-ptk-role-badge role-pendidik">Pendidik</span>
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>

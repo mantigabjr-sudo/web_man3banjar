@@ -1,5 +1,7 @@
 <?php
 $nama_madrasah = 'MAN 3 Banjar';
+$nama = htmlspecialchars($nama_ppdb ?? 'PMB');
+$judul_panjang = !empty($settings->judul_panjang_ppdb) ? htmlspecialchars($settings->judul_panjang_ppdb) : 'Penerimaan Murid Baru';
 
 $logo_file = FCPATH.'assets/img/logo-madrasah.png';
 $logo_url  = base_url('assets/img/logo-madrasah.png');
@@ -11,15 +13,16 @@ $logo_url  = base_url('assets/img/logo-madrasah.png');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Login Peserta <?= htmlspecialchars($nama_ppdb ?? 'PPDB') ?> | <?= $nama_madrasah ?></title>
+    <title>Login Calon Siswa <?= $nama ?> | <?= $nama_madrasah ?></title>
 
     <link rel="icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
     <link rel="shortcut icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
     <link rel="apple-touch-icon" href="<?= base_url('assets/img/favicon.png') ?>">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="<?= base_url('assets/css/ppdb-login.css?v=1') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/css/ppdb-login.css?v=2') ?>">
 </head>
 
 <body>
@@ -30,7 +33,7 @@ $logo_url  = base_url('assets/img/logo-madrasah.png');
         <div class="container">
             <div class="ppdb-login-nav-inner">
 
-                <a href="<?= base_url() ?>" class="ppdb-login-brand">
+                <a href="<?= base_url('pmb') ?>" class="ppdb-login-brand">
                     <div class="ppdb-login-logo">
                         <?php if(file_exists($logo_file)): ?>
                             <img src="<?= $logo_url ?>" alt="Logo <?= $nama_madrasah ?>">
@@ -40,14 +43,14 @@ $logo_url  = base_url('assets/img/logo-madrasah.png');
                     </div>
 
                     <div>
-                        <strong><?= htmlspecialchars($nama_ppdb ?? 'PPDB') ?> <?= $nama_madrasah ?></strong>
-                        <small>Portal Pendaftaran Peserta Didik Baru</small>
+                        <strong><?= $nama ?> <?= $nama_madrasah ?></strong>
+                        <small>Portal <?= $judul_panjang ?></small>
                     </div>
                 </a>
 
                 <div class="ppdb-login-nav-actions">
-                    <a href="<?= base_url('ppdb') ?>" class="btn-nav-soft">
-                        Daftar <?= htmlspecialchars($nama_ppdb ?? 'PPDB') ?>
+                    <a href="<?= base_url('pmb') ?>" class="btn-nav-soft">
+                        Daftar <?= $nama ?>
                     </a>
 
                     <a href="<?= base_url() ?>" class="btn-nav-outline">
@@ -66,15 +69,15 @@ $logo_url  = base_url('assets/img/logo-madrasah.png');
 
                 <section class="ppdb-login-info">
                     <div class="info-badge">
-                        Login Peserta
+                        <i class="bi bi-shield-lock-fill me-1"></i> Login Calon Siswa
                     </div>
 
                     <h1>
-                        Masuk ke Akun <?= htmlspecialchars($nama_ppdb ?? 'PPDB') ?> Online
+                        Masuk ke Akun <?= $nama ?> Online
                     </h1>
 
                     <p>
-                        Gunakan NISN dan password yang dibuat saat registrasi awal untuk melengkapi data pendaftaran, mengunggah berkas, dan memantau status <?= htmlspecialchars($nama_ppdb ?? 'PPDB') ?>.
+                        Gunakan NISN dan password yang dibuat saat registrasi awal untuk melengkapi data pendaftaran, mengunggah berkas, dan memantau status seleksi <?= $nama ?>.
                     </p>
 
                     <div class="info-card-list">
@@ -98,8 +101,8 @@ $logo_url  = base_url('assets/img/logo-madrasah.png');
                         <div class="info-card">
                             <div class="info-icon">3</div>
                             <div>
-                                <strong>Pantau Status</strong>
-                                <small>Cek perkembangan pendaftaran langsung melalui akun peserta.</small>
+                                <strong>Pantau Status Kelulusan</strong>
+                                <small>Cek perkembangan seleksi langsung melalui akun peserta.</small>
                             </div>
                         </div>
 
@@ -117,8 +120,8 @@ $logo_url  = base_url('assets/img/logo-madrasah.png');
                             <?php endif; ?>
                         </div>
 
-                        <h3>Login Peserta <?= htmlspecialchars($nama_ppdb ?? 'PPDB') ?></h3>
-                        <p>Masukkan NISN dan password akun pendaftaran.</p>
+                        <h3>Login Calon Siswa <?= $nama ?></h3>
+                        <p>Masukkan NISN dan password akun pendaftaran Anda.</p>
                     </div>
 
                     <?php if($this->session->flashdata('error')): ?>
