@@ -28,6 +28,19 @@ if(isset($_POST['import_database'])){
     }
 }
 
+// 2. Handle Reset / Buat User admin_pmb
+if(isset($_POST['reset_admin_pmb'])){
+    $conn->query("ALTER TABLE users MODIFY COLUMN role VARCHAR(50) DEFAULT 'admin'");
+    $hashed = md5('admin');
+    $cek = $conn->query("SELECT id FROM users WHERE username = 'admin_pmb'");
+    if($cek && $cek->num_rows > 0){
+        $conn->query("UPDATE users SET password = '$hashed', role = 'admin_pmb', nama_lengkap = 'Panitia PMB MAN 3 Banjar' WHERE username = 'admin_pmb'");
+    } else {
+        $conn->query("INSERT INTO users (username, password, nama_lengkap, role, created_at) VALUES ('admin_pmb', '$hashed', 'Panitia PMB MAN 3 Banjar', 'admin_pmb', NOW())");
+    }
+    echo "<div style='background:#dcfce7;color:#166534;padding:12px;border-radius:8px;margin-bottom:15px;font-weight:bold;'>✅ Akun <u>admin_pmb</u> berhasil dibuat/direset! (Username: <code>admin_pmb</code> | Password: <code>admin</code>)</div>";
+}
+
 // 1. Cek PHP Version
 echo "<p><strong>1. Versi PHP:</strong> " . PHP_VERSION . "</p>";
 
@@ -37,6 +50,32 @@ if ($conn->connect_error) {
     echo "<span style='color:red;'>❌ GAGAL: " . $conn->connect_error . "</span></p>";
 } else {
     echo "<span style='color:green;'>✅ OK</span></p>";
+
+    // Cek Akun Users
+    $res_users = $conn->query("SHOW TABLES LIKE 'users'");
+    if($res_users && $res_users->num_rows > 0){
+        echo "<p><strong>Daftar Akun Pengguna di Server:</strong></p>";
+        $q_u = $conn->query("SELECT id, username, nama_lengkap, role FROM users");
+        echo "<table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;margin-bottom:15px;font-size:13px;'>
+            <tr style='background:#f1f5f9;'><th>ID</th><th>Username</th><th>Nama Lengkap</th><th>Role</th></tr>";
+        while($r = $q_u->fetch_assoc()){
+            echo "<tr><td>{$r['id']}</td><td><strong>{$r['username']}</strong></td><td>{$r['nama_lengkap']}</td><td><code>{$r['role']}</code></td></tr>";
+        }
+        echo "</table>";
+    }
+
+    echo "<div style='display:flex;gap:10px;margin-bottom:20px;'>
+        <form method='POST'>
+            <button type='submit' name='reset_admin_pmb' value='1' style='background:#15803d;color:#fff;font-weight:bold;padding:10px 18px;border:none;border-radius:6px;cursor:pointer;'>
+                🔑 Buat / Reset Akun admin_pmb (Pass: admin)
+            </button>
+        </form>
+        <form method='POST'>
+            <button type='submit' name='import_database' value='1' style='background:#0284c7;color:#fff;font-weight:bold;padding:10px 18px;border:none;border-radius:6px;cursor:pointer;'>
+                ⚡ Re-Import Seluruh Database Cloud
+            </button>
+        </form>
+    </div>";
 
     // Cek tabel krusial
     $tables = [
@@ -57,20 +96,9 @@ if ($conn->connect_error) {
         }
     }
     echo "</ul>";
-
-    if($ada_yang_kurang){
-        echo "<form method='POST' style='margin: 15px 0;'>
-            <button type='submit' name='import_database' value='1' style='background:#059669;color:#fff;font-weight:bold;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-size:15px;'>
-                ⚡ Klik Di Sini Untuk Import Database Otomatis Sekarang (1 Detik)
-            </button>
-        </form>";
-    } else {
-        echo "<p style='color:green;font-weight:bold;font-size:16px;'>🎉 SELURUH TABEL SUDAH LENGKAP 100%! Website Anda sudah siap dibuka:</p>";
-        echo "<p><a href='https://man3banjar.sch.id/' style='background:#0284c7;color:#fff;padding:10px 20px;text-decoration:none;border-radius:6px;font-weight:bold;'>🚀 Buka Website MAN 3 Banjar</a></p>";
-    }
 }
 
-// 3. Cek File-file Inti CodeIgniter
+// 3. Cek File Core
 echo "<p><strong>3. Uji File Core:</strong></p><ul>";
 $files = [
     'application/config/config.php',
@@ -78,7 +106,6 @@ $files = [
     'application/config/routes.php',
     'application/controllers/Home.php',
     'application/views/public/home.php',
-    'application/views/public/partials/home_banner_slider.php',
     'system/core/CodeIgniter.php'
 ];
 foreach($files as $f){
@@ -89,4 +116,3 @@ foreach($files as $f){
     }
 }
 echo "</ul>";
-?>
