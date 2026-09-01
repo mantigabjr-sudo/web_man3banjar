@@ -128,29 +128,122 @@ class Api_sync extends CI_Controller {
         $this->validate_key();
         $payload = json_decode($this->input->raw_input_stream, true);
 
-        if(empty($payload) || !isset($payload['ptk'])){
+        if(empty($payload)){
             echo json_encode(['status' => 'error', 'message' => 'Payload PTK kosong']);
             return;
         }
 
-        $ptk_list = $payload['ptk'];
-        $synced = 0;
+        $this->db->query("SET FOREIGN_KEY_CHECKS = 0");
 
-        if($this->db->table_exists('ptk')){
-            foreach($ptk_list as $p){
-                $cek = $this->db->where('id', $p['id'])->count_all_results('ptk');
-                if($cek > 0){
-                    $this->db->where('id', $p['id'])->update('ptk', $p);
-                } else {
-                    $this->db->insert('ptk', $p);
+        // 1. Pastikan tabel ptk ada
+        $this->db->query("
+            CREATE TABLE IF NOT EXISTS `ptk` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `nama_lengkap` varchar(150) NOT NULL,
+              `nip` varchar(50) DEFAULT NULL,
+              `nik` varchar(30) DEFAULT NULL,
+              `nuptk` varchar(30) DEFAULT NULL,
+              `jenis_ptk` enum('Pendidik','Tenaga Kependidikan') NOT NULL DEFAULT 'Pendidik',
+              `status_kepegawaian` varchar(50) DEFAULT 'PNS',
+              `jabatan` varchar(100) DEFAULT 'Guru',
+              `tugas_tambahan` text DEFAULT NULL,
+              `email` varchar(100) DEFAULT NULL,
+              `no_hp` varchar(20) DEFAULT NULL,
+              `foto` varchar(255) DEFAULT NULL,
+              `status_aktif` varchar(20) DEFAULT 'Aktif',
+              `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ");
+
+        // 2. Pastikan tabel struktur_organisasi ada
+        $this->db->query("
+            CREATE TABLE IF NOT EXISTS `struktur_organisasi` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `kategori` varchar(50) NOT NULL,
+              `ptk_id` int(11) NOT NULL,
+              `jabatan` varchar(150) DEFAULT NULL,
+              `urutan` int(11) NOT NULL DEFAULT 0,
+              `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+              PRIMARY KEY (`id`),
+              KEY `kategori` (`kategori`),
+              KEY `ptk_id` (`ptk_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ");
+
+        // 3. Pastikan tabel guru_tugas_tambahan ada
+        $this->db->query("
+            CREATE TABLE IF NOT EXISTS `guru_tugas_tambahan` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `ptk_id` int(11) NOT NULL,
+              `tahun_ajaran` varchar(30) NOT NULL,
+              `semester` varchar(20) DEFAULT 'Ganjil',
+              `nama_tugas` varchar(150) NOT NULL,
+              `kelas_id` int(11) DEFAULT NULL,
+              `jam` int(11) DEFAULT 0,
+              `status` varchar(20) DEFAULT 'Aktif',
+              `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+              PRIMARY KEY (`id`),
+              KEY `ptk_id` (`ptk_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ");
+
+        // 4. Pastikan tabel wali_kelas ada
+        $this->db->query("
+            CREATE TABLE IF NOT EXISTS `wali_kelas` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `ptk_id` int(11) DEFAULT NULL,
+              `kelas_id` int(11) DEFAULT NULL,
+              `tahun_ajaran` varchar(30) DEFAULT NULL,
+              `semester` varchar(20) DEFAULT 'Ganjil',
+              `status` varchar(20) DEFAULT 'Aktif',
+              `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+              PRIMARY KEY (`id`),
+              KEY `ptk_id` (`ptk_id`),
+              KEY `kelas_id` (`kelas_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ");
+
+        // 5. Pastikan tabel tugas_mengajar ada
+        $this->db->query("
+            CREATE TABLE IF NOT EXISTS `tugas_mengajar` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `ptk_id` int(11) DEFAULT NULL,
+              `mapel_id` int(11) DEFAULT NULL,
+              `kelas_id` int(11) DEFAULT NULL,
+              `tahun_ajaran` varchar(30) DEFAULT NULL,
+              `semester` varchar(20) DEFAULT NULL,
+              `jam_per_minggu` int(11) DEFAULT 0,
+              `status` varchar(20) DEFAULT 'Aktif',
+              `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+              PRIMARY KEY (`id`),
+              KEY `ptk_id` (`ptk_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ");
+
+        $tables = ['ptk', 'struktur_organisasi', 'guru_tugas_tambahan', 'wali_kelas', 'tugas_mengajar'];
+        $stats = [];
+
+        foreach($tables as $tbl){
+            if(isset($payload[$tbl])){
+                $this->db->empty_table($tbl);
+                $rows = $payload[$tbl];
+                if(!empty($rows)){
+                    $chunks = array_chunk($rows, 100);
+                    foreach($chunks as $chunk){
+                        $this->db->insert_batch($tbl, $chunk);
+                    }
                 }
-                $synced++;
+                $stats[$tbl] = count($rows);
             }
         }
 
+        $this->db->query("SET FOREIGN_KEY_CHECKS = 1");
+
         echo json_encode([
             'status' => 'success',
-            'message' => "Berhasil menyinkronkan {$synced} data PTK ke website online."
+            'message' => 'Berhasil menyinkronkan seluruh data PTK, struktur organisasi, tugas tambahan, dan wali kelas ke website online.',
+            'stats' => $stats
         ]);
     }
 
