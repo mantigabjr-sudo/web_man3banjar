@@ -165,11 +165,11 @@ if(!empty($profil_website->whatsapp)){
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        PPDB Online
+                        PMB Online
                     </a>
                     <ul class="dropdown-menu shadow-sm">
-                        <li><a class="dropdown-item" href="<?= base_url('ppdb') ?>">Informasi Pendaftaran</a></li>
-                        <li><a class="dropdown-item" href="<?= base_url('ppdb') ?>">Cek Status Kelulusan</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('pmb') ?>">Informasi Pendaftaran</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('pmb/login') ?>">Login Calon Siswa</a></li>
                     </ul>
                 </li>
 
@@ -214,15 +214,15 @@ if(!empty($profil_website->whatsapp)){
         <h1>Portal Informasi dan Layanan Digital <?= $nama_madrasah ?></h1>
 
         <p class="web-hero-sub">
-            Akses berita terbaru, profil madrasah, PPDB online, informasi akademik, tata usaha, galeri kegiatan, dan layanan digital madrasah dalam satu halaman.
+            Akses berita terbaru, profil madrasah, PMB online, informasi akademik, tata usaha, galeri kegiatan, dan layanan digital madrasah dalam satu halaman.
         </p>
 
         <div class="web-hero-actions">
             <a href="<?= base_url('website/monitoring_kbm') ?>" class="web-btn web-btn-primary" style="background: #14532d; border-color: #14532d;">
                 <i class="bi bi-broadcast text-danger me-1"></i> Live Monitoring KBM
             </a>
-            <a href="<?= base_url('ppdb') ?>" class="web-btn web-btn-outline">
-                <i class="bi bi-pencil-square"></i> Daftar PPDB
+            <a href="<?= base_url('pmb') ?>" class="web-btn web-btn-outline">
+                <i class="bi bi-pencil-square"></i> Daftar PMB
             </a>
             <a href="#berita" class="web-btn web-btn-outline">
                 <i class="bi bi-newspaper"></i> Lihat Berita
@@ -629,11 +629,11 @@ if(!empty($profil_website->whatsapp)){
                 </div>
             </div>
 
-            <div class="web-ppdb-card" id="ppdb">
-                <span>PPDB Online</span>
-                <h2>Pendaftaran Siswa Baru</h2>
-                <p>Calon peserta didik baru dapat melakukan pendaftaran melalui sistem PPDB online yang telah disediakan.</p>
-                <a href="<?= base_url('ppdb') ?>" class="web-btn web-btn-primary">
+            <div class="web-ppdb-card" id="pmb">
+                <span>PMB Online</span>
+                <h2>Penerimaan Murid Baru</h2>
+                <p>Calon peserta didik baru dapat melakukan pendaftaran melalui sistem PMB online yang telah disediakan.</p>
+                <a href="<?= base_url('pmb') ?>" class="web-btn web-btn-primary">
                     <i class="bi bi-pencil-square"></i> Daftar Sekarang
                 </a>
             </div>
