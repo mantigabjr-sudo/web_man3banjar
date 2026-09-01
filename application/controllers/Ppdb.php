@@ -9,40 +9,41 @@ class Ppdb extends CI_Controller {
     }
 
     public function index(){
+        $data['settings'] = $this->db->get('settings')->row();
 
-    $data['settings'] = $this->db->get('settings')->row();
+        if($data['settings'] && $data['settings']->status_ppdb == 'Ditutup'){
+            $this->load->view('public/ppdb_closed', $data);
+            return;
+        }
 
-    if($data['settings'] && $data['settings']->status_ppdb == 'Ditutup'){
-        $this->load->view('public/ppdb_closed',$data);
-        return;
+        $data['profil_website'] = $this->db->limit(1)->get('website_profil')->row();
+        $data['nama_ppdb'] = $this->get_nama_ppdb();
+        $this->load->view('public/ppdb', $data);
     }
 
-    $data['nama_ppdb'] = $this->get_nama_ppdb();
-    $this->load->view('public/ppdb',$data);
-}
-	//daftar_awal
+    //daftar_awal
     public function submit(){
-		
-		$nama = trim($this->input->post('nama_lengkap'));
-				$nisn = trim($this->input->post('nisn'));
-				$hp   = trim($this->input->post('no_hp'));
-				$password_plain = $this->input->post('password');
-		if(strlen($nama) < 3){
-			die('Nama lengkap minimal 3 karakter');
-		}
+        $nama = trim($this->input->post('nama_lengkap'));
+        $nisn = trim($this->input->post('nisn'));
+        $hp   = trim($this->input->post('no_hp'));
+        $password_plain = $this->input->post('password');
 
-		if(!preg_match('/^[0-9]{10}$/', $nisn)){
-			die('NISN harus 10 digit angka');
-		}
+        if(strlen($nama) < 3){
+            die('Nama lengkap minimal 3 karakter');
+        }
 
-		if(!preg_match('/^[0-9]{10,15}$/', $hp)){
-			die('No HP harus 10-15 digit angka');
-		}
+        if(!preg_match('/^[0-9]{10}$/', $nisn)){
+            die('NISN harus 10 digit angka');
+        }
 
-		if(strlen($password_plain) < 6){
-			die('Password minimal 6 karakter');
-		}
-		
+        if(!preg_match('/^[0-9]{10,15}$/', $hp)){
+            die('No HP harus 10-15 digit angka');
+        }
+
+        if(strlen($password_plain) < 6){
+            die('Password minimal 6 karakter');
+        }
+        
         $tahun = date('Y');
 
         $last = $this->db
@@ -53,11 +54,9 @@ class Ppdb extends CI_Controller {
         $nomor = $last ? $last->id + 1 : 1;
 
         $no_pendaftaran = 'PPDB'.$tahun.'-'.str_pad($nomor,4,'0',STR_PAD_LEFT);
-
         $username = $this->input->post('nisn');
-		$password_plain = $this->input->post('password');
-		
-		$cek = $this->db
+        
+        $cek = $this->db
 			->where('nisn',$this->input->post('nisn'))
 			->get('ppdb')
 			->row();
