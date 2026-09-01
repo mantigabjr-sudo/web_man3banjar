@@ -20,6 +20,11 @@ $route['monitoring_kbm'] = 'website/monitoring_kbm';
 $route['jadwal_live'] = 'website/monitoring_kbm';
 
 // REST API Sync ke LabSys Server Lokal
+$route['api/sync/status'] = 'api_sync/status';
+$route['api/sync/berita'] = 'api_sync/sync_berita';
+$route['api/sync/ptk']    = 'api_sync/sync_ptk';
+$route['api/sync/kbm']    = 'api_sync/sync_kbm';
+
 $route['api/ppdb/sync'] = 'api_ppdb/sync_pendaftar';
 $route['api/ppdb/confirm_sync'] = 'api_ppdb/confirm_sync';
 $route['api/ppdb/stats'] = 'api_ppdb/stats';
