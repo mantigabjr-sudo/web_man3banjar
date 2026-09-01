@@ -31,6 +31,8 @@ class Api_sync extends CI_Controller {
         $total_ptk = $this->db->table_exists('ptk') ? $this->db->count_all_results('ptk') : 0;
         $total_jadwal = $this->db->table_exists('jadwal_mengajar') ? $this->db->count_all_results('jadwal_mengajar') : 0;
         $total_ppdb = $this->db->table_exists('ppdb') ? $this->db->count_all_results('ppdb') : 0;
+        $total_banner = $this->db->table_exists('website_banner') ? $this->db->count_all_results('website_banner') : 0;
+        $total_galeri = $this->db->table_exists('website_galeri') ? $this->db->count_all_results('website_galeri') : 0;
 
         echo json_encode([
             'status' => 'success',
@@ -39,10 +41,14 @@ class Api_sync extends CI_Controller {
                 'berita' => $total_berita,
                 'ptk' => $total_ptk,
                 'jadwal_mengajar' => $total_jadwal,
-                'ppdb' => $total_ppdb
+                'ppdb' => $total_ppdb,
+                'banner' => $total_banner,
+                'galeri' => $total_galeri
             ]
         ]);
     }
+
+    // ═══ 1. PUSH DARI LOKAL KE CLOUD ═══
 
     public function sync_berita(){
         $this->validate_key();
@@ -83,6 +89,36 @@ class Api_sync extends CI_Controller {
         echo json_encode([
             'status' => 'success',
             'message' => "Berhasil menyinkronkan {$synced} data berita ke website online."
+        ]);
+    }
+
+    public function sync_website(){
+        $this->validate_key();
+        $payload = json_decode($this->input->raw_input_stream, true);
+
+        if(empty($payload)){
+            echo json_encode(['status' => 'error', 'message' => 'Payload konten website kosong']);
+            return;
+        }
+
+        $tables = ['website_profil', 'website_banner', 'website_video', 'website_pamflet', 'website_galeri', 'website_download'];
+        $stats = [];
+
+        foreach($tables as $tbl){
+            if(isset($payload[$tbl]) && $this->db->table_exists($tbl)){
+                $this->db->empty_table($tbl);
+                $rows = $payload[$tbl];
+                if(!empty($rows)){
+                    $this->db->insert_batch($tbl, $rows);
+                }
+                $stats[$tbl] = count($rows);
+            }
+        }
+
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Berhasil mengirim profil, banner, pamflet, galeri, dan video ke website online.',
+            'stats' => $stats
         ]);
     }
 
@@ -143,6 +179,43 @@ class Api_sync extends CI_Controller {
             'status' => 'success',
             'message' => 'Berhasil menyinkronkan seluruh jadwal KBM, kelas, dan mapel ke website online.',
             'stats' => $stats
+        ]);
+    }
+
+    // ═══ 2. PULL DARI CLOUD KE LOKAL (TWO-WAY SYNC) ═══
+
+    public function pull_website(){
+        $this->validate_key();
+
+        $data = [];
+        $tables = ['website_profil', 'website_banner', 'website_video', 'website_pamflet', 'website_galeri', 'website_download'];
+
+        foreach($tables as $tbl){
+            if($this->db->table_exists($tbl)){
+                $data[$tbl] = $this->db->get($tbl)->result_array();
+            }
+        }
+
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Data konten website online berhasil diambil.',
+            'data' => $data
+        ]);
+    }
+
+    public function pull_berita(){
+        $this->validate_key();
+
+        $berita = $this->db->table_exists('berita') ? $this->db->get('berita')->result_array() : [];
+        $gambar = $this->db->table_exists('berita_gambar') ? $this->db->get('berita_gambar')->result_array() : [];
+
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Data berita online berhasil diambil.',
+            'data' => [
+                'berita' => $berita,
+                'berita_gambar' => $gambar
+            ]
         ]);
     }
 }
