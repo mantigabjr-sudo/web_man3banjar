@@ -39,7 +39,11 @@ if ($conn->connect_error) {
     echo "<span style='color:green;'>✅ OK</span></p>";
 
     // Cek tabel krusial
-    $tables = ['website_profil', 'website_banner', 'website_video', 'website_pamflet', 'website_galeri', 'berita', 'ptk', 'settings', 'ppdb'];
+    $tables = [
+        'website_profil', 'website_banner', 'website_video', 'website_pamflet', 'website_galeri', 
+        'berita', 'ptk', 'settings', 'ppdb',
+        'kelas', 'mapel', 'jadwal_pelajaran', 'jadwal_jam', 'guru_mengajar', 'absensi_guru'
+    ];
     $ada_yang_kurang = false;
     echo "<ul>";
     foreach($tables as $t){

@@ -15,6 +15,10 @@ $route['ppdb/(:any)'] = 'ppdb/$1';
 $route['admin_pmb'] = 'admin_ppdb';
 $route['admin_pmb/(:any)'] = 'admin_ppdb/$1';
 
+// Live Monitoring KBM
+$route['monitoring_kbm'] = 'website/monitoring_kbm';
+$route['jadwal_live'] = 'website/monitoring_kbm';
+
 // REST API Sync ke LabSys Server Lokal
 $route['api/ppdb/sync'] = 'api_ppdb/sync_pendaftar';
 $route['api/ppdb/confirm_sync'] = 'api_ppdb/confirm_sync';
