@@ -536,8 +536,20 @@ class Website extends CI_Controller {
 
             $tugas_khusus_result = [];
 
+            // Daftar PTK ID Kamad & Kaur TU agar tidak muncul ganda di level bawah
+            $excluded_ptk_ids = [];
+            foreach($data['kepala_madrasah'] as $km) { if(!empty($km->ptk_id)) $excluded_ptk_ids[] = $km->ptk_id; }
+            foreach($data['kaur_tu'] as $kt) { if(!empty($kt->ptk_id)) $excluded_ptk_ids[] = $kt->ptk_id; }
+
+            // Juga kecualikan Wakamad dari tugas khusus agar hirarki bersih
+            foreach($wakamad_list as $wk) { if(!empty($wk->ptk_id)) $excluded_ptk_ids[] = $wk->ptk_id; }
+
             foreach($all_pendidik as $p){
                 $ptk_id = $p->ptk_id;
+                if(in_array($ptk_id, $excluded_ptk_ids)) continue;
+                if(stripos($p->nama_lengkap, 'Nor Ifansyah') !== false) continue;
+                if(stripos($p->nama_lengkap, 'Haris Padilah') !== false) continue;
+
                 $gt_rows = $this->db->select('id, nama_tugas, kelas_id, tahun_ajaran')
                     ->from('guru_tugas_tambahan')
                     ->where('ptk_id', $ptk_id)
@@ -551,12 +563,11 @@ class Website extends CI_Controller {
                     if(strpos((string)$g->tahun_ajaran, '2025') !== false) continue;
                     $t = trim((string)$g->nama_tugas);
                     if(!empty($t)){
-                        // Pecah jika ada slash
                         $parts = explode('/', $t);
                         foreach($parts as $prt) $raw_items[] = trim($prt);
                     }
                     if(!empty($g->kelas_id) && isset($kelas_map[$g->kelas_id])){
-                        if(stripos($t, 'Kokurikuler') !== false){
+                        if(stripos($t, 'kuri') !== false || stripos($t, 'koku') !== false){
                             $kokurikuler_classes[] = $kelas_map[$g->kelas_id];
                         }
                     }
@@ -571,13 +582,17 @@ class Website extends CI_Controller {
                 $clean_tags = [];
                 foreach($raw_items as $item){
                     if(empty($item)) continue;
-                    if(stripos($item, 'Wali Kelas') !== false) continue;
+                    if(stripos($item, 'Wali Kelas') !== false || stripos($item, 'Walikelas') !== false) continue;
                     if(stripos($item, 'Wakamad') !== false || stripos($item, 'Waka Bid') !== false) continue;
+                    if(stripos($item, 'Kamad') !== false || stripos($item, 'Kepala Madrasah') !== false) continue;
                     if(stripos($item, 'Satmingkal') !== false || stripos($item, 'Menambah Jam') !== false) continue;
 
-                    // Deteksi Kokurikuler
-                    if(stripos($item, 'Kokurikuler') !== false || preg_match('/\b(X|XI|XII)\s+[A-Z]\b/i', $item)){
-                        if(preg_match_all('/\b(XII|XI|X)\s*([A-Z])\b/i', $item, $matches, PREG_SET_ORDER)){
+                    // Normalkan variasi Kokurikuler
+                    $item_norm = str_ireplace(['Kookurikuler', 'Ko-kurikuler', 'Kokurikuler'], 'Kokurikuler', $item);
+
+                    // Deteksi Kokurikuler (misal: "Koordinator Kokurikuler Kelas XIIC", "Kokurikuler (XII D, XII E)")
+                    if(stripos($item_norm, 'Kokurikuler') !== false || stripos($item_norm, 'Kurikuler') !== false){
+                        if(preg_match_all('/(XII|XI|X)\s*([A-Z])/i', $item_norm, $matches, PREG_SET_ORDER)){
                             foreach($matches as $m){
                                 $kokurikuler_classes[] = strtoupper($m[1]) . ' ' . strtoupper($m[2]);
                             }
@@ -585,7 +600,7 @@ class Website extends CI_Controller {
                         continue;
                     }
 
-                    // Deteksi Lab
+                    // Deteksi Lab & Perpustakaan
                     if(stripos($item, 'Lab IPA') !== false) { $clean_tags['lab_ipa'] = 'Kepala Lab IPA'; continue; }
                     if(stripos($item, 'Lab Komputer') !== false) { $clean_tags['lab_komp'] = 'Kepala Lab Komputer'; continue; }
                     if(stripos($item, 'Lab Bahasa') !== false) { $clean_tags['lab_bahasa'] = 'Kepala Lab Bahasa'; continue; }
@@ -593,7 +608,7 @@ class Website extends CI_Controller {
                     if(stripos($item, 'Keagamaan') !== false) { $clean_tags['keagamaan'] = 'Koordinator Keagamaan'; continue; }
                     if(stripos($item, '5 K') !== false || stripos($item, '5K') !== false) { $clean_tags['5k'] = 'Koordinator 5K'; continue; }
 
-                    // Ekskul
+                    // Ekskul & Pembina
                     $item = str_ireplace('Ekslul', 'Ekskul', $item);
                     if(stripos($item, 'Habsy') !== false) { $clean_tags['habsy'] = 'Pembina Ekskul Habsy'; continue; }
                     if(stripos($item, 'KIR') !== false) { $clean_tags['kir'] = 'Pembina Ekskul KIR'; continue; }
@@ -606,13 +621,11 @@ class Website extends CI_Controller {
                     if(stripos($item, 'Futsal') !== false) { $clean_tags['futsal'] = 'Pembina Ekskul Futsal'; continue; }
                     if(stripos($item, 'OSIM') !== false) { $clean_tags['osim'] = 'Pembina OSIM'; continue; }
 
-                    if(stripos($item, 'Binaan') !== false || stripos($item, 'BK') !== false){
-                        $cl = preg_replace('/Binaan\s*(Kelas)?\s*/i', 'Pembina Kelas ', $item);
+                    if(stripos($item, 'Binaan') !== false || stripos($item, 'BK') !== false || stripos($item, 'Pembina Kelas') !== false){
+                        $cl = preg_replace('/(Binaan|Pembina)\s*(Kelas)?\s*/i', 'Pembina Kelas ', $item);
                         $clean_tags['binaan_'.md5($cl)] = trim($cl);
                         continue;
                     }
-
-                    $clean_tags[md5($item)] = $item;
                 }
 
                 $kokurikuler_classes = array_values(array_unique($kokurikuler_classes));

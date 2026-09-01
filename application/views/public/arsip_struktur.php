@@ -187,27 +187,52 @@ if (!function_exists('get_initials_struktur')) {
                 <!-- Garis Komando Penghubung ke Level Bawah -->
                 <div class="main-tree-connector-down"></div>
 
-                <!-- ═══ LEVEL 3: TUGAS TAMBAHAN KHUSUS, KOORDINATOR & KEPALA LAB ═══ -->
+                <!-- ═══ LEVEL 3: UNIT PENUNJANG AKADEMIK, KEPALA LAB & KOORDINATOR ═══ -->
                 <?php if (!empty($tugas_khusus)): ?>
                     <div class="tree-group mb-5">
                         <div class="group-badge-wrapper mb-3">
                             <span class="group-title-badge badge-koordinator-title">
-                                <i class="bi bi-diagram-3-fill me-1"></i> Kepala Lab, Perpustakaan, Koordinator &amp; Pembina
+                                <i class="bi bi-diagram-3-fill me-1"></i> Unit Layanan, Laboratorium &amp; Koordinator
                             </span>
+                        </div>
+
+                        <!-- Filter Sub-Kategori Tugas Khusus agar Ringkas -->
+                        <div class="d-flex justify-content-center gap-2 mb-4 flex-wrap no-print">
+                            <button type="button" class="wali-filter-btn active" onclick="filterTugasKhusus('all', this)">
+                                🌟 Semua Unit (<?= count($tugas_khusus) ?>)
+                            </button>
+                            <button type="button" class="wali-filter-btn" onclick="filterTugasKhusus('lab', this)">
+                                🔬 Kepala Lab &amp; Perpustakaan
+                            </button>
+                            <button type="button" class="wali-filter-btn" onclick="filterTugasKhusus('koku', this)">
+                                📚 Koordinator Kokurikuler
+                            </button>
+                            <button type="button" class="wali-filter-btn" onclick="filterTugasKhusus('pembina', this)">
+                                🏆 Pembina Ekskul &amp; BK
+                            </button>
                         </div>
                         
                         <div class="group-connector-vertical"></div>
                         <div class="group-row-wrapper">
                             <div class="group-connector-horizontal"></div>
-                            <div class="group-members">
+                            <div class="group-members" id="tugasKhususContainer">
                                 <?php foreach($tugas_khusus as $tk): ?>
                                     <?php 
                                     $gbr = $tk->foto ?? '';
                                     $file_path = !empty($gbr) ? FCPATH.'uploads/ptk/foto/'.$gbr : '';
                                     $img_src = (!empty($gbr) && file_exists($file_path)) ? base_url('uploads/ptk/foto/'.$gbr) : null;
                                     $tags = !empty($tk->cleaned_tags) ? $tk->cleaned_tags : array_filter(array_map('trim', explode(',', $tk->tugas_display ?? '')));
+                                    
+                                    // Klasifikasi tipe tugas
+                                    $item_types = [];
+                                    foreach($tags as $tg){
+                                        if(stripos($tg, 'Lab') !== false || stripos($tg, 'Perpustakaan') !== false) $item_types[] = 'lab';
+                                        if(stripos($tg, 'Kokurikuler') !== false) $item_types[] = 'koku';
+                                        if(stripos($tg, 'Pembina') !== false || stripos($tg, 'OSIM') !== false || stripos($tg, 'Pramuka') !== false || stripos($tg, 'Ekskul') !== false || stripos($tg, 'Keagamaan') !== false || stripos($tg, '5 K') !== false || stripos($tg, '5K') !== false) $item_types[] = 'pembina';
+                                    }
+                                    $type_attr = implode(' ', array_unique($item_types));
                                     ?>
-                                    <div class="member-card-wrapper">
+                                    <div class="member-card-wrapper tugas-khusus-item" data-type="<?= $type_attr ?>">
                                         <div class="card-connector-vertical"></div>
                                         <div class="member-glass-card tugas-khusus-card">
                                             <div class="member-card-img-wrap">
@@ -1128,8 +1153,24 @@ if (!function_exists('get_initials_struktur')) {
 }
 </style>
 
-<script>
-// Filter Tingkat Wali Kelas
+// Filter Sub-Kategori Tugas Khusus
+function filterTugasKhusus(type, btn) {
+    const parent = btn.parentElement;
+    if(parent) {
+        parent.querySelectorAll('.wali-filter-btn').forEach(b => b.classList.remove('active'));
+    }
+    if(btn) btn.classList.add('active');
+
+    const items = document.querySelectorAll('.tugas-khusus-item');
+    items.forEach(it => {
+        const types = (it.getAttribute('data-type') || '').split(' ');
+        if(type === 'all' || types.includes(type)) {
+            it.style.display = 'flex';
+        } else {
+            it.style.display = 'none';
+        }
+    });
+}
 function filterWaliTingkat(tingkat, btn) {
     document.querySelectorAll('.wali-filter-btn').forEach(b => b.classList.remove('active'));
     if(btn) btn.classList.add('active');
