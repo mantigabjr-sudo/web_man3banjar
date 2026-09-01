@@ -559,6 +559,16 @@ class Website extends CI_Controller {
                 $raw_items = [];
                 $kokurikuler_classes = [];
 
+                // 1. Ekstrak kelas kokurikuler dari seluruh string tugas_tambahan
+                $tt_full = (string)$p->tugas_tambahan;
+                if(stripos($tt_full, 'kuri') !== false || stripos($tt_full, 'koku') !== false){
+                    if(preg_match_all('/(XII|XI|X)\s*([A-Z])/i', $tt_full, $matches, PREG_SET_ORDER)){
+                        foreach($matches as $m){
+                            $kokurikuler_classes[] = strtoupper($m[1]) . ' ' . strtoupper($m[2]);
+                        }
+                    }
+                }
+
                 foreach($gt_rows as $g){
                     if(strpos((string)$g->tahun_ajaran, '2025') !== false) continue;
                     $t = trim((string)$g->nama_tugas);
@@ -587,16 +597,8 @@ class Website extends CI_Controller {
                     if(stripos($item, 'Kamad') !== false || stripos($item, 'Kepala Madrasah') !== false) continue;
                     if(stripos($item, 'Satmingkal') !== false || stripos($item, 'Menambah Jam') !== false) continue;
 
-                    // Normalkan variasi Kokurikuler
-                    $item_norm = str_ireplace(['Kookurikuler', 'Ko-kurikuler', 'Kokurikuler'], 'Kokurikuler', $item);
-
-                    // Deteksi Kokurikuler (misal: "Koordinator Kokurikuler Kelas XIIC", "Kokurikuler (XII D, XII E)")
-                    if(stripos($item_norm, 'Kokurikuler') !== false || stripos($item_norm, 'Kurikuler') !== false){
-                        if(preg_match_all('/(XII|XI|X)\s*([A-Z])/i', $item_norm, $matches, PREG_SET_ORDER)){
-                            foreach($matches as $m){
-                                $kokurikuler_classes[] = strtoupper($m[1]) . ' ' . strtoupper($m[2]);
-                            }
-                        }
+                    // Lewati string mentah kokurikuler karena sudah diproses secara terpusat
+                    if(stripos($item, 'Kokurikuler') !== false || stripos($item, 'Kurikuler') !== false || stripos($item, 'Kookurikuler') !== false){
                         continue;
                     }
 

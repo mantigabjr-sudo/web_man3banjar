@@ -1153,6 +1153,7 @@ if (!function_exists('get_initials_struktur')) {
 }
 </style>
 
+<script>
 // Filter Sub-Kategori Tugas Khusus
 function filterTugasKhusus(type, btn) {
     const parent = btn.parentElement;
