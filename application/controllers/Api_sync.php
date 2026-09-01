@@ -193,18 +193,21 @@ class Api_sync extends CI_Controller {
             return;
         }
 
-        // 1. Pastikan tabel siswa ada
+        $this->db->query("SET FOREIGN_KEY_CHECKS = 0");
+
+        // 1. Buat tabel siswa segar
+        $this->db->query("DROP TABLE IF EXISTS `siswa`");
         $this->db->query("
-            CREATE TABLE IF NOT EXISTS `siswa` (
+            CREATE TABLE `siswa` (
               `id` int(11) NOT NULL AUTO_INCREMENT,
-              `nis` varchar(30) DEFAULT NULL,
-              `nisn` varchar(30) DEFAULT NULL,
+              `nis` varchar(50) DEFAULT NULL,
+              `nisn` varchar(50) DEFAULT NULL,
               `nama_lengkap` varchar(150) DEFAULT NULL,
               `jk` enum('L','P') DEFAULT NULL,
               `tempat_lahir` varchar(100) DEFAULT NULL,
               `tanggal_lahir` date DEFAULT NULL,
-              `agama` varchar(30) DEFAULT NULL,
-              `status_siswa` varchar(30) DEFAULT 'Aktif',
+              `agama` varchar(50) DEFAULT NULL,
+              `status_siswa` varchar(50) DEFAULT 'Aktif',
               `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
               PRIMARY KEY (`id`),
               KEY `idx_siswa_nisn` (`nisn`),
@@ -212,27 +215,29 @@ class Api_sync extends CI_Controller {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         ");
 
-        // 2. Pastikan tabel kelas ada
+        // 2. Buat tabel kelas segar
+        $this->db->query("DROP TABLE IF EXISTS `kelas`");
         $this->db->query("
-            CREATE TABLE IF NOT EXISTS `kelas` (
+            CREATE TABLE `kelas` (
               `id` int(11) NOT NULL AUTO_INCREMENT,
               `nama_kelas` varchar(50) DEFAULT NULL,
               `tingkat` varchar(10) DEFAULT NULL,
               `jurusan` varchar(50) DEFAULT NULL,
-              `tahun_ajaran` varchar(30) DEFAULT NULL,
+              `tahun_ajaran` varchar(50) DEFAULT NULL,
               `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         ");
 
-        // 3. Pastikan tabel siswa_kelas ada
+        // 3. Buat tabel siswa_kelas segar
+        $this->db->query("DROP TABLE IF EXISTS `siswa_kelas`");
         $this->db->query("
-            CREATE TABLE IF NOT EXISTS `siswa_kelas` (
+            CREATE TABLE `siswa_kelas` (
               `id` int(11) NOT NULL AUTO_INCREMENT,
               `siswa_id` int(11) DEFAULT NULL,
               `kelas_id` int(11) DEFAULT NULL,
-              `tahun_ajaran` varchar(30) DEFAULT NULL,
-              `status` varchar(30) DEFAULT 'Aktif',
+              `tahun_ajaran` varchar(50) DEFAULT NULL,
+              `status` varchar(50) DEFAULT 'Aktif',
               `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
               PRIMARY KEY (`id`),
               KEY `idx_sk_siswa` (`siswa_id`),
@@ -241,48 +246,41 @@ class Api_sync extends CI_Controller {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         ");
 
-        $stats = [];
+        $stats = ['kelas' => 0, 'siswa' => 0, 'siswa_kelas' => 0];
 
         // Insert Kelas
-        if(isset($payload['kelas'])){
-            $this->db->empty_table('kelas');
-            $rows = $payload['kelas'];
-            if(!empty($rows)){
-                $this->db->insert_batch('kelas', $rows);
-            }
-            $stats['kelas'] = count($rows);
+        if(isset($payload['kelas']) && !empty($payload['kelas'])){
+            $this->db->insert_batch('kelas', $payload['kelas']);
+            $stats['kelas'] = count($payload['kelas']);
         }
 
         // Insert Siswa
-        if(isset($payload['siswa'])){
-            $this->db->empty_table('siswa');
-            $rows = $payload['siswa'];
-            if(!empty($rows)){
-                $chunks = array_chunk($rows, 100);
-                foreach($chunks as $chunk){
-                    $this->db->insert_batch('siswa', $chunk);
-                }
+        if(isset($payload['siswa']) && !empty($payload['siswa'])){
+            $chunks = array_chunk($payload['siswa'], 100);
+            foreach($chunks as $chunk){
+                $this->db->insert_batch('siswa', $chunk);
             }
-            $stats['siswa'] = count($rows);
+            $stats['siswa'] = count($payload['siswa']);
         }
 
         // Insert Siswa Kelas
-        if(isset($payload['siswa_kelas'])){
-            $this->db->empty_table('siswa_kelas');
-            $rows = $payload['siswa_kelas'];
-            if(!empty($rows)){
-                $chunks = array_chunk($rows, 100);
-                foreach($chunks as $chunk){
-                    $this->db->insert_batch('siswa_kelas', $chunk);
-                }
+        if(isset($payload['siswa_kelas']) && !empty($payload['siswa_kelas'])){
+            $chunks = array_chunk($payload['siswa_kelas'], 100);
+            foreach($chunks as $chunk){
+                $this->db->insert_batch('siswa_kelas', $chunk);
             }
-            $stats['siswa_kelas'] = count($rows);
+            $stats['siswa_kelas'] = count($payload['siswa_kelas']);
         }
+
+        $this->db->query("SET FOREIGN_KEY_CHECKS = 1");
+
+        $real_siswa = $this->db->count_all_results('siswa');
 
         echo json_encode([
             'status' => 'success',
-            'message' => "Berhasil menyinkronkan data {$stats['siswa']} siswa, {$stats['siswa_kelas']} riwayat kelas, dan {$stats['kelas']} rombel ke website online.",
-            'stats' => $stats
+            'message' => "Berhasil menyinkronkan data {$real_siswa} siswa, {$stats['siswa_kelas']} riwayat kelas, dan {$stats['kelas']} rombel ke website online.",
+            'stats' => $stats,
+            'real_siswa_count' => $real_siswa
         ]);
     }
 
