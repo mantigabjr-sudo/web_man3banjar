@@ -373,11 +373,12 @@ CREATE TABLE `settings` (
   `nama_ppdb` varchar(50) DEFAULT 'PPDB',
   `pamflet_ppdb` varchar(255) DEFAULT NULL,
   `persyaratan_ppdb` text DEFAULT NULL,
+  `judul_panjang_ppdb` varchar(150) DEFAULT 'Penerimaan Murid Baru',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `settings` VALUES 
-('1', '2026/2027', 'Dibuka', '2026-06-12', '2026-06-30', 'PPDB MAN 3 Banjar telah dibuka.', 'Ganjil', '2026-06-23 16:03:27', '4', 'PMB', NULL, '');
+('1', '2026/2027', 'Dibuka', '2026-06-12', '2026-06-30', 'PPDB MAN 3 Banjar telah dibuka.', 'Ganjil', '2026-06-23 16:03:27', '4', 'PMB', NULL, '', 'Penerimaan Murid Baru');
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (

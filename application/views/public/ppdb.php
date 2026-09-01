@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title><?= htmlspecialchars($nama_ppdb ?? 'PPDB') ?> MAN 3 Banjar — Pendaftaran Peserta Didik Baru</title>
-<meta name="description" content="Halaman pendaftaran peserta didik baru (<?= htmlspecialchars($nama_ppdb ?? 'PPDB') ?>) MAN 3 Banjar. Daftar online, lengkapi data, dan pantau status pendaftaran Anda.">
+<title><?= htmlspecialchars($nama_ppdb ?? 'PMB') ?> MAN 3 Banjar — <?= !empty($settings->judul_panjang_ppdb) ? htmlspecialchars($settings->judul_panjang_ppdb) : 'Penerimaan Murid Baru' ?></title>
+<meta name="description" content="Halaman pendaftaran <?= !empty($settings->judul_panjang_ppdb) ? htmlspecialchars($settings->judul_panjang_ppdb) : 'Penerimaan Murid Baru' ?> (<?= htmlspecialchars($nama_ppdb ?? 'PMB') ?>) MAN 3 Banjar. Daftar online, lengkapi data, dan pantau status pendaftaran Anda.">
 
 <link rel="icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
 <link rel="shortcut icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
@@ -18,11 +18,12 @@
 
 <?php
 /* ─── Data Logic ─── */
-$nama        = htmlspecialchars($nama_ppdb ?? 'PPDB');
-$ta          = isset($settings->tahun_ajaran) ? htmlspecialchars($settings->tahun_ajaran) : date('Y').'/'.(date('Y')+1);
-$tgl_mulai   = $settings->tanggal_mulai ?? '';
-$tgl_selesai = $settings->tanggal_selesai ?? '';
-$today       = date('Y-m-d');
+$nama          = htmlspecialchars($nama_ppdb ?? 'PMB');
+$judul_panjang = !empty($settings->judul_panjang_ppdb) ? htmlspecialchars($settings->judul_panjang_ppdb) : ($nama == 'PMB' ? 'Penerimaan Murid Baru' : 'Penerimaan Peserta Didik Baru');
+$ta            = isset($settings->tahun_ajaran) ? htmlspecialchars($settings->tahun_ajaran) : date('Y').'/'.(date('Y')+1);
+$tgl_mulai     = $settings->tanggal_mulai ?? '';
+$tgl_selesai   = $settings->tanggal_selesai ?? '';
+$today         = date('Y-m-d');
 
 $nama_madrasah = !empty($profil_website->nama_madrasah) ? $profil_website->nama_madrasah : 'MAN 3 Banjar';
 
@@ -897,7 +898,7 @@ a { text-decoration: none; color: inherit; }
 <!-- ═══ TOPBAR ═══ -->
 <div class="ppdb-topbar">
     <div class="container ppdb-topbar-inner">
-        <span><i class="bi bi-building"></i> Portal Penerimaan Peserta Didik Baru (<?= $nama ?>) <?= $nama_madrasah ?></span>
+        <span><i class="bi bi-building"></i> Portal <?= $judul_panjang ?> (<?= $nama ?>) <?= $nama_madrasah ?></span>
         <span><i class="bi bi-shield-check"></i> Sistem Digital Terpadu LabSys</span>
     </div>
 </div>
@@ -962,7 +963,7 @@ a { text-decoration: none; color: inherit; }
             <i class="bi <?= $status_icon ?>"></i> <?= $status_label ?>
         </div>
 
-        <h1>Penerimaan Peserta Didik Baru<br><span><?= $nama_madrasah ?></span></h1>
+        <h1><?= $judul_panjang ?><br><span><?= $nama_madrasah ?></span></h1>
 
         <p class="hero-sub">
             Daftar secara mandiri dengan cepat, mudah, dan transparan. Lengkapi biodata, unggah berkas digital, dan pantau status kelulusan Anda secara real-time.
@@ -1287,7 +1288,7 @@ a { text-decoration: none; color: inherit; }
         </div>
 
         <div class="footer-bottom">
-            <span>&copy; <?= date('Y') ?> <?= $nama_madrasah ?> — Penerimaan Peserta Didik Baru.</span>
+            <span>&copy; <?= date('Y') ?> <?= $nama_madrasah ?> — <?= $judul_panjang ?>.</span>
             <span>Powered by <strong style="color: #34d399;">LabSys</strong> Madrasah Digital</span>
         </div>
     </div>

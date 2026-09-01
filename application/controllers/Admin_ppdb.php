@@ -658,7 +658,8 @@ class Admin_ppdb extends CI_Controller {
 			'tanggal_mulai' => $this->input->post('tanggal_mulai'),
 			'tanggal_selesai' => $this->input->post('tanggal_selesai'),
 			'pengumuman_ppdb' => $this->input->post('pengumuman_ppdb'),
-			'nama_ppdb' => $this->input->post('nama_ppdb') ? $this->input->post('nama_ppdb') : 'PPDB',
+			'nama_ppdb' => $this->input->post('nama_ppdb') ? $this->input->post('nama_ppdb') : 'PMB',
+			'judul_panjang_ppdb' => $this->input->post('judul_panjang_ppdb') ? $this->input->post('judul_panjang_ppdb') : 'Penerimaan Murid Baru',
 			'persyaratan_ppdb' => $this->input->post('persyaratan_ppdb')
 		];
 
