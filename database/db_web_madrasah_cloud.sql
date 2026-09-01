@@ -387,7 +387,7 @@ CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
   `nama_lengkap` varchar(100) DEFAULT NULL,
-  `role` enum('admin','ptk','user','siswa','admin_master','admin_humas','wakil_humas','Operator Humas','admin_kesiswaan','admin_kurikulum','admin_sarpras','guru','teknisi') DEFAULT 'admin',
+  `role` varchar(50) DEFAULT 'admin',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
@@ -402,7 +402,7 @@ INSERT INTO `users` VALUES
 ('10', NULL, 'kesiswaan', 'accc7841ce41b0f788a737bf9798ea4f', 'Wakamad Kesiswaan', 'admin_kesiswaan', '2026-05-21 10:38:01'),
 ('11', NULL, 'kurikulum', '4e7f2477836fa0c289105740fee0ebb1', 'Wakamad Kurikulum', 'admin_kurikulum', '2026-05-21 10:38:01'),
 ('12', NULL, 'sarpras', '379563d4cc020b27338863c063b9368d', 'Admin Sarpras', 'admin_sarpras', '2026-05-21 10:38:01'),
-('16', NULL, 'admin_pmb', '21232f297a57a5a743894a0e4a801fc3', 'Panitia PMB MAN 3 Banjar', '', '2026-09-01 11:37:25');
+('16', NULL, 'admin_pmb', '21232f297a57a5a743894a0e4a801fc3', 'Panitia PMB MAN 3 Banjar', 'admin_pmb', '2026-09-01 11:37:25');
 
 DROP TABLE IF EXISTS `kelas`;
 CREATE TABLE `kelas` (
