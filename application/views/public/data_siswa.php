@@ -160,48 +160,49 @@
 </div>
 
 <!-- Header Hero Section -->
-<header class="web-archive-hero" style="background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #059669 100%); color: white; padding: 50px 0 45px 0;">
+<header class="web-archive-hero text-center" style="padding: 55px 0 50px 0;">
     <div class="container">
-        <div class="detail-breadcrumb mb-3">
-            <a href="<?= base_url() ?>" style="color: rgba(255,255,255,0.85); text-decoration: none;"><i class="bi bi-house-door"></i> Beranda</a>
-            <span style="color: rgba(255,255,255,0.5); margin: 0 8px;">/</span>
-            <strong style="color: #ffffff;">Keadaan Siswa</strong>
+        <!-- Breadcrumb Center -->
+        <div class="detail-breadcrumb d-flex justify-content-center align-items-center mb-3">
+            <a href="<?= base_url() ?>"><i class="bi bi-house-door"></i> Beranda</a>
+            <span>/</span>
+            <strong>Keadaan Siswa</strong>
         </div>
         
-        <div class="row align-items-center g-3">
-            <div class="col-lg-8">
-                <div class="d-inline-flex align-items-center gap-2 px-3 py-1 mb-2 rounded-pill" style="background: rgba(255,255,255,0.18); backdrop-filter: blur(8px); font-size: 13px; font-weight: 600;">
-                    <i class="bi bi-mortarboard-fill text-warning"></i>
-                    <span>Tahun Pelajaran <?= htmlspecialchars($tahun_ajaran, ENT_QUOTES, 'UTF-8') ?></span>
-                    <?php if(!empty($is_active_ta)): ?>
-                        <span class="badge bg-success text-white" style="font-size: 11px;">Aktif Berjalan</span>
-                    <?php endif; ?>
+        <!-- Status Badge Center -->
+        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 mb-3 rounded-pill" style="background: rgba(255,255,255,0.18); backdrop-filter: blur(8px); font-size: 13px; font-weight: 600; border: 1px solid rgba(255,255,255,0.25);">
+            <i class="bi bi-mortarboard-fill text-warning"></i>
+            <span>Tahun Pelajaran <?= htmlspecialchars($tahun_ajaran, ENT_QUOTES, 'UTF-8') ?></span>
+            <?php if(!empty($is_active_ta)): ?>
+                <span class="badge bg-success text-white px-2 py-1" style="font-size: 11px;">Aktif Berjalan</span>
+            <?php endif; ?>
+        </div>
+
+        <!-- Title & Subtitle Center -->
+        <h1 class="mb-2">Keadaan &amp; Statistik Siswa</h1>
+        <p class="mx-auto mb-4" style="max-width: 650px;">
+            Statistika resmi, rasio gender, komposisi rombongan belajar, dan rekapitulasi data siswa di <?= htmlspecialchars($nama_madrasah ?? 'MAN 3 Banjar', ENT_QUOTES, 'UTF-8') ?>.
+        </p>
+
+        <!-- Selector Tahun Pelajaran Center -->
+        <div class="d-flex justify-content-center no-print">
+            <form action="<?= base_url('website/data_siswa') ?>" method="GET" class="d-inline-block text-start" style="width: 100%; max-width: 320px;">
+                <div class="input-group shadow-sm" style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.3);">
+                    <span class="input-group-text bg-white border-0 text-muted fw-bold" style="font-size: 12px;">
+                        <i class="bi bi-calendar3 me-1 text-success"></i> TA:
+                    </span>
+                    <select name="ta" class="form-select border-0 text-dark fw-bold" onchange="this.form.submit()" style="font-size: 13.5px; background-color: #ffffff;">
+                        <?php foreach($list_ta as $ta_item): ?>
+                            <option value="<?= htmlspecialchars($ta_item, ENT_QUOTES, 'UTF-8') ?>" <?= ($ta_item == $tahun_ajaran) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($ta_item, ENT_QUOTES, 'UTF-8') ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit" class="btn btn-warning fw-bold px-3 border-0">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </button>
                 </div>
-                <h1 style="font-weight: 900; font-size: 2.3rem; letter-spacing: -0.5px; margin-bottom: 8px;">Keadaan & Statistik Siswa</h1>
-                <p style="font-size: 15px; opacity: 0.9; margin: 0; max-width: 680px;">
-                    Statistika resmi, rasio gender, komposisi rombongan belajar, dan rekapitulasi data siswa di <?= htmlspecialchars($nama_madrasah ?? 'MAN 3 Banjar', ENT_QUOTES, 'UTF-8') ?>.
-                </p>
-            </div>
-            
-            <div class="col-lg-4 text-lg-end no-print">
-                <form action="<?= base_url('website/data_siswa') ?>" method="GET" class="d-inline-block text-start w-100" style="max-width: 320px;">
-                    <label class="text-white small fw-bold mb-1" style="font-size: 12px; opacity: 0.95;">
-                        <i class="bi bi-calendar-event me-1"></i> Pilih Tahun Pelajaran:
-                    </label>
-                    <div class="input-group">
-                        <select name="ta" class="form-select border-0 shadow-sm" onchange="this.form.submit()" style="border-radius: 12px 0 0 12px; font-weight: 600; font-size: 14px;">
-                            <?php foreach($list_ta as $ta_item): ?>
-                                <option value="<?= htmlspecialchars($ta_item, ENT_QUOTES, 'UTF-8') ?>" <?= ($ta_item == $tahun_ajaran) ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($ta_item, ENT_QUOTES, 'UTF-8') ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                        <button type="submit" class="btn btn-warning fw-bold px-3" style="border-radius: 0 12px 12px 0;">
-                            <i class="bi bi-arrow-repeat"></i>
-                        </button>
-                    </div>
-                </form>
-            </div>
+            </form>
         </div>
     </div>
 </header>
