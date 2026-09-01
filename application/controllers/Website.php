@@ -544,54 +544,75 @@ class Website extends CI_Controller {
                     ->where('status', 'Aktif')
                     ->get()->result();
 
-                $tags = [];
+                $raw_items = [];
                 $kokurikuler_classes = [];
 
                 foreach($gt_rows as $g){
                     if(strpos((string)$g->tahun_ajaran, '2025') !== false) continue;
                     $t = trim((string)$g->nama_tugas);
-                    if(empty($t)) continue;
-                    if(stripos($t, 'Wali Kelas') !== false) continue;
-                    if(stripos($t, 'Wakamad') !== false || stripos($t, 'Waka Bid') !== false) continue;
-                    if(stripos($t, 'Satmingkal') !== false || stripos($t, 'Menambah Jam') !== false) continue;
-
-                    if(stripos($t, 'Kokurikuler') !== false){
-                        if(!empty($g->kelas_id) && isset($kelas_map[$g->kelas_id])){
+                    if(!empty($t)){
+                        // Pecah jika ada slash
+                        $parts = explode('/', $t);
+                        foreach($parts as $prt) $raw_items[] = trim($prt);
+                    }
+                    if(!empty($g->kelas_id) && isset($kelas_map[$g->kelas_id])){
+                        if(stripos($t, 'Kokurikuler') !== false){
                             $kokurikuler_classes[] = $kelas_map[$g->kelas_id];
-                        } else {
-                            if(preg_match('/(XII|XI|X)\s+[A-Z]/i', $t, $m_cls)){
-                                $kokurikuler_classes[] = strtoupper($m_cls[0]);
-                            }
                         }
-                    } elseif(stripos($t, 'Binaan') !== false || stripos($t, 'BK') !== false){
-                        $cl = preg_replace('/Binaan\s*(Kelas)?\s*/i', 'Pembina Kelas ', $t);
-                        $tags[] = trim($cl);
-                    } else {
-                        $t = str_ireplace('Ekslul', 'Ekskul', $t);
-                        $tags[] = $t;
                     }
                 }
 
                 $ptk_tt = array_filter(array_map('trim', explode(',', (string)$p->tugas_tambahan)));
                 foreach($ptk_tt as $t){
-                    if(empty($t)) continue;
-                    if(stripos($t, 'Wali Kelas') !== false) continue;
-                    if(stripos($t, 'Wakamad') !== false || stripos($t, 'Waka Bid') !== false) continue;
-                    if(stripos($t, 'Satmingkal') !== false || stripos($t, 'Menambah Jam') !== false) continue;
+                    $parts = explode('/', $t);
+                    foreach($parts as $prt) $raw_items[] = trim($prt);
+                }
 
-                    if(stripos($t, 'Kokurikuler') !== false){
-                        if(preg_match_all('/(XII|XI|X)\s+[A-Z]/i', $t, $m_cls)){
-                            foreach($m_cls[0] as $mc){
-                                $kokurikuler_classes[] = strtoupper($mc);
+                $clean_tags = [];
+                foreach($raw_items as $item){
+                    if(empty($item)) continue;
+                    if(stripos($item, 'Wali Kelas') !== false) continue;
+                    if(stripos($item, 'Wakamad') !== false || stripos($item, 'Waka Bid') !== false) continue;
+                    if(stripos($item, 'Satmingkal') !== false || stripos($item, 'Menambah Jam') !== false) continue;
+
+                    // Deteksi Kokurikuler
+                    if(stripos($item, 'Kokurikuler') !== false || preg_match('/\b(X|XI|XII)\s+[A-Z]\b/i', $item)){
+                        if(preg_match_all('/\b(XII|XI|X)\s*([A-Z])\b/i', $item, $matches, PREG_SET_ORDER)){
+                            foreach($matches as $m){
+                                $kokurikuler_classes[] = strtoupper($m[1]) . ' ' . strtoupper($m[2]);
                             }
                         }
-                    } elseif(stripos($t, 'Binaan') !== false || stripos($t, 'BK') !== false){
-                        $cl = preg_replace('/Binaan\s*(Kelas)?\s*/i', 'Pembina Kelas ', $t);
-                        $tags[] = trim($cl);
-                    } else {
-                        $t = str_ireplace('Ekslul', 'Ekskul', $t);
-                        $tags[] = $t;
+                        continue;
                     }
+
+                    // Deteksi Lab
+                    if(stripos($item, 'Lab IPA') !== false) { $clean_tags['lab_ipa'] = 'Kepala Lab IPA'; continue; }
+                    if(stripos($item, 'Lab Komputer') !== false) { $clean_tags['lab_komp'] = 'Kepala Lab Komputer'; continue; }
+                    if(stripos($item, 'Lab Bahasa') !== false) { $clean_tags['lab_bahasa'] = 'Kepala Lab Bahasa'; continue; }
+                    if(stripos($item, 'Perpustakaan') !== false) { $clean_tags['perpus'] = 'Kepala Perpustakaan'; continue; }
+                    if(stripos($item, 'Keagamaan') !== false) { $clean_tags['keagamaan'] = 'Koordinator Keagamaan'; continue; }
+                    if(stripos($item, '5 K') !== false || stripos($item, '5K') !== false) { $clean_tags['5k'] = 'Koordinator 5K'; continue; }
+
+                    // Ekskul
+                    $item = str_ireplace('Ekslul', 'Ekskul', $item);
+                    if(stripos($item, 'Habsy') !== false) { $clean_tags['habsy'] = 'Pembina Ekskul Habsy'; continue; }
+                    if(stripos($item, 'KIR') !== false) { $clean_tags['kir'] = 'Pembina Ekskul KIR'; continue; }
+                    if(stripos($item, 'PMR') !== false) { $clean_tags['pmr'] = 'Pembina Ekskul PMR'; continue; }
+                    if(stripos($item, 'Pramuka Putra') !== false) { $clean_tags['pramuka_pa'] = 'Pembina Pramuka Putra'; continue; }
+                    if(stripos($item, 'Pramuka Putri') !== false) { $clean_tags['pramuka_pi'] = 'Pembina Pramuka Putri'; continue; }
+                    if(stripos($item, 'Pramuka') !== false) { $clean_tags['pramuka'] = 'Pembina Pramuka'; continue; }
+                    if(stripos($item, 'Paskib') !== false) { $clean_tags['paskib'] = 'Pembina Paskibra'; continue; }
+                    if(stripos($item, 'Tari') !== false) { $clean_tags['tari'] = 'Pembina Ekskul Seni Tari'; continue; }
+                    if(stripos($item, 'Futsal') !== false) { $clean_tags['futsal'] = 'Pembina Ekskul Futsal'; continue; }
+                    if(stripos($item, 'OSIM') !== false) { $clean_tags['osim'] = 'Pembina OSIM'; continue; }
+
+                    if(stripos($item, 'Binaan') !== false || stripos($item, 'BK') !== false){
+                        $cl = preg_replace('/Binaan\s*(Kelas)?\s*/i', 'Pembina Kelas ', $item);
+                        $clean_tags['binaan_'.md5($cl)] = trim($cl);
+                        continue;
+                    }
+
+                    $clean_tags[md5($item)] = $item;
                 }
 
                 $kokurikuler_classes = array_values(array_unique($kokurikuler_classes));
@@ -607,11 +628,10 @@ class Website extends CI_Controller {
                         if($wA !== $wB) return $wA <=> $wB;
                         return strnatcasecmp($a, $b);
                     });
-                    $tag_koku = 'Koordinator Kokurikuler (' . implode(', ', $kokurikuler_classes) . ')';
-                    $tags[] = $tag_koku;
+                    $clean_tags['kokurikuler'] = 'Koordinator Kokurikuler (' . implode(', ', $kokurikuler_classes) . ')';
                 }
 
-                $unique_tags = array_values(array_unique($tags));
+                $unique_tags = array_values($clean_tags);
 
                 if(!empty($unique_tags)){
                     $min_weight = 999;

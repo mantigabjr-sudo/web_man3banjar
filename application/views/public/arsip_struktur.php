@@ -1,14 +1,30 @@
 <?php $this->load->view('public/partials/archive_header'); ?>
 
-<header class="web-archive-hero">
-    <div class="container">
-        <div class="detail-breadcrumb">
-            <a href="<?= base_url() ?>"><i class="bi bi-house-door"></i> Beranda</a>
-            <span>/</span>
-            <strong>Struktur Organisasi</strong>
+<?php
+if (!function_exists('get_initials_struktur')) {
+    function get_initials_struktur($name) {
+        $clean = preg_replace('/\b(S\.Pd|S\.Pd\.I|M\.Pd|M\.H|Lc|S\.Si|Drs\.|Dra\.|S\.Ag|H\.|Hj\.|S\.Kom|M\.M|S\.Sos|S\.H)\b/i', '', (string)$name);
+        $words = array_values(array_filter(explode(' ', trim($clean))));
+        $in = '';
+        if(count($words) >= 2) {
+            $in = mb_substr($words[0], 0, 1) . mb_substr($words[1], 0, 1);
+        } elseif(count($words) == 1) {
+            $in = mb_substr($words[0], 0, 2);
+        }
+        return !empty($in) ? strtoupper($in) : 'PTK';
+    }
+}
+?>
+
+<header class="web-archive-hero text-center" style="background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.35), transparent 50%), radial-gradient(circle at bottom left, rgba(2, 44, 34, 0.5), transparent 50%), linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%) !important; color: #ffffff !important; padding: 55px 0 50px 0 !important;">
+    <div class="container d-flex flex-column align-items-center text-center">
+        <div class="detail-breadcrumb d-flex justify-content-center align-items-center mb-3">
+            <a href="<?= base_url() ?>" style="color: #a7f3d0 !important; text-decoration: none; font-weight: 600;"><i class="bi bi-house-door"></i> Beranda</a>
+            <span style="color: rgba(255,255,255,0.4); margin: 0 6px;">/</span>
+            <strong style="color: #ffffff; font-weight: 700;">Struktur Organisasi</strong>
         </div>
-        <h1><?= htmlspecialchars($kategori_nama, ENT_QUOTES, 'UTF-8') ?></h1>
-        <p>Bagan Struktur Organisasi <?= htmlspecialchars($kategori_nama, ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($nama_madrasah ?? 'MAN 3 Banjar', ENT_QUOTES, 'UTF-8') ?></p>
+        <h1 style="color: #ffffff !important; font-weight: 900; font-size: clamp(1.8rem, 3.5vw, 2.4rem); letter-spacing: -0.02em; margin-bottom: 8px; text-shadow: 0 2px 10px rgba(0,0,0,0.15);"><?= htmlspecialchars($kategori_nama, ENT_QUOTES, 'UTF-8') ?></h1>
+        <p style="color: #ecfdf5 !important; font-size: 14.5px; line-height: 1.6; margin: 0 auto; max-width: 680px; font-weight: 500;">Bagan Struktur Organisasi <?= htmlspecialchars($kategori_nama, ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($nama_madrasah ?? 'MAN 3 Banjar', ENT_QUOTES, 'UTF-8') ?></p>
     </div>
 </header>
 
@@ -198,7 +214,9 @@
                                                 <?php if ($img_src): ?>
                                                     <img src="<?= $img_src ?>" alt="<?= htmlspecialchars($tk->nama_lengkap, ENT_QUOTES, 'UTF-8') ?>">
                                                 <?php else: ?>
-                                                    <div class="avatar-fallback"><i class="bi bi-person"></i></div>
+                                                    <div class="avatar-initials-gradient">
+                                                        <span><?= get_initials_struktur($tk->nama_lengkap) ?></span>
+                                                    </div>
                                                 <?php endif; ?>
                                             </div>
                                             <div class="member-card-body">
@@ -426,7 +444,9 @@
                                                 <?php if ($img_src): ?>
                                                     <img src="<?= $img_src ?>" alt="<?= htmlspecialchars($p->nama_lengkap, ENT_QUOTES, 'UTF-8') ?>">
                                                 <?php else: ?>
-                                                    <div class="avatar-fallback"><i class="bi bi-person"></i></div>
+                                                    <div class="avatar-initials-gradient">
+                                                        <span><?= get_initials_struktur($wk->nama_lengkap ?? $g->nama_lengkap ?? $p->nama_lengkap ?? 'PTK') ?></span>
+                                                    </div>
                                                 <?php endif; ?>
                                             </div>
                                             <div class="member-card-body">
@@ -900,37 +920,52 @@
 }
 
 .member-glass-card {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(10px);
-    border: 1.5px solid rgba(255, 255, 255, 0.16);
-    border-radius: 18px;
-    padding: 10px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 20px;
+    padding: 12px 10px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
-    width: 155px;
+    width: 172px;
     text-align: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
 }
 .member-glass-card:hover {
-    transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.14);
-    border-color: rgba(255, 255, 255, 0.35);
-    box-shadow: 0 12px 28px rgba(16, 185, 129, 0.22);
+    transform: translateY(-6px);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 100%);
+    border-color: rgba(255, 255, 255, 0.45);
+    box-shadow: 0 16px 36px rgba(16, 185, 129, 0.3);
 }
 
 .member-card-img-wrap {
-    height: 160px;
-    border-radius: 12px;
+    height: 155px;
+    border-radius: 14px;
     overflow: hidden;
     position: relative;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 .member-card-img-wrap img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.avatar-initials-gradient {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at top left, #34d399 0%, #059669 50%, #064e3b 100%);
+    color: #ffffff;
+    font-weight: 900;
+    font-size: 32px;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.35);
 }
 
 .avatar-fallback {
@@ -952,36 +987,39 @@
 }
 
 .member-name {
-    font-weight: 700;
+    font-weight: 800;
     color: #ffffff;
-    font-size: 11.5px;
-    line-height: 1.3;
-    margin-bottom: 3px;
-    height: 30px;
+    font-size: 12px;
+    line-height: 1.35;
+    margin-bottom: 4px;
+    min-height: 32px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }
 
 .member-nip {
-    font-size: 9px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: 9.5px;
+    color: #a7f3d0;
     font-family: monospace;
+    font-weight: 600;
 }
 
 /* Tugas Khusus Badges */
 .custom-tugas-badge {
     display: inline-block;
-    padding: 3px 7px;
+    padding: 3px 8px;
     border-radius: 6px;
-    font-size: 8.5px;
+    font-size: 9px;
     font-weight: 750;
-    line-height: 1.2;
-    margin-bottom: 3px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    line-height: 1.25;
+    margin-bottom: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     white-space: normal;
     text-align: center;
+}
 }
 .tag-emerald { background: #059669; color: #ffffff; border: 1px solid #10b981; }
 .tag-blue { background: #2563eb; color: #ffffff; border: 1px solid #3b82f6; }
