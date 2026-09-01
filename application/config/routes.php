@@ -15,9 +15,12 @@ $route['ppdb/(:any)'] = 'ppdb/$1';
 $route['admin_pmb'] = 'admin_ppdb';
 $route['admin_pmb/(:any)'] = 'admin_ppdb/$1';
 
-// Live Monitoring KBM
-$route['monitoring_kbm'] = 'website/monitoring_kbm';
-$route['jadwal_live'] = 'website/monitoring_kbm';
+// Live Monitoring KBM & Data Siswa
+$route['monitoring_kbm']        = 'website/monitoring_kbm';
+$route['jadwal_live']           = 'website/monitoring_kbm';
+$route['data_siswa']            = 'website/data_siswa';
+$route['website/data_siswa']    = 'website/data_siswa';
+$route['keadaan_siswa']         = 'website/data_siswa';
 
 // REST API Sync ke LabSys Server Lokal (Two-Way Sync)
 $route['api/sync/status']       = 'api_sync/status';
@@ -25,6 +28,7 @@ $route['api/sync/berita']       = 'api_sync/sync_berita';
 $route['api/sync/website']      = 'api_sync/sync_website';
 $route['api/sync/ptk']          = 'api_sync/sync_ptk';
 $route['api/sync/kbm']          = 'api_sync/sync_kbm';
+$route['api/sync/siswa']        = 'api_sync/sync_siswa';
 $route['api/sync/pull_website'] = 'api_sync/pull_website';
 $route['api/sync/pull_berita']  = 'api_sync/pull_berita';
 

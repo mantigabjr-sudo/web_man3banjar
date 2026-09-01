@@ -33,6 +33,7 @@ class Api_sync extends CI_Controller {
         $total_ppdb = $this->db->table_exists('ppdb') ? $this->db->count_all_results('ppdb') : 0;
         $total_banner = $this->db->table_exists('website_banner') ? $this->db->count_all_results('website_banner') : 0;
         $total_galeri = $this->db->table_exists('website_galeri') ? $this->db->count_all_results('website_galeri') : 0;
+        $total_siswa = $this->db->table_exists('siswa') ? $this->db->count_all_results('siswa') : 0;
 
         echo json_encode([
             'status' => 'success',
@@ -43,7 +44,8 @@ class Api_sync extends CI_Controller {
                 'jadwal_mengajar' => $total_jadwal,
                 'ppdb' => $total_ppdb,
                 'banner' => $total_banner,
-                'galeri' => $total_galeri
+                'galeri' => $total_galeri,
+                'siswa' => $total_siswa
             ]
         ]);
     }
@@ -178,6 +180,94 @@ class Api_sync extends CI_Controller {
         echo json_encode([
             'status' => 'success',
             'message' => 'Berhasil menyinkronkan seluruh jadwal KBM, kelas, dan mapel ke website online.',
+            'stats' => $stats
+        ]);
+    }
+
+    public function sync_siswa(){
+        $this->validate_key();
+        $payload = json_decode($this->input->raw_input_stream, true);
+
+        if(empty($payload)){
+            echo json_encode(['status' => 'error', 'message' => 'Payload data siswa kosong']);
+            return;
+        }
+
+        // 1. Pastikan tabel siswa ada
+        if(!$this->db->table_exists('siswa')){
+            $this->db->query("
+                CREATE TABLE IF NOT EXISTS `siswa` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `nama_lengkap` varchar(150) DEFAULT NULL,
+                  `nisn` varchar(20) DEFAULT NULL,
+                  `nis` varchar(30) DEFAULT NULL,
+                  `nik` varchar(30) DEFAULT NULL,
+                  `jk` enum('L','P') DEFAULT 'L',
+                  `tempat_lahir` varchar(100) DEFAULT NULL,
+                  `tanggal_lahir` date DEFAULT NULL,
+                  `agama` varchar(30) DEFAULT 'Islam',
+                  `status_aktif` varchar(30) DEFAULT 'Aktif',
+                  `created_at` timestamp NULL DEFAULT current_timestamp(),
+                  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+                  PRIMARY KEY (`id`),
+                  KEY `idx_siswa_nisn` (`nisn`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            ");
+        }
+
+        // 2. Pastikan tabel siswa_kelas ada
+        if(!$this->db->table_exists('siswa_kelas')){
+            $this->db->query("
+                CREATE TABLE IF NOT EXISTS `siswa_kelas` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `siswa_id` int(11) NOT NULL,
+                  `kelas_id` int(11) NOT NULL,
+                  `tahun_ajaran` varchar(20) DEFAULT '2026/2027',
+                  `status` varchar(30) DEFAULT 'Aktif',
+                  `created_at` timestamp NULL DEFAULT current_timestamp(),
+                  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+                  PRIMARY KEY (`id`),
+                  KEY `idx_sk_siswa` (`siswa_id`),
+                  KEY `idx_sk_kelas` (`kelas_id`),
+                  KEY `idx_sk_ta` (`tahun_ajaran`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            ");
+        }
+
+        // 3. Pastikan tabel kelas ada
+        if(!$this->db->table_exists('kelas')){
+            $this->db->query("
+                CREATE TABLE IF NOT EXISTS `kelas` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `nama_kelas` varchar(50) NOT NULL,
+                  `tingkat` varchar(10) NOT NULL,
+                  `jurusan` varchar(50) DEFAULT NULL,
+                  `tahun_ajaran` varchar(20) DEFAULT '2026/2027',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            ");
+        }
+
+        $tables = ['kelas', 'siswa', 'siswa_kelas'];
+        $stats = [];
+
+        foreach($tables as $tbl){
+            if(isset($payload[$tbl]) && $this->db->table_exists($tbl)){
+                $this->db->empty_table($tbl);
+                $rows = $payload[$tbl];
+                if(!empty($rows)){
+                    $chunks = array_chunk($rows, 100);
+                    foreach($chunks as $chunk){
+                        $this->db->insert_batch($tbl, $chunk);
+                    }
+                }
+                $stats[$tbl] = count($rows);
+            }
+        }
+
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Berhasil menyinkronkan seluruh data keadaan siswa, kelas, dan rombel ke website online.',
             'stats' => $stats
         ]);
     }
