@@ -1076,8 +1076,16 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
 							<span class="sub-dot"></span>
 							Kelola CCTV &amp; Kamera
 						</a>
-
 					</div>
+                <?php endif; ?>
+
+                <?php if(is_admin_panel() && !in_array($role, ['admin_pmb', 'admin_ppdb'])): ?>
+                    <div class="menu-section">Integrasi</div>
+                    <a href="<?= base_url('admin_cloud_sync') ?>"
+                       class="menu-link <?= is_active_menu('admin_cloud_sync',$current) ?>">
+                        <span class="menu-ico">☁️</span>
+                        <span>Sinkronisasi Cloud</span>
+                    </a>
                 <?php endif; ?>
 
             <?php endif; ?>
