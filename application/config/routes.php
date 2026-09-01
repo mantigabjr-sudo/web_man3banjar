@@ -5,11 +5,15 @@ $route['default_controller'] = 'home';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-// PMB (Penerimaan Murid Baru) & PPDB
+// PMB (Penerimaan Murid Baru) & PPDB Public
 $route['pmb'] = 'ppdb';
 $route['pmb/(:any)'] = 'ppdb/$1';
 $route['ppdb'] = 'ppdb';
 $route['ppdb/(:any)'] = 'ppdb/$1';
+
+// Admin PMB & PPDB
+$route['admin_pmb'] = 'admin_ppdb';
+$route['admin_pmb/(:any)'] = 'admin_ppdb/$1';
 
 // REST API Sync ke LabSys Server Lokal
 $route['api/ppdb/sync'] = 'api_ppdb/sync_pendaftar';

@@ -767,7 +767,7 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
 
 
                 <?php if($canPPDB): ?>
-                    <div class="menu-section">PPDB</div>
+                    <div class="menu-section">PMB</div>
 
                     <button class="menu-toggle <?= is_toggle_active(['admin_ppdb'], $current) ?>"
                             type="button"
@@ -775,8 +775,8 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
                             data-bs-target="#menuPPDB"
                             aria-expanded="<?= is_open_menu(['admin_ppdb'], $current) ? 'true' : 'false' ?>">
                         <span class="menu-toggle-main">
-                            <span class="menu-ico">PD</span>
-                            <span>Kelola PPDB</span>
+                            <span class="menu-ico">PM</span>
+                            <span>Kelola PMB</span>
                         </span>
                         <span class="chev">⌄</span>
                     </button>
@@ -785,7 +785,7 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
                         <a class="<?= is_active_menu('admin_ppdb/dashboard',$current) ?>"
                            href="<?= base_url('admin_ppdb/dashboard') ?>">
                             <span class="sub-dot"></span>
-                            Dashboard PPDB
+                            Dashboard PMB
                         </a>
 
                         <a class="<?= ($current == 'admin_ppdb') ? 'active-menu' : '' ?>"
@@ -827,7 +827,7 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
                         <a class="<?= is_active_menu('admin_ppdb/settings',$current) ?>"
                            href="<?= base_url('admin_ppdb/settings') ?>">
                             <span class="sub-dot"></span>
-                            Pengaturan PPDB
+                            Pengaturan PMB
                         </a>
                     </div>
                 <?php endif; ?>
