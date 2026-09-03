@@ -118,15 +118,37 @@ $status_filter = isset($status_filter) ? $status_filter : 'Menunggu Verifikasi B
                                         <strong><?= mon_e($p->nama_lengkap ?? '-') ?></strong>
                                         <small>NISN: <?= mon_e($p->nisn ?? '-') ?></small>
                                         <small>No: <?= mon_e($p->no_pendaftaran ?? '-') ?></small>
+                                        <?php if(!empty($p->no_peserta_tes)): ?>
+                                            <small class="text-success fw-bold"><i class="bi bi-person-badge"></i> No Tes: <?= mon_e($p->no_peserta_tes) ?></small>
+                                        <?php endif; ?>
                                     </div>
                                     <span class="badge bg-secondary mb-2"><?= mon_e($p->status) ?></span>
                                     
                                     <div class="d-flex flex-column gap-1 mt-2">
-                                        <a href="<?= base_url('admin_ppdb/detail/'.$p->id) ?>" class="btn-action-mon btn-mon-detail">Lihat Biodata</a>
-                                        <?php if($p->status != 'Diterima' && $p->status != 'Ditolak'): ?>
-                                            <a href="<?= base_url('admin_ppdb/terima/'.$p->id) ?>" class="btn-action-mon btn-mon-terima" onclick="return confirm('Terima peserta ini?')">Terima</a>
-                                            <a href="<?= base_url('admin_ppdb/perbaikan/'.$p->id) ?>" class="btn-action-mon btn-mon-revisi" onclick="return confirm('Tandai perlu perbaikan?')">Revisi</a>
+                                        <!-- Tombol Modal Verifikasi Cepat & Jadwal Tes -->
+                                        <button type="button" class="btn btn-sm btn-success fw-bold py-1 px-2" style="border-radius: 8px; font-size: 11px;" 
+                                                onclick="bukaModalVerifikasi(<?= htmlspecialchars(json_encode($p), ENT_QUOTES, 'UTF-8') ?>)">
+                                            <i class="bi bi-shield-check"></i> Verifikasi &amp; Jadwal Tes
+                                        </button>
+
+                                        <!-- Tombol Cetak Kartu Peserta -->
+                                        <a href="<?= base_url('ppdb/cetak_kartu/'.$p->id) ?>" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2 fw-bold" style="border-radius: 8px; font-size: 11px;">
+                                            <i class="bi bi-printer"></i> Cetak Kartu
+                                        </a>
+
+                                        <!-- Tombol Kirim WhatsApp -->
+                                        <?php 
+                                        $clean_hp = preg_replace('/[^0-9]/', '', $p->no_hp ?? '');
+                                        if(substr($clean_hp, 0, 1) === '0') $clean_hp = '62' . substr($clean_hp, 1);
+                                        ?>
+                                        <?php if(!empty($clean_hp)): ?>
+                                            <button type="button" class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" style="border-radius: 8px; font-size: 11px;"
+                                                    onclick="kirimWaNotifikasi('<?= $clean_hp ?>', '<?= addslashes($p->nama_lengkap) ?>', '<?= $p->no_pendaftaran ?>', '<?= $p->no_peserta_tes ?? '' ?>', '<?= $p->tanggal_tes ?? '' ?>', '<?= $p->ruang_tes ?? '' ?>', '<?= $p->status ?>')">
+                                                <i class="bi bi-whatsapp"></i> Kirim WA
+                                            </button>
                                         <?php endif; ?>
+
+                                        <a href="<?= base_url('admin_ppdb/detail/'.$p->id) ?>" class="btn-action-mon btn-mon-detail text-center mt-1">Detail Biodata</a>
                                     </div>
                                 </td>
 
@@ -200,6 +222,69 @@ $status_filter = isset($status_filter) ? $status_filter : 'Menunggu Verifikasi B
 
 </div>
 
+<!-- Modal Verifikasi & Penetapan Jadwal Tes -->
+<div class="modal fade" id="modalVerifikasiPpdb" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <form method="post" action="<?= base_url('admin_ppdb/proses_verifikasi') ?>">
+                <input type="hidden" name="id" id="mv_id">
+                <input type="hidden" name="redirect_to" value="admin_ppdb/monitoring_berkas">
+
+                <div class="modal-header border-bottom py-3 bg-light" style="border-radius: 16px 16px 0 0;">
+                    <div>
+                        <h6 class="modal-title fw-bold text-success mb-0"><i class="bi bi-shield-check me-1"></i> Verifikasi Berkas &amp; Jadwal Tes</h6>
+                        <small class="text-muted" id="mv_nama_preview">Nama Peserta</small>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-secondary">Status Verifikasi</label>
+                        <select name="status" id="mv_status" class="form-select fw-bold" required onchange="toggleJadwalTes(this.value)">
+                            <option value="Lulus Verifikasi" class="text-success fw-bold">✓ Lulus Verifikasi (Menuju Tes Seleksi)</option>
+                            <option value="Perlu Perbaikan" class="text-warning fw-bold">⚠️ Perlu Perbaikan Berkas</option>
+                            <option value="Menunggu Verifikasi Berkas">⏳ Menunggu Verifikasi</option>
+                            <option value="Diterima" class="text-success fw-bold">★ Diterima (Lulus Final)</option>
+                            <option value="Ditolak" class="text-danger fw-bold">✗ Ditolak</option>
+                        </select>
+                    </div>
+
+                    <div id="boxJadwalTes" class="p-3 border rounded-3 bg-light mb-3">
+                        <div class="fw-bold text-dark small mb-2"><i class="bi bi-calendar-check text-success me-1"></i> Jadwal Ujian (Otomatis Diterbitkan ke Kartu)</div>
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <label class="form-label small mb-1 text-secondary">Tanggal Tes Seleksi</label>
+                                <input type="date" name="tanggal_tes" id="mv_tanggal_tes" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small mb-1 text-secondary">Waktu / Jam</label>
+                                <input type="text" name="jam_tes" id="mv_jam_tes" class="form-control form-control-sm" placeholder="08:00 - 11.30 WITA">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small mb-1 text-secondary">Ruang / Lokasi</label>
+                                <input type="text" name="ruang_tes" id="mv_ruang_tes" class="form-control form-control-sm" placeholder="Kampus MAN 3 Banjar">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label fw-bold small text-secondary">Catatan Verifikator (Opsional)</label>
+                        <textarea name="catatan_verifikasi" id="mv_catatan" class="form-control" rows="2" placeholder="Tuliskan catatan jika ada berkas yang kurang jelas atau instruksi khusus..."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-top py-2 bg-light justify-content-between" style="border-radius: 0 0 16px 16px;">
+                    <button type="button" class="btn btn-sm btn-light fw-bold" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-sm btn-success fw-bold px-3">
+                        <i class="bi bi-check-circle-fill me-1"></i> Simpan &amp; Terbitkan No Tes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Custom Alert Modal -->
 <div class="modal fade" id="customAlertModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -218,6 +303,77 @@ $status_filter = isset($status_filter) ? $status_filter : 'Menunggu Verifikasi B
 </div>
 
 <script>
+function bukaModalVerifikasi(data) {
+    document.getElementById('mv_id').value = data.id;
+    document.getElementById('mv_nama_preview').innerText = (data.nama_lengkap || '-') + ' (' + (data.no_pendaftaran || '-') + ')';
+    
+    // Set status
+    const statusSelect = document.getElementById('mv_status');
+    if (data.status === 'Lulus Verifikasi' || data.status === 'Menuju Tes') {
+        statusSelect.value = 'Lulus Verifikasi';
+    } else if (data.status === 'Perlu Perbaikan') {
+        statusSelect.value = 'Perlu Perbaikan';
+    } else if (data.status === 'Diterima') {
+        statusSelect.value = 'Diterima';
+    } else if (data.status === 'Ditolak') {
+        statusSelect.value = 'Ditolak';
+    } else {
+        statusSelect.value = 'Lulus Verifikasi'; // default rekomendasikan lulus verifikasi jika membuka modal
+    }
+
+    document.getElementById('mv_tanggal_tes').value = data.tanggal_tes || '';
+    document.getElementById('mv_jam_tes').value = data.jam_tes || '08:00 - 11.30 WITA';
+    document.getElementById('mv_ruang_tes').value = data.ruang_tes || 'Kampus MAN 3 Banjar';
+    document.getElementById('mv_catatan').value = data.catatan_verifikasi || '';
+
+    toggleJadwalTes(statusSelect.value);
+
+    const modal = new bootstrap.Modal(document.getElementById('modalVerifikasiPpdb'));
+    modal.show();
+}
+
+function toggleJadwalTes(status) {
+    const box = document.getElementById('boxJadwalTes');
+    if (status === 'Lulus Verifikasi' || status === 'Menuju Tes' || status === 'Diterima') {
+        box.style.display = 'block';
+    } else {
+        box.style.display = 'none';
+    }
+}
+
+function kirimWaNotifikasi(noHp, nama, noDaftar, noTes, tglTes, ruangTes, status) {
+    const baseUrl = '<?= base_url() ?>';
+    let tglText = tglTes ? tglTes : 'Sesuai Pengumuman Panitia';
+    let ruangText = ruangTes ? ruangTes : 'Kampus MAN 3 Banjar';
+    let tesInfo = noTes ? noTes : 'Diterbitkan saat kartu dicetak';
+
+    let pesan = `*PEMBERITAHUAN VERIFIKASI PMB MAN 3 BANJAR*\n\n` +
+        `Assalamu'alaikum Wr. Wb.\n` +
+        `Yth. Orang Tua / Calon Siswa,\n` +
+        `*Nama:* ${nama}\n` +
+        `*No. Pendaftaran:* ${noDaftar}\n\n`;
+
+    if (status === 'Perlu Perbaikan') {
+        pesan += `Mohon maaf, berkas pendaftaran Anda memerlukan *PERBAIKAN*. Silakan login ke akun pendaftaran Anda untuk memeriksa dan mengunggah kembali dokumen yang diminta:\n` +
+            `${baseUrl}ppdb/login\n\n`;
+    } else {
+        pesan += `Alhamdulillah, berkas pendaftaran Anda telah *DIVERIFIKASI* dan dinyatakan *LULUS VERIFIKASI (MENUJU TES SELEKSI)*.\n\n` +
+            `*JADWAL & LOKASI TES:*\n` +
+            `• No. Peserta Ujian: *${tesInfo}*\n` +
+            `• Tanggal Ujian: *${tglText}*\n` +
+            `• Waktu: *08.00 - Selesai WITA*\n` +
+            `• Lokasi/Ruang: *${ruangText}*\n\n` +
+            `Silakan unduh dan cetak *KARTU PESERTA UJIAN* Anda melalui tautan resmi berikut:\n` +
+            `${baseUrl}ppdb/cetak_kartu/${noDaftar}\n\n` +
+            `Harap hadir 15 menit sebelum tes dimulai dengan membawa Kartu Peserta Ujian fisik dan seragam sekolah asal.\n\n`;
+    }
+
+    pesan += `Terima kasih.\n*Panitia PMB MAN 3 Banjar*`;
+
+    const waUrl = `https://api.whatsapp.com/send?phone=${noHp}&text=${encodeURIComponent(pesan)}`;
+    window.open(waUrl, '_blank');
+}
+
 function showCustomAlert(title, message, isConfirm, onConfirm) {
     document.getElementById('customAlertTitle').innerText = title;
     document.getElementById('customAlertMessage').innerHTML = message;

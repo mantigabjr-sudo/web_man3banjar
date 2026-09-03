@@ -142,6 +142,96 @@ class Admin_ppdb extends CI_Controller {
         $this->load->view('admin_ppdb/monitoring_berkas', $data);
 	}
 	//fungsi
+	// Proses Verifikasi Berkas & Penerbitan Nomor Peserta Tes
+    public function proses_verifikasi(){
+        $id = $this->input->post('id');
+        $status_tujuan = $this->input->post('status') ? $this->input->post('status') : 'Menunggu Verifikasi Berkas';
+        $tanggal_tes = $this->input->post('tanggal_tes');
+        $jam_tes = $this->input->post('jam_tes');
+        $ruang_tes = $this->input->post('ruang_tes');
+        $catatan = trim($this->input->post('catatan_verifikasi') ?? '');
+
+        $peserta = $this->db->where('id', $id)->get('ppdb')->row();
+        if(!$peserta){
+            $this->session->set_flashdata('error', 'Data peserta tidak ditemukan.');
+            redirect('admin_ppdb/monitoring_berkas');
+            return;
+        }
+
+        $setting = $this->db->get('settings')->row();
+        $tahun_short = date('y'); // e.g. 26
+
+        $update_data = [
+            'status' => $status_tujuan,
+            'catatan_verifikasi' => $catatan
+        ];
+
+        // Jika Lulus Verifikasi / Menuju Tes / Diterima
+        if(in_array($status_tujuan, ['Lulus Verifikasi', 'Menuju Tes', 'Menunggu Verifikasi Berkas', 'Diterima'])){
+            // Gunakan jadwal dari form atau fallback ke default settings
+            $update_data['tanggal_tes'] = !empty($tanggal_tes) ? $tanggal_tes : ($setting->default_tanggal_tes ?? NULL);
+            $update_data['jam_tes']     = !empty($jam_tes) ? $jam_tes : ($setting->default_jam_tes ?? '08:00 - 11.30 WITA');
+            $update_data['ruang_tes']   = !empty($ruang_tes) ? $ruang_tes : ($setting->default_ruang_tes ?? 'Kampus MAN 3 Banjar');
+
+            // Generate No Peserta Tes jika belum ada dan statusnya Lulus Verifikasi / Menuju Tes / Diterima
+            if(in_array($status_tujuan, ['Lulus Verifikasi', 'Menuju Tes', 'Diterima']) && empty($peserta->no_peserta_tes)){
+                $prefix = 'TES' . $tahun_short . '-';
+                
+                // Cari nomor urut tes terakhir
+                $last_tes = $this->db
+                    ->like('no_peserta_tes', $prefix, 'after')
+                    ->order_by('id', 'DESC')
+                    ->get('ppdb')
+                    ->row();
+
+                $urut = 1;
+                if($last_tes && !empty($last_tes->no_peserta_tes)){
+                    $parts = explode('-', $last_tes->no_peserta_tes);
+                    if(isset($parts[1]) && is_numeric($parts[1])){
+                        $urut = (int)$parts[1] + 1;
+                    }
+                } else {
+                    // Alternatif hitung jumlah yang sudah punya no tes
+                    $count_tes = $this->db->where('no_peserta_tes IS NOT NULL', null, false)->count_all_results('ppdb');
+                    $urut = $count_tes + 1;
+                }
+
+                $no_peserta_tes = $prefix . str_pad($urut, 4, '0', STR_PAD_LEFT);
+                $update_data['no_peserta_tes'] = $no_peserta_tes;
+            }
+        } elseif($status_tujuan == 'Perlu Perbaikan') {
+            $update_data['status'] = 'Perlu Perbaikan';
+        } elseif($status_tujuan == 'Ditolak') {
+            $update_data['status'] = 'Ditolak';
+            $update_data['rejected_at'] = date('Y-m-d H:i:s');
+        }
+
+        $this->db->where('id', $id)->update('ppdb', $update_data);
+
+        $peserta_updated = $this->db->where('id', $id)->get('ppdb')->row();
+
+        // Notifikasi Sukses
+        $msg = "Berkas pendaftar <strong>" . htmlspecialchars($peserta->nama_lengkap) . "</strong> berhasil diperbarui ke status: <strong>" . $status_tujuan . "</strong>.";
+        if(!empty($peserta_updated->no_peserta_tes)){
+            $msg .= " Nomor Peserta Tes: <span class='badge bg-success'>" . $peserta_updated->no_peserta_tes . "</span>.";
+        }
+
+        $this->session->set_flashdata('success', $msg);
+
+        // Jika request via AJAX
+        if($this->input->is_ajax_request()){
+            echo json_encode([
+                'status' => 'success',
+                'message' => $msg,
+                'data' => $peserta_updated
+            ]);
+            return;
+        }
+
+        $redirect_to = $this->input->post('redirect_to') ? $this->input->post('redirect_to') : 'admin_ppdb/monitoring_berkas';
+        redirect($redirect_to);
+    }
+
     public function terima($id){
 
     $this->db->where('id',$id);
@@ -653,7 +743,11 @@ class Admin_ppdb extends CI_Controller {
 			'pengumuman_ppdb' => $this->input->post('pengumuman_ppdb'),
 			'nama_ppdb' => $this->input->post('nama_ppdb') ? $this->input->post('nama_ppdb') : 'PMB',
 			'judul_panjang_ppdb' => $this->input->post('judul_panjang_ppdb') ? $this->input->post('judul_panjang_ppdb') : 'Penerimaan Murid Baru',
-			'persyaratan_ppdb' => $this->input->post('persyaratan_ppdb')
+			'persyaratan_ppdb' => $this->input->post('persyaratan_ppdb'),
+			'default_tanggal_tes' => $this->input->post('default_tanggal_tes') ? $this->input->post('default_tanggal_tes') : NULL,
+			'default_jam_tes' => $this->input->post('default_jam_tes') ? $this->input->post('default_jam_tes') : '08:00 - 11.30 WITA',
+			'default_ruang_tes' => $this->input->post('default_ruang_tes') ? $this->input->post('default_ruang_tes') : 'Kampus MAN 3 Banjar',
+			'materi_tes_info' => $this->input->post('materi_tes_info')
 		];
 
         // Handle pamphlet upload

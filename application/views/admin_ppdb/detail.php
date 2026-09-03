@@ -160,6 +160,10 @@ if(!empty($p->verifikasi_berkas_json)){
                     Upload Berkas
                 </a>
 
+                <a href="<?= base_url('ppdb/cetak_kartu/'.$p->id) ?>" target="_blank" class="admin-action-btn action-green">
+                    Cetak Kartu Peserta
+                </a>
+
                 <a href="<?= base_url('admin_ppdb/pdf/'.$p->id) ?>" class="admin-action-btn action-white">
                     Download PDF
                 </a>
@@ -245,6 +249,34 @@ if(!empty($p->verifikasi_berkas_json)){
                             <div class="admin-info-item">
                                 <small>Nama Ayah / Wali Awal</small>
                                 <strong><?= admin_ppdb_value($p->nama_ortu ?? '') ?></strong>
+                            </div>
+
+                            <div class="admin-info-item">
+                                <small>Jalur Pendaftaran</small>
+                                <strong class="text-success"><?= admin_ppdb_value($p->jalur_pendaftaran ?? 'Reguler') ?></strong>
+                            </div>
+
+                            <div class="admin-info-item">
+                                <small>Peminatan (Jurusan) Pilihan</small>
+                                <strong>1. <?= admin_ppdb_value($p->pilihan_jurusan_1 ?? 'MIPA') ?> | 2. <?= admin_ppdb_value($p->pilihan_jurusan_2 ?? 'IPS') ?></strong>
+                            </div>
+
+                            <div class="admin-info-item">
+                                <small>Nomor Peserta Tes</small>
+                                <strong><?= !empty($p->no_peserta_tes) ? '<span class="badge bg-success fs-6">'.$p->no_peserta_tes.'</span>' : '<span class="text-muted">Belum terbit</span>' ?></strong>
+                            </div>
+
+                            <div class="admin-info-item">
+                                <small>Jadwal &amp; Ruang Tes</small>
+                                <strong>
+                                    <?= !empty($p->tanggal_tes) ? admin_ppdb_tanggal($p->tanggal_tes) : 'Sesuai Pengumuman' ?> 
+                                    (<?= admin_ppdb_value($p->jam_tes ?? '08:00 WITA') ?>) - <?= admin_ppdb_value($p->ruang_tes ?? 'Kampus MAN 3 Banjar') ?>
+                                </strong>
+                            </div>
+
+                            <div class="admin-info-item full">
+                                <small>Catatan Verifikasi Panitia</small>
+                                <strong><?= admin_ppdb_value($p->catatan_verifikasi ?? '-') ?></strong>
                             </div>
 
                             <div class="admin-info-item">

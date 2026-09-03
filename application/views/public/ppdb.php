@@ -1521,7 +1521,7 @@ a { text-decoration: none; color: inherit; }
 
                     <!-- STEP 2 -->
                     <div class="wizard-step" id="step2">
-                        <h6 class="fw-bold mb-3" style="color: #059669;"><i class="bi bi-calendar-event me-1"></i> Langkah 2: Kelahiran & Asal Sekolah</h6>
+                        <h6 class="fw-bold mb-3" style="color: #059669;"><i class="bi bi-calendar-event me-1"></i> Langkah 2: Sekolah Asal, Jalur &amp; Peminatan</h6>
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="ppdb-form-label">Tempat Lahir</label>
@@ -1531,9 +1531,34 @@ a { text-decoration: none; color: inherit; }
                                 <label class="ppdb-form-label">Tanggal Lahir</label>
                                 <input type="date" id="w_tanggal" name="tanggal_lahir" class="form-control ppdb-input" required>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <label class="ppdb-form-label">Asal Sekolah (SMP / MTs)</label>
                                 <input type="text" id="w_sekolah" name="asal_sekolah" class="form-control ppdb-input" placeholder="Contoh: MTsN 1 Banjar / SMPN 2 Martapura" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="ppdb-form-label">Jalur Pendaftaran</label>
+                                <select id="w_jalur" name="jalur_pendaftaran" class="form-select ppdb-select" required>
+                                    <option value="Reguler">Jalur Reguler / Umum</option>
+                                    <option value="Prestasi">Jalur Prestasi (Akademik / Non-Akademik)</option>
+                                    <option value="Tahfidz">Jalur Tahfidz Al-Qur'an</option>
+                                    <option value="Afirmasi">Jalur Afirmasi (KIP / PKH / KKS)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="ppdb-form-label">Peminatan / Jurusan Pilihan 1</label>
+                                <select id="w_jurusan1" name="pilihan_jurusan_1" class="form-select ppdb-select" required>
+                                    <option value="MIPA">MIPA (Matematika &amp; Ilmu Alam)</option>
+                                    <option value="IPS">IPS (Ilmu Pengetahuan Sosial)</option>
+                                    <option value="Keagamaan">Ilmu-Ilmu Keagamaan (Agama)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="ppdb-form-label">Peminatan / Jurusan Pilihan 2 (Cadangan)</label>
+                                <select id="w_jurusan2" name="pilihan_jurusan_2" class="form-select ppdb-select" required>
+                                    <option value="IPS">IPS (Ilmu Pengetahuan Sosial)</option>
+                                    <option value="MIPA">MIPA (Matematika &amp; Ilmu Alam)</option>
+                                    <option value="Keagamaan">Ilmu-Ilmu Keagamaan (Agama)</option>
+                                </select>
                             </div>
                         </div>
                     </div>

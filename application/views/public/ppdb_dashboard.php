@@ -112,6 +112,10 @@ $foto_url  = !empty($siswa->foto) ? base_url('uploads/temp/ppdb/'.$siswa->foto) 
                 <span>▣</span> Detail Pendaftaran
             </a>
 
+            <a href="<?= base_url('ppdb/cetak_kartu') ?>" target="_blank" class="text-success fw-bold">
+                <span>📇</span> Cetak Kartu Peserta
+            </a>
+
             <a href="<?= base_url('ppdb/logout') ?>" class="logout">
                 <span>×</span> Logout
             </a>
@@ -261,8 +265,8 @@ $foto_url  = !empty($siswa->foto) ? base_url('uploads/temp/ppdb/'.$siswa->foto) 
             <div class="peserta-card peserta-selection-card">
                 <div class="peserta-card-head">
                     <div>
-                        <h5>Status Seleksi</h5>
-                        <small>Hasil seleksi akan tampil setelah diverifikasi.</small>
+                        <h5>Status Seleksi &amp; Ujian</h5>
+                        <small>Informasi jadwal tes dan kartu peserta.</small>
                     </div>
                 </div>
 
@@ -270,8 +274,20 @@ $foto_url  = !empty($siswa->foto) ? base_url('uploads/temp/ppdb/'.$siswa->foto) 
                     <?= ppdb_dash_value($status_seleksi) ?>
                 </div>
 
-                <div class="selection-desc">
-                    Pantau status ini secara berkala melalui dashboard peserta.
+                <?php if(!empty($siswa->no_peserta_tes) || $siswa->status == 'Lulus Verifikasi' || $siswa->status == 'Menuju Tes' || $siswa->status == 'Diterima'): ?>
+                    <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 12px; margin: 12px 0;">
+                        <div style="font-size: 11px; color: #065f46; font-weight: 700;">NOMOR PESERTA UJIAN:</div>
+                        <div style="font-size: 16px; color: #047857; font-weight: 900;"><?= htmlspecialchars($siswa->no_peserta_tes ?? $siswa->no_pendaftaran, ENT_QUOTES, 'UTF-8') ?></div>
+                        <div style="font-size: 12px; color: #334155; margin-top: 4px;">
+                            <i class="bi bi-calendar-event"></i> Jadwal: <?= !empty($siswa->tanggal_tes) ? (function_exists('tanggal_indo') ? tanggal_indo($siswa->tanggal_tes) : $siswa->tanggal_tes) : 'Sesuai Jadwal Panitia' ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <div class="selection-desc mt-2">
+                    <a href="<?= base_url('ppdb/cetak_kartu') ?>" target="_blank" class="btn btn-sm btn-success w-100 fw-bold py-2 shadow-sm" style="border-radius: 8px; background: #059669; border-color: #059669;">
+                        <i class="bi bi-printer-fill me-1"></i> Cetak Kartu Peserta Ujian
+                    </a>
                 </div>
             </div>
 

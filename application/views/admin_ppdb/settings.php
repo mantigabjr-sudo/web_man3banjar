@@ -59,6 +59,38 @@
            value="<?= $settings ? $settings->tanggal_selesai : '' ?>">
 </div>
 
+<!-- Pengaturan Jadwal Tes Seleksi / Ujian PMB -->
+<div class="col-12 mt-2">
+    <div class="p-3 border rounded-3 bg-light">
+        <h6 class="fw-bold text-success mb-3"><i class="bi bi-clock-history me-1"></i> Pengaturan Jadwal &amp; Lokasi Tes Seleksi PMB (Otomatis Dikaitkan Saat Verifikasi)</h6>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold small">Tanggal Pelaksanaan Ujian/Tes</label>
+                <input type="date" name="default_tanggal_tes" class="form-control"
+                       value="<?= isset($settings->default_tanggal_tes) ? $settings->default_tanggal_tes : '' ?>">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold small">Waktu / Jam Pelaksanaan</label>
+                <input type="text" name="default_jam_tes" class="form-control"
+                       value="<?= isset($settings->default_jam_tes) ? htmlspecialchars($settings->default_jam_tes) : '08:00 - 11.30 WITA' ?>"
+                       placeholder="Contoh: 08:00 - 11.30 WITA">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold small">Ruang / Lokasi Ujian</label>
+                <input type="text" name="default_ruang_tes" class="form-control"
+                       value="<?= isset($settings->default_ruang_tes) ? htmlspecialchars($settings->default_ruang_tes) : 'Kampus MAN 3 Banjar' ?>"
+                       placeholder="Contoh: Kampus MAN 3 Banjar / Gedung CBT">
+            </div>
+            <div class="col-md-12">
+                <label class="form-label fw-semibold small">Materi Ujian &amp; Catatan untuk Peserta (Tampil di Kartu &amp; Pesan WA)</label>
+                <input type="text" name="materi_tes_info" class="form-control"
+                       value="<?= isset($settings->materi_tes_info) ? htmlspecialchars($settings->materi_tes_info) : 'Tes Potensi Akademik, Baca Tulis Al-Qur\'an (BTQ), dan Wawancara' ?>"
+                       placeholder="Contoh: Tes Akademik, BTQ, Wawancara">
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="col-md-12">
     <label class="form-label">Pengumuman PPDB</label>
     <textarea name="pengumuman_ppdb" class="form-control" rows="5"><?= $settings ? $settings->pengumuman_ppdb : '' ?></textarea>

@@ -43,6 +43,11 @@ class Ppdb extends CI_Controller {
         if(strlen($password_plain) < 6){
             die('Password minimal 6 karakter');
         }
+
+        if(empty($this->input->post('tanggal_lahir'))){
+            $this->session->set_flashdata('error','Tanggal lahir wajib diisi');
+            redirect('ppdb');
+        }
         
         $tahun = date('Y');
 
@@ -52,21 +57,18 @@ class Ppdb extends CI_Controller {
             ->row();
 
         $nomor = $last ? $last->id + 1 : 1;
-
         $no_pendaftaran = 'PPDB'.$tahun.'-'.str_pad($nomor,4,'0',STR_PAD_LEFT);
         $username = $this->input->post('nisn');
         
         $cek = $this->db
-			->where('nisn',$this->input->post('nisn'))
-			->get('ppdb')
-			->row();
+            ->where('nisn', $this->input->post('nisn'))
+            ->get('ppdb')
+            ->row();
 
-		if($cek){
-
-			$this->session->set_flashdata('error','NISN sudah terdaftar. Gunakan NISN lain atau login.');
-
-			redirect('ppdb');
-		}
+        if($cek){
+            $this->session->set_flashdata('error', 'NISN sudah terdaftar. Gunakan NISN lain atau login.');
+            redirect('ppdb');
+        }
 
         $data = [
             'no_pendaftaran' => $no_pendaftaran,
@@ -74,65 +76,64 @@ class Ppdb extends CI_Controller {
             'nisn' => $this->input->post('nisn'),
             'jk' => $this->input->post('jk'),
             'asal_sekolah' => $this->input->post('asal_sekolah'),
+            'jalur_pendaftaran' => $this->input->post('jalur_pendaftaran') ? $this->input->post('jalur_pendaftaran') : 'Reguler',
+            'pilihan_jurusan_1' => $this->input->post('pilihan_jurusan_1') ? $this->input->post('pilihan_jurusan_1') : 'MIPA',
+            'pilihan_jurusan_2' => $this->input->post('pilihan_jurusan_2') ? $this->input->post('pilihan_jurusan_2') : 'IPS',
             'no_hp' => $this->input->post('no_hp'),
             'nama_ortu' => $this->input->post('nama_ortu'),
             'tempat_lahir' => $this->input->post('tempat_lahir'),
-			'tanggal_lahir' => $this->input->post('tanggal_lahir'),
+            'tanggal_lahir' => $this->input->post('tanggal_lahir'),
             'username' => $username,
             'password' => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
             'status' => 'Lengkapi Biodata'
         ];
-		
-		if(empty($this->input->post('tanggal_lahir'))){
-			$this->session->set_flashdata('error','Tanggal lahir wajib diisi');
-			redirect('ppdb');
-		}
-        $this->db->insert('ppdb',$data);
+        
+        $this->db->insert('ppdb', $data);
 
         $data['no_pendaftaran'] = $no_pendaftaran;
         $data['username'] = $username;
         $data['password'] = $password_plain;
-		
         $data['nama_ppdb'] = $this->get_nama_ppdb();
-    $this->load->view('public/ppdb_success',$data);
-    }
-	//Biodata
-	public function biodata(){
 
-    if(!$this->session->userdata('ppdb_login')){
-        redirect('ppdb/login');
+        $this->load->view('public/ppdb_success', $data);
     }
 
-    $data['siswa'] = $this->db
-        ->where('id',$this->session->userdata('ppdb_id'))
-        ->get('ppdb')
-        ->row();
+    // Biodata
+    public function biodata(){
+        if(!$this->session->userdata('ppdb_login')){
+            redirect('ppdb/login');
+        }
 
-    $data['nama_ppdb'] = $this->get_nama_ppdb();
-    $this->load->view('public/ppdb_biodata',$data);
-}
-	//savebiodata
-public function save_biodata(){
+        $data['siswa'] = $this->db
+            ->where('id', $this->session->userdata('ppdb_id'))
+            ->get('ppdb')
+            ->row();
 
-    if(!$this->session->userdata('ppdb_login')){
-        redirect('ppdb/login');
+        $data['nama_ppdb'] = $this->get_nama_ppdb();
+        $this->load->view('public/ppdb_biodata', $data);
     }
 
-    $id = $this->session->userdata('ppdb_id');
+    // Save Biodata
+    public function save_biodata(){
+        if(!$this->session->userdata('ppdb_login')){
+            redirect('ppdb/login');
+        }
 
-    $siswa = $this->db
-        ->where('id', $id)
-        ->get('ppdb')
-        ->row();
+        $id = $this->session->userdata('ppdb_id');
 
-    if(!$siswa){
-        redirect('ppdb/login');
-    }
+        $siswa = $this->db
+            ->where('id', $id)
+            ->get('ppdb')
+            ->row();
 
-    $nik = trim($this->input->post('nik'));
-    $no_kk = trim($this->input->post('no_kk'));
-    $kode_pos = trim($this->input->post('kode_pos'));
+        if(!$siswa){
+            redirect('ppdb/login');
+        }
 
+        $nik = trim($this->input->post('nik'));
+        $no_kk = trim($this->input->post('no_kk'));
+        $kode_pos = trim($this->input->post('kode_pos'));
+        
     if(!preg_match('/^[0-9]{16}$/', $nik)){
         $this->session->set_flashdata('error', 'NIK wajib 16 digit angka.');
         redirect('ppdb/biodata');
@@ -651,6 +652,9 @@ private function ppdb_required_upload_complete($siswa){
         'tanggal_lahir' => $this->input->post('tanggal_lahir'),
         'jk' => $this->input->post('jk'),
         'asal_sekolah' => $this->input->post('asal_sekolah'),
+        'jalur_pendaftaran' => $this->input->post('jalur_pendaftaran'),
+        'pilihan_jurusan_1' => $this->input->post('pilihan_jurusan_1'),
+        'pilihan_jurusan_2' => $this->input->post('pilihan_jurusan_2'),
         'no_hp' => $this->input->post('no_hp'),
         'nama_ortu' => $this->input->post('nama_ortu'),
 
@@ -676,54 +680,83 @@ private function ppdb_required_upload_complete($siswa){
         'penghasilan_ortu' => $this->input->post('penghasilan_ortu')
     ];
 
-    $this->db->where('id',$id);
-    $this->db->update('ppdb',$data);
+    $this->db->where('id', $id);
+    $this->db->update('ppdb', $data);
 
-    $this->session->set_flashdata('success','Detail pendaftaran berhasil diperbarui');
-
+    $this->session->set_flashdata('success', 'Detail pendaftaran berhasil diperbarui');
     redirect('ppdb/detail');
 }
-	//logout
-	public function logout(){
 
-		$this->session->unset_userdata('ppdb_login');
-		$this->session->unset_userdata('ppdb_id');
-		$this->session->unset_userdata('ppdb_nama');
+// Logout
+public function logout(){
+    $this->session->unset_userdata('ppdb_login');
+    $this->session->unset_userdata('ppdb_id');
+    $this->session->unset_userdata('ppdb_nama');
+    redirect('ppdb/login');
+}
 
-		redirect('ppdb/login');
-	}
-	
-	//pdf
-	public function download_pdf(){
-
+// PDF Bukti Pendaftaran
+public function download_pdf(){
     if(!$this->session->userdata('ppdb_login')){
         redirect('ppdb/login');
     }
 
     $data['siswa'] = $this->db
-        ->where('id',$this->session->userdata('ppdb_id'))
+        ->where('id', $this->session->userdata('ppdb_id'))
         ->get('ppdb')
         ->row();
 
     $data['nama_ppdb'] = $this->get_nama_ppdb();
-    $this->load->view('public/ppdb_pdf',$data);
+    $this->load->view('public/ppdb_pdf', $data);
 }
-	//setting
-	private function getTahunAjaran()
-{
+
+// Kartu Tanda Peserta Ujian / Seleksi
+public function cetak_kartu($identifier = null){
+    $siswa = null;
+
+    if(!empty($identifier)){
+        $siswa = $this->db
+            ->group_start()
+            ->where('id', $identifier)
+            ->or_where('no_pendaftaran', $identifier)
+            ->or_where('nisn', $identifier)
+            ->group_end()
+            ->get('ppdb')
+            ->row();
+    } elseif($this->session->userdata('ppdb_login')){
+        $siswa = $this->db
+            ->where('id', $this->session->userdata('ppdb_id'))
+            ->get('ppdb')
+            ->row();
+    }
+
+    if(!$siswa){
+        $this->session->set_flashdata('error', 'Data peserta tidak ditemukan.');
+        redirect('ppdb/login');
+        return;
+    }
+
+    $data['siswa'] = $siswa;
+    $data['settings'] = $this->db->get('settings')->row();
+    $data['profil_website'] = $this->db->limit(1)->get('website_profil')->row();
+    $data['nama_ppdb'] = $this->get_nama_ppdb();
+
+    $this->load->view('public/ppdb_kartu_tes', $data);
+}
+
+private function getTahunAjaran(){
     $setting = $this->db->get('settings')->row();
     return $setting->tahun_ajaran ?? date('Y').'-'.(date('Y')+1);
 }
-	//reset ppdb
-	public function reset(){
+
+public function reset(){
     show_404();
 }
-private function get_ppdb_pengumuman($status_peserta = null, $popup_only = false){
 
+private function get_ppdb_pengumuman($status_peserta = null, $popup_only = false){
     $today = date('Y-m-d');
 
     $this->db->where('status', 'Aktif');
-
     $this->db->where(
         '(tanggal_mulai IS NULL OR tanggal_mulai <= '.$this->db->escape($today).')',
         null,

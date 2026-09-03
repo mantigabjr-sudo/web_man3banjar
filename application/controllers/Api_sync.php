@@ -449,4 +449,57 @@ class Api_sync extends CI_Controller {
             ]
         ]);
     }
+
+    public function migrate_ppdb_schema(){
+        $this->validate_key();
+
+        $ppdb_fields = [
+            'jalur_pendaftaran' => "VARCHAR(50) NULL DEFAULT 'Reguler' AFTER asal_sekolah",
+            'pilihan_jurusan_1' => "VARCHAR(50) NULL DEFAULT 'MIPA' AFTER jalur_pendaftaran",
+            'pilihan_jurusan_2' => "VARCHAR(50) NULL DEFAULT 'IPS' AFTER pilihan_jurusan_1",
+            'no_peserta_tes'    => "VARCHAR(50) NULL AFTER status",
+            'tanggal_tes'       => "DATE NULL AFTER no_peserta_tes",
+            'jam_tes'           => "VARCHAR(50) NULL AFTER tanggal_tes",
+            'ruang_tes'         => "VARCHAR(100) NULL AFTER jam_tes",
+            'nilai_tes'         => "DECIMAL(5,2) NULL AFTER ruang_tes",
+            'catatan_verifikasi'=> "TEXT NULL AFTER nilai_tes"
+        ];
+
+        $results = [];
+
+        if($this->db->table_exists('ppdb')){
+            foreach($ppdb_fields as $col => $def){
+                if(!$this->db->field_exists($col, 'ppdb')){
+                    $this->db->query("ALTER TABLE `ppdb` ADD `{$col}` {$def}");
+                    $results["ppdb.{$col}"] = 'Added';
+                } else {
+                    $results["ppdb.{$col}"] = 'Exists';
+                }
+            }
+        }
+
+        $settings_fields = [
+            'default_tanggal_tes' => "DATE NULL AFTER persyaratan_ppdb",
+            'default_jam_tes'     => "VARCHAR(50) NULL DEFAULT '08:00 - 11.30 WITA' AFTER default_tanggal_tes",
+            'default_ruang_tes'   => "VARCHAR(100) NULL DEFAULT 'Kampus MAN 3 Banjar' AFTER default_jam_tes",
+            'materi_tes_info'     => "TEXT NULL AFTER default_ruang_tes"
+        ];
+
+        if($this->db->table_exists('settings')){
+            foreach($settings_fields as $col => $def){
+                if(!$this->db->field_exists($col, 'settings')){
+                    $this->db->query("ALTER TABLE `settings` ADD `{$col}` {$def}");
+                    $results["settings.{$col}"] = 'Added';
+                } else {
+                    $results["settings.{$col}"] = 'Exists';
+                }
+            }
+        }
+
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Migrasi skema database PPDB cloud selesai.',
+            'results' => $results
+        ]);
+    }
 }
