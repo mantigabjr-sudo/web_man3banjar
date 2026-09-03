@@ -1,102 +1,644 @@
 :root{
-    --green:#16a34a;
-    --green-2:#22c55e;
-    --green-dark:#064e3b;
-    --green-soft:#ecfdf5;
-    --text:#0f172a;
-    --muted:#64748b;
-    --border:#e2e8f0;
-    --soft:#f8fafc;
-    --yellow:#facc15;
-    --red:#ef4444;
-    --blue:#0ea5e9;
-    --orange:#f97316;
+    --green-primary: #059669;
+    --green-dark: #064e3b;
+    --green-light: #ecfdf5;
+    --green-accent: #10b981;
+    --green-gradient: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+    --bg-page: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    --border-color: #e2e8f0;
+    --border-focus: #10b981;
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 14px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 25px -5px rgba(5,150,105,0.12);
 }
 
 *{
-    box-sizing:border-box;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body{
-    margin:0;
-    min-height:100vh;
-    background:
-        radial-gradient(circle at top left, rgba(34,197,94,.13), transparent 30%),
-        radial-gradient(circle at top right, rgba(14,165,233,.08), transparent 30%),
-        linear-gradient(135deg,#f8fafc,#ffffff 48%,#ecfdf5);
-    color:var(--text);
-    font-family:Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
 a{
-    text-decoration:none;
+    text-decoration: none;
+    color: inherit;
 }
 
+/* ─── Layout Shell ─── */
 .peserta-shell{
-    min-height:100vh;
-    display:grid;
-    grid-template-columns:292px 1fr;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    background-color: var(--bg-page);
 }
 
+/* ─── Desktop Sidebar ─── */
 .peserta-sidebar{
-    position:sticky;
-    top:0;
-    height:100vh;
-    padding:22px;
-    background:
-        radial-gradient(circle at top right, rgba(250,204,21,.16), transparent 32%),
-        linear-gradient(180deg,#064e3b,#15803d 55%,#16a34a);
-    color:white;
-    box-shadow:12px 0 45px rgba(15,23,42,.10);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding: 24px 20px;
+    background: var(--green-gradient);
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 4px 0 24px rgba(6,78,59,0.15);
+    z-index: 100;
 }
 
 .peserta-brand{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
 .peserta-brand-logo{
-    width:52px;
-    height:52px;
-    border-radius:20px;
-    background:rgba(255,255,255,.18);
-    border:1px solid rgba(255,255,255,.24);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:white;
-    font-weight:950;
-    overflow:hidden;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
 }
 
 .peserta-brand-logo img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .peserta-brand strong{
-    display:block;
-    font-size:18px;
-    font-weight:950;
-    line-height:1.15;
+    display: block;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.2;
 }
 
 .peserta-brand small{
-    display:block;
-    color:rgba(255,255,255,.72);
-    font-size:12px;
-    font-weight:750;
+    display: block;
+    color: rgba(255,255,255,0.75);
+    font-size: 11.5px;
 }
 
 .peserta-profile-mini{
-    padding:16px;
-    border-radius:24px;
-    background:rgba(255,255,255,.12);
-    border:1px solid rgba(255,255,255,.18);
-    margin-bottom:18px;
+    padding: 14px;
+    border-radius: var(--radius-md);
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.18);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.peserta-profile-mini img, .peserta-avatar{
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: rgba(255,255,255,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 18px;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.peserta-profile-mini .info-wrap{
+    overflow: hidden;
+}
+
+.peserta-profile-mini strong{
+    display: block;
+    font-size: 13.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.peserta-profile-mini small{
+    display: block;
+    color: rgba(255,255,255,0.75);
+    font-size: 11px;
+}
+
+.peserta-menu{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-grow: 1;
+}
+
+.peserta-menu a{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    font-size: 13.5px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85);
+    transition: all 0.2s ease;
+}
+
+.peserta-menu a i{
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+}
+
+.peserta-menu a:hover{
+    background: rgba(255,255,255,0.15);
+    color: #ffffff;
+    transform: translateX(4px);
+}
+
+.peserta-menu a.active{
+    background: #ffffff;
+    color: var(--green-dark);
+    font-weight: 800;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.peserta-menu a.active i{
+    color: var(--green-primary);
+}
+
+.peserta-menu a.logout{
+    margin-top: auto;
+    color: #fca5a5;
+}
+
+.peserta-menu a.logout:hover{
+    background: rgba(239,68,68,0.2);
+    color: #fee2e2;
+}
+
+/* ─── Main Content Area ─── */
+.peserta-main{
+    padding: 28px 32px 60px;
+    max-width: 1100px;
+}
+
+/* ─── Mobile Top Header ─── */
+.peserta-mobile-head{
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 90;
+}
+
+.peserta-mobile-head .brand{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.peserta-mobile-head .brand img{
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+}
+
+.peserta-mobile-head .brand strong{
+    font-size: 14px;
+    display: block;
+    color: var(--green-dark);
+    line-height: 1.2;
+}
+
+.peserta-mobile-head .brand small{
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* ─── Mobile Bottom Navigation Bar ─── */
+.peserta-bottom-nav{
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: #ffffff;
+    border-top: 1px solid var(--border-color);
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+    z-index: 1000;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 6px;
+}
+
+.peserta-bottom-nav a{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    color: var(--text-muted);
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 10px;
+    transition: all 0.2s;
+    min-width: 58px;
+}
+
+.peserta-bottom-nav a i{
+    font-size: 20px;
+    line-height: 1;
+}
+
+.peserta-bottom-nav a.active{
+    color: var(--green-primary);
+    font-weight: 800;
+}
+
+.peserta-bottom-nav a.active i{
+    transform: scale(1.1);
+}
+
+/* ─── Hero / Profile Header Card ─── */
+.peserta-hero-card{
+    background: var(--green-gradient);
+    border-radius: var(--radius-lg);
+    color: #ffffff;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.peserta-hero-card::after{
+    content: "";
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.peserta-hero-top{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.peserta-hero-user{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.peserta-hero-avatar{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.peserta-hero-avatar img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.peserta-hero-meta h1{
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+}
+
+.peserta-hero-meta p{
+    margin: 0;
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.85);
+}
+
+.peserta-hero-badge{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 12.5px;
+    font-weight: 700;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.peserta-hero-tags{
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    font-size: 12px;
+}
+
+.peserta-tag-pill{
+    background: rgba(255,255,255,0.12);
+    padding: 4px 10px;
+    border-radius: 6px;
+    color: rgba(255,255,255,0.9);
+}
+
+/* ─── Stepper Tahapan Pendaftaran (Visual Timeline) ─── */
+.peserta-stepper-card{
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+}
+
+.stepper-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.stepper-header h5{
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.stepper-track{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    position: relative;
+    gap: 6px;
+}
+
+.stepper-step{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+.stepper-circle{
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    border: 2px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    z-index: 2;
+    transition: all 0.3s;
+}
+
+.stepper-step.completed .stepper-circle{
+    background: var(--green-primary);
+    border-color: var(--green-primary);
+    color: #ffffff;
+}
+
+.stepper-step.active .stepper-circle{
+    background: #ffffff;
+    border-color: var(--green-primary);
+    color: var(--green-primary);
+    box-shadow: 0 0 0 4px rgba(5,150,105,0.15);
+}
+
+.stepper-label{
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    line-height: 1.2;
+}
+
+.stepper-step.active .stepper-label,
+.stepper-step.completed .stepper-label{
+    color: var(--text-main);
+}
+
+/* ─── Grid Kartu Aksi & Status ─── */
+.peserta-grid-cards{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.card-action-modern{
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card-action-modern:hover{
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: #cbd5e1;
+}
+
+.card-action-top{
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.card-action-icon{
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: var(--green-light);
+    color: var(--green-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.card-action-text h6{
+    font-size: 15px;
+    font-weight: 800;
+    margin: 0 0 4px 0;
+    color: var(--text-main);
+}
+
+.card-action-text p{
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* ─── Card Upload Dokumen ─── */
+.doc-upload-card{
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    transition: all 0.2s ease;
+}
+
+.doc-upload-card.uploaded{
+    border-color: #a7f3d0;
+    background: #f0fdf4;
+}
+
+.doc-upload-info{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.doc-upload-badge{
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.doc-upload-badge.wajib{
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.doc-upload-badge.opsional{
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.doc-upload-title{
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0 0 2px 0;
+}
+
+.doc-upload-note{
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* ─── Responsive Media Queries ─── */
+@media (max-width: 900px){
+    .peserta-shell{
+        grid-template-columns: 1fr;
+    }
+    .peserta-sidebar{
+        display: none;
+    }
+    .peserta-mobile-head{
+        display: flex;
+    }
+    .peserta-bottom-nav{
+        display: flex;
+    }
+    .peserta-main{
+        padding: 16px 16px 90px;
+    }
+    .peserta-hero-card{
+        border-radius: var(--radius-md);
+        padding: 18px;
+    }
+    .peserta-hero-user{
+        gap: 12px;
+    }
+    .peserta-hero-avatar{
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+    .peserta-hero-meta h1{
+        font-size: 17px;
+    }
+    .stepper-track{
+        gap: 2px;
+    }
+    .stepper-circle{
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+    }
+    .stepper-label{
+        font-size: 9.5px;
+    }
+    .peserta-grid-cards{
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .doc-upload-card{
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
 }
 
 .peserta-profile-mini img,

@@ -806,8 +806,12 @@ a{
                     </a>
                 <?php endif; ?>
 
+                <a href="<?= base_url('ppdb/cetak_kartu') ?>" target="_blank" class="hero-action-btn" style="background:#059669; color:#fff; font-weight:800;">
+                    Cetak Kartu Ujian
+                </a>
+
                 <a href="<?= base_url('ppdb/download_pdf') ?>" class="hero-action-btn hero-action-pdf">
-                    Download Bukti Pendaftaran
+                    Download Bukti (PDF)
                 </a>
 
                 <a href="<?= base_url('ppdb/dashboard') ?>" class="hero-action-btn hero-action-back">

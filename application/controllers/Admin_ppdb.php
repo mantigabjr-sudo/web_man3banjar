@@ -357,45 +357,50 @@ class Admin_ppdb extends CI_Controller {
 }
 	//update
 	public function update($id){
+        $data = [
+            'nama_lengkap'       => $this->input->post('nama_lengkap'),
+            'nisn'               => $this->input->post('nisn'),
+            'status'             => $this->input->post('status'),
+            'jalur_pendaftaran'  => $this->input->post('jalur_pendaftaran'),
+            'tempat_lahir'       => $this->input->post('tempat_lahir'),
+            'tanggal_lahir'      => $this->input->post('tanggal_lahir'),
+            'jk'                 => $this->input->post('jk'),
+            'asal_sekolah'       => $this->input->post('asal_sekolah'),
+            'no_hp'              => $this->input->post('no_hp'),
+            'email'              => $this->input->post('email'),
+            'nama_ortu'          => $this->input->post('nama_ortu'),
+            'no_peserta_tes'     => $this->input->post('no_peserta_tes'),
+            'tanggal_tes'        => !empty($this->input->post('tanggal_tes')) ? $this->input->post('tanggal_tes') : NULL,
+            'jam_tes'            => $this->input->post('jam_tes'),
+            'ruang_tes'          => $this->input->post('ruang_tes'),
+            'nilai_tes'          => !empty($this->input->post('nilai_tes')) ? $this->input->post('nilai_tes') : NULL,
+            'catatan_verifikasi' => $this->input->post('catatan_verifikasi'),
+            'nik'                => $this->input->post('nik'),
+            'no_kk'              => $this->input->post('no_kk'),
+            'agama'              => $this->input->post('agama'),
+            'anak_ke'            => $this->input->post('anak_ke'),
+            'jumlah_saudara'     => $this->input->post('jumlah_saudara'),
+            'alamat'             => $this->input->post('alamat'),
+            'rt'                 => $this->input->post('rt'),
+            'rw'                 => $this->input->post('rw'),
+            'desa'               => $this->input->post('desa'),
+            'kecamatan'          => $this->input->post('kecamatan'),
+            'kabupaten'          => $this->input->post('kabupaten'),
+            'provinsi'           => $this->input->post('provinsi'),
+            'kode_pos'           => $this->input->post('kode_pos'),
+            'nama_ayah'          => $this->input->post('nama_ayah'),
+            'pekerjaan_ayah'     => $this->input->post('pekerjaan_ayah'),
+            'nama_ibu'           => $this->input->post('nama_ibu'),
+            'pekerjaan_ibu'      => $this->input->post('pekerjaan_ibu'),
+            'penghasilan_ortu'   => $this->input->post('penghasilan_ortu')
+        ];
 
-    $data = [
-        'nama_lengkap' => $this->input->post('nama_lengkap'),
-        'tempat_lahir' => $this->input->post('tempat_lahir'),
-        'tanggal_lahir' => $this->input->post('tanggal_lahir'),
-        'jk' => $this->input->post('jk'),
-        'asal_sekolah' => $this->input->post('asal_sekolah'),
-        'no_hp' => $this->input->post('no_hp'),
-        'nama_ortu' => $this->input->post('nama_ortu'),
+        $this->db->where('id',$id);
+        $this->db->update('ppdb',$data);
 
-        'nik' => $this->input->post('nik'),
-        'no_kk' => $this->input->post('no_kk'),
-        'agama' => $this->input->post('agama'),
-        'anak_ke' => $this->input->post('anak_ke'),
-        'jumlah_saudara' => $this->input->post('jumlah_saudara'),
-
-        'alamat' => $this->input->post('alamat'),
-        'rt' => $this->input->post('rt'),
-        'rw' => $this->input->post('rw'),
-        'desa' => $this->input->post('desa'),
-        'kecamatan' => $this->input->post('kecamatan'),
-        'kabupaten' => $this->input->post('kabupaten'),
-        'provinsi' => $this->input->post('provinsi'),
-        'kode_pos' => $this->input->post('kode_pos'),
-
-        'nama_ayah' => $this->input->post('nama_ayah'),
-        'pekerjaan_ayah' => $this->input->post('pekerjaan_ayah'),
-        'nama_ibu' => $this->input->post('nama_ibu'),
-        'pekerjaan_ibu' => $this->input->post('pekerjaan_ibu'),
-        'penghasilan_ortu' => $this->input->post('penghasilan_ortu')
-    ];
-
-    $this->db->where('id',$id);
-    $this->db->update('ppdb',$data);
-
-    $this->session->set_flashdata('success','Data peserta berhasil diperbarui');
-
-    redirect('admin_ppdb/detail/'.$id);
-}
+        $this->session->set_flashdata('success','Data peserta berhasil diperbarui');
+        redirect('admin_ppdb/detail/'.$id);
+    }
 	//delete
 	public function delete($id){
 
