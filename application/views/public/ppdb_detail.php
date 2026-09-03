@@ -871,6 +871,16 @@ a{
                         </div>
 
                         <div class="info-item">
+                            <small>Jalur Pendaftaran</small>
+                            <strong style="color: #059669;"><?= ppdb_value($siswa->jalur_pendaftaran ?? 'Reguler') ?></strong>
+                        </div>
+
+                        <div class="info-item">
+                            <small>Alamat Email</small>
+                            <strong><?= ppdb_value($siswa->email ?? '-') ?></strong>
+                        </div>
+
+                        <div class="info-item">
                             <small>Nama Ayah / Wali Awal</small>
                             <strong><?= ppdb_value($siswa->nama_ortu ?? '') ?></strong>
                         </div>
