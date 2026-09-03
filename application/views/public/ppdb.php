@@ -334,6 +334,58 @@ a { text-decoration: none; color: inherit; }
     background: var(--c-slate-300);
 }
 
+/* ─── Countdown Box ─── */
+.ppdb-countdown-box {
+    display: inline-block;
+    background: #ffffff;
+    border: 2px solid #a7f3d0;
+    border-radius: 20px;
+    padding: 16px 24px;
+    box-shadow: 0 10px 30px rgba(5, 150, 105, 0.1);
+}
+.countdown-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #064e3b;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+.countdown-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.countdown-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 8px 14px;
+    min-width: 58px;
+}
+.countdown-num {
+    font-size: 24px;
+    font-weight: 900;
+    color: #065f46;
+    line-height: 1;
+    font-family: monospace, sans-serif;
+}
+.countdown-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #047857;
+    text-transform: uppercase;
+    margin-top: 4px;
+}
+.countdown-colon {
+    font-size: 20px;
+    font-weight: 900;
+    color: #059669;
+}
+
 .hero-actions {
     display: flex;
     justify-content: center;
@@ -1176,6 +1228,78 @@ a { text-decoration: none; color: inherit; }
                 </div>
             <?php endif; ?>
         </div>
+
+        <?php 
+            $target_countdown = '';
+            $countdown_title = '';
+            if(!empty($tgl_mulai) && $today < $tgl_mulai) {
+                $target_countdown = $tgl_mulai . ' 08:00:00';
+                $countdown_title = 'Pendaftaran Dibuka Dalam:';
+            } elseif(!empty($tgl_selesai) && $today <= $tgl_selesai) {
+                $target_countdown = $tgl_selesai . ' 23:59:59';
+                $countdown_title = 'Pendaftaran Ditutup Dalam:';
+            }
+        ?>
+
+        <?php if(!empty($target_countdown)): ?>
+            <!-- ═══ LIVE REAL-TIME COUNTDOWN BANNER ═══ -->
+            <div class="ppdb-countdown-box mb-4" id="countdownContainer">
+                <div class="countdown-title mb-2">
+                    <i class="bi bi-hourglass-split me-1 text-warning"></i> <?= $countdown_title ?>
+                </div>
+                <div class="countdown-grid">
+                    <div class="countdown-item">
+                        <span class="countdown-num" id="cdDays">00</span>
+                        <span class="countdown-label">Hari</span>
+                    </div>
+                    <div class="countdown-colon">:</div>
+                    <div class="countdown-item">
+                        <span class="countdown-num" id="cdHours">00</span>
+                        <span class="countdown-label">Jam</span>
+                    </div>
+                    <div class="countdown-colon">:</div>
+                    <div class="countdown-item">
+                        <span class="countdown-num" id="cdMinutes">00</span>
+                        <span class="countdown-label">Menit</span>
+                    </div>
+                    <div class="countdown-colon">:</div>
+                    <div class="countdown-item">
+                        <span class="countdown-num" id="cdSeconds">00</span>
+                        <span class="countdown-label">Detik</span>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+            (function(){
+                var targetDate = new Date("<?= date('Y-m-d H:i:s', strtotime($target_countdown)) ?>").getTime();
+                
+                function updateCountdown() {
+                    var now = new Date().getTime();
+                    var distance = targetDate - now;
+                    
+                    if (distance < 0) {
+                        var cdContainer = document.getElementById("countdownContainer");
+                        if(cdContainer) cdContainer.style.display = "none";
+                        return;
+                    }
+                    
+                    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    
+                    document.getElementById("cdDays").innerText = days < 10 ? '0' + days : days;
+                    document.getElementById("cdHours").innerText = hours < 10 ? '0' + hours : hours;
+                    document.getElementById("cdMinutes").innerText = minutes < 10 ? '0' + minutes : minutes;
+                    document.getElementById("cdSeconds").innerText = seconds < 10 ? '0' + seconds : seconds;
+                }
+                
+                updateCountdown();
+                setInterval(updateCountdown, 1000);
+            })();
+            </script>
+        <?php endif; ?>
 
         <!-- CTA Buttons -->
         <div class="hero-actions">

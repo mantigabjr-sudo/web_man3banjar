@@ -302,6 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <thead class="table-success">
 <tr>
     <th style="width: 40px;">No</th>
+    <th>Tanggal Daftar</th>
     <th>Calon Peserta</th>
     <th>Jalur &amp; Email</th>
     <th>Asal Sekolah &amp; Kontak</th>
@@ -317,6 +318,19 @@ document.addEventListener('DOMContentLoaded', function() {
 <?php $no=1; foreach($pendaftar as $p): ?>
 <tr>
     <td><?= $no++ ?></td>
+
+    <td>
+        <?php if(!empty($p->created_at) && $p->created_at != '0000-00-00 00:00:00'): ?>
+            <strong class="text-dark d-block" style="font-size: 12.5px;">
+                <i class="bi bi-calendar3 me-1 text-success"></i> <?= date('d M Y', strtotime($p->created_at)) ?>
+            </strong>
+            <small class="text-muted" style="font-size: 11px;">
+                <i class="bi bi-clock me-1"></i> <?= date('H:i', strtotime($p->created_at)) ?> WITA
+            </small>
+        <?php else: ?>
+            <span class="text-muted small">-</span>
+        <?php endif; ?>
+    </td>
     
     <td>
         <strong class="text-dark d-block" style="font-size: 13.5px;"><?= htmlspecialchars($p->nama_lengkap ?? '-') ?></strong>

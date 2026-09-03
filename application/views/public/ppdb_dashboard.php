@@ -333,6 +333,91 @@ if($status_db == 'Lengkapi Biodata'){
     </a>
 </nav>
 
+<!-- ═══ POP-UP PEMBERITAHUAN ALUR & STATUS PMB ═══ -->
+<div class="modal fade" id="modalPopupPemberitahuan" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 24px; overflow: hidden;">
+            <div class="modal-header border-0 text-white p-4 pb-3" style="background: linear-gradient(135deg, #064e3b 0%, #059669 100%);">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width: 48px; height: 48px; border-radius: 14px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                        <i class="bi bi-bell-fill"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0">Informasi Penting PMB</h5>
+                        <small class="opacity-75">MAN 3 Banjar Digital Portal</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body p-4 bg-light">
+                <div class="p-3 rounded-3 bg-white border mb-3 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="text-muted small fw-bold">STATUS ANDA SAAT INI:</span>
+                        <span class="badge bg-success px-2 py-1"><?= htmlspecialchars($status_db) ?></span>
+                    </div>
+                    <strong class="text-dark d-block" style="font-size: 14.5px;">Hai, <?= htmlspecialchars($nama_lengkap) ?>!</strong>
+                    <p class="text-muted small mb-0 mt-1" style="font-size: 12.5px;">
+                        <?php if($status_db == 'Lengkapi Biodata'): ?>
+                            Silakan segera melengkapi <strong>Formulir Biodata Diri &amp; Orang Tua</strong> pada menu Biodata agar dapat melanjutkan ke tahap unggah dokumen.
+                        <?php elseif($status_db == 'Upload Berkas'): ?>
+                            Silakan unggah dokumen wajib Anda (Pas Foto, Kartu Keluarga, Akta Kelahiran, dan Surat Keterangan Kelas 9) pada menu <strong>Upload Berkas</strong>.
+                        <?php elseif($status_db == 'Menunggu Verifikasi Berkas'): ?>
+                            Dokumen pendaftaran Anda telah berhasil terkirim dan sedang <strong>diverifikasi oleh Panitia PMB</strong>. Harap pantau secara berkala.
+                        <?php elseif($status_db == 'Perlu Perbaikan'): ?>
+                            Terdapat catatan perbaikan berkas dari panitia. Silakan periksa dan unggah ulang berkas yang diminta pada menu Upload Berkas.
+                        <?php elseif($status_db == 'Lulus Verifikasi' || !empty($siswa->no_peserta_tes)): ?>
+                            Selamat! Berkas pendaftaran Anda dinyatakan <strong>LULUS VERIFIKASI</strong>. Silakan unduh dan <strong>Cetak Kartu Ujian Masuk</strong> Anda.
+                        <?php elseif($status_db == 'Diterima'): ?>
+                            Selamat! Anda dinyatakan <strong>DITERIMA</strong> sebagai peserta didik baru di MAN 3 Banjar. Silakan tunggu informasi jadwal daftar ulang.
+                        <?php else: ?>
+                            Pastikan Anda menyelesaikan seluruh tahapan pendaftaran sesuai petunjuk panitia.
+                        <?php endif; ?>
+                    </p>
+                </div>
+
+                <div class="rules-box p-3 rounded-3 bg-white border mb-3" style="font-size: 12px;">
+                    <strong class="text-success d-block mb-2"><i class="bi bi-info-circle-fill me-1"></i> Ketentuan Kartu Ujian &amp; Seleksi:</strong>
+                    <ul class="ps-3 mb-0 text-muted" style="line-height: 1.5;">
+                        <li>Kartu Tanda Peserta Ujian baru dapat dicetak setelah berkas diverifikasi dan dinyatakan <strong>Lulus Verifikasi</strong> oleh admin/panitia.</li>
+                        <li>Pastikan nomor WhatsApp yang didaftarkan aktif untuk menerima informasi jadwal dan pengumuman seleksi.</li>
+                    </ul>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between p-2 rounded-3" style="background:#ecfdf5; border:1px solid #a7f3d0;">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-whatsapp text-success fs-4"></i>
+                        <div>
+                            <small class="d-block text-dark fw-bold" style="font-size: 11px;">Butuh Bantuan Panitia?</small>
+                            <small class="text-muted" style="font-size: 11px;">Hubungi Layanan Informasi PMB</small>
+                        </div>
+                    </div>
+                    <a href="https://wa.me/6281234567890?text=Halo%20Panitia%20PMB%20MAN%203%20Banjar,%20saya%20calon%20siswa%20nama%20<?= urlencode($nama_lengkap) ?>" target="_blank" class="btn btn-sm btn-success rounded-pill px-3 fw-bold" style="font-size: 11.5px;">
+                        Chat WA Panitia
+                    </a>
+                </div>
+            </div>
+
+            <div class="modal-footer bg-white border-0 px-4 pb-4 pt-0">
+                <button type="button" class="btn btn-success w-100 rounded-pill fw-bold py-2 shadow-sm" data-bs-dismiss="modal" style="background: #059669; border-color:#059669;" onclick="sessionStorage.setItem('ppdb_popup_seen', '1')">
+                    <i class="bi bi-check2 me-1"></i> Saya Mengerti &amp; Lanjutkan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tampilkan pop up otomatis jika belum dilihat di sesi ini
+    if (!sessionStorage.getItem('ppdb_popup_seen')) {
+        setTimeout(function() {
+            var myModal = new bootstrap.Modal(document.getElementById('modalPopupPemberitahuan'));
+            myModal.show();
+        }, 600);
+    }
+});
+</script>
 </body>
 </html>
