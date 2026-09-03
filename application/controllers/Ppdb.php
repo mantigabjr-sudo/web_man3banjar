@@ -755,6 +755,10 @@ public function reset(){
 }
 
 private function get_ppdb_pengumuman($status_peserta = null, $popup_only = false){
+    if(!$this->db->table_exists('ppdb_pengumuman')){
+        return $popup_only ? null : [];
+    }
+
     $today = date('Y-m-d');
 
     $this->db->where('status', 'Aktif');

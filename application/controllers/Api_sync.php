@@ -497,6 +497,25 @@ class Api_sync extends CI_Controller {
             }
         }
 
+        // Pastikan tabel ppdb_pengumuman ada
+        $this->db->query("CREATE TABLE IF NOT EXISTS `ppdb_pengumuman` (
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `judul` varchar(255) NOT NULL,
+          `isi` text NOT NULL,
+          `kategori` varchar(50) DEFAULT 'Umum',
+          `target_status` varchar(50) DEFAULT 'Semua',
+          `tanggal_mulai` date DEFAULT NULL,
+          `tanggal_selesai` date DEFAULT NULL,
+          `waktu` varchar(100) DEFAULT NULL,
+          `lokasi` varchar(255) DEFAULT NULL,
+          `link` varchar(255) DEFAULT NULL,
+          `status` enum('Aktif','Nonaktif') DEFAULT 'Aktif',
+          `tampil_popup` tinyint(1) DEFAULT 0,
+          `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+          PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+        $results['table.ppdb_pengumuman'] = 'Checked';
+
         echo json_encode([
             'status' => 'success',
             'message' => 'Migrasi skema database PPDB cloud selesai.',

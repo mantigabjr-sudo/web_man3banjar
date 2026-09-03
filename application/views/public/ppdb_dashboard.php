@@ -170,8 +170,8 @@ $foto_url  = !empty($siswa->foto) ? base_url('uploads/temp/ppdb/'.$siswa->foto) 
                 </h5>
                 <p class="mb-3 text-secondary" style="font-size: 14px;">Panitia menemukan ketidaksesuaian data pada berkas yang Anda unggah. Silakan perbaiki dan unggah kembali dokumen-dokumen berikut:</p>
                 <ul class="mb-0 ps-3">
-                    <?php foreach($verifikasi_berkas as $field => $data): ?>
-                        <?php if(isset($data['status']) && $data['status'] == 'Perlu Perbaikan'): ?>
+                    <?php foreach($verifikasi_berkas as $field => $item_vb): ?>
+                        <?php if(isset($item_vb['status']) && $item_vb['status'] == 'Perlu Perbaikan'): ?>
                             <?php
                             $label_map = [
                                 'foto' => 'Pas Foto',
@@ -188,7 +188,7 @@ $foto_url  = !empty($siswa->foto) ? base_url('uploads/temp/ppdb/'.$siswa->foto) 
                             ?>
                             <li class="mb-2 fw-semibold" style="font-size: 13.5px; color:#1e293b;">
                                 <span class="text-dark"><?= $doc_label ?></span>: 
-                                <span class="text-danger italic">"<?= ppdb_dash_e($data['catatan']) ?>"</span>
+                                <span class="text-danger italic">"<?= ppdb_dash_e($item_vb['catatan'] ?? '') ?>"</span>
                             </li>
                         <?php endif; ?>
                     <?php endforeach; ?>
