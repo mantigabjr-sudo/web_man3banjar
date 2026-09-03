@@ -791,25 +791,49 @@ a { text-decoration: none; color: inherit; }
     box-shadow: 0 12px 30px rgba(37,211,102,.6);
 }
 
-/* ─── Modal Wizard ─── */
+/* ─── Modal Registrasi Single Page & Scrolling ─── */
 .ppdb-modal-content {
     border: 0;
     border-radius: var(--radius-lg);
-    overflow: hidden;
-}
-.ppdb-modal-body {
-    max-height: calc(100vh - 190px);
-    overflow-y: auto;
-    padding: 28px;
-}
-.ppdb-modal-footer {
-    position: sticky;
-    bottom: 0;
     background: #fff;
-    border-top: 1px solid var(--c-slate-200);
-    z-index: 3;
-    padding: 16px 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
 }
+
+#modalDaftarPpdb .modal-dialog {
+    max-width: 800px;
+    margin: 1.75rem auto;
+}
+
+#modalDaftarPpdb form {
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    min-height: 0;
+    height: 100%;
+}
+
+#modalDaftarPpdb .modal-header {
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--c-slate-200);
+}
+
+#modalDaftarPpdb .modal-body {
+    flex: 1 1 auto;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    padding: 24px;
+    max-height: calc(90vh - 140px);
+}
+
+#modalDaftarPpdb .modal-footer {
+    flex-shrink: 0;
+    border-top: 1px solid var(--c-slate-200);
+    background: #f8fafc;
+}
+
 .ppdb-form-label {
     font-weight: 700;
     color: #064e3b;
@@ -822,7 +846,7 @@ a { text-decoration: none; color: inherit; }
     border: 1.5px solid var(--c-slate-200);
     padding: 10px 14px;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 15px;
     transition: all .2s;
 }
 .ppdb-input:focus, .ppdb-select:focus {
@@ -830,38 +854,44 @@ a { text-decoration: none; color: inherit; }
     box-shadow: 0 0 0 4px rgba(5,150,105,.12);
 }
 
-.wizard-step { display: none; }
-.wizard-step.active { display: block; animation: fadeIn .3s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-.wizard-progress {
-    display: flex; justify-content: space-between;
-    margin-bottom: 24px; position: relative;
+/* ─── Responsive Mobile Mode ─── */
+@media (max-width: 768px) {
+    #modalDaftarPpdb .modal-dialog {
+        margin: 0.5rem auto;
+        width: 95%;
+        max-width: 95%;
+    }
+    .ppdb-modal-content {
+        max-height: 94vh;
+        border-radius: 18px !important;
+    }
+    #modalDaftarPpdb form {
+        max-height: 94vh;
+    }
+    #modalDaftarPpdb .modal-header {
+        padding: 16px 16px 12px !important;
+    }
+    #modalDaftarPpdb .modal-header h5 {
+        font-size: 17px !important;
+    }
+    #modalDaftarPpdb .modal-body {
+        padding: 14px 16px !important;
+        max-height: calc(94vh - 130px) !important;
+    }
+    #modalDaftarPpdb .modal-footer {
+        padding: 12px 16px !important;
+        flex-direction: column-reverse;
+        gap: 8px;
+    }
+    #modalDaftarPpdb .modal-footer button {
+        width: 100%;
+        min-height: 44px;
+    }
+    .ppdb-input, .ppdb-select {
+        min-height: 44px;
+        font-size: 16px; /* Mencegah auto zoom pada Safari iOS / Chrome Android */
+    }
 }
-.wizard-progress::before {
-    content: ""; position: absolute;
-    top: 50%; left: 0; right: 0;
-    height: 3px; background: var(--c-slate-200);
-    z-index: 0; transform: translateY(-50%);
-    border-radius: 3px;
-}
-.wizard-progress-bar {
-    position: absolute; top: 50%; left: 0;
-    height: 3px; background: #059669;
-    z-index: 1; transform: translateY(-50%);
-    transition: width .4s ease; border-radius: 3px;
-    width: 0%;
-}
-.wizard-dot {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: #fff; border: 3px solid var(--c-slate-200);
-    position: relative; z-index: 2;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 800; color: var(--c-slate-500); font-size: 13px;
-    transition: all .3s;
-}
-.wizard-dot.active { border-color: #059669; color: #059669; }
-.wizard-dot.completed { background: #059669; border-color: #059669; color: #fff; }
 
 /* Responsive */
 @media (max-width: 991px) {
@@ -1552,22 +1582,22 @@ a { text-decoration: none; color: inherit; }
 <?php endif; ?>
 
 <!-- ═══ MODAL REGISTRASI AWAL (SINGLE PAGE USER-FRIENDLY) ═══ -->
-<div class="modal fade" id="modalDaftarPpdb" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content ppdb-modal-content border-0 shadow-lg" style="border-radius: 24px; overflow: hidden;">
+<div class="modal fade" id="modalDaftarPpdb" tabindex="-1" aria-labelledby="modalDaftarPpdbLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content ppdb-modal-content">
 
             <form method="post" action="<?= base_url('ppdb/submit') ?>" id="formRegistrasiPpdb">
 
-                <div class="modal-header px-4 pt-4 pb-3 border-0 bg-light">
+                <div class="modal-header px-4 pt-3 pb-3 border-0 bg-light">
                     <div>
-                        <h5 class="modal-title fw-bold" style="color: #064e3b; font-size: 20px;">
+                        <h5 class="modal-title fw-bold" id="modalDaftarPpdbLabel" style="color: #064e3b; font-size: 19px;">
                             <i class="bi bi-person-plus-fill me-1 text-success"></i> Formulir Pendaftaran Baru <?= $nama ?>
                         </h5>
                         <p class="text-muted small mb-0 mt-1">
                             Isikan data diri Anda dengan benar di bawah ini untuk membuat akun pendaftaran online.
                         </p>
                     </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body px-4 py-3">
