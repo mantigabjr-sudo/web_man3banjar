@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <tr>
     <th style="width: 40px;">No</th>
     <th>Calon Peserta</th>
-    <th>Jalur &amp; Peminatan</th>
+    <th>Jalur &amp; Email</th>
     <th>Asal Sekolah &amp; Kontak</th>
     <th>Status Seleksi</th>
     <th>Hasil Scan OCR</th>
@@ -254,9 +254,8 @@ document.addEventListener('DOMContentLoaded', function() {
         <span class="badge bg-light text-success border border-success fw-bold d-inline-block mb-1">
             <?= htmlspecialchars($p->jalur_pendaftaran ?? 'Reguler') ?>
         </span>
-        <div class="text-dark small fw-semibold" style="font-size: 11.5px;">
-            1. <?= htmlspecialchars($p->pilihan_jurusan_1 ?? 'MIPA') ?><br>
-            <span class="text-muted">2. <?= htmlspecialchars($p->pilihan_jurusan_2 ?? 'IPS') ?></span>
+        <div class="text-muted small" style="font-size: 11.5px;">
+            <?= !empty($p->email) ? htmlspecialchars($p->email) : '<span class="text-secondary">-</span>' ?>
         </div>
     </td>
 

@@ -1209,8 +1209,8 @@ a { text-decoration: none; color: inherit; }
         <div class="timeline">
             <div class="timeline-item">
                 <div class="timeline-dot">1</div>
-                <h5>1. Registrasi Akun &amp; Pilih Jurusan</h5>
-                <p>Klik tombol <strong>"Daftar Sekarang"</strong> untuk membuat akun pendaftaran. Isikan data pokok diri, tentukan <strong>Jalur Pendaftaran</strong> (Reguler, Prestasi, Tahfidz, Afirmasi), serta <strong>Pilihan Peminatan/Jurusan 1 &amp; 2</strong> (MIPA, IPS, Keagamaan).</p>
+                <h5>1. Registrasi Akun Pendaftaran</h5>
+                <p>Klik tombol <strong>"Daftar Sekarang"</strong> untuk membuat akun. Cukup isikan data pokok diri, tentukan <strong>Jalur Pendaftaran</strong> (Reguler, Prestasi, Tahfidz, Afirmasi), nomor WhatsApp, email, dan buat password akun Anda dalam satu formulir mudah.</p>
             </div>
 
             <div class="timeline-item">
@@ -1551,133 +1551,121 @@ a { text-decoration: none; color: inherit; }
     </a>
 <?php endif; ?>
 
-<!-- ═══ MODAL REGISTRASI AWAL ═══ -->
+<!-- ═══ MODAL REGISTRASI AWAL (SINGLE PAGE USER-FRIENDLY) ═══ -->
 <div class="modal fade" id="modalDaftarPpdb" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content ppdb-modal-content">
+        <div class="modal-content ppdb-modal-content border-0 shadow-lg" style="border-radius: 24px; overflow: hidden;">
 
-            <form method="post" action="<?= base_url('ppdb/submit') ?>">
+            <form method="post" action="<?= base_url('ppdb/submit') ?>" id="formRegistrasiPpdb">
 
-                <div class="modal-header">
+                <div class="modal-header px-4 pt-4 pb-3 border-0 bg-light">
                     <div>
-                        <h5 class="modal-title fw-bold" style="color: #064e3b;">
-                            Registrasi Awal <?= $nama ?>
+                        <h5 class="modal-title fw-bold" style="color: #064e3b; font-size: 20px;">
+                            <i class="bi bi-person-plus-fill me-1 text-success"></i> Formulir Pendaftaran Baru <?= $nama ?>
                         </h5>
-                        <small class="text-muted fw-bold">
-                            Buat akun pendaftaran Anda terlebih dahulu (3 Langkah).
-                        </small>
+                        <p class="text-muted small mb-0 mt-1">
+                            Isikan data diri Anda dengan benar di bawah ini untuk membuat akun pendaftaran online.
+                        </p>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
-                <div class="modal-body ppdb-modal-body" id="wizardBody">
-
-                    <div class="wizard-progress px-3 mt-2">
-                        <div class="wizard-progress-bar" id="wizardProgress" style="width: 0%;"></div>
-                        <div class="wizard-dot active" data-step="1">1</div>
-                        <div class="wizard-dot" data-step="2">2</div>
-                        <div class="wizard-dot" data-step="3">3</div>
-                    </div>
-
-                    <!-- STEP 1 -->
-                    <div class="wizard-step active" id="step1">
-                        <h6 class="fw-bold mb-3" style="color: #059669;"><i class="bi bi-person-badge me-1"></i> Langkah 1: Identitas Utama</h6>
-                        <div class="row g-3">
-                            <div class="col-md-12">
-                                <label class="ppdb-form-label">Nama Lengkap Calon Siswa</label>
-                                <input type="text" id="w_nama" name="nama_lengkap" class="form-control ppdb-input" placeholder="Masukkan nama lengkap sesuai ijazah/akta" required minlength="3">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="ppdb-form-label">NISN (10 Digit)</label>
-                                <input type="text" id="w_nisn" name="nisn" class="form-control ppdb-input" placeholder="Contoh: 0081234567" required maxlength="10" pattern="[0-9]{10}" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
-                                <div class="form-text">NISN akan digunakan sebagai Username login.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="ppdb-form-label">Jenis Kelamin</label>
-                                <select id="w_jk" name="jk" class="form-select ppdb-select" required>
-                                    <option value="">-- Pilih Jenis Kelamin --</option>
-                                    <option value="L">Laki-laki</option>
-                                    <option value="P">Perempuan</option>
-                                </select>
+                <div class="modal-body px-4 py-3">
+                    <div class="row g-3">
+                        <!-- Identitas Calon Siswa -->
+                        <div class="col-12">
+                            <div class="p-2 px-3 rounded-3 bg-light border-start border-4 border-success mb-2">
+                                <span class="fw-bold small text-success"><i class="bi bi-person-badge me-1"></i> Data Identitas Calon Siswa</span>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- STEP 2 -->
-                    <div class="wizard-step" id="step2">
-                        <h6 class="fw-bold mb-3" style="color: #059669;"><i class="bi bi-calendar-event me-1"></i> Langkah 2: Sekolah Asal, Jalur &amp; Peminatan</h6>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="ppdb-form-label">Tempat Lahir</label>
-                                <input type="text" id="w_tempat" name="tempat_lahir" class="form-control ppdb-input" placeholder="Contoh: Banjarmasin" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="ppdb-form-label">Tanggal Lahir</label>
-                                <input type="date" id="w_tanggal" name="tanggal_lahir" class="form-control ppdb-input" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="ppdb-form-label">Asal Sekolah (SMP / MTs)</label>
-                                <input type="text" id="w_sekolah" name="asal_sekolah" class="form-control ppdb-input" placeholder="Contoh: MTsN 1 Banjar / SMPN 2 Martapura" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="ppdb-form-label">Jalur Pendaftaran</label>
-                                <select id="w_jalur" name="jalur_pendaftaran" class="form-select ppdb-select" required>
-                                    <option value="Reguler">Jalur Reguler / Umum</option>
-                                    <option value="Prestasi">Jalur Prestasi (Akademik / Non-Akademik)</option>
-                                    <option value="Tahfidz">Jalur Tahfidz Al-Qur'an</option>
-                                    <option value="Afirmasi">Jalur Afirmasi (KIP / PKH / KKS)</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="ppdb-form-label">Peminatan / Jurusan Pilihan 1</label>
-                                <select id="w_jurusan1" name="pilihan_jurusan_1" class="form-select ppdb-select" required>
-                                    <option value="MIPA">MIPA (Matematika &amp; Ilmu Alam)</option>
-                                    <option value="IPS">IPS (Ilmu Pengetahuan Sosial)</option>
-                                    <option value="Keagamaan">Ilmu-Ilmu Keagamaan (Agama)</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="ppdb-form-label">Peminatan / Jurusan Pilihan 2 (Cadangan)</label>
-                                <select id="w_jurusan2" name="pilihan_jurusan_2" class="form-select ppdb-select" required>
-                                    <option value="IPS">IPS (Ilmu Pengetahuan Sosial)</option>
-                                    <option value="MIPA">MIPA (Matematika &amp; Ilmu Alam)</option>
-                                    <option value="Keagamaan">Ilmu-Ilmu Keagamaan (Agama)</option>
-                                </select>
+                        <div class="col-md-12">
+                            <label class="ppdb-form-label fw-bold small text-secondary">Nama Lengkap Siswa <span class="text-danger">*</span></label>
+                            <input type="text" name="nama_lengkap" class="form-control ppdb-input" placeholder="Masukkan nama lengkap sesuai ijazah / akta kelahiran" required minlength="3">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="ppdb-form-label fw-bold small text-secondary">NISN (10 Digit Angka) <span class="text-danger">*</span></label>
+                            <input type="text" name="nisn" class="form-control ppdb-input" placeholder="Contoh: 0081234567" required maxlength="10" pattern="[0-9]{10}" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+                            <div class="form-text text-muted" style="font-size: 11.5px;"><i class="bi bi-info-circle me-1"></i>NISN digunakan sebagai Username login Anda.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="ppdb-form-label fw-bold small text-secondary">Jenis Kelamin <span class="text-danger">*</span></label>
+                            <select name="jk" class="form-select ppdb-select" required>
+                                <option value="">-- Pilih Jenis Kelamin --</option>
+                                <option value="L">Laki-laki</option>
+                                <option value="P">Perempuan</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="ppdb-form-label fw-bold small text-secondary">Tempat Lahir <span class="text-danger">*</span></label>
+                            <input type="text" name="tempat_lahir" class="form-control ppdb-input" placeholder="Contoh: Martapura / Banjarmasin" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="ppdb-form-label fw-bold small text-secondary">Tanggal Lahir <span class="text-danger">*</span></label>
+                            <input type="date" name="tanggal_lahir" class="form-control ppdb-input" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="ppdb-form-label fw-bold small text-secondary">Asal Sekolah (SMP / MTs) <span class="text-danger">*</span></label>
+                            <input type="text" name="asal_sekolah" class="form-control ppdb-input" placeholder="Contoh: MTsN 1 Banjar / SMPN 2 Martapura" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="ppdb-form-label fw-bold small text-secondary">Jalur Pendaftaran <span class="text-danger">*</span></label>
+                            <select name="jalur_pendaftaran" class="form-select ppdb-select" required>
+                                <option value="Reguler">Jalur Reguler / Umum</option>
+                                <option value="Prestasi">Jalur Prestasi (Akademik / Non-Akademik)</option>
+                                <option value="Tahfidz">Jalur Tahfidz Al-Qur'an</option>
+                                <option value="Afirmasi">Jalur Afirmasi (KIP / PKH / KKS)</option>
+                            </select>
+                        </div>
+
+                        <!-- Data Kontak & Akun -->
+                        <div class="col-12 mt-4">
+                            <div class="p-2 px-3 rounded-3 bg-light border-start border-4 border-success mb-2">
+                                <span class="fw-bold small text-success"><i class="bi bi-telephone-inbound me-1"></i> Data Kontak, Orang Tua &amp; Keamanan Akun</span>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- STEP 3 -->
-                    <div class="wizard-step" id="step3">
-                        <h6 class="fw-bold mb-3" style="color: #059669;"><i class="bi bi-shield-lock me-1"></i> Langkah 3: Kontak & Password</h6>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="ppdb-form-label">Nama Ayah / Ibu / Wali</label>
-                                <input type="text" id="w_ortu" name="nama_ortu" class="form-control ppdb-input" placeholder="Nama lengkap orang tua/wali" required>
+                        <div class="col-md-6">
+                            <label class="ppdb-form-label fw-bold small text-secondary">Nama Orang Tua / Wali <span class="text-danger">*</span></label>
+                            <input type="text" name="nama_ortu" class="form-control ppdb-input" placeholder="Nama lengkap ayah/ibu/wali" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="ppdb-form-label fw-bold small text-secondary">Nomor WhatsApp / HP Aktif <span class="text-danger">*</span></label>
+                            <input type="text" name="no_hp" class="form-control ppdb-input" placeholder="Contoh: 081234567890" required maxlength="15" pattern="[0-9]{10,15}" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,15)">
+                            <div class="form-text text-muted" style="font-size: 11.5px;">Untuk menerima notifikasi status verifikasi &amp; jadwal tes.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="ppdb-form-label fw-bold small text-secondary">Alamat Email (Opsional)</label>
+                            <input type="email" name="email" class="form-control ppdb-input" placeholder="contoh: siswa@gmail.com">
+                            <div class="form-text text-muted" style="font-size: 11.5px;">Boleh dikosongkan jika belum memiliki email.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="ppdb-form-label fw-bold small text-secondary">Buat Password Akun <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="password" id="inputRegPassword" name="password" class="form-control ppdb-input" placeholder="Minimal 6 karakter" required minlength="6">
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('inputRegPassword', this)">
+                                    <i class="bi bi-eye"></i>
+                                </button>
                             </div>
-                            <div class="col-md-6">
-                                <label class="ppdb-form-label">Nomor WhatsApp / HP Aktif</label>
-                                <input type="text" id="w_hp" name="no_hp" class="form-control ppdb-input" placeholder="08xxxxxxxxxx" required maxlength="15" pattern="[0-9]{10,15}" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,15)">
-                            </div>
-                            <div class="col-md-12">
-                                <label class="ppdb-form-label">Password Akun Pendaftaran</label>
-                                <input type="password" id="w_pass" name="password" class="form-control ppdb-input" placeholder="Minimal 6 karakter" required minlength="6">
-                                <div class="form-text">Gunakan password yang mudah diingat untuk login ke dashboard pendaftar.</div>
-                            </div>
+                            <div class="form-text text-muted" style="font-size: 11.5px;">Buat password yang mudah Anda ingat.</div>
                         </div>
                     </div>
-
                 </div>
 
-                <div class="modal-footer ppdb-modal-footer d-flex justify-content-between">
-                    <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" id="btnPrev" style="display:none;">
-                        ← Kembali
+                <div class="modal-footer px-4 py-3 bg-light border-top d-flex justify-content-between">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-success rounded-pill px-4 py-2 fw-bold shadow-sm" style="background:#059669; border-color:#059669; font-size: 15px;">
+                        <i class="bi bi-check-circle-fill me-1"></i> Daftar Sekarang (Buat Akun)
                     </button>
-                    <div>
-                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal" id="btnCancel">Batal</button>
-                        <button type="button" class="btn btn-primary rounded-pill px-4 fw-bold" id="btnNext" style="background:#059669; border-color:#059669;">Lanjut →</button>
-                        <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold" id="btnSubmit" style="display:none; background:#16a34a; border-color:#16a34a;">Buat Akun Sekarang</button>
-                    </div>
                 </div>
 
             </form>
@@ -1707,6 +1695,18 @@ document.addEventListener('DOMContentLoaded', function(){
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'bi bi-eye-slash';
+    } else {
+        input.type = 'password';
+        icon.className = 'bi bi-eye';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
 
     /* ─── Navbar scroll effect ─── */
@@ -1731,84 +1731,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-
-    /* ─── Wizard ─── */
-    let currentStep = 1;
-    const totalSteps = 3;
-    const btnNext = document.getElementById('btnNext');
-    const btnPrev = document.getElementById('btnPrev');
-    const btnSubmit = document.getElementById('btnSubmit');
-    const btnCancel = document.getElementById('btnCancel');
-    const progressBar = document.getElementById('wizardProgress');
-    const dots = document.querySelectorAll('.wizard-dot');
-
-    function updateWizard() {
-        document.querySelectorAll('.wizard-step').forEach(function(el, i) {
-            el.classList.toggle('active', i + 1 === currentStep);
-        });
-        dots.forEach(function(dot, i) {
-            const s = i + 1;
-            if(s < currentStep) { dot.classList.add('completed'); dot.classList.remove('active'); dot.innerHTML = '✓'; }
-            else if(s === currentStep) { dot.classList.add('active'); dot.classList.remove('completed'); dot.innerHTML = s; }
-            else { dot.classList.remove('active','completed'); dot.innerHTML = s; }
-        });
-        if(progressBar) {
-            progressBar.style.width = ((currentStep - 1) / (totalSteps - 1)) * 100 + '%';
-        }
-        if(btnPrev) btnPrev.style.display = currentStep > 1 ? 'inline-block' : 'none';
-        if(btnCancel) btnCancel.style.display = currentStep === 1 ? 'inline-block' : 'none';
-        if(currentStep === totalSteps) { 
-            if(btnNext) btnNext.style.display = 'none'; 
-            if(btnSubmit) btnSubmit.style.display = 'inline-block'; 
-        } else { 
-            if(btnNext) btnNext.style.display = 'inline-block'; 
-            if(btnSubmit) btnSubmit.style.display = 'none'; 
-        }
-    }
-
-    function validateStep(step) {
-        let valid = true, msg = '';
-        if(step === 1) {
-            const n = document.getElementById('w_nama') ? document.getElementById('w_nama').value.trim() : '';
-            const ni = document.getElementById('w_nisn') ? document.getElementById('w_nisn').value.trim() : '';
-            const jk = document.getElementById('w_jk') ? document.getElementById('w_jk').value : '';
-            if(n.length < 3) { valid = false; msg = 'Nama lengkap minimal 3 karakter'; }
-            else if(ni.length !== 10) { valid = false; msg = 'NISN harus 10 digit angka'; }
-            else if(jk === '') { valid = false; msg = 'Pilih jenis kelamin'; }
-        } else if(step === 2) {
-            const t = document.getElementById('w_tempat') ? document.getElementById('w_tempat').value.trim() : '';
-            const d = document.getElementById('w_tanggal') ? document.getElementById('w_tanggal').value : '';
-            const s = document.getElementById('w_sekolah') ? document.getElementById('w_sekolah').value.trim() : '';
-            if(!t || !d || !s) { valid = false; msg = 'Mohon lengkapi semua data pada langkah ini'; }
-        }
-        if(!valid && msg) {
-            Swal.fire({ icon:'warning', title:'Data Belum Lengkap', text: msg, confirmButtonColor:'#059669' });
-        }
-        return valid;
-    }
-
-    if(btnNext) { 
-        btnNext.addEventListener('click', function() { 
-            if(validateStep(currentStep)) { 
-                currentStep++; 
-                updateWizard(); 
-            } 
-        }); 
-    }
-    if(btnPrev) { 
-        btnPrev.addEventListener('click', function() { 
-            currentStep--; 
-            updateWizard(); 
-        }); 
-    }
-
-    const modalEl = document.getElementById('modalDaftarPpdb');
-    if(modalEl) { 
-        modalEl.addEventListener('show.bs.modal', function() { 
-            currentStep = 1; 
-            updateWizard(); 
-        }); 
-    }
 });
 </script>
 

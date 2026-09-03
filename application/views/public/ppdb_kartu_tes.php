@@ -364,15 +364,12 @@
                     <tr>
                         <td class="label">Jalur Pendaftaran</td>
                         <td class="colon">:</td>
-                        <td class="value"><span style="color: #059669;"><?= htmlspecialchars($siswa->jalur_pendaftaran ?? 'Reguler', ENT_QUOTES, 'UTF-8') ?></span></td>
+                        <td class="value"><span style="color: #059669; font-weight:800;"><?= htmlspecialchars($siswa->jalur_pendaftaran ?? 'Reguler', ENT_QUOTES, 'UTF-8') ?></span> (Kelas X - Fase E Umum)</td>
                     </tr>
                     <tr>
-                        <td class="label">Pilihan Peminatan (Jurusan)</td>
+                        <td class="label">No. WhatsApp / Email</td>
                         <td class="colon">:</td>
-                        <td class="value">
-                            <strong>1. <?= htmlspecialchars($siswa->pilihan_jurusan_1 ?? 'MIPA', ENT_QUOTES, 'UTF-8') ?></strong> &nbsp;|&nbsp; 
-                            2. <?= htmlspecialchars($siswa->pilihan_jurusan_2 ?? 'IPS', ENT_QUOTES, 'UTF-8') ?>
-                        </td>
+                        <td class="value"><?= htmlspecialchars($siswa->no_hp ?? '-', ENT_QUOTES, 'UTF-8') ?><?= !empty($siswa->email) ? ' &bull; ' . htmlspecialchars($siswa->email, ENT_QUOTES, 'UTF-8') : '' ?></td>
                     </tr>
                 </table>
             </div>

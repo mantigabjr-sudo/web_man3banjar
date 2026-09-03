@@ -455,8 +455,9 @@ class Api_sync extends CI_Controller {
 
         $ppdb_fields = [
             'jalur_pendaftaran' => "VARCHAR(50) NULL DEFAULT 'Reguler' AFTER asal_sekolah",
-            'pilihan_jurusan_1' => "VARCHAR(50) NULL DEFAULT 'MIPA' AFTER jalur_pendaftaran",
-            'pilihan_jurusan_2' => "VARCHAR(50) NULL DEFAULT 'IPS' AFTER pilihan_jurusan_1",
+            'pilihan_jurusan_1' => "VARCHAR(50) NULL DEFAULT 'Umum' AFTER jalur_pendaftaran",
+            'pilihan_jurusan_2' => "VARCHAR(50) NULL DEFAULT '-' AFTER pilihan_jurusan_1",
+            'email'             => "VARCHAR(100) NULL AFTER no_hp",
             'no_peserta_tes'    => "VARCHAR(50) NULL AFTER status",
             'tanggal_tes'       => "DATE NULL AFTER no_peserta_tes",
             'jam_tes'           => "VARCHAR(50) NULL AFTER tanggal_tes",
