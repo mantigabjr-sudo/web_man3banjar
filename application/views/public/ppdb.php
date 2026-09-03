@@ -870,8 +870,8 @@ a { text-decoration: none; color: inherit; }
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 38px;
-        height: 38px;
+        width: 40px;
+        height: 40px;
         border-radius: 10px;
         background: var(--c-slate-100);
         color: var(--c-slate-700);
@@ -883,69 +883,34 @@ a { text-decoration: none; color: inherit; }
         background: var(--c-emerald-50);
         color: #059669;
     }
-    .nav-mobile-menu-wrapper {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background: #ffffff;
-        border-top: 1px solid var(--c-slate-200);
-        border-bottom: 2px solid #059669;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
-        z-index: 1050;
-    }
-    .nav-mobile-menu-wrapper.show {
-        display: block;
-        animation: ppdbMenuFade .25s ease forwards;
-    }
-    @keyframes ppdbMenuFade {
-        from { opacity: 0; transform: translateY(-8px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .nav-mobile-menu-inner {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        padding: 16px 14px 20px;
-    }
-    .mobile-nav-link {
-        padding: 12px 16px;
-        border-radius: var(--radius-sm);
-        font-weight: 600;
-        font-size: 14px;
-        color: var(--c-slate-800);
-        text-align: left;
-        background: #f8fafc;
-        border: 1px solid #f1f5f9;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        transition: all .2s;
-    }
-    .mobile-nav-link:hover { 
-        background: var(--c-emerald-50); 
-        color: #059669;
-        border-color: #a7f3d0;
-    }
-    .mobile-btn-daftar {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        padding: 13px 16px;
-        border-radius: var(--radius-sm);
-        font-weight: 800;
-        font-size: 14px;
-        color: #ffffff !important;
-        background: linear-gradient(135deg, #059669, #10b981);
-        border: none;
-        box-shadow: 0 4px 12px rgba(5,150,105,0.25);
-        margin-bottom: 4px;
-        width: 100%;
-    }
 }
+
+.ppdb-offcanvas {
+    max-width: 330px !important;
+    border-left: 3px solid #059669 !important;
+    background: #ffffff;
+    z-index: 1060;
+}
+.offcanvas-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #334155;
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    transition: all .2s;
+    text-decoration: none;
+}
+.offcanvas-nav-item:hover {
+    background: #ecfdf5;
+    color: #059669;
+    border-color: #a7f3d0;
+}
+
 @media (max-width: 768px) {
     .ppdb-topbar-inner {
         justify-content: center;
@@ -1095,30 +1060,66 @@ a { text-decoration: none; color: inherit; }
             <?php endif; ?>
         </div>
 
-        <button class="nav-mobile-toggle" id="navToggle" aria-label="Buka Menu Navigasi">
-            <i class="bi bi-list" id="navToggleIcon"></i>
+        <button class="nav-mobile-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#ppdbOffcanvasNav" aria-controls="ppdbOffcanvasNav" aria-label="Buka Menu Navigasi">
+            <i class="bi bi-list fs-4"></i>
         </button>
     </div>
+</nav>
 
-    <!-- Mobile Dropdown Menu dengan Solid Background -->
-    <div class="nav-mobile-menu-wrapper" id="navMobileMenu">
-        <div class="container">
-            <div class="nav-mobile-menu-inner">
-                <?php if($is_open): ?>
-                    <button type="button" class="mobile-btn-daftar" data-bs-toggle="modal" data-bs-target="#modalDaftarPpdb" onclick="document.getElementById('navMobileMenu').classList.remove('show'); document.getElementById('navToggleIcon').className='bi bi-list';">
-                        <i class="bi bi-pencil-square"></i> Form Pendaftaran Baru
-                    </button>
-                <?php endif; ?>
-                <a href="<?= base_url('ppdb/login') ?>" class="mobile-nav-link text-primary fw-bold"><i class="bi bi-box-arrow-in-right fs-5"></i> Login Akun Peserta</a>
-                <a href="#informasi" class="mobile-nav-link" onclick="document.getElementById('navMobileMenu').classList.remove('show'); document.getElementById('navToggleIcon').className='bi bi-list';"><i class="bi bi-info-circle fs-5 text-success"></i> Informasi Pendaftaran</a>
-                <a href="#alur" class="mobile-nav-link" onclick="document.getElementById('navMobileMenu').classList.remove('show'); document.getElementById('navToggleIcon').className='bi bi-list';"><i class="bi bi-diagram-3 fs-5 text-success"></i> Alur Pendaftaran</a>
-                <a href="#persyaratan" class="mobile-nav-link" onclick="document.getElementById('navMobileMenu').classList.remove('show'); document.getElementById('navToggleIcon').className='bi bi-list';"><i class="bi bi-card-checklist fs-5 text-success"></i> Persyaratan Berkas</a>
-                <a href="#faq" class="mobile-nav-link" onclick="document.getElementById('navMobileMenu').classList.remove('show'); document.getElementById('navToggleIcon').className='bi bi-list';"><i class="bi bi-question-circle fs-5 text-success"></i> FAQ / Tanya Jawab</a>
-                <a href="<?= base_url() ?>" class="mobile-nav-link text-secondary"><i class="bi bi-arrow-left fs-5"></i> Kembali ke Website Utama</a>
+<!-- ═══ OFFCANVAS MOBILE DRAWER MENU ═══ -->
+<div class="offcanvas offcanvas-end ppdb-offcanvas" tabindex="-1" id="ppdbOffcanvasNav" aria-labelledby="ppdbOffcanvasLabel">
+    <div class="offcanvas-header border-bottom py-3" style="background: #022c22; color: #fff;">
+        <div class="d-flex align-items-center gap-3">
+            <div class="nav-brand-logo bg-white p-1" style="width: 38px; height: 38px; border-radius: 50%;">
+                <img src="<?= base_url('assets/img/logo-madrasah.png') ?>" alt="Logo <?= $nama_madrasah ?>" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2997/2997295.png'" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+            <div>
+                <h6 class="offcanvas-title fw-bold mb-0 text-white" id="ppdbOffcanvasLabel" style="font-size: 14px;"><?= $nama ?> <?= $nama_madrasah ?></h6>
+                <small class="text-white-50" style="font-size: 11px;">Tahun Ajaran <?= $ta ?></small>
             </div>
         </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Tutup"></button>
     </div>
-</nav>
+    <div class="offcanvas-body p-3 d-flex flex-column justify-content-between">
+        <div class="d-flex flex-column gap-2">
+            <?php if($is_open): ?>
+                <button type="button" class="btn btn-success fw-bold py-3 mb-2 rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2" style="background: linear-gradient(135deg, #059669, #10b981); border: 0; font-size: 14px;" data-bs-dismiss="offcanvas" data-bs-toggle="modal" data-bs-target="#modalDaftarPpdb">
+                    <i class="bi bi-pencil-square fs-5"></i> Form Pendaftaran Baru
+                </button>
+            <?php endif; ?>
+
+            <a href="<?= base_url('ppdb/login') ?>" class="offcanvas-nav-item text-primary fw-bold" style="background: #eff6ff; border-color: #bfdbfe;">
+                <i class="bi bi-box-arrow-in-right fs-5 text-primary"></i> Login Akun Peserta
+            </a>
+
+            <div class="my-1 border-top"></div>
+
+            <a href="#informasi" class="offcanvas-nav-item" data-bs-dismiss="offcanvas">
+                <i class="bi bi-info-circle fs-5 text-success"></i> Informasi Pendaftaran
+            </a>
+            <a href="#alur" class="offcanvas-nav-item" data-bs-dismiss="offcanvas">
+                <i class="bi bi-diagram-3 fs-5 text-success"></i> Alur Pendaftaran
+            </a>
+            <a href="#persyaratan" class="offcanvas-nav-item" data-bs-dismiss="offcanvas">
+                <i class="bi bi-card-checklist fs-5 text-success"></i> Persyaratan Berkas
+            </a>
+            <a href="#faq" class="offcanvas-nav-item" data-bs-dismiss="offcanvas">
+                <i class="bi bi-question-circle fs-5 text-success"></i> FAQ / Tanya Jawab
+            </a>
+
+            <div class="my-1 border-top"></div>
+
+            <a href="<?= base_url() ?>" class="offcanvas-nav-item text-secondary">
+                <i class="bi bi-arrow-left fs-5"></i> Kembali ke Web Utama
+            </a>
+        </div>
+
+        <div class="pt-3 border-top text-center text-muted" style="font-size: 11.5px;">
+            <div class="fw-bold text-dark mb-1"><?= $nama_madrasah ?></div>
+            <div>Sistem Digital Terpadu LabSys</div>
+        </div>
+    </div>
+</div>
 
 <!-- ═══ HERO ═══ -->
 <header class="hero">
@@ -1604,26 +1605,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if(nav) {
         window.addEventListener('scroll', function() {
             nav.classList.toggle('scrolled', window.scrollY > 10);
-        });
-    }
-
-    /* ─── Mobile nav toggle ─── */
-    const toggle = document.getElementById('navToggle');
-    const mobileMenu = document.getElementById('navMobileMenu');
-    const icon = document.getElementById('navToggleIcon');
-    if(toggle && mobileMenu) {
-        toggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const isOpen = mobileMenu.classList.toggle('show');
-            if(icon) {
-                icon.className = isOpen ? 'bi bi-x-lg' : 'bi bi-list';
-            }
-        });
-        document.addEventListener('click', function(e) {
-            if(!mobileMenu.contains(e.target) && !toggle.contains(e.target)) {
-                mobileMenu.classList.remove('show');
-                if(icon) icon.className = 'bi bi-list';
-            }
         });
     }
 
