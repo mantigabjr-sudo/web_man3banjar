@@ -1202,33 +1202,39 @@ a { text-decoration: none; color: inherit; }
     <div class="container">
         <div class="section-head">
             <div class="section-tag"><i class="bi bi-signpost-split"></i> Alur Pendaftaran</div>
-            <h2>4 Langkah Mudah Menjadi Santri / Siswa</h2>
-            <p>Ikuti tahapan alur penerimaan peserta didik baru berikut ini dengan cermat.</p>
+            <h2>5 Tahap Menjadi Siswa <?= $nama_madrasah ?></h2>
+            <p>Proses seleksi penerimaan murid baru dilaksanakan secara terstruktur, transparan, dan berbasis sistem digital terpadu.</p>
         </div>
 
         <div class="timeline">
             <div class="timeline-item">
                 <div class="timeline-dot">1</div>
-                <h5>1. Buat Akun Registrasi Awal</h5>
-                <p>Klik tombol <strong>"Daftar Sekarang"</strong> pada halaman ini, lalu isikan data pokok: Nama Lengkap, NISN (10 Digit), Tempat/Tanggal Lahir, Asal Sekolah, No. HP/WhatsApp, dan Buat Password Akun.</p>
+                <h5>1. Registrasi Akun &amp; Pilih Jurusan</h5>
+                <p>Klik tombol <strong>"Daftar Sekarang"</strong> untuk membuat akun pendaftaran. Isikan data pokok diri, tentukan <strong>Jalur Pendaftaran</strong> (Reguler, Prestasi, Tahfidz, Afirmasi), serta <strong>Pilihan Peminatan/Jurusan 1 &amp; 2</strong> (MIPA, IPS, Keagamaan).</p>
             </div>
 
             <div class="timeline-item">
                 <div class="timeline-dot">2</div>
-                <h5>2. Login ke Dashboard Peserta</h5>
-                <p>Gunakan <strong>NISN</strong> dan <strong>Password</strong> yang telah Anda daftarkan untuk masuk ke portal akun peserta PPDB Anda.</p>
+                <h5>2. Lengkapi Biodata &amp; Unggah Dokumen Digital</h5>
+                <p>Login ke <strong>Dashboard Peserta</strong> menggunakan NISN dan Password. Lengkapi formulir biodata keluarga, alamat, dan unggah scan/foto dokumen wajib (Pas Foto, KK, Akta Kelahiran, Surat Keterangan Kelas 9 / SKL, serta Sertifikat Prestasi/Tahfidz jika ada).</p>
             </div>
 
             <div class="timeline-item">
                 <div class="timeline-dot">3</div>
-                <h5>3. Lengkapi Biodata & Unggah Berkas</h5>
-                <p>Isi formulir biodata lengkap (data orang tua, alamat tempat tinggal, nilai) dan unggah foto/scan berkas wajib seperti Kartu Keluarga, Akta Kelahiran, dan Ijazah/SKL.</p>
+                <h5>3. Verifikasi Panitia &amp; Penetapan Jadwal Tes</h5>
+                <p>Tim panitia madrasah melakukan verifikasi keabsahan dokumen yang diunggah. Peserta yang dinyatakan <strong>Lulus Verifikasi</strong> akan langsung memperoleh <strong>Nomor Peserta Ujian Resmi</strong> dan jadwal tes seleksi.</p>
             </div>
 
             <div class="timeline-item">
                 <div class="timeline-dot">4</div>
-                <h5>4. Verifikasi Panitia & Cetak Kartu</h5>
-                <p>Panitia akan memverifikasi kelengkapan dokumen Anda. Setelah dinyatakan lengkap dan valid, Anda dapat langsung mengunduh dan mencetak <strong>Kartu Pendaftaran Resmi</strong>.</p>
+                <h5>4. Cetak Kartu Peserta &amp; Ikuti Ujian Seleksi</h5>
+                <p>Unduh dan cetak <strong>Kartu Tanda Peserta Ujian</strong> ber-QR code dari dashboard. Hadir di kampus <?= $nama_madrasah ?> sesuai jadwal untuk mengikuti seleksi (Tes Potensi Akademik, Baca Tulis Al-Qur'an / BTQ, dan Wawancara).</p>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot">5</div>
+                <h5>5. Pengumuman Kelulusan &amp; Daftar Ulang</h5>
+                <p>Pengumuman kelulusan akhir dapat dipantau langsung di Dashboard Akun Peserta. Peserta yang dinyatakan <strong>Diterima</strong> dapat segera melakukan proses registrasi / daftar ulang administrasi di madrasah.</p>
             </div>
         </div>
     </div>
@@ -1250,22 +1256,100 @@ a { text-decoration: none; color: inherit; }
 </section>
 <?php endif; ?>
 
-<!-- ═══ PERSYARATAN BERKAS ═══ -->
+<!-- ═══ PERSYARATAN BERKAS & DOKUMEN ═══ -->
 <section class="section <?= empty($settings->pamflet_ppdb) ? 'section-alt' : '' ?>" id="persyaratan">
     <div class="container">
         <div class="section-head">
             <div class="section-tag"><i class="bi bi-clipboard-check"></i> Persyaratan Berkas</div>
-            <h2>Dokumen yang Perlu Disiapkan</h2>
-            <p>Pastikan Anda telah menyiapkan dokumen-dokumen berikut sebelum mengisi biodata lengkap di dashboard.</p>
+            <h2>Dokumen yang Wajib Disiapkan</h2>
+            <p>Pastikan Anda menyiapkan dokumen fisik maupun format digital (Foto/Scan JPG, PNG, PDF maks 2MB) sebelum melengkapi berkas di dashboard pendaftar.</p>
         </div>
 
-        <div class="req-grid">
-            <?php foreach($syarat_list as $syarat): ?>
-            <div class="req-item">
-                <div class="req-check"><i class="bi bi-check-lg"></i></div>
-                <span><?= htmlspecialchars($syarat) ?></span>
+        <div class="row g-4 justify-content-center">
+            <!-- Dokumen Wajib Umum -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 h-100 p-4" style="background: #ffffff; border: 1.5px solid #e2e8f0 !important;">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="badge bg-success py-2 px-3 rounded-pill fw-bold" style="font-size: 13px;"><i class="bi bi-star-fill me-1"></i> DOKUMEN WAJIB (SEMUA JALUR)</span>
+                    </div>
+                    <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+                        <li class="d-flex align-items-start gap-3">
+                            <div class="req-check" style="background:#059669; width:28px; height:28px; font-size:14px;"><i class="bi bi-check-lg"></i></div>
+                            <div>
+                                <strong class="text-dark d-block">Pas Foto Formal Berwarna 3x4</strong>
+                                <small class="text-muted">Terbaru dengan latar belakang (background) merah atau biru (format JPG/PNG maks 2MB).</small>
+                            </div>
+                        </li>
+                        <li class="d-flex align-items-start gap-3">
+                            <div class="req-check" style="background:#059669; width:28px; height:28px; font-size:14px;"><i class="bi bi-check-lg"></i></div>
+                            <div>
+                                <strong class="text-dark d-block">Kartu Keluarga (KK)</strong>
+                                <small class="text-muted">Scan / foto asli atau fotokopi yang jelas dan terbaca Nomor KK serta NIK keluarga.</small>
+                            </div>
+                        </li>
+                        <li class="d-flex align-items-start gap-3">
+                            <div class="req-check" style="background:#059669; width:28px; height:28px; font-size:14px;"><i class="bi bi-check-lg"></i></div>
+                            <div>
+                                <strong class="text-dark d-block">Akta Kelahiran Calon Siswa</strong>
+                                <small class="text-muted">Scan / foto asli atau fotokopi Akta Kelahiran calon peserta didik baru.</small>
+                            </div>
+                        </li>
+                        <li class="d-flex align-items-start gap-3">
+                            <div class="req-check" style="background:#059669; width:28px; height:28px; font-size:14px;"><i class="bi bi-check-lg"></i></div>
+                            <div>
+                                <strong class="text-dark d-block">Surat Keterangan Kelas 9 / SKL / Ijazah</strong>
+                                <small class="text-muted">Surat Keterangan Aktif Siswa Kelas 9 dari SMP/MTs asal, atau Surat Keterangan Lulus (SKL) / Ijazah jika sudah terbit.</small>
+                            </div>
+                        </li>
+                        <li class="d-flex align-items-start gap-3">
+                            <div class="req-check" style="background:#059669; width:28px; height:28px; font-size:14px;"><i class="bi bi-check-lg"></i></div>
+                            <div>
+                                <strong class="text-dark d-block">Nomor Induk Siswa Nasional (NISN)</strong>
+                                <small class="text-muted">NISN 10 digit yang valid dan aktif terdaftar di data EMIS / Dapodik Kemdikbud.</small>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <?php endforeach; ?>
+
+            <!-- Dokumen Khusus Berdasarkan Jalur -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 h-100 p-4" style="background: #f8fafc; border: 1.5px solid #cbd5e1 !important;">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="badge bg-primary py-2 px-3 rounded-pill fw-bold" style="font-size: 13px;"><i class="bi bi-award-fill me-1"></i> DOKUMEN KHUSUS BERDASARKAN JALUR</span>
+                    </div>
+                    <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+                        <li class="d-flex align-items-start gap-3">
+                            <div class="req-check" style="background:#0284c7; width:28px; height:28px; font-size:14px;"><i class="bi bi-trophy-fill"></i></div>
+                            <div>
+                                <strong class="text-dark d-block">Jalur Prestasi (Akademik &amp; Non-Akademik)</strong>
+                                <small class="text-muted">Sertifikat / Piagam Juara Lomba (KSM, OSN, O2SN, FLS2N, MTQ, Pramuka, Olahraga, Seni) minimal tingkat Kabupaten/Kota atau Provinsi/Nasional.</small>
+                            </div>
+                        </li>
+                        <li class="d-flex align-items-start gap-3">
+                            <div class="req-check" style="background:#0d9488; width:28px; height:28px; font-size:14px;"><i class="bi bi-book-half"></i></div>
+                            <div>
+                                <strong class="text-dark d-block">Jalur Tahfidz Al-Qur'an</strong>
+                                <small class="text-muted">Syahadah / Piagam / Surat Keterangan Hafalan Al-Qur'an resmi dari Pondok Pesantren, Lembaga Tahfidz, atau Madrasah asal.</small>
+                            </div>
+                        </li>
+                        <li class="d-flex align-items-start gap-3">
+                            <div class="req-check" style="background:#d97706; width:28px; height:28px; font-size:14px;"><i class="bi bi-people-fill"></i></div>
+                            <div>
+                                <strong class="text-dark d-block">Jalur Afirmasi / KIP</strong>
+                                <small class="text-muted">Kartu Indonesia Pintar (KIP), Kartu Program Keluarga Harapan (PKH), Kartu Keluarga Sejahtera (KKS), atau Surat Keterangan Tidak Mampu (SKTM).</small>
+                            </div>
+                        </li>
+                        <li class="d-flex align-items-start gap-3">
+                            <div class="req-check" style="background:#64748b; width:28px; height:28px; font-size:14px;"><i class="bi bi-info-circle-fill"></i></div>
+                            <div>
+                                <strong class="text-dark d-block">Ketentuan Unggah File</strong>
+                                <small class="text-muted">Format file yang didukung adalah <strong>JPG, PNG, atau PDF</strong> dengan ukuran maksimal <strong>2 MB</strong> per file. Pastikan dokumen tidak buram/terpotong.</small>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </section>
