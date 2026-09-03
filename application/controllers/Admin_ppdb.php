@@ -62,6 +62,7 @@ class Admin_ppdb extends CI_Controller {
     $data['lengkapi'] = $this->count_status('Lengkapi Biodata');
     $data['upload'] = $this->count_status('Upload Berkas');
     $data['verifikasi'] = $this->count_status('Menunggu Verifikasi Berkas');
+    $data['lulus_verifikasi'] = $this->count_status('Lulus Verifikasi') + $this->count_status('Menuju Tes');
     $data['perbaikan'] = $this->count_status('Perlu Perbaikan');
     $data['diterima'] = $this->count_status('Diterima');
     $data['ditolak'] = $this->count_status('Ditolak');
@@ -79,7 +80,7 @@ class Admin_ppdb extends CI_Controller {
 
     $data['terbaru'] = $this->db
         ->order_by('created_at','DESC')
-        ->limit(5)
+        ->limit(8)
         ->get('ppdb')
         ->result();
 
@@ -101,12 +102,20 @@ class Admin_ppdb extends CI_Controller {
 		$this->load_list('Verifikasi Berkas', ['status'=>'Menunggu Verifikasi Berkas']);
 	}
 
-	public function diterima_page(){
+	public function diterima(){
 		$this->load_list('Peserta Diterima', ['status'=>'Diterima']);
 	}
 
-	public function ditolak_page(){
+	public function ditolak(){
 		$this->load_list('Peserta Ditolak', ['status'=>'Ditolak']);
+	}
+
+	public function diterima_page(){
+		$this->diterima();
+	}
+
+	public function ditolak_page(){
+		$this->ditolak();
 	}
 
 	public function migrasi_data(){

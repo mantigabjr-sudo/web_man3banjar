@@ -18,27 +18,46 @@
 </div>
 <?php endif; ?>
 
-<div class="card p-4 mb-4">
+<div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white" style="border: 1px solid #e2e8f0 !important;">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <!-- Tab Status Filter -->
+        <div class="d-flex flex-wrap gap-2">
+            <a href="<?= base_url('admin_ppdb') ?>" class="btn btn-sm rounded-pill fw-bold <?= empty($status_filter) ? 'btn-success' : 'btn-light border' ?>">
+                Semua
+            </a>
+            <a href="<?= base_url('admin_ppdb?status=Lengkapi Biodata') ?>" class="btn btn-sm rounded-pill fw-bold <?= $status_filter == 'Lengkapi Biodata' ? 'btn-warning text-dark' : 'btn-light border' ?>">
+                Lengkapi Biodata
+            </a>
+            <a href="<?= base_url('admin_ppdb?status=Upload Berkas') ?>" class="btn btn-sm rounded-pill fw-bold <?= $status_filter == 'Upload Berkas' ? 'btn-info text-dark' : 'btn-light border' ?>">
+                Upload Berkas
+            </a>
+            <a href="<?= base_url('admin_ppdb/verifikasi') ?>" class="btn btn-sm rounded-pill fw-bold <?= $status_filter == 'Menunggu Verifikasi Berkas' ? 'btn-primary' : 'btn-light border' ?>">
+                ⏳ Menunggu Verifikasi
+            </a>
+            <a href="<?= base_url('admin_ppdb?status=Lulus Verifikasi') ?>" class="btn btn-sm rounded-pill fw-bold <?= $status_filter == 'Lulus Verifikasi' ? 'btn-success' : 'btn-light border' ?>">
+                ✓ Lulus Verifikasi (Tes)
+            </a>
+            <a href="<?= base_url('admin_ppdb?status=Perlu Perbaikan') ?>" class="btn btn-sm rounded-pill fw-bold <?= $status_filter == 'Perlu Perbaikan' ? 'btn-warning text-dark' : 'btn-light border' ?>">
+                ⚠️ Perlu Perbaikan
+            </a>
+            <a href="<?= base_url('admin_ppdb/diterima') ?>" class="btn btn-sm rounded-pill fw-bold <?= $status_filter == 'Diterima' ? 'btn-success' : 'btn-light border' ?>">
+                ★ Diterima
+            </a>
+            <a href="<?= base_url('admin_ppdb/ditolak') ?>" class="btn btn-sm rounded-pill fw-bold <?= $status_filter == 'Ditolak' ? 'btn-danger' : 'btn-light border' ?>">
+                ✗ Ditolak
+            </a>
+        </div>
 
-<div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-    <div class="d-flex flex-wrap gap-2">
-        <a href="<?= base_url('admin_ppdb') ?>" class="btn btn-outline-success btn-sm">Semua</a>
-        <a href="<?= base_url('admin_ppdb?status=Lengkapi Biodata') ?>" class="btn btn-outline-warning btn-sm">Lengkapi Biodata</a>
-        <a href="<?= base_url('admin_ppdb?status=Upload Berkas') ?>" class="btn btn-outline-info btn-sm">Upload Berkas</a>
-        <a href="<?= base_url('admin_ppdb/verifikasi') ?>" class="btn btn-outline-primary btn-sm">Menunggu Verifikasi</a>
-        <a href="<?= base_url('admin_ppdb?status=Perlu Perbaikan') ?>" class="btn btn-outline-warning btn-sm">Perlu Perbaikan</a>
-        <a href="<?= base_url('admin_ppdb/diterima') ?>" class="btn btn-outline-success btn-sm">Diterima</a>
-        <a href="<?= base_url('admin_ppdb/ditolak') ?>" class="btn btn-outline-danger btn-sm">Ditolak</a>
+        <!-- Tombol Aksi Cloud & Export -->
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary btn-sm fw-bold shadow-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#modalSyncCloud">
+                <i class="bi bi-cloud-arrow-down-fill me-1"></i> Tarik Cloud
+            </button>
+            <a href="<?= base_url('admin_ppdb/export_all') ?>" class="btn btn-outline-success btn-sm fw-bold rounded-pill px-3">
+                <i class="bi bi-file-earmark-excel-fill me-1"></i> Export Excel
+            </a>
+        </div>
     </div>
-
-    <!-- Tombol Tarik Pendaftar dari DomaiNesia -->
-    <div>
-        <button type="button" class="btn btn-primary btn-sm fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalSyncCloud">
-            <i class="bi bi-cloud-arrow-down-fill me-1"></i> Tarik Pendaftar dari DomaiNesia
-        </button>
-    </div>
-</div>
-
 </div>
 
 <!-- ═══ MODAL SINKRONISASI CLOUD DOMAINESIA ═══ -->
@@ -201,15 +220,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <thead class="table-success">
 <tr>
-    <th>No</th>
-    <th>No Pendaftaran</th>
-    <th>Nama</th>
-    <th>NISN</th>
-    <th>Asal Sekolah</th>
-    <th>Status</th>
-    <th>Hasil Pindai OCR</th>
+    <th style="width: 40px;">No</th>
+    <th>Calon Peserta</th>
+    <th>Jalur &amp; Peminatan</th>
+    <th>Asal Sekolah &amp; Kontak</th>
+    <th>Status Seleksi</th>
+    <th>Hasil Scan OCR</th>
     <th>Migrasi</th>
-    <th>Aksi</th>
+    <th style="min-width: 140px;">Aksi Cepat</th>
 </tr>
 </thead>
 
@@ -218,20 +236,63 @@ document.addEventListener('DOMContentLoaded', function() {
 <?php $no=1; foreach($pendaftar as $p): ?>
 <tr>
     <td><?= $no++ ?></td>
-    <td><?= $p->no_pendaftaran ?></td>
-    <td><?= $p->nama_lengkap ?></td>
-    <td><?= $p->nisn ?></td>
-    <td><?= $p->asal_sekolah ?></td>
+    
+    <td>
+        <strong class="text-dark d-block" style="font-size: 13.5px;"><?= htmlspecialchars($p->nama_lengkap ?? '-') ?></strong>
+        <div class="text-muted small" style="font-size: 11.5px;">
+            <span>NISN: <?= htmlspecialchars($p->nisn ?? '-') ?></span> &bull; 
+            <span>No: <?= htmlspecialchars($p->no_pendaftaran ?? '-') ?></span>
+        </div>
+        <?php if(!empty($p->no_peserta_tes)): ?>
+            <div class="badge bg-success mt-1" style="font-size: 11px;">
+                <i class="bi bi-person-badge"></i> No. Tes: <?= htmlspecialchars($p->no_peserta_tes) ?>
+            </div>
+        <?php endif; ?>
+    </td>
+
+    <td>
+        <span class="badge bg-light text-success border border-success fw-bold d-inline-block mb-1">
+            <?= htmlspecialchars($p->jalur_pendaftaran ?? 'Reguler') ?>
+        </span>
+        <div class="text-dark small fw-semibold" style="font-size: 11.5px;">
+            1. <?= htmlspecialchars($p->pilihan_jurusan_1 ?? 'MIPA') ?><br>
+            <span class="text-muted">2. <?= htmlspecialchars($p->pilihan_jurusan_2 ?? 'IPS') ?></span>
+        </div>
+    </td>
+
+    <td>
+        <div class="fw-semibold text-dark small mb-1"><?= htmlspecialchars($p->asal_sekolah ?? '-') ?></div>
+        <?php 
+        $clean_hp = preg_replace('/[^0-9]/', '', $p->no_hp ?? '');
+        if(substr($clean_hp, 0, 1) === '0') $clean_hp = '62' . substr($clean_hp, 1);
+        ?>
+        <?php if(!empty($clean_hp)): ?>
+            <a href="https://wa.me/<?= $clean_hp ?>" target="_blank" class="badge bg-light text-success border border-success text-decoration-none py-1 px-2">
+                <i class="bi bi-whatsapp"></i> <?= htmlspecialchars($p->no_hp) ?>
+            </a>
+        <?php else: ?>
+            <span class="text-muted small">-</span>
+        <?php endif; ?>
+    </td>
 
     <td>
         <?php if($p->status == 'Diterima'): ?>
-            <span class="badge bg-success">Diterima</span>
+            <span class="badge bg-success py-1 px-2"><i class="bi bi-check-circle-fill me-1"></i> Diterima</span>
         <?php elseif($p->status == 'Ditolak'): ?>
-            <span class="badge bg-danger">Ditolak</span>
+            <span class="badge bg-danger py-1 px-2"><i class="bi bi-x-circle-fill me-1"></i> Ditolak</span>
+        <?php elseif($p->status == 'Lulus Verifikasi' || $p->status == 'Menuju Tes'): ?>
+            <span class="badge bg-success py-1 px-2" style="background:#059669 !important;"><i class="bi bi-calendar-check-fill me-1"></i> Lulus Verifikasi (Tes)</span>
+            <?php if(!empty($p->tanggal_tes)): ?>
+                <div class="text-muted" style="font-size: 10.5px; margin-top: 2px;">
+                    Tes: <?= date('d/m/Y', strtotime($p->tanggal_tes)) ?>
+                </div>
+            <?php endif; ?>
         <?php elseif($p->status == 'Perlu Perbaikan'): ?>
-            <span class="badge bg-warning text-dark">Perlu Perbaikan</span>
+            <span class="badge bg-warning text-dark py-1 px-2"><i class="bi bi-exclamation-triangle-fill me-1"></i> Perlu Perbaikan</span>
+        <?php elseif($p->status == 'Menunggu Verifikasi Berkas'): ?>
+            <span class="badge bg-primary py-1 px-2"><i class="bi bi-hourglass-split me-1"></i> Menunggu Verifikasi</span>
         <?php else: ?>
-            <span class="badge bg-primary"><?= $p->status ?></span>
+            <span class="badge bg-secondary py-1 px-2"><?= htmlspecialchars($p->status) ?></span>
         <?php endif; ?>
     </td>
 
@@ -244,25 +305,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 $ocr_res = json_decode($p->ocr_results_json, true);
                 if($ocr_res): 
             ?>
-                <div style="display:flex; flex-direction:column; gap:6px;">
+                <div style="display:flex; flex-direction:column; gap:4px;">
                 <?php 
-                    $docLabels = ['ijazah'=>'Ijazah', 'kk'=>'KK', 'akta_lahir'=>'Akta Lhr'];
+                    $docLabels = ['ijazah'=>'Ijazah', 'kk'=>'KK', 'akta_lahir'=>'Akta'];
                     foreach($docLabels as $key => $label): 
                         if(isset($ocr_res[$key])): 
                             $doc = $ocr_res[$key];
                 ?>
-                            <div style="background:#f8fafc; padding:4px 6px; border-radius:4px; border:1px solid #e2e8f0; font-size:10.5px;">
-                                <strong class="text-dark d-block mb-1"><?= $label ?></strong>
+                            <div style="background:#f8fafc; padding:3px 5px; border-radius:4px; border:1px solid #e2e8f0; font-size:10px;">
+                                <strong class="text-dark d-block"><?= $label ?></strong>
                                 <?php if($doc['status'] == 'berhasil'): ?>
-                                    <div style="display:flex; gap:6px;">
-                                        <span title="Nama">N: <?= $doc['nama'] ? '<span class="text-success">✓</span>' : '<span class="text-danger">✗</span>' ?></span>
-                                        <span title="NIK">K: <?= $doc['nik'] ? '<span class="text-success">✓</span>' : '<span class="text-danger">✗</span>' ?></span>
-                                        <span title="NISN">S: <?= $doc['nisn'] ? '<span class="text-success">✓</span>' : '<span class="text-danger">✗</span>' ?></span>
+                                    <div style="display:flex; gap:4px;">
+                                        <span title="Nama">N: <?= $doc['nama'] ? '<span class="text-success fw-bold">✓</span>' : '<span class="text-danger">✗</span>' ?></span>
+                                        <span title="NIK/NISN">K: <?= ($doc['nik'] || $doc['nisn']) ? '<span class="text-success fw-bold">✓</span>' : '<span class="text-danger">✗</span>' ?></span>
                                     </div>
                                 <?php elseif($doc['status'] == 'kosong'): ?>
-                                    <span class="text-muted italic">Belum diunggah</span>
+                                    <span class="text-muted">Belum ada</span>
                                 <?php else: ?>
-                                    <span class="text-danger italic">Gagal/Bukan Gambar</span>
+                                    <span class="text-danger">Gagal</span>
                                 <?php endif; ?>
                             </div>
                 <?php 
@@ -272,9 +332,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             <?php endif; ?>
         <?php else: ?>
-            <span class="text-muted d-block mb-2" style="font-size:12px;">Belum discan</span>
+            <span class="text-muted d-block mb-1" style="font-size:11px;">Belum discan</span>
         <?php endif; ?>
-        <button class="btn btn-sm btn-outline-primary mt-2 w-100 py-0 px-2 btn-scan-individual" style="font-size: 11px; border-radius: 6px;" title="Scan OCR pendaftar ini">
+        <button class="btn btn-sm btn-outline-primary mt-1 w-100 py-0 px-1 btn-scan-individual" style="font-size: 10.5px; border-radius: 4px;" title="Scan OCR pendaftar ini">
             <i class="bi bi-search"></i> <?= !empty($p->ocr_scanned_at) ? 'Scan Ulang' : 'Cek OCR' ?>
         </button>
     </td>
@@ -288,62 +348,101 @@ document.addEventListener('DOMContentLoaded', function() {
     </td>
 
     <td>
-        <div class="dropdown">
-            <button class="btn btn-light btn-sm fw-bold border px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 8px;">
-                Aksi
+        <div class="d-flex flex-column gap-1">
+            <!-- Tombol Verifikasi Cepat & Jadwal Tes -->
+            <button type="button" class="btn btn-sm btn-success fw-bold py-1 px-2" style="border-radius: 6px; font-size: 11px;" 
+                    onclick="bukaModalVerifikasi(<?= htmlspecialchars(json_encode($p), ENT_QUOTES, 'UTF-8') ?>)">
+                <i class="bi bi-shield-check"></i> Verifikasi &amp; Jadwal
             </button>
-            <ul class="dropdown-menu shadow-sm" style="border-radius: 12px;">
-                <li>
-                    <a class="dropdown-item" href="<?= base_url('admin_ppdb/detail/'.$p->id) ?>">
-                        <i class="bi bi-eye text-info me-2"></i> Detail / Verifikasi
-                    </a>
-                </li>
-                <?php if($p->status != 'Diterima' && $p->status != 'Ditolak'): ?>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <a class="dropdown-item" href="<?= base_url('admin_ppdb/terima/'.$p->id) ?>" onclick="return confirm('Terima peserta ini?')">
-                        <i class="bi bi-check-circle text-success me-2"></i> Terima
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="<?= base_url('admin_ppdb/tolak/'.$p->id) ?>" onclick="return confirm('Tolak peserta ini?')">
-                        <i class="bi bi-x-circle text-danger me-2"></i> Tolak
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="<?= base_url('admin_ppdb/perbaikan/'.$p->id) ?>" onclick="return confirm('Tandai peserta ini perlu perbaikan?')">
-                        <i class="bi bi-arrow-counterclockwise text-warning me-2"></i> Perlu Perbaikan
-                    </a>
-                </li>
-                <?php endif; ?>
-                
-                <?php if(($p->status == 'Diterima' || $p->status == 'Ditolak') && $p->is_migrated == 0): ?>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <a class="dropdown-item" href="<?= base_url('admin_ppdb/batal_status/'.$p->id) ?>" onclick="return confirm('Batalkan status peserta ini?')">
-                        <i class="bi bi-arrow-left-circle text-secondary me-2"></i> Batal Status
-                    </a>
-                </li>
-                <?php endif; ?>
-                
-                <?php if($p->status == 'Diterima' && $p->is_migrated == 0): ?>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <a class="dropdown-item" href="<?= base_url('admin_ppdb/migrasi/'.$p->id) ?>" onclick="return confirm('Migrasikan ke data siswa?')">
-                        <i class="bi bi-database-add text-primary me-2"></i> Migrasi ke Siswa
-                    </a>
-                </li>
-                <?php endif; ?>
-            </ul>
+
+            <!-- Tombol Cetak Kartu -->
+            <a href="<?= base_url('ppdb/cetak_kartu/'.$p->id) ?>" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2 fw-bold" style="border-radius: 6px; font-size: 11px;">
+                <i class="bi bi-printer"></i> Cetak Kartu
+            </a>
+
+            <!-- Tombol Kirim WhatsApp -->
+            <?php if(!empty($clean_hp)): ?>
+                <button type="button" class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" style="border-radius: 6px; font-size: 11px;"
+                        onclick="kirimWaNotifikasi('<?= $clean_hp ?>', '<?= addslashes($p->nama_lengkap) ?>', '<?= $p->no_pendaftaran ?>', '<?= $p->no_peserta_tes ?? '' ?>', '<?= $p->tanggal_tes ?? '' ?>', '<?= $p->ruang_tes ?? '' ?>', '<?= $p->status ?>')">
+                    <i class="bi bi-whatsapp"></i> Kirim WA
+                </button>
+            <?php endif; ?>
+
+            <a href="<?= base_url('admin_ppdb/detail/'.$p->id) ?>" class="btn btn-sm btn-light border py-1 px-2 text-center text-muted" style="border-radius: 6px; font-size: 11px;">
+                Detail Biodata
+            </a>
         </div>
     </td>
 </tr>
 <?php endforeach; ?>
 
 </tbody>
-
+</tbody>
 </table>
+</div>
+</div>
 
+<!-- Modal Verifikasi & Penetapan Jadwal Tes -->
+<div class="modal fade" id="modalVerifikasiPpdb" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <form method="post" action="<?= base_url('admin_ppdb/proses_verifikasi') ?>">
+                <input type="hidden" name="id" id="mv_id">
+                <input type="hidden" name="redirect_to" value="admin_ppdb">
+
+                <div class="modal-header border-bottom py-3 bg-light" style="border-radius: 16px 16px 0 0;">
+                    <div>
+                        <h6 class="modal-title fw-bold text-success mb-0"><i class="bi bi-shield-check me-1"></i> Verifikasi Berkas &amp; Jadwal Tes</h6>
+                        <small class="text-muted" id="mv_nama_preview">Nama Peserta</small>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-secondary">Status Verifikasi</label>
+                        <select name="status" id="mv_status" class="form-select fw-bold" required onchange="toggleJadwalTes(this.value)">
+                            <option value="Lulus Verifikasi" class="text-success fw-bold">✓ Lulus Verifikasi (Menuju Tes Seleksi)</option>
+                            <option value="Perlu Perbaikan" class="text-warning fw-bold">⚠️ Perlu Perbaikan Berkas</option>
+                            <option value="Menunggu Verifikasi Berkas">⏳ Menunggu Verifikasi</option>
+                            <option value="Diterima" class="text-success fw-bold">★ Diterima (Lulus Final)</option>
+                            <option value="Ditolak" class="text-danger fw-bold">✗ Ditolak</option>
+                        </select>
+                    </div>
+
+                    <div id="boxJadwalTes" class="p-3 border rounded-3 bg-light mb-3">
+                        <div class="fw-bold text-dark small mb-2"><i class="bi bi-calendar-check text-success me-1"></i> Jadwal Ujian (Otomatis Diterbitkan ke Kartu)</div>
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <label class="form-label small mb-1 text-secondary">Tanggal Tes Seleksi</label>
+                                <input type="date" name="tanggal_tes" id="mv_tanggal_tes" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small mb-1 text-secondary">Waktu / Jam</label>
+                                <input type="text" name="jam_tes" id="mv_jam_tes" class="form-control form-control-sm" placeholder="08:00 - 11.30 WITA">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small mb-1 text-secondary">Ruang / Lokasi</label>
+                                <input type="text" name="ruang_tes" id="mv_ruang_tes" class="form-control form-control-sm" placeholder="Kampus MAN 3 Banjar">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label fw-bold small text-secondary">Catatan Verifikator (Opsional)</label>
+                        <textarea name="catatan_verifikasi" id="mv_catatan" class="form-control" rows="2" placeholder="Tuliskan catatan jika ada berkas yang kurang jelas atau instruksi khusus..."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-top py-2 bg-light justify-content-between" style="border-radius: 0 0 16px 16px;">
+                    <button type="button" class="btn btn-sm btn-light fw-bold" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-sm btn-success fw-bold px-3">
+                        <i class="bi bi-check-circle-fill me-1"></i> Simpan &amp; Terbitkan No Tes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <!-- Custom Alert Modal -->
@@ -366,6 +465,77 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <script>
+function bukaModalVerifikasi(data) {
+    document.getElementById('mv_id').value = data.id;
+    document.getElementById('mv_nama_preview').innerText = (data.nama_lengkap || '-') + ' (' + (data.no_pendaftaran || '-') + ')';
+    
+    // Set status
+    const statusSelect = document.getElementById('mv_status');
+    if (data.status === 'Lulus Verifikasi' || data.status === 'Menuju Tes') {
+        statusSelect.value = 'Lulus Verifikasi';
+    } else if (data.status === 'Perlu Perbaikan') {
+        statusSelect.value = 'Perlu Perbaikan';
+    } else if (data.status === 'Diterima') {
+        statusSelect.value = 'Diterima';
+    } else if (data.status === 'Ditolak') {
+        statusSelect.value = 'Ditolak';
+    } else {
+        statusSelect.value = 'Lulus Verifikasi';
+    }
+
+    document.getElementById('mv_tanggal_tes').value = data.tanggal_tes || '';
+    document.getElementById('mv_jam_tes').value = data.jam_tes || '08:00 - 11.30 WITA';
+    document.getElementById('mv_ruang_tes').value = data.ruang_tes || 'Kampus MAN 3 Banjar';
+    document.getElementById('mv_catatan').value = data.catatan_verifikasi || '';
+
+    toggleJadwalTes(statusSelect.value);
+
+    const modal = new bootstrap.Modal(document.getElementById('modalVerifikasiPpdb'));
+    modal.show();
+}
+
+function toggleJadwalTes(status) {
+    const box = document.getElementById('boxJadwalTes');
+    if (status === 'Lulus Verifikasi' || status === 'Menuju Tes' || status === 'Diterima') {
+        box.style.display = 'block';
+    } else {
+        box.style.display = 'none';
+    }
+}
+
+function kirimWaNotifikasi(noHp, nama, noDaftar, noTes, tglTes, ruangTes, status) {
+    const baseUrl = '<?= base_url() ?>';
+    let tglText = tglTes ? tglTes : 'Sesuai Pengumuman Panitia';
+    let ruangText = ruangTes ? ruangTes : 'Kampus MAN 3 Banjar';
+    let tesInfo = noTes ? noTes : 'Diterbitkan saat kartu dicetak';
+
+    let pesan = `*PEMBERITAHUAN VERIFIKASI PMB MAN 3 BANJAR*\n\n` +
+        `Assalamu'alaikum Wr. Wb.\n` +
+        `Yth. Orang Tua / Calon Siswa,\n` +
+        `*Nama:* ${nama}\n` +
+        `*No. Pendaftaran:* ${noDaftar}\n\n`;
+
+    if (status === 'Perlu Perbaikan') {
+        pesan += `Mohon maaf, berkas pendaftaran Anda memerlukan *PERBAIKAN*. Silakan login ke akun pendaftaran Anda untuk memeriksa dan mengunggah kembali dokumen yang diminta:\n` +
+            `${baseUrl}ppdb/login\n\n`;
+    } else {
+        pesan += `Alhamdulillah, berkas pendaftaran Anda telah *DIVERIFIKASI* dan dinyatakan *LULUS VERIFIKASI (MENUJU TES SELEKSI)*.\n\n` +
+            `*JADWAL & LOKASI TES:*\n` +
+            `• No. Peserta Ujian: *${tesInfo}*\n` +
+            `• Tanggal Ujian: *${tglText}*\n` +
+            `• Waktu: *08.00 - Selesai WITA*\n` +
+            `• Lokasi/Ruang: *${ruangText}*\n\n` +
+            `Silakan unduh dan cetak *KARTU PESERTA UJIAN* Anda melalui tautan resmi berikut:\n` +
+            `${baseUrl}ppdb/cetak_kartu/${noDaftar}\n\n` +
+            `Harap hadir 15 menit sebelum tes dimulai dengan membawa Kartu Peserta Ujian fisik dan seragam sekolah asal.\n\n`;
+    }
+
+    pesan += `Terima kasih.\n*Panitia PMB MAN 3 Banjar*`;
+
+    const waUrl = `https://api.whatsapp.com/send?phone=${noHp}&text=${encodeURIComponent(pesan)}`;
+    window.open(waUrl, '_blank');
+}
+
 function showCustomAlert(title, message, isConfirm, onConfirm) {
     document.getElementById('customAlertTitle').innerText = title;
     document.getElementById('customAlertMessage').innerHTML = message;

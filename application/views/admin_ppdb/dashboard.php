@@ -68,6 +68,14 @@ $cards = [
         'class' => 'purple'
     ],
     [
+        'title' => 'Lulus Verifikasi (Tes)',
+        'value' => isset($lulus_verifikasi) ? $lulus_verifikasi : 0,
+        'url' => 'admin_ppdb?status=Lulus Verifikasi',
+        'icon' => 'TS',
+        'desc' => 'Sudah mendapat No. Ujian',
+        'class' => 'cyan'
+    ],
+    [
         'title' => 'Perlu Perbaikan',
         'value' => $perbaikan,
         'url' => 'admin_ppdb?status=Perlu Perbaikan',
@@ -76,7 +84,7 @@ $cards = [
         'class' => 'orange'
     ],
     [
-        'title' => 'Diterima',
+        'title' => 'Diterima (Lulus)',
         'value' => $diterima,
         'url' => 'admin_ppdb/diterima',
         'icon' => 'DT',
@@ -705,11 +713,60 @@ $cards = [
         </div>
     <?php endif; ?>
 
-    <?php if($this->session->flashdata('error')): ?>
-        <div class="alert alert-danger rounded-4 fw-bold">
-            <?= $this->session->flashdata('error') ?>
+    <!-- PANDUAN ALUR KERJA PANITIA (USER FRIENDLY) -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background: linear-gradient(135deg, #ffffff, #f8fafc); border: 1.5px solid #e2e8f0 !important;">
+        <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+            <div>
+                <h5 class="fw-bold text-dark mb-1"><i class="bi bi-compass-fill text-success me-2"></i>Panduan Alur Kerja Panitia PMB</h5>
+                <small class="text-muted">Ikuti 5 langkah kerja berurutan ini untuk memproses pendaftaran siswa dari awal hingga selesai.</small>
+            </div>
+            <a href="<?= base_url('admin_ppdb/monitoring_berkas') ?>" class="btn btn-sm btn-success fw-bold px-3 py-2 rounded-pill shadow-sm" style="background: #059669; border-color: #059669;">
+                <i class="bi bi-shield-check me-1"></i> Mulai Verifikasi Berkas
+            </a>
         </div>
-    <?php endif; ?>
+
+        <div class="row g-3">
+            <div class="col-md-2 col-sm-6">
+                <div class="p-3 bg-white border rounded-3 text-center h-100 shadow-none">
+                    <div class="badge bg-light text-success fw-bold rounded-circle mb-2" style="width:32px; height:32px; line-height:22px; font-size:14px;">1</div>
+                    <strong class="d-block text-dark small">Pendaftar Masuk</strong>
+                    <small class="text-muted" style="font-size: 11px;">Calon siswa registrasi online via portal.</small>
+                </div>
+            </div>
+
+            <div class="col-md-2 col-sm-6">
+                <div class="p-3 bg-white border rounded-3 text-center h-100 shadow-none">
+                    <div class="badge bg-light text-primary fw-bold rounded-circle mb-2" style="width:32px; height:32px; line-height:22px; font-size:14px;">2</div>
+                    <strong class="d-block text-dark small">Cek &amp; Verifikasi</strong>
+                    <small class="text-muted" style="font-size: 11px;">Periksa KK, Akta, dan Ijazah di menu Berkas.</small>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="p-3 bg-white border rounded-3 text-center h-100 shadow-none" style="border-color: #a7f3d0 !important; background: #ecfdf5 !important;">
+                    <div class="badge bg-success text-white fw-bold rounded-circle mb-2" style="width:32px; height:32px; line-height:22px; font-size:14px;">3</div>
+                    <strong class="d-block text-success small">Terbitkan No. Tes &amp; Jadwal</strong>
+                    <small class="text-muted" style="font-size: 11px;">Sistem otomatis beri No. Tes &amp; Cetak Kartu.</small>
+                </div>
+            </div>
+
+            <div class="col-md-2 col-sm-6">
+                <div class="p-3 bg-white border rounded-3 text-center h-100 shadow-none">
+                    <div class="badge bg-light text-warning fw-bold rounded-circle mb-2" style="width:32px; height:32px; line-height:22px; font-size:14px;">4</div>
+                    <strong class="d-block text-dark small">Ujian &amp; Kelulusan</strong>
+                    <small class="text-muted" style="font-size: 11px;">Input status Diterima / Ditolak setelah tes.</small>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="p-3 bg-white border rounded-3 text-center h-100 shadow-none">
+                    <div class="badge bg-light text-dark fw-bold rounded-circle mb-2" style="width:32px; height:32px; line-height:22px; font-size:14px;">5</div>
+                    <strong class="d-block text-dark small">Migrasi ke Siswa Aktif</strong>
+                    <small class="text-muted" style="font-size: 11px;">Pindahkan peserta Diterima jadi Siswa Resmi.</small>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="ppdb-stat-grid">
         <?php foreach($cards as $c): ?>
