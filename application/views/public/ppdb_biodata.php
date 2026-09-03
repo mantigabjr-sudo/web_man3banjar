@@ -11,7 +11,7 @@ if(!function_exists('ppdb_bio_selected')){
     }
 }
 
-$nama_lengkap   = $siswa->nama_lengkap ?? 'Peserta ' . htmlspecialchars($nama_ppdb ?? 'PPDB');
+$nama_lengkap   = $siswa->nama_lengkap ?? 'Peserta PMB';
 $no_pendaftaran = $siswa->no_pendaftaran ?? '-';
 
 $foto_path = !empty($siswa->foto) ? FCPATH.'uploads/temp/ppdb/'.$siswa->foto : '';
@@ -27,7 +27,7 @@ $foto_url  = !empty($siswa->foto) ? base_url('uploads/temp/ppdb/'.$siswa->foto) 
     <link rel="icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="<?= base_url('assets/css/ppdb-peserta.css?v=3') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/css/ppdb-peserta.css?v=4') ?>">
 </head>
 <body>
 
@@ -41,7 +41,7 @@ $foto_url  = !empty($siswa->foto) ? base_url('uploads/temp/ppdb/'.$siswa->foto) 
         <?php endif; ?>
         <div>
             <strong>Lengkapi Biodata Diri</strong>
-            <small><?= $nama_lengkap ?></small>
+            <small><?= htmlspecialchars($nama_lengkap) ?></small>
         </div>
     </div>
     <a href="<?= base_url('ppdb/dashboard') ?>" class="btn btn-sm btn-outline-secondary px-3 py-1 rounded-pill" style="font-size: 11.5px; font-weight: 700;">
@@ -63,7 +63,7 @@ $foto_url  = !empty($siswa->foto) ? base_url('uploads/temp/ppdb/'.$siswa->foto) 
                     <?php endif; ?>
                 </div>
                 <div>
-                    <strong>PMB MAN 3</strong>
+                    <strong>PMB MAN 3 BANJAR</strong>
                     <small>Portal Calon Siswa</small>
                 </div>
             </div>
@@ -128,7 +128,7 @@ $foto_url  = !empty($siswa->foto) ? base_url('uploads/temp/ppdb/'.$siswa->foto) 
         <form method="post" action="<?= base_url('ppdb/save_biodata') ?>">
 
             <!-- Seksi 1: Data Identitas Diri -->
-            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background: #ffffff; border: 1.5px solid var(--border-color) !important;">
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background: #ffffff; border: 1.5px solid var(--border-subtle) !important;">
                 <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
                     <i class="bi bi-person-badge-fill text-success fs-5"></i>
                     <h5 class="fw-bold mb-0 text-dark">1. Identitas Pokok Calon Siswa</h5>
@@ -146,19 +146,19 @@ $foto_url  = !empty($siswa->foto) ? base_url('uploads/temp/ppdb/'.$siswa->foto) 
                     </div>
 
                     <div class="col-md-12">
-                        <label class="form-label text-muted small fw-bold">Nama Lengkap Siswa <span class="text-danger">*</span></label>
+                        <label class="form-label text-muted small fw-bold">Nama Lengkap Siswa</label>
                         <input type="text" class="form-control bg-light" value="<?= htmlspecialchars($siswa->nama_lengkap ?? '') ?>" disabled>
                         <div class="form-text text-muted" style="font-size: 11px;">Nama sesuai ijazah/akta kelahiran (diedit via menu Detail jika ada kekeliruan).</div>
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label text-muted small fw-bold">NIK (Nomor Induk Kependudukan) Siswa <span class="text-danger">*</span></label>
-                        <input type="text" name="nik" class="form-control" placeholder="16 digit angka NIK di Kartu Keluarga" value="<?= htmlspecialchars($siswa->nik ?? '') ?>" required maxlength="16" pattern="[0-9]{16}">
+                        <input type="text" name="nik" class="form-control" placeholder="16 digit angka NIK di Kartu Keluarga" value="<?= htmlspecialchars($siswa->nik ?? '') ?>" required maxlength="16">
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label text-muted small fw-bold">Nomor Kartu Keluarga (KK) <span class="text-danger">*</span></label>
-                        <input type="text" name="no_kk" class="form-control" placeholder="16 digit angka Nomor KK" value="<?= htmlspecialchars($siswa->no_kk ?? '') ?>" required maxlength="16" pattern="[0-9]{16}">
+                        <input type="text" name="no_kk" class="form-control" placeholder="16 digit angka Nomor KK" value="<?= htmlspecialchars($siswa->no_kk ?? '') ?>" required maxlength="16">
                     </div>
 
                     <div class="col-md-4">
@@ -185,7 +185,7 @@ $foto_url  = !empty($siswa->foto) ? base_url('uploads/temp/ppdb/'.$siswa->foto) 
             </div>
 
             <!-- Seksi 2: Alamat Tempat Tinggal -->
-            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background: #ffffff; border: 1.5px solid var(--border-color) !important;">
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background: #ffffff; border: 1.5px solid var(--border-subtle) !important;">
                 <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
                     <i class="bi bi-geo-alt-fill text-success fs-5"></i>
                     <h5 class="fw-bold mb-0 text-dark">2. Alamat Tempat Tinggal</h5>
@@ -235,7 +235,7 @@ $foto_url  = !empty($siswa->foto) ? base_url('uploads/temp/ppdb/'.$siswa->foto) 
             </div>
 
             <!-- Seksi 3: Data Orang Tua / Wali -->
-            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background: #ffffff; border: 1.5px solid var(--border-color) !important;">
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background: #ffffff; border: 1.5px solid var(--border-subtle) !important;">
                 <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
                     <i class="bi bi-people-fill text-success fs-5"></i>
                     <h5 class="fw-bold mb-0 text-dark">3. Data Orang Tua / Wali</h5>
@@ -275,7 +275,7 @@ $foto_url  = !empty($siswa->foto) ? base_url('uploads/temp/ppdb/'.$siswa->foto) 
                 </div>
             </div>
 
-            <!-- Tombol Simpan -->
+            <!-- Sticky Save Bar -->
             <div class="card border-0 shadow-lg rounded-4 p-3 bg-white sticky-bottom" style="z-index: 50; border: 1.5px solid #cbd5e1 !important;">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
                     <small class="text-muted"><i class="bi bi-shield-check me-1"></i> Data yang Anda simpan akan diverifikasi oleh panitia PMB.</small>
