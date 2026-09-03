@@ -275,12 +275,18 @@ if($status_db == 'Lengkapi Biodata'){
                     </div>
                 </div>
                 <div class="d-flex gap-2">
-                    <a href="<?= base_url('ppdb/detail') ?>" class="btn btn-outline-secondary flex-grow-1 rounded-pill fw-bold" style="font-size: 13.5px;">
+                    <a href="<?= base_url('ppdb/detail') ?>" class="btn btn-outline-secondary flex-grow-1 rounded-pill fw-bold" style="font-size: 13px;">
                         Detail Data
                     </a>
-                    <a href="<?= base_url('ppdb/cetak_kartu') ?>" target="_blank" class="btn btn-success flex-grow-1 rounded-pill fw-bold" style="background:#059669; border-color:#059669; font-size: 13.5px;">
-                        <i class="bi bi-printer me-1"></i> Kartu Tes
-                    </a>
+                    <?php if($step_current >= 4): ?>
+                        <a href="<?= base_url('ppdb/cetak_kartu') ?>" target="_blank" class="btn btn-success flex-grow-1 rounded-pill fw-bold" style="background:#059669; border-color:#059669; font-size: 13px;">
+                            <i class="bi bi-printer me-1"></i> Kartu Tes
+                        </a>
+                    <?php else: ?>
+                        <button type="button" class="btn btn-light border text-muted flex-grow-1 rounded-pill fw-bold" style="font-size: 11.5px;" onclick="alert('Kartu Ujian Seleksi belum dapat dicetak.\nKartu hanya dapat dicetak setelah dokumen diverifikasi dan dinyatakan LULUS VERIFIKASI oleh Panitia PMB.');">
+                            <i class="bi bi-lock-fill me-1"></i> Kartu Tes
+                        </button>
+                    <?php endif; ?>
                 </div>
             </div>
 

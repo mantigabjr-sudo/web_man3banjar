@@ -129,9 +129,18 @@ $file_items = [
                 <a href="<?= base_url('ppdb/edit_detail') ?>" class="btn btn-outline-success px-3 py-2 rounded-pill fw-bold" style="font-size: 13.5px;">
                     <i class="bi bi-pencil-square me-1"></i> Edit Data
                 </a>
-                <a href="<?= base_url('ppdb/cetak_kartu') ?>" target="_blank" class="btn btn-success px-3 py-2 rounded-pill fw-bold" style="background:#059669; border-color:#059669; font-size: 13.5px;">
-                    <i class="bi bi-printer me-1"></i> Cetak Kartu Tes
-                </a>
+                <?php 
+                    $is_lulus_verifikasi = in_array($status_db, ['Lulus Verifikasi', 'Diterima']) || !empty($siswa->no_peserta_tes);
+                ?>
+                <?php if($is_lulus_verifikasi): ?>
+                    <a href="<?= base_url('ppdb/cetak_kartu') ?>" target="_blank" class="btn btn-success px-3 py-2 rounded-pill fw-bold" style="background:#059669; border-color:#059669; font-size: 13.5px;">
+                        <i class="bi bi-printer me-1"></i> Cetak Kartu Tes
+                    </a>
+                <?php else: ?>
+                    <button type="button" class="btn btn-light border text-muted px-3 py-2 rounded-pill fw-bold" style="font-size: 12px;" onclick="alert('Kartu Ujian Seleksi belum dapat dicetak.\nKartu hanya dapat dicetak setelah dokumen diverifikasi dan dinyatakan LULUS VERIFIKASI oleh Panitia PMB.');">
+                        <i class="bi bi-lock-fill me-1"></i> Kartu Tes (Terkunci)
+                    </button>
+                <?php endif; ?>
                 <a href="<?= base_url('ppdb/download_pdf') ?>" class="btn btn-primary px-3 py-2 rounded-pill fw-bold" style="font-size: 13.5px;">
                     <i class="bi bi-file-earmark-pdf me-1"></i> Bukti PDF
                 </a>

@@ -666,6 +666,15 @@ class Ppdb extends CI_Controller {
             return;
         }
 
+        // Cek apakah peserta sudah dinyatakan lulus verifikasi oleh panitia
+        $is_verified = in_array($siswa->status, ['Lulus Verifikasi', 'Diterima']) || !empty($siswa->no_peserta_tes);
+
+        if(!$is_verified && !$this->session->userdata('logged_in')){
+            $this->session->set_flashdata('error', 'Kartu Ujian Seleksi belum dapat dicetak. Kartu peserta ujian hanya dapat dicetak setelah berkas diverifikasi dan dinyatakan LULUS VERIFIKASI oleh Panitia PMB.');
+            redirect('ppdb/dashboard');
+            return;
+        }
+
         $data['siswa'] = $siswa;
         $data['settings'] = $this->db->get('settings')->row();
         $data['profil_website'] = $this->db->limit(1)->get('website_profil')->row();
