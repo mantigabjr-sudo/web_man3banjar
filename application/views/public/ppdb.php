@@ -866,29 +866,149 @@ a { text-decoration: none; color: inherit; }
 /* Responsive */
 @media (max-width: 991px) {
     .nav-links { display: none; }
-    .nav-mobile-toggle { display: block; }
+    .nav-mobile-toggle { 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: var(--c-slate-100);
+        color: var(--c-slate-700);
+        border: 1px solid var(--c-slate-200);
+        cursor: pointer;
+        transition: all .2s;
+    }
+    .nav-mobile-toggle:hover {
+        background: var(--c-emerald-50);
+        color: #059669;
+    }
     .nav-mobile-menu {
         display: none;
         flex-direction: column;
-        gap: 6px;
-        padding: 14px 0;
+        gap: 8px;
+        padding: 16px 0 20px;
         border-top: 1px solid var(--c-slate-200);
     }
     .nav-mobile-menu.show { display: flex; }
-    .nav-mobile-menu a {
-        padding: 10px 16px;
+    .nav-mobile-menu a, .nav-mobile-menu button {
+        padding: 11px 16px;
         border-radius: var(--radius-sm);
         font-weight: 600;
         font-size: 14px;
         color: var(--c-slate-700);
+        text-align: left;
+        background: none;
+        border: none;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
-    .nav-mobile-menu a:hover { background: var(--c-emerald-50); color: #059669; }
+    .nav-mobile-menu a:hover, .nav-mobile-menu button:hover { 
+        background: var(--c-emerald-50); 
+        color: #059669; 
+    }
 }
 @media (max-width: 768px) {
-    .hero { padding: 48px 0 40px; }
-    .cta-banner { text-align: center; justify-content: center; padding: 32px 20px; }
-    .timeline { padding-left: 46px; }
-    .timeline-dot { left: -46px; width: 36px; height: 36px; font-size: 14px; }
+    .ppdb-topbar-inner {
+        justify-content: center;
+        text-align: center;
+        font-size: 11.5px;
+        padding: 2px 8px;
+    }
+    .ppdb-topbar-inner span:last-child {
+        display: none;
+    }
+    .ppdb-nav .container {
+        height: 62px;
+        gap: 8px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    .nav-brand {
+        gap: 8px;
+    }
+    .nav-brand-logo {
+        width: 36px;
+        height: 36px;
+        padding: 2px;
+    }
+    .nav-brand-text strong {
+        font-size: 13.5px;
+    }
+    .nav-brand-text small {
+        font-size: 10px;
+    }
+    .nav-cta {
+        gap: 6px;
+    }
+    .btn-nav-daftar {
+        display: none; /* Sembunyikan di navbar mobile agar tidak berdesakan */
+    }
+    .btn-nav-login {
+        padding: 7px 12px;
+        font-size: 12px;
+        gap: 5px;
+    }
+    .hero { 
+        padding: 40px 14px 36px; 
+    }
+    .hero-status {
+        font-size: 12px;
+        padding: 6px 15px;
+        margin-bottom: 16px;
+    }
+    .hero h1 {
+        font-size: clamp(24px, 6.8vw, 36px);
+        letter-spacing: -0.6px;
+        margin-bottom: 12px;
+        line-height: 1.25;
+    }
+    .hero-sub {
+        font-size: 13.5px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        padding: 0 4px;
+    }
+    .hero-info-bar {
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 18px;
+        border-radius: 20px;
+        margin-bottom: 24px;
+        width: 100%;
+        max-width: 360px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .hero-info-divider {
+        display: none; /* Hilangkan garis menggantung di mobile */
+    }
+    .hero-info-item {
+        font-size: 12.5px;
+        justify-content: center;
+        text-align: center;
+    }
+    .btn-hero-main {
+        width: 100%;
+        max-width: 320px;
+        justify-content: center;
+    }
+    .cta-banner { text-align: center; justify-content: center; padding: 28px 16px; border-radius: 20px; }
+    .timeline { padding-left: 42px; }
+    .timeline-dot { left: -42px; width: 32px; height: 32px; font-size: 13px; }
+    .req-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 420px) {
+    .nav-brand-text strong {
+        font-size: 12px;
+        max-width: 140px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 }
 </style>
 </head>
@@ -899,7 +1019,7 @@ a { text-decoration: none; color: inherit; }
 <div class="ppdb-topbar">
     <div class="container ppdb-topbar-inner">
         <span><i class="bi bi-building"></i> Portal <?= $judul_panjang ?> (<?= $nama ?>) <?= $nama_madrasah ?></span>
-        <span><i class="bi bi-shield-check"></i> Sistem Digital Terpadu LabSys</span>
+        <span class="d-none d-md-inline"><i class="bi bi-shield-check"></i> Sistem Digital Terpadu LabSys</span>
     </div>
 </div>
 
@@ -928,7 +1048,7 @@ a { text-decoration: none; color: inherit; }
                 <i class="bi bi-arrow-left"></i> Web Utama
             </a>
             <a href="<?= base_url('ppdb/login') ?>" class="btn-nav-login">
-                <i class="bi bi-box-arrow-in-right"></i> Login Peserta
+                <i class="bi bi-box-arrow-in-right"></i> <span>Login Peserta</span>
             </a>
             <?php if($is_open): ?>
                 <button type="button" class="btn-nav-daftar" data-bs-toggle="modal" data-bs-target="#modalDaftarPpdb">
@@ -939,19 +1059,24 @@ a { text-decoration: none; color: inherit; }
             <?php endif; ?>
         </div>
 
-        <button class="nav-mobile-toggle" id="navToggle" aria-label="Menu">
+        <button class="nav-mobile-toggle" id="navToggle" aria-label="Buka Menu Navigasi">
             <i class="bi bi-list"></i>
         </button>
     </div>
 
     <div class="container">
         <div class="nav-mobile-menu" id="navMobileMenu">
+            <?php if($is_open): ?>
+                <button type="button" class="text-success fw-bold" data-bs-toggle="modal" data-bs-target="#modalDaftarPpdb" onclick="document.getElementById('navMobileMenu').classList.remove('show')">
+                    <i class="bi bi-pencil-square text-success"></i> Form Pendaftaran Baru
+                </button>
+            <?php endif; ?>
+            <a href="<?= base_url('ppdb/login') ?>"><i class="bi bi-box-arrow-in-right text-primary"></i> Login Akun Peserta</a>
+            <a href="#informasi" onclick="document.getElementById('navMobileMenu').classList.remove('show')"><i class="bi bi-info-circle"></i> Informasi Pendaftaran</a>
+            <a href="#alur" onclick="document.getElementById('navMobileMenu').classList.remove('show')"><i class="bi bi-diagram-3"></i> Alur Pendaftaran</a>
+            <a href="#persyaratan" onclick="document.getElementById('navMobileMenu').classList.remove('show')"><i class="bi bi-card-checklist"></i> Persyaratan Berkas</a>
+            <a href="#faq" onclick="document.getElementById('navMobileMenu').classList.remove('show')"><i class="bi bi-question-circle"></i> FAQ / Tanya Jawab</a>
             <a href="<?= base_url() ?>"><i class="bi bi-arrow-left"></i> Kembali ke Website Utama</a>
-            <a href="#informasi">Informasi Pendaftaran</a>
-            <a href="#alur">Alur Pendaftaran</a>
-            <a href="#persyaratan">Persyaratan Berkas</a>
-            <a href="#faq">FAQ / Tanya Jawab</a>
-            <a href="<?= base_url('ppdb/login') ?>"><i class="bi bi-box-arrow-in-right"></i> Login Akun Peserta</a>
         </div>
     </div>
 </nav>
