@@ -804,34 +804,6 @@ class Website extends CI_Controller {
         $this->load->view('public/download', $data);
     }
 
-    public function alumni() {
-        $data = $this->base_data('Direktori Alumni');
-        
-        $tahun = $this->input->get('tahun');
-        $data['tahun_pilihan'] = $tahun;
-
-        $data['list_tahun'] = $this->db
-            ->select('DISTINCT(tahun_ajaran_lulus) as tahun')
-            ->from('alumni')
-            ->order_by('tahun_ajaran_lulus', 'DESC')
-            ->get()
-            ->result();
-
-        $this->db->select('alumni.*, siswa.jk')
-                 ->from('alumni')
-                 ->join('siswa', 'siswa.id = alumni.siswa_id', 'left');
-
-        if (!empty($tahun)) {
-            $this->db->where('alumni.tahun_ajaran_lulus', $tahun);
-        }
-
-        $data['alumni'] = $this->db->order_by('alumni.tahun_ajaran_lulus', 'DESC')
-                                   ->order_by('alumni.nama_lengkap', 'ASC')
-                                   ->get()
-                                   ->result();
-
-        $this->load->view('public/alumni', $data);
-    }
     public function data_siswa() {
         $data = $this->base_data('Keadaan Siswa');
         
