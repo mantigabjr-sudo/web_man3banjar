@@ -111,7 +111,7 @@ if(!function_exists('archive_footer_limit')){
         </div>
 
         <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 12px; color: rgba(255,255,255,0.5);">
-            <span>© <?= date('Y') ?> <?= $nama_madrasah ?>. All rights reserved.</span>
+            <span>© <?= date('Y') ?> <?= $nama_madrasah ?>. All rights reserved. | capthdr</span>
             <div class="d-flex gap-3">
                 <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Privacy Policy</a>
                 <span>|</span>

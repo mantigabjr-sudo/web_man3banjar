@@ -400,7 +400,7 @@ $kategori = !empty($berita->kategori) ? $berita->kategori : 'Berita Madrasah';
             </div>
         </div>
         <div class="web-footer-bottom">
-            <span>© <?= date('Y') ?> <?= detail_clean($nama_madrasah) ?>. All rights reserved.</span>
+            <span>© <?= date('Y') ?> <?= detail_clean($nama_madrasah) ?>. All rights reserved. | capthdr</span>
             <span>Website Madrasah Digital</span>
         </div>
     </div>
