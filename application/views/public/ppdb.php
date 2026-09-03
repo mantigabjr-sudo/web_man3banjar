@@ -870,8 +870,8 @@ a { text-decoration: none; color: inherit; }
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 40px;
-        height: 40px;
+        width: 38px;
+        height: 38px;
         border-radius: 10px;
         background: var(--c-slate-100);
         color: var(--c-slate-700);
@@ -883,31 +883,67 @@ a { text-decoration: none; color: inherit; }
         background: var(--c-emerald-50);
         color: #059669;
     }
-    .nav-mobile-menu {
+    .nav-mobile-menu-wrapper {
         display: none;
-        flex-direction: column;
-        gap: 8px;
-        padding: 16px 0 20px;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: #ffffff;
         border-top: 1px solid var(--c-slate-200);
+        border-bottom: 2px solid #059669;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        z-index: 1050;
     }
-    .nav-mobile-menu.show { display: flex; }
-    .nav-mobile-menu a, .nav-mobile-menu button {
-        padding: 11px 16px;
+    .nav-mobile-menu-wrapper.show {
+        display: block;
+        animation: ppdbMenuFade .25s ease forwards;
+    }
+    @keyframes ppdbMenuFade {
+        from { opacity: 0; transform: translateY(-8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .nav-mobile-menu-inner {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 16px 14px 20px;
+    }
+    .mobile-nav-link {
+        padding: 12px 16px;
         border-radius: var(--radius-sm);
         font-weight: 600;
         font-size: 14px;
-        color: var(--c-slate-700);
+        color: var(--c-slate-800);
         text-align: left;
-        background: none;
-        border: none;
+        background: #f8fafc;
+        border: 1px solid #f1f5f9;
         width: 100%;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
+        transition: all .2s;
     }
-    .nav-mobile-menu a:hover, .nav-mobile-menu button:hover { 
+    .mobile-nav-link:hover { 
         background: var(--c-emerald-50); 
-        color: #059669; 
+        color: #059669;
+        border-color: #a7f3d0;
+    }
+    .mobile-btn-daftar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 13px 16px;
+        border-radius: var(--radius-sm);
+        font-weight: 800;
+        font-size: 14px;
+        color: #ffffff !important;
+        background: linear-gradient(135deg, #059669, #10b981);
+        border: none;
+        box-shadow: 0 4px 12px rgba(5,150,105,0.25);
+        margin-bottom: 4px;
+        width: 100%;
     }
 }
 @media (max-width: 768px) {
@@ -920,7 +956,7 @@ a { text-decoration: none; color: inherit; }
     .ppdb-topbar-inner span:last-child {
         display: none;
     }
-    .ppdb-nav .container {
+    .ppdb-nav .ppdb-nav-container {
         height: 62px;
         gap: 8px;
         padding-left: 12px;
@@ -1025,7 +1061,7 @@ a { text-decoration: none; color: inherit; }
 
 <!-- ═══ NAVBAR ═══ -->
 <nav class="ppdb-nav" id="mainNav">
-    <div class="container">
+    <div class="container ppdb-nav-container">
         <a href="<?= base_url() ?>" class="nav-brand">
             <div class="nav-brand-logo">
                 <img src="<?= base_url('assets/img/logo-madrasah.png') ?>" alt="Logo <?= $nama_madrasah ?>" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2997/2997295.png'">
@@ -1060,23 +1096,26 @@ a { text-decoration: none; color: inherit; }
         </div>
 
         <button class="nav-mobile-toggle" id="navToggle" aria-label="Buka Menu Navigasi">
-            <i class="bi bi-list"></i>
+            <i class="bi bi-list" id="navToggleIcon"></i>
         </button>
     </div>
 
-    <div class="container">
-        <div class="nav-mobile-menu" id="navMobileMenu">
-            <?php if($is_open): ?>
-                <button type="button" class="text-success fw-bold" data-bs-toggle="modal" data-bs-target="#modalDaftarPpdb" onclick="document.getElementById('navMobileMenu').classList.remove('show')">
-                    <i class="bi bi-pencil-square text-success"></i> Form Pendaftaran Baru
-                </button>
-            <?php endif; ?>
-            <a href="<?= base_url('ppdb/login') ?>"><i class="bi bi-box-arrow-in-right text-primary"></i> Login Akun Peserta</a>
-            <a href="#informasi" onclick="document.getElementById('navMobileMenu').classList.remove('show')"><i class="bi bi-info-circle"></i> Informasi Pendaftaran</a>
-            <a href="#alur" onclick="document.getElementById('navMobileMenu').classList.remove('show')"><i class="bi bi-diagram-3"></i> Alur Pendaftaran</a>
-            <a href="#persyaratan" onclick="document.getElementById('navMobileMenu').classList.remove('show')"><i class="bi bi-card-checklist"></i> Persyaratan Berkas</a>
-            <a href="#faq" onclick="document.getElementById('navMobileMenu').classList.remove('show')"><i class="bi bi-question-circle"></i> FAQ / Tanya Jawab</a>
-            <a href="<?= base_url() ?>"><i class="bi bi-arrow-left"></i> Kembali ke Website Utama</a>
+    <!-- Mobile Dropdown Menu dengan Solid Background -->
+    <div class="nav-mobile-menu-wrapper" id="navMobileMenu">
+        <div class="container">
+            <div class="nav-mobile-menu-inner">
+                <?php if($is_open): ?>
+                    <button type="button" class="mobile-btn-daftar" data-bs-toggle="modal" data-bs-target="#modalDaftarPpdb" onclick="document.getElementById('navMobileMenu').classList.remove('show'); document.getElementById('navToggleIcon').className='bi bi-list';">
+                        <i class="bi bi-pencil-square"></i> Form Pendaftaran Baru
+                    </button>
+                <?php endif; ?>
+                <a href="<?= base_url('ppdb/login') ?>" class="mobile-nav-link text-primary fw-bold"><i class="bi bi-box-arrow-in-right fs-5"></i> Login Akun Peserta</a>
+                <a href="#informasi" class="mobile-nav-link" onclick="document.getElementById('navMobileMenu').classList.remove('show'); document.getElementById('navToggleIcon').className='bi bi-list';"><i class="bi bi-info-circle fs-5 text-success"></i> Informasi Pendaftaran</a>
+                <a href="#alur" class="mobile-nav-link" onclick="document.getElementById('navMobileMenu').classList.remove('show'); document.getElementById('navToggleIcon').className='bi bi-list';"><i class="bi bi-diagram-3 fs-5 text-success"></i> Alur Pendaftaran</a>
+                <a href="#persyaratan" class="mobile-nav-link" onclick="document.getElementById('navMobileMenu').classList.remove('show'); document.getElementById('navToggleIcon').className='bi bi-list';"><i class="bi bi-card-checklist fs-5 text-success"></i> Persyaratan Berkas</a>
+                <a href="#faq" class="mobile-nav-link" onclick="document.getElementById('navMobileMenu').classList.remove('show'); document.getElementById('navToggleIcon').className='bi bi-list';"><i class="bi bi-question-circle fs-5 text-success"></i> FAQ / Tanya Jawab</a>
+                <a href="<?= base_url() ?>" class="mobile-nav-link text-secondary"><i class="bi bi-arrow-left fs-5"></i> Kembali ke Website Utama</a>
+            </div>
         </div>
     </div>
 </nav>
@@ -1571,15 +1610,20 @@ document.addEventListener('DOMContentLoaded', function() {
     /* ─── Mobile nav toggle ─── */
     const toggle = document.getElementById('navToggle');
     const mobileMenu = document.getElementById('navMobileMenu');
+    const icon = document.getElementById('navToggleIcon');
     if(toggle && mobileMenu) {
-        toggle.addEventListener('click', function() {
-            mobileMenu.classList.toggle('show');
-            const icon = toggle.querySelector('i');
-            icon.classList.toggle('bi-list');
-            icon.classList.toggle('bi-x-lg');
+        toggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isOpen = mobileMenu.classList.toggle('show');
+            if(icon) {
+                icon.className = isOpen ? 'bi bi-x-lg' : 'bi bi-list';
+            }
         });
-        mobileMenu.querySelectorAll('a').forEach(function(a) {
-            a.addEventListener('click', function() { mobileMenu.classList.remove('show'); });
+        document.addEventListener('click', function(e) {
+            if(!mobileMenu.contains(e.target) && !toggle.contains(e.target)) {
+                mobileMenu.classList.remove('show');
+                if(icon) icon.className = 'bi bi-list';
+            }
         });
     }
 
