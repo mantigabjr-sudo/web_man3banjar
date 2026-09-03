@@ -450,6 +450,145 @@ class Api_sync extends CI_Controller {
         ]);
     }
 
+    // ═══ 1B. PMB SYNC ENDPOINTS (LOKAL ➔ CLOUD) ═══
+
+    public function sync_ppdb_settings(){
+        $this->validate_key();
+        $payload = json_decode($this->input->raw_input_stream, true);
+
+        if(empty($payload)){
+            echo json_encode(['status' => 'error', 'message' => 'Payload pengaturan PMB kosong']);
+            return;
+        }
+
+        // 1. Update settings
+        if(isset($payload['settings']) && !empty($payload['settings']) && $this->db->table_exists('settings')){
+            $settings_data = $payload['settings'];
+            $allowed_cols = [
+                'status_ppdb', 'nama_ppdb', 'tanggal_mulai', 'tanggal_selesai', 
+                'tahun_ajaran', 'persyaratan_ppdb', 'alur_ppdb', 'kuota_ppdb',
+                'default_tanggal_tes', 'default_jam_tes', 'default_ruang_tes', 'materi_tes_info'
+            ];
+            $update_data = [];
+            foreach($allowed_cols as $col){
+                if(isset($settings_data[$col])){
+                    if(!$this->db->field_exists($col, 'settings')){
+                        $this->db->query("ALTER TABLE `settings` ADD `{$col}` TEXT NULL");
+                    }
+                    $update_data[$col] = $settings_data[$col];
+                }
+            }
+
+            if(!empty($update_data)){
+                $cek = $this->db->get('settings')->row();
+                if($cek){
+                    $this->db->where('id', $cek->id)->update('settings', $update_data);
+                } else {
+                    $this->db->insert('settings', $update_data);
+                }
+            }
+        }
+
+        // 2. Sync ppdb_pengumuman
+        if(isset($payload['pengumuman']) && $this->db->table_exists('ppdb_pengumuman')){
+            $this->db->empty_table('ppdb_pengumuman');
+            if(!empty($payload['pengumuman'])){
+                $this->db->insert_batch('ppdb_pengumuman', $payload['pengumuman']);
+            }
+        }
+
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Pengaturan PMB, jadwal, kuota, & pengumuman berhasil disinkronkan ke website online.'
+        ]);
+    }
+
+    public function sync_ppdb_status(){
+        $this->validate_key();
+        $payload = json_decode($this->input->raw_input_stream, true);
+
+        if(empty($payload) || !isset($payload['peserta_list'])){
+            echo json_encode(['status' => 'error', 'message' => 'Payload status peserta kosong']);
+            return;
+        }
+
+        $peserta_list = $payload['peserta_list'];
+        $updated_count = 0;
+
+        if($this->db->table_exists('ppdb')){
+            foreach($peserta_list as $p){
+                $nisn = isset($p['nisn']) ? $p['nisn'] : null;
+                $no_daftar = isset($p['no_pendaftaran']) ? $p['no_pendaftaran'] : null;
+
+                if(!$nisn && !$no_daftar) continue;
+
+                $update = [];
+                $fields = [
+                    'status', 'no_peserta_tes', 'tanggal_tes', 'jam_tes', 'ruang_tes', 
+                    'nilai_tes', 'catatan_verifikasi', 'verifikasi_berkas_json', 
+                    'catatan_perbaikan', 'is_migrated', 'migrated_at'
+                ];
+
+                foreach($fields as $f){
+                    if(array_key_exists($f, $p)){
+                        $update[$f] = $p[$f];
+                    }
+                }
+
+                if(!empty($update)){
+                    $this->db->group_start();
+                    if($nisn) $this->db->where('nisn', $nisn);
+                    if($no_daftar) $this->db->or_where('no_pendaftaran', $no_daftar);
+                    $this->db->group_end();
+
+                    $cek = $this->db->get('ppdb')->row();
+                    if($cek){
+                        $this->db->where('id', $cek->id)->update('ppdb', $update);
+                        $updated_count++;
+                    }
+                }
+            }
+        }
+
+        echo json_encode([
+            'status' => 'success',
+            'message' => "Berhasil menyinkronkan status verifikasi, nomor tes, & jadwal ujian {$updated_count} calon siswa ke website online.",
+            'updated' => $updated_count
+        ]);
+    }
+
+    public function pull_ppdb(){
+        $this->validate_key();
+
+        $pendaftar = $this->db->table_exists('ppdb') ? $this->db->order_by('id', 'DESC')->get('ppdb')->result_array() : [];
+        $settings = $this->db->table_exists('settings') ? $this->db->get('settings')->row_array() : [];
+        $pengumuman = $this->db->table_exists('ppdb_pengumuman') ? $this->db->get('ppdb_pengumuman')->result_array() : [];
+
+        $base_upload = base_url('uploads/temp/ppdb/');
+        $file_fields = ['foto', 'kk_file', 'akta_file', 'sk_kelas9_file', 'sertifikat_file', 'nisn_file', 'rapor_file', 'skl_file', 'ijazah_file'];
+
+        foreach($pendaftar as &$p){
+            $p['file_urls'] = [];
+            foreach($file_fields as $ff){
+                if(!empty($p[$ff])){
+                    $p['file_urls'][$ff] = $base_upload . $p[$ff];
+                }
+            }
+        }
+
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Data PMB cloud berhasil diambil.',
+            'data' => [
+                'total_pendaftar' => count($pendaftar),
+                'pendaftar' => $pendaftar,
+                'settings' => $settings,
+                'pengumuman' => $pengumuman
+            ]
+        ]);
+    }
+
+
     public function migrate_ppdb_schema(){
         $this->validate_key();
 

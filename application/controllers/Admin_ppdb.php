@@ -1947,6 +1947,9 @@ public function migrasi_ppdb_all(){
     /**
      * SINKRONISASI PENDAFTAR DARI CLOUD DOMAINESIA KE SERVER LOKAL LABSYS
      */
+    /**
+     * SINKRONISASI PMB DUA ARAH (CLOUD <-> LOKAL)
+     */
     public function sync_from_cloud(){
         header('Content-Type: application/json; charset=utf-8');
 
@@ -1954,23 +1957,26 @@ public function migrasi_ppdb_all(){
         $api_key = $this->input->post('api_key', TRUE);
 
         if(empty($cloud_url)){
-            // Default URL endpoint cloud
-            $cloud_url = 'https://man3banjar.sch.id/api/ppdb/sync';
+            $cloud_url = 'https://man3banjar.sch.id/api/sync/pull_ppdb';
         }
         if(empty($api_key)){
-            $api_key = 'LABSYS_SYNC_SECRET_KEY_MAN3BANJAR_2026';
+            $api_key = 'MAN3BANJAR_SECRET_SYNC_KEY_2026';
         }
 
         // 1. Request data ke Cloud
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $cloud_url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['action' => 'pull_ppdb']));
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'X-API-KEY: ' . $api_key,
+            'Content-Type: application/json',
             'Accept: application/json'
         ]);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
         $response = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -1980,123 +1986,101 @@ public function migrasi_ppdb_all(){
         if($err || $http_code !== 200){
             echo json_encode([
                 'status' => 'error',
-                'message' => 'Gagal terhubung ke Cloud (' . ($err ? $err : 'HTTP Status ' . $http_code) . '). Pastikan URL dan API Key benar.'
+                'message' => 'Gagal terhubung ke server Cloud (' . ($err ? $err : 'HTTP ' . $http_code) . '). Pastikan koneksi internet aktif.'
             ]);
             return;
         }
 
         $res_data = json_decode($response, true);
-        if(!$res_data || !isset($res_data['data'])){
+        if(!$res_data || !isset($res_data['data']['pendaftar'])){
             echo json_encode([
                 'status' => 'error',
-                'message' => 'Format respons dari cloud tidak valid.'
+                'message' => 'Format respons dari cloud tidak valid atau data kosong.'
             ]);
             return;
         }
 
-        $pendaftar_list = $res_data['data'];
+        $pendaftar_list = $res_data['data']['pendaftar'];
         $inserted_count = 0;
+        $updated_count = 0;
         $downloaded_files = 0;
-        $synced_numbers = [];
 
-        $upload_dir = FCPATH . 'uploads/ppdb/';
+        $upload_dir = FCPATH . 'uploads/temp/ppdb/';
         if(!is_dir($upload_dir)){
             @mkdir($upload_dir, 0777, true);
         }
 
         foreach($pendaftar_list as $p){
-            $no_pendaftaran = $p['no_pendaftaran'];
+            $file_urls = $p['file_urls'] ?? [];
+            unset($p['file_urls']);
 
-            // Cek apakah sudah ada di database lokal
-            $cek = $this->db->where('no_pendaftaran', $no_pendaftaran)->get('ppdb')->row();
-
-            $kk_file = NULL;
-            $akta_file = NULL;
-            $ijazah_file = NULL;
-            $foto_file = NULL;
-
-            // Unduh file berkas jika ada
-            if(!empty($p['berkas_list'])){
-                foreach($p['berkas_list'] as $b){
-                    $fname = $b['nama_file'];
-                    $furl = $b['full_download_url'];
-                    $target_file = $upload_dir . $fname;
-
-                    // Download file jika belum ada di lokal
-                    if(!file_exists($target_file) && !empty($furl)){
-                        $file_content = @file_get_contents($furl);
-                        if($file_content){
-                            @file_put_contents($target_file, $file_content);
-                            $downloaded_files++;
+            // Unduh file dokumen jika ada
+            if(!empty($file_urls)){
+                foreach($file_urls as $fname_key => $url){
+                    $fname = basename($url);
+                    if(!empty($fname) && !empty($url)){
+                        $target_file = $upload_dir . $fname;
+                        if(!file_exists($target_file) || filesize($target_file) == 0){
+                            $ch_f = curl_init($url);
+                            $fp = @fopen($target_file, 'wb');
+                            if($fp){
+                                curl_setopt($ch_f, CURLOPT_FILE, $fp);
+                                curl_setopt($ch_f, CURLOPT_HEADER, 0);
+                                curl_setopt($ch_f, CURLOPT_TIMEOUT, 20);
+                                curl_setopt($ch_f, CURLOPT_SSL_VERIFYPEER, false);
+                                curl_setopt($ch_f, CURLOPT_SSL_VERIFYHOST, false);
+                                curl_exec($ch_f);
+                                curl_close($ch_f);
+                                fclose($fp);
+                                if(file_exists($target_file) && filesize($target_file) > 0){
+                                    $downloaded_files++;
+                                }
+                            }
                         }
                     }
-
-                    if($b['jenis_berkas'] == 'kartu_keluarga') $kk_file = $fname;
-                    elseif($b['jenis_berkas'] == 'akta_kelahiran') $akta_file = $fname;
-                    elseif($b['jenis_berkas'] == 'ijazah_skhu') $ijazah_file = $fname;
-                    elseif($b['jenis_berkas'] == 'pas_foto') $foto_file = $fname;
                 }
             }
 
-            $local_data = [
-                'no_pendaftaran' => $no_pendaftaran,
-                'nama_lengkap' => $p['nama_lengkap'],
-                'nisn' => $p['nisn'],
-                'jk' => $p['jenis_kelamin'],
-                'tempat_lahir' => $p['tempat_lahir'],
-                'tanggal_lahir' => $p['tanggal_lahir'],
-                'nik' => $p['nik'],
-                'agama' => $p['agama'],
-                'asal_sekolah' => $p['sekolah_asal'],
-                'alamat' => $p['alamat_siswa'],
-                'no_hp' => $p['no_hp_siswa'] ? $p['no_hp_siswa'] : $p['no_hp_ortu'],
-                'nama_ayah' => $p['nama_ayah'],
-                'pekerjaan_ayah' => $p['pekerjaan_ayah'],
-                'nama_ibu' => $p['nama_ibu'],
-                'pekerjaan_ibu' => $p['pekerjaan_ibu'],
-                'status' => 'mendaftar',
-                'created_at' => $p['created_at']
-            ];
+            // Cek apakah sudah ada di database lokal berdasarkan NISN atau No Pendaftaran
+            $this->db->group_start();
+            if(!empty($p['nisn'])) $this->db->where('nisn', $p['nisn']);
+            if(!empty($p['no_pendaftaran'])) $this->db->or_where('no_pendaftaran', $p['no_pendaftaran']);
+            $this->db->group_end();
+            $exist = $this->db->get('ppdb')->row();
 
-            if($kk_file) $local_data['kk_file'] = $kk_file;
-            if($akta_file) $local_data['akta_file'] = $akta_file;
-            if($ijazah_file) $local_data['ijazah_file'] = $ijazah_file;
-            if($foto_file) $local_data['foto'] = $foto_file;
+            if($exist){
+                $update_data = $p;
+                unset($update_data['id']);
 
-            if(!$cek){
-                $this->db->insert('ppdb', $local_data);
-                $inserted_count++;
+                // Jangan menimpa status lokal jika lokal sudah memproses verifikasi / jadwal tes
+                if(!empty($exist->no_peserta_tes) || in_array($exist->status, ['Lulus Verifikasi', 'Menuju Tes', 'Diterima', 'Ditolak'])){
+                    unset($update_data['status']);
+                    unset($update_data['no_peserta_tes']);
+                    unset($update_data['tanggal_tes']);
+                    unset($update_data['jam_tes']);
+                    unset($update_data['ruang_tes']);
+                }
+
+                $this->db->where('id', $exist->id)->update('ppdb', $update_data);
+                $updated_count++;
             } else {
-                $this->db->where('no_pendaftaran', $no_pendaftaran)->update('ppdb', $local_data);
+                unset($p['id']);
+                $this->db->insert('ppdb', $p);
+                $inserted_count++;
             }
-
-            $synced_numbers[] = $no_pendaftaran;
-        }
-
-        // 2. Kirim konfirmasi ke Cloud bahwa data berhasil ditarik
-        if(!empty($synced_numbers)){
-            $confirm_url = str_replace('/sync', '/confirm_sync', $cloud_url);
-            $ch_conf = curl_init();
-            curl_setopt($ch_conf, CURLOPT_URL, $confirm_url);
-            curl_setopt($ch_conf, CURLOPT_POST, true);
-            curl_setopt($ch_conf, CURLOPT_POSTFIELDS, json_encode(['no_pendaftaran_list' => $synced_numbers]));
-            curl_setopt($ch_conf, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch_conf, CURLOPT_HTTPHEADER, [
-                'X-API-KEY: ' . $api_key,
-                'Content-Type: application/json'
-            ]);
-            curl_setopt($ch_conf, CURLOPT_TIMEOUT, 15);
-            curl_setopt($ch_conf, CURLOPT_SSL_VERIFYPEER, false);
-            curl_exec($ch_conf);
-            curl_close($ch_conf);
         }
 
         echo json_encode([
             'status' => 'success',
-            'message' => "Sinkronisasi berhasil! {$inserted_count} pendaftar baru disimpan dan {$downloaded_files} berkas digital berhasil diunduh ke server lokal.",
-            'total_synced' => count($synced_numbers),
+            'message' => "Sinkronisasi berhasil! {$inserted_count} pendaftar baru ditambahkan, {$updated_count} diperbarui, dan {$downloaded_files} berkas digital berhasil diunduh ke server lokal.",
             'inserted_count' => $inserted_count,
+            'updated_count' => $updated_count,
             'downloaded_files' => $downloaded_files
         ]);
     }
-}
+
+    public function sync_to_cloud(){
+        redirect('admin_cloud_sync/sync_ppdb_status');
+    }
+}
+

@@ -28,15 +28,19 @@ $route['website/kontak']        = 'website/kontak';
 $route['hubungi_kami']          = 'website/kontak';
 
 // REST API Sync ke LabSys Server Lokal (Two-Way Sync)
-$route['api/sync/status']       = 'api_sync/status';
-$route['api/sync/berita']       = 'api_sync/sync_berita';
-$route['api/sync/website']      = 'api_sync/sync_website';
-$route['api/sync/ptk']          = 'api_sync/sync_ptk';
-$route['api/sync/kbm']          = 'api_sync/sync_kbm';
-$route['api/sync/siswa']        = 'api_sync/sync_siswa';
-$route['api/sync/pull_website'] = 'api_sync/pull_website';
-$route['api/sync/pull_berita']  = 'api_sync/pull_berita';
+$route['api/sync/status']          = 'api_sync/status';
+$route['api/sync/berita']          = 'api_sync/sync_berita';
+$route['api/sync/website']         = 'api_sync/sync_website';
+$route['api/sync/ptk']             = 'api_sync/sync_ptk';
+$route['api/sync/kbm']             = 'api_sync/sync_kbm';
+$route['api/sync/siswa']           = 'api_sync/sync_siswa';
+$route['api/sync/ppdb_settings']   = 'api_sync/sync_ppdb_settings';
+$route['api/sync/ppdb_status']     = 'api_sync/sync_ppdb_status';
+$route['api/sync/pull_website']    = 'api_sync/pull_website';
+$route['api/sync/pull_berita']     = 'api_sync/pull_berita';
+$route['api/sync/pull_ppdb']       = 'api_sync/pull_ppdb';
 
 $route['api/ppdb/sync'] = 'api_ppdb/sync_pendaftar';
 $route['api/ppdb/confirm_sync'] = 'api_ppdb/confirm_sync';
 $route['api/ppdb/stats'] = 'api_ppdb/stats';
+
