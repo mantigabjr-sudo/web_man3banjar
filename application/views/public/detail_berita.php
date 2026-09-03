@@ -202,7 +202,7 @@ $kategori = !empty($berita->kategori) ? $berita->kategori : 'Berita Madrasah';
                 </li>
 
                 <li class="nav-item">
-                    <a href="<?= base_url() ?>#kontak" class="nav-link">Kontak</a>
+                    <a href="<?= base_url('website/kontak') ?>" class="nav-link">Kontak</a>
                 </li>
             </ul>
 

@@ -1326,4 +1326,106 @@ class Website extends CI_Controller {
 
         $this->load->view('public/monitoring_kbm', $data);
     }
+
+    /**
+     * Halaman Publik Direktori Alumni & Statistik Kelulusan
+     */
+    public function alumni(){
+        $data = $this->base_data('Direktori Alumni');
+
+        $q = trim($this->input->get('q') ?? '');
+        $tahun = trim($this->input->get('tahun') ?? '');
+
+        // Pastikan tabel alumni ada
+        if($this->db->table_exists('alumni')){
+            $this->db->select('alumni.*, siswa.nisn, siswa.nis, siswa.nama_lengkap, siswa.jk, siswa.agama')
+                ->from('alumni')
+                ->join('siswa', 'siswa.id = alumni.siswa_id', 'left');
+
+            if(!empty($q)){
+                $this->db->group_start();
+                $this->db->like('siswa.nama_lengkap', $q);
+                $this->db->or_like('alumni.nama_lengkap', $q);
+                $this->db->or_like('siswa.nisn', $q);
+                $this->db->or_like('alumni.nisn', $q);
+                $this->db->or_like('alumni.status_lanjut', $q);
+                $this->db->or_like('alumni.keterangan', $q);
+                $this->db->group_end();
+            }
+
+            if(!empty($tahun)){
+                $this->db->group_start();
+                $this->db->where('alumni.tahun_ajaran_lulus', $tahun);
+                if($this->db->field_exists('tahun_lulus', 'alumni')){
+                    $this->db->or_where('alumni.tahun_lulus', $tahun);
+                }
+                $this->db->group_end();
+            }
+
+            $order_thn = $this->db->field_exists('tahun_ajaran_lulus', 'alumni') ? 'alumni.tahun_ajaran_lulus' : 'alumni.id';
+            $data['alumni'] = $this->db
+                ->order_by($order_thn, 'DESC')
+                ->order_by('siswa.nama_lengkap', 'ASC')
+                ->get()
+                ->result();
+
+            // Ambil daftar tahun lulus unik untuk dropdown filter
+            $data['tahun_list'] = $this->db
+                ->select('DISTINCT(tahun_ajaran_lulus) as tahun')
+                ->from('alumni')
+                ->where('tahun_ajaran_lulus IS NOT NULL', null, false)
+                ->where('tahun_ajaran_lulus !=', '')
+                ->order_by('tahun_ajaran_lulus', 'DESC')
+                ->get()
+                ->result();
+        } else {
+            $data['alumni'] = [];
+            $data['tahun_list'] = [];
+        }
+
+        $data['list_tahun'] = $data['tahun_list'];
+        $data['tahun_pilihan'] = $tahun;
+        $data['q'] = $q;
+        $data['tahun'] = $tahun;
+
+        $this->load->view('public/alumni', $data);
+    }
+
+    /**
+     * Halaman Publik Kontak & Layanan Informasi Madrasah
+     */
+    public function kontak(){
+        $data = $this->base_data('Kontak & Layanan Informasi');
+
+        // Handle POST kirim pesan aspirasi / kontak
+        if($this->input->method() === 'post'){
+            $nama = trim($this->input->post('nama_lengkap') ?? '');
+            $email = trim($this->input->post('email') ?? '');
+            $telepon = trim($this->input->post('no_hp') ?? '');
+            $subjek = trim($this->input->post('subjek') ?? '');
+            $pesan = trim($this->input->post('pesan') ?? '');
+
+            if(!empty($nama) && !empty($pesan)){
+                // Jika ada tabel pesan_masuk / kontak_masuk bisa disimpan
+                if($this->db->table_exists('kontak_masuk')){
+                    $this->db->insert('kontak_masuk', [
+                        'nama_lengkap' => $nama,
+                        'email' => $email,
+                        'no_hp' => $telepon,
+                        'subjek' => $subjek,
+                        'pesan' => $pesan,
+                        'ip_address' => $this->input->ip_address(),
+                        'created_at' => date('Y-m-d H:i:s')
+                    ]);
+                }
+                $this->session->set_flashdata('success', 'Terima kasih! Pesan dan aspirasi Anda telah berhasil dikirimkan ke pihak madrasah.');
+                redirect('website/kontak');
+            } else {
+                $this->session->set_flashdata('error', 'Mohon lengkapi Nama Lengkap dan Isi Pesan Anda.');
+            }
+        }
+
+        $this->load->view('public/kontak', $data);
+    }
 }
+

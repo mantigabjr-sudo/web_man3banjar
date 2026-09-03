@@ -216,7 +216,7 @@ if(!empty($profil_website->whatsapp)){
                 </li>
 
                 <li class="nav-item">
-                    <a href="<?= base_url() ?>#kontak" class="nav-link">Kontak</a>
+                    <a href="<?= base_url('website/kontak') ?>" class="nav-link">Kontak</a>
                 </li>
             </ul>
         </div>

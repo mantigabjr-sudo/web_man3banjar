@@ -21,6 +21,11 @@ $route['jadwal_live']           = 'website/monitoring_kbm';
 $route['data_siswa']            = 'website/data_siswa';
 $route['website/data_siswa']    = 'website/data_siswa';
 $route['keadaan_siswa']         = 'website/data_siswa';
+$route['alumni']                = 'website/alumni';
+$route['website/alumni']        = 'website/alumni';
+$route['kontak']                = 'website/kontak';
+$route['website/kontak']        = 'website/kontak';
+$route['hubungi_kami']          = 'website/kontak';
 
 // REST API Sync ke LabSys Server Lokal (Two-Way Sync)
 $route['api/sync/status']       = 'api_sync/status';

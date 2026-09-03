@@ -339,7 +339,32 @@ class Api_sync extends CI_Controller {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         ");
 
-        $stats = ['kelas' => 0, 'siswa' => 0, 'siswa_kelas' => 0];
+        // 4. Buat tabel alumni segar
+        $this->db->query("DROP TABLE IF EXISTS `alumni`");
+        $this->db->query("
+            CREATE TABLE `alumni` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `siswa_id` int(11) DEFAULT NULL,
+              `nis` varchar(30) DEFAULT NULL,
+              `nisn` varchar(20) DEFAULT NULL,
+              `nama_lengkap` varchar(150) DEFAULT NULL,
+              `jk` enum('L','P') DEFAULT NULL,
+              `kelas_terakhir` varchar(100) DEFAULT NULL,
+              `tahun_ajaran_lulus` varchar(20) DEFAULT NULL,
+              `tanggal_lulus` date DEFAULT NULL,
+              `no_hp` varchar(20) DEFAULT NULL,
+              `alamat` text DEFAULT NULL,
+              `status_lanjut` varchar(100) DEFAULT NULL,
+              `keterangan` text DEFAULT NULL,
+              `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+              `tahun_lulus` varchar(45) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              KEY `idx_alumni_nisn` (`nisn`),
+              KEY `idx_alumni_thn` (`tahun_ajaran_lulus`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ");
+
+        $stats = ['kelas' => 0, 'siswa' => 0, 'siswa_kelas' => 0, 'alumni' => 0];
 
         // Insert Kelas
         if(isset($payload['kelas']) && !empty($payload['kelas'])){
@@ -365,15 +390,26 @@ class Api_sync extends CI_Controller {
             $stats['siswa_kelas'] = count($payload['siswa_kelas']);
         }
 
+        // Insert Alumni
+        if(isset($payload['alumni']) && !empty($payload['alumni'])){
+            $chunks = array_chunk($payload['alumni'], 100);
+            foreach($chunks as $chunk){
+                $this->db->insert_batch('alumni', $chunk);
+            }
+            $stats['alumni'] = count($payload['alumni']);
+        }
+
         $this->db->query("SET FOREIGN_KEY_CHECKS = 1");
 
         $real_siswa = $this->db->count_all_results('siswa');
+        $real_alumni = $this->db->count_all_results('alumni');
 
         echo json_encode([
             'status' => 'success',
-            'message' => "Berhasil menyinkronkan data {$real_siswa} siswa, {$stats['siswa_kelas']} riwayat kelas, dan {$stats['kelas']} rombel ke website online.",
+            'message' => "Berhasil menyinkronkan data {$real_siswa} siswa, {$real_alumni} alumni, {$stats['siswa_kelas']} riwayat kelas, dan {$stats['kelas']} rombel ke website online.",
             'stats' => $stats,
-            'real_siswa_count' => $real_siswa
+            'real_siswa_count' => $real_siswa,
+            'real_alumni_count' => $real_alumni
         ]);
     }
 
