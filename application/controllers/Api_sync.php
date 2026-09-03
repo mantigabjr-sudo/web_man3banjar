@@ -503,4 +503,73 @@ class Api_sync extends CI_Controller {
             'results' => $results
         ]);
     }
+
+    public function seed_demo_ppdb(){
+        $this->validate_key();
+
+        $this->db->where('nisn', '0081234567')->delete('ppdb');
+
+        $tahun = date('Y');
+        $no_pendaftaran = 'PPDB'.$tahun.'-0999';
+
+        $data = [
+            'no_pendaftaran'     => $no_pendaftaran,
+            'nama_lengkap'       => 'Muhammad Rizky Pratama',
+            'nisn'               => '0081234567',
+            'nik'                => '6303051505100001',
+            'no_kk'              => '6303051201080005',
+            'jk'                 => 'L',
+            'tempat_lahir'       => 'Martapura',
+            'tanggal_lahir'      => '2010-05-15',
+            'agama'              => 'Islam',
+            'asal_sekolah'       => 'MTsN 1 Banjar',
+            'jalur_pendaftaran'  => 'Prestasi',
+            'pilihan_jurusan_1'  => 'Umum (Fase E)',
+            'pilihan_jurusan_2'  => '-',
+            'nama_ortu'          => 'H. Bambang Irawan',
+            'nama_ayah'          => 'H. Bambang Irawan',
+            'pekerjaan_ayah'     => 'Wiraswasta',
+            'nama_ibu'           => 'Hj. Siti Rahmah',
+            'pekerjaan_ibu'      => 'Guru',
+            'penghasilan_ortu'   => '3.000.000 - 5.000.000',
+            'no_hp'              => '081234567890',
+            'email'              => 'rizky.pratama@gmail.com',
+            'alamat'             => 'Jl. Pangeran Hidayatullah No. 12',
+            'rt'                 => '03',
+            'rw'                 => '01',
+            'desa'               => 'Keraton',
+            'kecamatan'          => 'Martapura',
+            'kabupaten'          => 'Kabupaten Banjar',
+            'provinsi'           => 'Kalimantan Selatan',
+            'kode_pos'           => '70611',
+            'status'             => 'Menunggu Verifikasi Berkas',
+            'username'           => '0081234567',
+            'password'           => password_hash('123456', PASSWORD_DEFAULT),
+            'created_at'         => date('Y-m-d H:i:s')
+        ];
+
+        $this->db->insert('ppdb', $data);
+
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Akun contoh peserta PMB berhasil dibuat di cloud.',
+            'data' => [
+                'nama' => $data['nama_lengkap'],
+                'nisn' => $data['nisn'],
+                'username' => $data['username'],
+                'password' => '123456',
+                'no_pendaftaran' => $no_pendaftaran,
+                'status' => $data['status']
+            ]
+        ]);
+    }
+
+    public function delete_demo_ppdb(){
+        $this->validate_key();
+        $this->db->where('nisn', '0081234567')->delete('ppdb');
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Akun contoh peserta PMB berhasil dihapus dari cloud.'
+        ]);
+    }
 }
