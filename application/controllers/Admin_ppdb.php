@@ -132,6 +132,102 @@ class Admin_ppdb extends CI_Controller {
 		$this->load->view('admin_ppdb/migrasi_data',$data);
 	}
 
+    /**
+     * Pembagian Jadwal Ujian Masuk PMB Otomatis (Batch Scheduling)
+     */
+    public function generate_jadwal_otomatis(){
+        $tanggal_mulai   = $this->input->post('tanggal_mulai') ? $this->input->post('tanggal_mulai') : date('Y-m-d', strtotime('+1 day'));
+        $kuota_per_hari  = (int)$this->input->post('kuota_per_hari');
+        if($kuota_per_hari < 1) $kuota_per_hari = 50;
+
+        $jam_tes         = $this->input->post('jam_tes') ? $this->input->post('jam_tes') : '08:00 - 11.30 WITA';
+        $ruang_tes       = $this->input->post('ruang_tes') ? $this->input->post('ruang_tes') : 'Kampus MAN 3 Banjar';
+        $prefix_nomor    = $this->input->post('prefix_nomor') ? $this->input->post('prefix_nomor') : 'TES-'.date('Y').'-';
+        $start_number    = (int)$this->input->post('start_number');
+        if($start_number < 1) $start_number = 1;
+
+        $target_peserta  = $this->input->post('target_peserta') ? $this->input->post('target_peserta') : 'lulus_verifikasi';
+        $skip_minggu     = $this->input->post('skip_minggu') !== null ? (int)$this->input->post('skip_minggu') : 1;
+
+        // Query peserta target
+        $this->db->order_by('id', 'ASC');
+        if($target_peserta == 'lulus_verifikasi'){
+            $this->db->group_start();
+            $this->db->where('status', 'Lulus Verifikasi');
+            $this->db->or_where('status', 'Menuju Tes');
+            $this->db->group_end();
+        } elseif($target_peserta == 'belum_jadwal'){
+            $this->db->group_start();
+            $this->db->where('tanggal_tes IS NULL', null, false);
+            $this->db->or_where('tanggal_tes', '0000-00-00');
+            $this->db->or_where('no_peserta_tes IS NULL', null, false);
+            $this->db->or_where('no_peserta_tes', '');
+            $this->db->group_end();
+            $this->db->where_not_in('status', ['Ditolak']);
+        } else {
+            // Semua peserta yang tidak ditolak
+            $this->db->where_not_in('status', ['Ditolak']);
+        }
+
+        $peserta_list = $this->db->get('ppdb')->result();
+
+        if(empty($peserta_list)){
+            $this->session->set_flashdata('error', 'Tidak ditemukan peserta yang sesuai kriteria target pembagian jadwal.');
+            redirect('admin_ppdb');
+            return;
+        }
+
+        $current_date_ts = strtotime($tanggal_mulai);
+        // Jika mulai di hari Minggu dan skip_minggu aktif
+        if($skip_minggu && date('N', $current_date_ts) == 7){
+            $current_date_ts = strtotime('+1 day', $current_date_ts);
+        }
+
+        $current_count_today = 0;
+        $total_assigned = 0;
+        $day_count = 1;
+        $running_number = $start_number;
+
+        foreach($peserta_list as $p){
+            // Jika kapasitas hari ini sudah penuh, ganti ke hari berikutnya
+            if($current_count_today >= $kuota_per_hari){
+                $current_date_ts = strtotime('+1 day', $current_date_ts);
+                if($skip_minggu && date('N', $current_date_ts) == 7){
+                    $current_date_ts = strtotime('+1 day', $current_date_ts);
+                }
+                $current_count_today = 0;
+                $day_count++;
+            }
+
+            $current_date_str = date('Y-m-d', $current_date_ts);
+            $nomor_peserta = $prefix_nomor . str_pad($running_number, 4, '0', STR_PAD_LEFT);
+
+            $update_data = [
+                'no_peserta_tes' => $nomor_peserta,
+                'tanggal_tes'    => $current_date_str,
+                'jam_tes'        => $jam_tes,
+                'ruang_tes'      => $ruang_tes
+            ];
+
+            // Jika status masih pendaftaran awal, ubah ke Lulus Verifikasi agar kartu terbuka
+            if(!in_array($p->status, ['Lulus Verifikasi', 'Diterima'])){
+                $update_data['status'] = 'Lulus Verifikasi';
+            }
+
+            $this->db->where('id', $p->id);
+            $this->db->update('ppdb', $update_data);
+
+            $current_count_today++;
+            $running_number++;
+            $total_assigned++;
+        }
+
+        $msg = "Berhasil membagikan jadwal seleksi untuk <strong>{$total_assigned} peserta</strong> ke dalam <strong>{$day_count} hari ujian</strong> (Maksimal {$kuota_per_hari} peserta/hari mulai tanggal ".date('d-m-Y', strtotime($tanggal_mulai)).").";
+        $this->session->set_flashdata('success', $msg);
+
+        redirect('admin_ppdb');
+    }
+
 	public function monitoring_berkas(){
         $status = $this->input->get('status');
         

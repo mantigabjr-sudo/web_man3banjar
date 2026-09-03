@@ -95,9 +95,16 @@ $file_items = [
                 <a href="<?= base_url('ppdb/detail') ?>" class="active">
                     <i class="bi bi-file-earmark-person-fill"></i> Detail Pendaftaran
                 </a>
-                <a href="<?= base_url('ppdb/cetak_kartu') ?>" target="_blank">
-                    <i class="bi bi-printer-fill"></i> Cetak Kartu Ujian
-                </a>
+                <?php $is_lulus_verifikasi = in_array($status_db, ['Lulus Verifikasi', 'Diterima']) || !empty($siswa->no_peserta_tes); ?>
+                <?php if($is_lulus_verifikasi): ?>
+                    <a href="<?= base_url('ppdb/cetak_kartu') ?>" target="_blank">
+                        <i class="bi bi-printer-fill"></i> Cetak Kartu Ujian
+                    </a>
+                <?php else: ?>
+                    <a href="javascript:void(0)" onclick="alert('Kartu Ujian Seleksi belum dapat dicetak.\nKartu hanya dapat dicetak setelah dokumen diverifikasi dan dinyatakan LULUS VERIFIKASI oleh Panitia PMB.');" style="opacity: 0.7;">
+                        <i class="bi bi-lock-fill"></i> Kartu Ujian (Terkunci)
+                    </a>
+                <?php endif; ?>
             </nav>
         </div>
 
@@ -316,10 +323,17 @@ $file_items = [
         <i class="bi bi-cloud-arrow-up-fill"></i>
         <span>Berkas</span>
     </a>
-    <a href="<?= base_url('ppdb/cetak_kartu') ?>" target="_blank">
-        <i class="bi bi-printer-fill"></i>
-        <span>Kartu Tes</span>
-    </a>
+    <?php if($is_lulus_verifikasi): ?>
+        <a href="<?= base_url('ppdb/cetak_kartu') ?>" target="_blank">
+            <i class="bi bi-printer-fill"></i>
+            <span>Kartu Tes</span>
+        </a>
+    <?php else: ?>
+        <a href="javascript:void(0)" onclick="alert('Kartu Ujian Seleksi belum dapat dicetak.\nKartu hanya dapat dicetak setelah dokumen diverifikasi dan dinyatakan LULUS VERIFIKASI oleh Panitia PMB.');" style="opacity:0.65;">
+            <i class="bi bi-lock-fill"></i>
+            <span>Kartu Tes</span>
+        </a>
+    <?php endif; ?>
     <a href="<?= base_url('ppdb/detail') ?>" class="active">
         <i class="bi bi-person-badge"></i>
         <span>Akun</span>

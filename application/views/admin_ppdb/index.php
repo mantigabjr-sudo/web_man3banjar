@@ -48,14 +48,95 @@
             </a>
         </div>
 
-        <!-- Tombol Aksi Cloud & Export -->
-        <div class="d-flex gap-2">
+        <!-- Tombol Aksi Cloud, Jadwal & Export -->
+        <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-warning btn-sm fw-bold shadow-sm rounded-pill px-3 text-dark" data-bs-toggle="modal" data-bs-target="#modalBagiJadwal">
+                <i class="bi bi-calendar-range-fill me-1"></i> Atur &amp; Bagikan Jadwal Tes
+            </button>
             <button type="button" class="btn btn-primary btn-sm fw-bold shadow-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#modalSyncCloud">
                 <i class="bi bi-cloud-arrow-down-fill me-1"></i> Tarik Cloud
             </button>
             <a href="<?= base_url('admin_ppdb/export_all') ?>" class="btn btn-outline-success btn-sm fw-bold rounded-pill px-3">
                 <i class="bi bi-file-earmark-excel-fill me-1"></i> Export Excel
             </a>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ MODAL ATUR & BAGIKAN JADWAL TES OTOMATIS (BATCH PER HARI) ═══ -->
+<div class="modal fade" id="modalBagiJadwal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+            <div class="modal-header bg-warning text-dark px-4 py-3">
+                <h5 class="modal-title fw-bold"><i class="bi bi-calendar-check-fill me-2"></i>Atur &amp; Bagikan Jadwal Ujian Masuk PMB</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="<?= base_url('admin_ppdb/generate_jadwal_otomatis') ?>">
+                <div class="modal-body p-4 bg-light">
+                    <p class="text-muted small mb-3">
+                        Fitur cerdas ini akan membagi peserta pendaftaran ke dalam hari-hari ujian seleksi secara otomatis (misalnya <strong>50 peserta per hari</strong>), menerbitkan <strong>Nomor Peserta Tes resmi</strong>, dan mengatur tanggal serta lokasi tes.
+                    </p>
+
+                    <div class="card p-3 border-0 shadow-sm rounded-3 mb-3 bg-white">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-dark">Tanggal Mulai Ujian Hari Pertama <span class="text-danger">*</span></label>
+                                <input type="date" name="tanggal_mulai" class="form-control" value="<?= date('Y-m-d', strtotime('+3 days')) ?>" required>
+                                <small class="text-muted" style="font-size: 11px;">Hari pertama pelaksanaan ujian seleksi PMB.</small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-dark">Kapasitas / Kuota Peserta Per Hari <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="number" name="kuota_per_hari" class="form-control" value="50" min="1" max="500" required>
+                                    <span class="input-group-text bg-light fw-bold">Peserta / Hari</span>
+                                </div>
+                                <small class="text-muted" style="font-size: 11px;">Contoh: 50 orang per hari, sisanya otomatis ke hari berikutnya.</small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-dark">Waktu / Jam Pelaksanaan Tes <span class="text-danger">*</span></label>
+                                <input type="text" name="jam_tes" class="form-control" value="08:00 - 11.30 WITA" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-dark">Ruang / Lokasi Tes <span class="text-danger">*</span></label>
+                                <input type="text" name="ruang_tes" class="form-control" value="Ruang CBT &amp; Kampus MAN 3 Banjar" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-dark">Format Awalan (Prefix) No. Peserta Tes</label>
+                                <input type="text" name="prefix_nomor" class="form-control font-monospace" value="TES-<?= date('Y') ?>-">
+                                <small class="text-muted" style="font-size: 11px;">Hasil: TES-<?= date('Y') ?>-0001, TES-<?= date('Y') ?>-0002, dst.</small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-dark">Target Peserta yang Dijadwalkan</label>
+                                <select name="target_peserta" class="form-select">
+                                    <option value="lulus_verifikasi">Peserta Lulus Verifikasi (Rekomendasi)</option>
+                                    <option value="belum_jadwal">Semua Peserta yang Belum Punya Jadwal</option>
+                                    <option value="semua">Semua Peserta Aktif (Otomatis Set Lulus)</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="skip_minggu" value="1" id="skipMingguCheck" checked>
+                                    <label class="form-check-label fw-bold small" for="skipMingguCheck">
+                                        Lewati Hari Minggu (Jika jadwal jatuh di hari Minggu, otomatis lompat ke hari Senin)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white border-top px-4 py-3">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-warning fw-bold rounded-pill px-4 shadow-sm" onclick="return confirm('Jalankan pembagian jadwal ujian otomatis sekarang?')">
+                        <i class="bi bi-magic me-1"></i> Generate &amp; Bagikan Jadwal Otomatis
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
