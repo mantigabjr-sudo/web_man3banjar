@@ -5,6 +5,10 @@ $route['default_controller'] = 'home';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
+// Dashboard & Admin Portal
+$route['dashboard'] = 'dashboard';
+$route['admin'] = 'dashboard';
+
 // PMB (Penerimaan Murid Baru) & PPDB Public
 $route['pmb'] = 'ppdb';
 $route['pmb/(:any)'] = 'ppdb/$1';
