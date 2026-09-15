@@ -205,7 +205,7 @@ class Admin_foto_ijazah extends CI_Controller {
         if(!empty($_FILES['zip_file']['name'])){
             $config['upload_path']   = $folder;
             $config['allowed_types'] = 'zip';
-            $config['max_size']      = 250000; // 250MB
+            $config['max_size']      = 0; // 0 = tidak dibatasi oleh CI (mengikuti batas PHP)
             $config['encrypt_name']  = TRUE;
 
             $this->load->library('upload', $config);
@@ -251,7 +251,7 @@ class Admin_foto_ijazah extends CI_Controller {
 
                 $config['upload_path']   = $folder;
                 $config['allowed_types'] = 'jpg|jpeg|png|webp|JPG|JPEG|PNG|WEBP';
-                $config['max_size']      = 20480; // 20MB
+                $config['max_size']      = 0; // Mengikuti batas PHP
                 $config['file_name']     = $_FILES['single_file']['name'];
                 $config['overwrite']     = FALSE;
 

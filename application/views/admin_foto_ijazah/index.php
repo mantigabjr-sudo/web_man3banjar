@@ -333,35 +333,34 @@
             </div>
             <?= form_open_multipart('admin_foto_ijazah/upload_foto') ?>
             <div class="modal-body p-4">
-                <div class="alert alert-warning border-0 rounded-3 small mb-3">
-                    <i class="bi bi-exclamation-triangle-fill me-1 text-warning"></i>
-                    <strong>PENTING:</strong> Browser &amp; PHP membatasi maksimal <strong>20 file</strong> per sekali upload form biasa. 
-                    Jika foto berjumlah puluhan/ratusan, gunakan <strong>Opsi 1 (File ZIP)</strong> atau <strong>Opsi 2 (Copy ke Folder)</strong> di bawah ini:
+                <div class="alert alert-info border-0 rounded-3 small mb-3">
+                    <i class="bi bi-info-circle-fill me-1 text-primary"></i>
+                    <strong>Kapasitas Diperbesar:</strong> Batas unggah file ZIP/foto kini hingga <strong>1 GB</strong> (dan hingga 500 file sekaligus). 
                 </div>
 
                 <div class="p-3 bg-light rounded-3 border mb-3">
                     <label class="form-label fw-bold text-success mb-1">
-                        <i class="bi bi-star-fill text-warning me-1"></i> Cara Paling Cepat (Copy-Paste Folder):
+                        <i class="bi bi-star-fill text-warning me-1"></i> Cara Paling Cepat &amp; Praktis (Copy Folder):
                     </label>
                     <p class="small text-muted mb-2" style="font-size: 12px;">
-                        Copy-paste seluruh file foto dari komputer Anda langsung ke folder:
+                        Copy-paste file foto langsung ke folder server:
                         <code class="d-block p-1 bg-white border rounded my-1 text-dark select-all">e:\KHAIDIR\WEB\labsys\uploads\foto_ijazah\mentah\</code>
-                        Lalu cukup klik tombol <strong>"Scan Folder Mentah"</strong> di atas. Ratusan foto otomatis terbaca instan!
+                        Lalu klik tombol <strong>"Scan Folder Mentah"</strong>. Semua foto langsung terbaca tanpa proses upload web!
                     </p>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold small text-dark"><i class="bi bi-file-earmark-zip-fill text-primary me-1"></i> Opsi 1: Upload 1 File Arsip ZIP (Ratusan Foto Sekaligus):</label>
+                    <label class="form-label fw-bold small text-dark"><i class="bi bi-file-earmark-zip-fill text-primary me-1"></i> Opsi 1: Upload File Arsip ZIP (Hingga 1 GB):</label>
                     <input type="file" name="zip_file" class="form-control rounded-3" accept=".zip">
-                    <small class="text-muted" style="font-size: 11px;">Jadikan foto-foto Anda satu file .zip (klik kanan &rarr; Compress to ZIP), lalu upload di sini. Sistem otomatis mengekstrak semuanya.</small>
+                    <small class="text-muted" style="font-size: 11px;">Jadikan foto-foto Anda satu file .zip, lalu upload di sini. Sistem otomatis mengekstrak seluruh isinya.</small>
                 </div>
 
                 <div class="text-center text-muted fw-bold small my-2">-- ATAU --</div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold small text-dark"><i class="bi bi-images text-secondary me-1"></i> Opsi 2: Upload Gambar Biasa (Maksimal 20 Foto per Sekali Upload):</label>
+                    <label class="form-label fw-bold small text-dark"><i class="bi bi-images text-secondary me-1"></i> Opsi 2: Upload Gambar Langsung (Hingga 500 Foto Sekaligus):</label>
                     <input type="file" name="foto_files[]" class="form-control rounded-3" accept="image/*" multiple>
-                    <small class="text-muted" style="font-size: 11px;">Jika memilih gambar langsung, pastikan tidak melebihi 20 foto per sekali klik unggah.</small>
+                    <small class="text-muted" style="font-size: 11px;">Pilih banyak foto sekaligus (Ctrl+A atau seleksi foto) lalu klik Mulai Unggah.</small>
                 </div>
             </div>
             <div class="modal-footer border-top bg-light rounded-bottom-4">
