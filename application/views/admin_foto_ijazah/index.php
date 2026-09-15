@@ -333,32 +333,35 @@
             </div>
             <?= form_open_multipart('admin_foto_ijazah/upload_foto') ?>
             <div class="modal-body p-4">
-                <div class="alert alert-info border-0 rounded-3 small mb-3">
-                    <i class="bi bi-info-circle-fill me-1"></i> Anda dapat mengunggah <strong>banyak file foto sekaligus</strong> (.jpg, .jpeg, .png) atau mengunggah <strong>1 file ZIP</strong> berisi kumpulan foto. Sistem otomatis mengekstraknya.
+                <div class="alert alert-warning border-0 rounded-3 small mb-3">
+                    <i class="bi bi-exclamation-triangle-fill me-1 text-warning"></i>
+                    <strong>PENTING:</strong> Browser &amp; PHP membatasi maksimal <strong>20 file</strong> per sekali upload form biasa. 
+                    Jika foto berjumlah puluhan/ratusan, gunakan <strong>Opsi 1 (File ZIP)</strong> atau <strong>Opsi 2 (Copy ke Folder)</strong> di bawah ini:
+                </div>
+
+                <div class="p-3 bg-light rounded-3 border mb-3">
+                    <label class="form-label fw-bold text-success mb-1">
+                        <i class="bi bi-star-fill text-warning me-1"></i> Cara Paling Cepat (Copy-Paste Folder):
+                    </label>
+                    <p class="small text-muted mb-2" style="font-size: 12px;">
+                        Copy-paste seluruh file foto dari komputer Anda langsung ke folder:
+                        <code class="d-block p-1 bg-white border rounded my-1 text-dark select-all">e:\KHAIDIR\WEB\labsys\uploads\foto_ijazah\mentah\</code>
+                        Lalu cukup klik tombol <strong>"Scan Folder Mentah"</strong> di atas. Ratusan foto otomatis terbaca instan!
+                    </p>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold small text-dark">Pilih Kelas (Opsional):</label>
-                    <select name="kelas_id" class="form-select rounded-3">
-                        <option value="">-- Semua Kelas XII (Global Pool) --</option>
-                        <?php foreach($kelas_list as $kl): ?>
-                            <option value="<?= $kl['id'] ?>"><?= htmlspecialchars($kl['nama_kelas']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-bold small text-dark">Opsi 1: Upload File Arsip ZIP:</label>
+                    <label class="form-label fw-bold small text-dark"><i class="bi bi-file-earmark-zip-fill text-primary me-1"></i> Opsi 1: Upload 1 File Arsip ZIP (Ratusan Foto Sekaligus):</label>
                     <input type="file" name="zip_file" class="form-control rounded-3" accept=".zip">
-                    <small class="text-muted" style="font-size: 11px;">Maksimal ukuran file ZIP 250 MB.</small>
+                    <small class="text-muted" style="font-size: 11px;">Jadikan foto-foto Anda satu file .zip (klik kanan &rarr; Compress to ZIP), lalu upload di sini. Sistem otomatis mengekstrak semuanya.</small>
                 </div>
 
                 <div class="text-center text-muted fw-bold small my-2">-- ATAU --</div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold small text-dark">Opsi 2: Upload Gambar Banyak (Multi-Select):</label>
+                    <label class="form-label fw-bold small text-dark"><i class="bi bi-images text-secondary me-1"></i> Opsi 2: Upload Gambar Biasa (Maksimal 20 Foto per Sekali Upload):</label>
                     <input type="file" name="foto_files[]" class="form-control rounded-3" accept="image/*" multiple>
-                    <small class="text-muted" style="font-size: 11px;">Tekan tombol Ctrl / Shift di keyboard untuk memilih banyak foto sekaligus.</small>
+                    <small class="text-muted" style="font-size: 11px;">Jika memilih gambar langsung, pastikan tidak melebihi 20 foto per sekali klik unggah.</small>
                 </div>
             </div>
             <div class="modal-footer border-top bg-light rounded-bottom-4">
