@@ -386,7 +386,11 @@ class Admin_foto_ijazah extends CI_Controller {
 
     // Download Semua Foto yang Telah Diverifikasi dalam format ZIP (Bernama {NISN}.jpg)
     public function download_zip(){
-        $kelas_id = $this->input->get('kelas_id');
+        @ini_set('memory_limit', '512M');
+        @set_time_limit(300);
+
+        $kelas_id     = $this->input->get('kelas_id');
+        $compress_1mb = (bool)$this->input->get('compress_1mb');
         
         $where_clause = "WHERE f.status = 'verified'";
         $params = [];
@@ -408,6 +412,7 @@ class Admin_foto_ijazah extends CI_Controller {
             JOIN siswa_kelas sk ON sk.siswa_id = s.id
             JOIN kelas k ON k.id = sk.kelas_id
             $where_clause
+            GROUP BY f.id
         ";
 
         $verified_list = $this->db->query($sql, $params)->result_array();
@@ -422,12 +427,25 @@ class Admin_foto_ijazah extends CI_Controller {
         $verified_dir = FCPATH . 'uploads/foto_ijazah/verified/';
 
         $added_count = 0;
+        $added_files = [];
         foreach($verified_list as $row){
             $file_name = !empty($row['file_verified']) ? $row['file_verified'] : ($row['nisn'] . '.jpg');
             $file_path = $verified_dir . $file_name;
 
+            if(isset($added_files[$file_name])) continue;
+
             if(file_exists($file_path)){
-                // Tambahkan ke zip dengan nama {NISN}.jpg
+                $added_files[$file_name] = true;
+                if($compress_1mb){
+                    $compressed_content = $this->compress_image_max_1mb($file_path, 1048576);
+                    if($compressed_content !== false){
+                        $this->zip->add_data($file_name, $compressed_content);
+                        $added_count++;
+                        continue;
+                    }
+                }
+
+                // Tambahkan ke zip dengan file asli
                 $this->zip->read_file($file_path, $file_name);
                 $added_count++;
             }
@@ -439,8 +457,86 @@ class Admin_foto_ijazah extends CI_Controller {
             return;
         }
 
-        $zip_filename = 'FOTO_IJAZAH_NISN_' . $suffix . '_' . date('Ymd_His') . '.zip';
+        $prefix = $compress_1mb ? 'FOTO_IJAZAH_NISN_MAKS_1MB_' : 'FOTO_IJAZAH_NISN_ASLI_';
+        $zip_filename = $prefix . $suffix . '_' . date('Ymd_His') . '.zip';
         $this->zip->download($zip_filename);
+    }
+
+    /**
+     * Kompresi file foto menjadi maksimal 1 MB (1048576 bytes)
+     * Tetap menjaga kualitas visual dan rasio aspek
+     */
+    private function compress_image_max_1mb($filepath, $max_bytes = 1048576){
+        if(!file_exists($filepath)){
+            return false;
+        }
+
+        $filesize = filesize($filepath);
+        if($filesize <= $max_bytes){
+            return file_get_contents($filepath);
+        }
+
+        if(!extension_loaded('gd')){
+            return file_get_contents($filepath);
+        }
+
+        $image_info = @getimagesize($filepath);
+        if(!$image_info){
+            return file_get_contents($filepath);
+        }
+
+        $mime = $image_info['mime'];
+        if($mime == 'image/jpeg' || $mime == 'image/jpg'){
+            $img = @imagecreatefromjpeg($filepath);
+        } elseif($mime == 'image/png'){
+            $img = @imagecreatefrompng($filepath);
+        } elseif($mime == 'image/webp'){
+            $img = @imagecreatefromwebp($filepath);
+        } else {
+            return file_get_contents($filepath);
+        }
+
+        if(!$img){
+            return file_get_contents($filepath);
+        }
+
+        $orig_w = imagesx($img);
+        $orig_h = imagesy($img);
+
+        // Jika resolusi foto sangat besar (> 2000px), resize proporsional
+        $max_dim = 2000;
+        if($orig_w > $max_dim || $orig_h > $max_dim){
+            if($orig_w >= $orig_h){
+                $new_w = $max_dim;
+                $new_h = intval($orig_h * ($max_dim / $orig_w));
+            } else {
+                $new_h = $max_dim;
+                $new_w = intval($orig_w * ($max_dim / $orig_h));
+            }
+            $new_img = imagecreatetruecolor($new_w, $new_h);
+            $white = imagecolorallocate($new_img, 255, 255, 255);
+            imagefill($new_img, 0, 0, $white);
+
+            imagecopyresampled($new_img, $img, 0, 0, 0, 0, $new_w, $new_h, $orig_w, $orig_h);
+            imagedestroy($img);
+            $img = $new_img;
+        }
+
+        // Kompresi bertahap mulai dari quality 85 sampai ukuran <= 1MB
+        $quality = 85;
+        ob_start();
+        imagejpeg($img, null, $quality);
+        $data = ob_get_clean();
+
+        while(strlen($data) > $max_bytes && $quality > 35){
+            $quality -= 5;
+            ob_start();
+            imagejpeg($img, null, $quality);
+            $data = ob_get_clean();
+        }
+
+        imagedestroy($img);
+        return $data;
     }
 
     // Admin verifikasi foto langsung untuk siswa

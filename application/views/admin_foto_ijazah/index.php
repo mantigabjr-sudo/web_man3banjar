@@ -46,9 +46,33 @@
                             <button type="button" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm" id="btnTarikVerifikasiCloud">
                                 <i class="bi bi-cloud-arrow-down-fill me-1"></i> Tarik dari Hosting
                             </button>
-                            <a href="<?= base_url('admin_foto_ijazah/download_zip' . (!empty($selected_kelas) ? '?kelas_id='.$selected_kelas : '')) ?>" class="btn btn-outline-light fw-bold rounded-pill px-3 shadow-sm">
-                                <i class="bi bi-file-earmark-zip-fill me-1"></i> Download ZIP
-                            </a>
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-outline-light fw-bold rounded-pill px-3 shadow-sm dropdown-toggle" type="button" id="dropdownDownloadZip" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-file-earmark-zip-fill me-1"></i> Download ZIP
+                                </button>
+                                <ul class="dropdown-menu shadow-lg border-0 rounded-4 p-2" aria-labelledby="dropdownDownloadZip" style="min-width: 250px;">
+                                    <li><h6 class="dropdown-header text-uppercase text-muted fw-bold" style="font-size: 11px;">Pilihan Kualitas &amp; Ukuran</h6></li>
+                                    <li>
+                                        <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2" href="<?= base_url('admin_foto_ijazah/download_zip' . (!empty($selected_kelas) ? '?kelas_id='.$selected_kelas.'&compress_1mb=1' : '?compress_1mb=1')) ?>">
+                                            <i class="bi bi-lightning-charge-fill text-warning fs-5"></i>
+                                            <div>
+                                                <strong class="d-block text-dark" style="font-size: 13px;">Maksimal 1 MB (Rekomendasi)</strong>
+                                                <small class="text-muted" style="font-size: 11px;">Untuk EMIS, PDUM, &amp; Verval PD</small>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider my-1"></li>
+                                    <li>
+                                        <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2" href="<?= base_url('admin_foto_ijazah/download_zip' . (!empty($selected_kelas) ? '?kelas_id='.$selected_kelas : '')) ?>">
+                                            <i class="bi bi-file-earmark-image text-primary fs-5"></i>
+                                            <div>
+                                                <strong class="d-block text-dark" style="font-size: 13px;">Ukuran Asli (Original)</strong>
+                                                <small class="text-muted" style="font-size: 11px;">Resolusi penuh kamera (2-4 MB)</small>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                     <div class="col-lg-5">
