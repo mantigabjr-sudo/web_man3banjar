@@ -1399,5 +1399,10 @@ class Website extends CI_Controller {
 
         $this->load->view('public/kontak', $data);
     }
+
+    // Alias redirect ke portal verifikasi mandiri foto ijazah kelas XII
+    public function verifikasi_foto_ijazah(){
+        redirect('verifikasi_foto_ijazah');
+    }
 }
 

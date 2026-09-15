@@ -200,6 +200,7 @@ if(!empty($profil_website->whatsapp)){
                     </a>
                     <ul class="dropdown-menu shadow-sm">
                         <li><a class="dropdown-item fw-bold text-success" href="<?= base_url('website/monitoring_kbm') ?>"><i class="bi bi-broadcast text-danger me-1"></i> Live Monitoring KBM</a></li>
+                        <li><a class="dropdown-item fw-bold text-dark" href="<?= base_url('verifikasi_foto_ijazah') ?>"><i class="bi bi-mortarboard-fill text-success me-1"></i> Verifikasi Foto Ijazah XII</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="https://rdm.man3banjar.com" target="_blank" rel="noopener">Rapor Digital (RDM)</a></li>
                     </ul>
@@ -242,6 +243,9 @@ if(!empty($profil_website->whatsapp)){
             <a href="<?= base_url('website/monitoring_kbm') ?>" class="web-btn web-btn-primary" style="background: #14532d; border-color: #14532d;">
                 <i class="bi bi-broadcast text-danger me-1"></i> Live Monitoring KBM
             </a>
+            <a href="<?= base_url('verifikasi_foto_ijazah') ?>" class="web-btn web-btn-outline" style="border-color: rgba(255,255,255,0.4);">
+                <i class="bi bi-mortarboard-fill text-warning me-1"></i> Foto Ijazah XII
+            </a>
             <a href="<?= base_url('pmb') ?>" class="web-btn web-btn-outline">
                 <i class="bi bi-pencil-square"></i> Daftar PMB
             </a>
@@ -266,6 +270,28 @@ if(!empty($profil_website->whatsapp)){
         </div>
     </div>
 </header>
+
+<!-- ═══ BANNER PENGUMUMAN KHUSUS KELAS XII ═══ -->
+<div class="container mt-4 mb-2">
+    <div class="p-3 p-md-4 rounded-4 shadow-sm border d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 reveal" 
+         style="background: linear-gradient(135deg, #064e3b 0%, #059669 100%); color: #ffffff;">
+        <div class="d-flex align-items-center gap-3">
+            <div class="p-3 rounded-4 bg-white text-success fw-bold fs-3 d-none d-sm-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+            <div>
+                <span class="badge bg-warning text-dark fw-bold px-3 py-1 rounded-pill mb-1" style="font-size: 11px;">PENGUMUMAN KELAS XII</span>
+                <h5 class="fw-bold mb-1 text-white">Verifikasi Mandiri Foto Ijazah Siswa Telah Dibuka</h5>
+                <p class="mb-0 text-white-50 small">Siswa kelas XII diharapkan memverifikasi fotonya agar tersimpan resmi dengan nama NISN sebelum dicetak.</p>
+            </div>
+        </div>
+        <div>
+            <a href="<?= base_url('verifikasi_foto_ijazah') ?>" class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2 shadow-sm text-nowrap">
+                Verifikasi Sekarang &rarr;
+            </a>
+        </div>
+    </div>
+</div>
 
 <!-- ═══ BERITA ═══ -->
 <section class="web-section web-soft" id="berita">

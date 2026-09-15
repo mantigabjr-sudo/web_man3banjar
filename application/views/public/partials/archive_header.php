@@ -137,6 +137,7 @@ if(!function_exists('web_clean')){
                     </a>
                     <ul class="dropdown-menu shadow-sm">
                         <li><a class="dropdown-item fw-bold text-success" href="<?= base_url('website/monitoring_kbm') ?>"><i class="bi bi-broadcast text-danger me-1"></i> Live Monitoring KBM</a></li>
+                        <li><a class="dropdown-item fw-bold text-dark" href="<?= base_url('verifikasi_foto_ijazah') ?>"><i class="bi bi-mortarboard-fill text-success me-1"></i> Verifikasi Foto Ijazah XII</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="https://rdm.man3banjar.com" target="_blank" rel="noopener">Rapor Digital (RDM)</a></li>
                     </ul>
