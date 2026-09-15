@@ -37,6 +37,12 @@
                             <a href="<?= base_url('admin_foto_ijazah/scan_folder') ?>" class="btn btn-outline-light fw-bold rounded-pill px-3 shadow-sm" onclick="return confirm('Scan seluruh file gambar di folder uploads/foto_ijazah/mentah/?')">
                                 <i class="bi bi-arrow-repeat me-1"></i> Scan Folder Mentah
                             </a>
+                            <button type="button" class="btn btn-info text-white fw-bold rounded-pill px-3 shadow-sm" id="btnBukaModalSync">
+                                <i class="bi bi-cloud-arrow-up-fill me-1"></i> Sinkronkan Foto ke Hosting
+                            </button>
+                            <button type="button" class="btn btn-success text-white fw-bold rounded-pill px-3 shadow-sm" id="btnTarikVerifikasiCloud">
+                                <i class="bi bi-cloud-arrow-down-fill me-1"></i> Tarik Hasil Verifikasi Cloud
+                            </button>
                             <a href="<?= base_url('admin_foto_ijazah/download_zip' . (!empty($selected_kelas) ? '?kelas_id='.$selected_kelas : '')) ?>" class="btn btn-warning text-dark fw-bold rounded-pill px-3 shadow-sm">
                                 <i class="bi bi-file-earmark-zip-fill me-1"></i> Download ZIP ({NISN}.jpg)
                             </a>
@@ -640,4 +646,248 @@ function openPasangKeSiswaModal(fotoId, filename, previewUrl){
     const modal = new bootstrap.Modal(document.getElementById('modalPasangFotoKeSiswa'));
     modal.show();
 }
+
+// ═══════════════════════════════════════════════════════════════════════
+// SINKRONISASI FOTO MENTAH DENGAN CLOUD HOSTING VIA AJAX BATCH
+// ═══════════════════════════════════════════════════════════════════════
+
+let unsyncedList = [];
+let syncInProgress = false;
+
+document.getElementById('btnBukaModalSync')?.addEventListener('click', function(){
+    const modal = new bootstrap.Modal(document.getElementById('modalSyncFotoHosting'));
+    modal.show();
+
+    // Reset UI
+    document.getElementById('syncCheckingBox').classList.remove('d-none');
+    document.getElementById('syncActionBox').classList.add('d-none');
+    document.getElementById('btnStartSync').disabled = true;
+    document.getElementById('syncLocalCount').innerText = '-';
+    document.getElementById('syncCloudCount').innerText = '-';
+    document.getElementById('syncUnsyncedCount').innerText = '-';
+    document.getElementById('syncLogBox').innerHTML = '<div>[System] Memeriksa status file di server hosting...</div>';
+
+    fetch('<?= base_url("admin_foto_ijazah/ajax_cek_sync_mentah") ?>')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('syncCheckingBox').classList.add('d-none');
+            document.getElementById('syncActionBox').classList.remove('d-none');
+
+            if(data.status === 'success'){
+                document.getElementById('syncLocalCount').innerText = data.total_local;
+                document.getElementById('syncCloudCount').innerText = data.total_cloud;
+                document.getElementById('syncUnsyncedCount').innerText = data.unsynced_count;
+
+                unsyncedList = data.unsynced_files || [];
+
+                if(unsyncedList.length > 0){
+                    document.getElementById('btnStartSync').disabled = false;
+                    document.getElementById('syncNoticeText').innerHTML = 'Terdapat <strong>' + unsyncedList.length + ' foto</strong> yang belum ada di server hosting. Siap disinkronkan.';
+                    appendSyncLog('[Ready] ' + unsyncedList.length + ' foto perlu diunggah. Klik Mulai Sinkronkan.');
+                } else {
+                    document.getElementById('btnStartSync').disabled = true;
+                    document.getElementById('syncNoticeText').innerHTML = '🎉 <strong>Seluruh foto sudah lengkap tersinkron di server hosting!</strong> Tidak ada file baru yang perlu diunggah.';
+                    appendSyncLog('[Success] Semua foto di lokal sudah ada di server hosting.');
+                }
+            } else {
+                appendSyncLog('[Error] ' + (data.message || 'Gagal memeriksa server hosting.'));
+                alert(data.message || 'Gagal menghubungi server hosting.');
+            }
+        })
+        .catch(err => {
+            document.getElementById('syncCheckingBox').classList.add('d-none');
+            document.getElementById('syncActionBox').classList.remove('d-none');
+            appendSyncLog('[Error] Terjadi kesalahan koneksi internet atau server lokal.');
+        });
+});
+
+function appendSyncLog(msg){
+    const box = document.getElementById('syncLogBox');
+    const line = document.createElement('div');
+    line.innerText = msg;
+    box.appendChild(line);
+    box.scrollTop = box.scrollHeight;
+}
+
+// Mulai proses upload satu per satu
+document.getElementById('btnStartSync')?.addEventListener('click', async function(){
+    if(unsyncedList.length === 0 || syncInProgress) return;
+
+    syncInProgress = true;
+    this.disabled = true;
+    document.getElementById('btnCloseModalSync').disabled = true;
+    document.getElementById('btnBatalSync').disabled = true;
+
+    const progressWrapper = document.getElementById('syncProgressWrapper');
+    const progressBar = document.getElementById('syncProgressBar');
+    const progressLabel = document.getElementById('syncProgressLabel');
+    const progressPercent = document.getElementById('syncProgressPercent');
+
+    progressWrapper.classList.remove('d-none');
+
+    const total = unsyncedList.length;
+    let suksesCount = 0;
+    let gagalCount = 0;
+
+    for(let i = 0; i < total; i++){
+        const filename = unsyncedList[i];
+        const currentNum = i + 1;
+        const pct = Math.round((currentNum / total) * 100);
+
+        progressLabel.innerText = 'Mengunggah (' + currentNum + '/' + total + '): ' + filename;
+        progressPercent.innerText = pct + '%';
+        progressBar.style.width = pct + '%';
+
+        appendSyncLog('(' + currentNum + '/' + total + ') Mengirim ' + filename + '...');
+
+        try {
+            const formData = new FormData();
+            formData.append('filename', filename);
+
+            const res = await fetch('<?= base_url("admin_foto_ijazah/ajax_upload_single_mentah") ?>', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await res.json();
+
+            if(result.status === 'success'){
+                suksesCount++;
+                appendSyncLog('  -> [OK] ' + filename + ' berhasil disimpan di hosting.');
+            } else {
+                gagalCount++;
+                appendSyncLog('  -> [GAGAL] ' + filename + ': ' + (result.message || 'Error'));
+            }
+        } catch(e){
+            gagalCount++;
+            appendSyncLog('  -> [ERROR] ' + filename + ': Masalah jaringan.');
+        }
+    }
+
+    syncInProgress = false;
+    document.getElementById('btnCloseModalSync').disabled = false;
+    document.getElementById('btnBatalSync').disabled = false;
+
+    progressLabel.innerText = 'Selesai: ' + suksesCount + ' berhasil, ' + gagalCount + ' gagal.';
+    appendSyncLog('══════════════════════════════════════════');
+    appendSyncLog('🎉 PROSES SINKRONISASI SELESAI!');
+    appendSyncLog('Berhasil diunggah ke hosting: ' + suksesCount + ' file.');
+    if(gagalCount > 0){
+        appendSyncLog('Gagal: ' + gagalCount + ' file.');
+    }
+
+    alert('🎉 Sinkronisasi selesai! ' + suksesCount + ' file foto berhasil diunggah ke server hosting.');
+    location.reload();
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+// TARIK HASIL VERIFIKASI DARI CLOUD HOSTING KE LOKAL
+// ═══════════════════════════════════════════════════════════════════════
+document.getElementById('btnTarikVerifikasiCloud')?.addEventListener('click', function(){
+    if(!confirm('Tarik data siswa dan foto resmi ({NISN}.jpg) yang sudah diverifikasi siswa di website online?')) return;
+
+    const btn = this;
+    const origHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Menarik data...';
+
+    fetch('<?= base_url("admin_foto_ijazah/ajax_pull_verified_cloud") ?>')
+        .then(res => res.json())
+        .then(data => {
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+
+            if(data.status === 'success'){
+                alert(data.message || 'Berhasil menarik data verifikasi dari cloud!');
+                location.reload();
+            } else {
+                alert(data.message || 'Gagal menarik data dari server hosting.');
+            }
+        })
+        .catch(err => {
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+            alert('Terjadi kesalahan koneksi saat menarik data dari hosting.');
+        });
+});
 </script>
+
+<!-- ═══ MODAL SINKRONISASI FOTO KE HOSTING ═══ -->
+<div class="modal fade" id="modalSyncFotoHosting" tabindex="-1" aria-labelledby="modalSyncFotoHostingLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header bg-success text-white rounded-top-4 p-4">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-cloud-arrow-up-fill fs-4"></i>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="modalSyncFotoHostingLabel">Sinkronisasi Foto Mentah ke Cloud Hosting</h5>
+                        <small class="text-white-50">Kirim foto hasil kamera dari komputer lokal ke website man3banjar.sch.id</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" id="btnCloseModalSync"></button>
+            </div>
+            <div class="modal-body p-4">
+                
+                <!-- Status Box Info -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded-4 border text-center">
+                            <span class="text-muted small fw-bold d-block text-uppercase">Foto di Komputer Ini</span>
+                            <h3 class="fw-bold text-dark mb-0 mt-1" id="syncLocalCount">-</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded-4 border text-center">
+                            <span class="text-muted small fw-bold d-block text-uppercase">Sudah di Hosting</span>
+                            <h3 class="fw-bold text-success mb-0 mt-1" id="syncCloudCount">-</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-warning bg-opacity-10 rounded-4 border border-warning text-center">
+                            <span class="text-warning-emphasis small fw-bold d-block text-uppercase">Belum Dikirim</span>
+                            <h3 class="fw-bold text-warning-emphasis mb-0 mt-1" id="syncUnsyncedCount">-</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State saat Cek Server -->
+                <div id="syncCheckingBox" class="text-center py-4">
+                    <div class="spinner-border text-success mb-2" role="status"></div>
+                    <div class="small fw-bold text-muted">Menghubungi server hosting dan membandingkan file...</div>
+                </div>
+
+                <!-- Action & Progress Box -->
+                <div id="syncActionBox" class="d-none">
+                    
+                    <div id="syncReadyNotice" class="alert alert-info border-0 rounded-4 p-3 small mb-3">
+                        <i class="bi bi-info-circle-fill me-1"></i>
+                        <span id="syncNoticeText">File foto akan dikirim satu per satu secara otomatis agar tidak membebani server dan tidak gagal batas upload.</span>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div id="syncProgressWrapper" class="d-none mb-3">
+                        <div class="d-flex justify-content-between align-items-center small fw-bold mb-1">
+                            <span id="syncProgressLabel">Mengunggah file...</span>
+                            <span id="syncProgressPercent" class="text-success">0%</span>
+                        </div>
+                        <div class="progress" style="height: 12px; border-radius: 8px;">
+                            <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" id="syncProgressBar" role="progressbar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Log Box -->
+                    <div class="border rounded-3 p-3 bg-dark text-light font-monospace small" id="syncLogBox" style="max-height: 180px; overflow-y: auto; font-size: 11px;">
+                        <div>[Ready] Klik tombol Mulai Sinkronkan di bawah untuk mulai mengirim foto ke hosting.</div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer bg-light rounded-bottom-4 p-3 d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4 fw-bold" data-bs-dismiss="modal" id="btnBatalSync">Tutup</button>
+                <button type="button" class="btn btn-success rounded-pill px-4 fw-bold" id="btnStartSync" disabled>
+                    <i class="bi bi-play-fill me-1"></i> Mulai Sinkronkan ke Hosting
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

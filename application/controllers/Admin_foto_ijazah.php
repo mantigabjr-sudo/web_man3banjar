@@ -544,4 +544,232 @@ class Admin_foto_ijazah extends CI_Controller {
         $this->session->set_flashdata('success', 'Sukses! Foto untuk siswa <strong>' . htmlspecialchars($siswa['nama_lengkap']) . '</strong> berhasil diverifikasi langsung (File: ' . $new_filename . ').');
         redirect('admin_foto_ijazah');
     }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // FITUR SINKRONISASI CLOUD DUA ARAH (LOKAL <-> CLOUD HOSTING)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    private $cloud_url = 'https://man3banjar.sch.id/';
+    private $sync_api_key = 'MAN3BANJAR_SECRET_SYNC_KEY_2026';
+
+    // 1. AJAX: Cek status perbandingan foto mentah lokal vs hosting
+    public function ajax_cek_sync_mentah(){
+        header('Content-Type: application/json; charset=utf-8');
+
+        // Scan folder lokal
+        $local_folder = FCPATH . 'uploads/foto_ijazah/mentah/';
+        if(!is_dir($local_folder)){
+            @mkdir($local_folder, 0777, true);
+        }
+
+        $files = scandir($local_folder);
+        $local_files = [];
+        $valid_ext = ['jpg', 'jpeg', 'png', 'webp'];
+
+        foreach($files as $f){
+            if($f === '.' || $f === '..') continue;
+            $ext = strtolower(pathinfo($f, PATHINFO_EXTENSION));
+            if(in_array($ext, $valid_ext)){
+                $local_files[] = $f;
+            }
+        }
+
+        // Ambil daftar foto di cloud
+        $ch = curl_init(rtrim($this->cloud_url, '/') . '/api/sync/get_existing_foto_mentah');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'X-API-KEY: ' . $this->sync_api_key
+        ]);
+
+        $res = curl_exec($ch);
+        $err = curl_error($ch);
+        curl_close($ch);
+
+        if($err){
+            echo json_encode([
+                'status'  => 'error',
+                'message' => 'Gagal menghubungi server hosting: ' . $err
+            ]);
+            return;
+        }
+
+        $json = json_decode($res, true);
+        if(!$json || $json['status'] !== 'success'){
+            echo json_encode([
+                'status'  => 'error',
+                'message' => 'Respon hosting tidak valid: ' . substr($res, 0, 150)
+            ]);
+            return;
+        }
+
+        $cloud_files = $json['files'] ?? [];
+        $cloud_set = array_flip($cloud_files);
+
+        $unsynced = [];
+        foreach($local_files as $lf){
+            if(!isset($cloud_set[$lf])){
+                $unsynced[] = $lf;
+            }
+        }
+
+        echo json_encode([
+            'status'        => 'success',
+            'total_local'   => count($local_files),
+            'total_cloud'   => count($cloud_files),
+            'unsynced_count'=> count($unsynced),
+            'unsynced_files'=> $unsynced
+        ]);
+    }
+
+    // 2. AJAX: Kirim 1 file foto mentah ke server hosting
+    public function ajax_upload_single_mentah(){
+        header('Content-Type: application/json; charset=utf-8');
+
+        $filename = $this->input->post('filename');
+        if(empty($filename)){
+            echo json_encode(['status' => 'error', 'message' => 'Nama file kosong']);
+            return;
+        }
+
+        $local_path = FCPATH . 'uploads/foto_ijazah/mentah/' . basename($filename);
+        if(!file_exists($local_path)){
+            echo json_encode(['status' => 'error', 'message' => 'File tidak ditemukan di lokal: ' . $filename]);
+            return;
+        }
+
+        $cfile = new CURLFile($local_path, mime_content_type($local_path), basename($filename));
+
+        $post_fields = [
+            'file'    => $cfile,
+            'api_key' => $this->sync_api_key
+        ];
+
+        $ch = curl_init(rtrim($this->cloud_url, '/') . '/api/sync/upload_foto_mentah');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'X-API-KEY: ' . $this->sync_api_key
+        ]);
+
+        $res = curl_exec($ch);
+        $err = curl_error($ch);
+        curl_close($ch);
+
+        if($err){
+            echo json_encode(['status' => 'error', 'message' => 'cURL error: ' . $err]);
+            return;
+        }
+
+        $json = json_decode($res, true);
+        if($json){
+            echo json_encode($json);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Respon hosting tidak valid: ' . substr($res, 0, 100)]);
+        }
+    }
+
+    // 3. AJAX: Tarik hasil verifikasi dari cloud hosting ke lokal
+    public function ajax_pull_verified_cloud(){
+        header('Content-Type: application/json; charset=utf-8');
+
+        $ch = curl_init(rtrim($this->cloud_url, '/') . '/api/sync/pull_foto_verified');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'X-API-KEY: ' . $this->sync_api_key
+        ]);
+
+        $res = curl_exec($ch);
+        $err = curl_error($ch);
+        curl_close($ch);
+
+        if($err){
+            echo json_encode(['status' => 'error', 'message' => 'Gagal koneksi: ' . $err]);
+            return;
+        }
+
+        $json = json_decode($res, true);
+        if(!$json || $json['status'] !== 'success'){
+            echo json_encode(['status' => 'error', 'message' => 'Gagal mengambil data dari hosting']);
+            return;
+        }
+
+        $verified_list = $json['data'] ?? [];
+        $downloaded = 0;
+        $updated = 0;
+
+        $target_dir = FCPATH . 'uploads/foto_ijazah/verified/';
+        if(!is_dir($target_dir)){
+            @mkdir($target_dir, 0777, true);
+        }
+
+        foreach($verified_list as $row){
+            $file_verified = $row['file_verified'];
+            if(empty($file_verified)) continue;
+
+            $local_file_path = $target_dir . $file_verified;
+
+            // Unduh file gambar jika belum ada di lokal
+            if(!file_exists($local_file_path) && !empty($row['download_url'])){
+                $img_content = @file_get_contents($row['download_url']);
+                if($img_content !== false){
+                    file_put_contents($local_file_path, $img_content);
+                    $downloaded++;
+                }
+            }
+
+            // Update database lokal
+            $cek = $this->db->where('file_mentah', $row['file_mentah'])->get('foto_ijazah_verifikasi')->row();
+            if($cek){
+                $this->db->where('id', $cek->id)->update('foto_ijazah_verifikasi', [
+                    'siswa_id'      => $row['siswa_id'],
+                    'nisn'          => $row['nisn'],
+                    'nama_siswa'    => $row['nama_siswa'],
+                    'kelas_id'      => $row['kelas_id'],
+                    'file_verified' => $row['file_verified'],
+                    'status'        => 'verified',
+                    'verified_at'   => $row['verified_at'],
+                    'catatan'       => $row['catatan']
+                ]);
+            } else {
+                $this->db->insert('foto_ijazah_verifikasi', [
+                    'siswa_id'      => $row['siswa_id'],
+                    'nisn'          => $row['nisn'],
+                    'nama_siswa'    => $row['nama_siswa'],
+                    'kelas_id'      => $row['kelas_id'],
+                    'file_mentah'   => $row['file_mentah'],
+                    'file_verified' => $row['file_verified'],
+                    'status'        => 'verified',
+                    'verified_at'   => $row['verified_at'],
+                    'catatan'       => $row['catatan'],
+                    'created_at'    => $row['created_at'] ?? date('Y-m-d H:i:s')
+                ]);
+            }
+
+            // Update foto siswa di tabel siswa jika cocok
+            if(!empty($row['siswa_id'])){
+                $this->db->where('id', $row['siswa_id'])->update('siswa', [
+                    'foto' => 'foto_ijazah/verified/' . $file_verified
+                ]);
+            }
+
+            $updated++;
+        }
+
+        echo json_encode([
+            'status'     => 'success',
+            'message'    => "Sinkronisasi selesai! $updated data verifikasi tersinkron, $downloaded file foto baru berhasil diunduh.",
+            'updated'    => $updated,
+            'downloaded' => $downloaded
+        ]);
+    }
 }

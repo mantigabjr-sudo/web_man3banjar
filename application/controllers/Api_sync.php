@@ -730,4 +730,100 @@ class Api_sync extends CI_Controller {
             'message' => 'Akun contoh peserta PMB berhasil dihapus dari cloud.'
         ]);
     }
+
+    // ═══ SYNC FOTO IJAZAH (LOKAL <-> CLOUD) ═══
+
+    public function get_existing_foto_mentah(){
+        $this->validate_key();
+
+        $folder = FCPATH . 'uploads/foto_ijazah/mentah/';
+        if(!is_dir($folder)){
+            @mkdir($folder, 0777, true);
+        }
+
+        $files = scandir($folder);
+        $existing = [];
+        $valid_ext = ['jpg', 'jpeg', 'png', 'webp'];
+
+        foreach($files as $f){
+            if($f === '.' || $f === '..') continue;
+            $ext = strtolower(pathinfo($f, PATHINFO_EXTENSION));
+            if(in_array($ext, $valid_ext)){
+                $existing[] = $f;
+            }
+        }
+
+        echo json_encode([
+            'status' => 'success',
+            'count'  => count($existing),
+            'files'  => $existing
+        ]);
+    }
+
+    public function upload_foto_mentah(){
+        $this->validate_key();
+
+        if(empty($_FILES['file']['name'])){
+            echo json_encode(['status' => 'error', 'message' => 'Tidak ada file yang diunggah']);
+            return;
+        }
+
+        $folder = FCPATH . 'uploads/foto_ijazah/mentah/';
+        if(!is_dir($folder)){
+            @mkdir($folder, 0777, true);
+        }
+
+        $orig_name = basename($_FILES['file']['name']);
+        $target_path = $folder . $orig_name;
+
+        if(!move_uploaded_file($_FILES['file']['tmp_name'], $target_path)){
+            echo json_encode(['status' => 'error', 'message' => 'Gagal memindahkan file ke folder uploads hosting']);
+            return;
+        }
+
+        // Daftarkan ke database jika tabel tersedia
+        if($this->db->table_exists('foto_ijazah_verifikasi')){
+            $cek = $this->db->where('file_mentah', $orig_name)->count_all_results('foto_ijazah_verifikasi');
+            if($cek == 0){
+                $this->db->insert('foto_ijazah_verifikasi', [
+                    'file_mentah' => $orig_name,
+                    'status'      => 'pending',
+                    'created_at'  => date('Y-m-d H:i:s')
+                ]);
+            }
+        }
+
+        echo json_encode([
+            'status'   => 'success',
+            'filename' => $orig_name,
+            'message'  => 'Foto ' . $orig_name . ' berhasil disinkronkan ke hosting.'
+        ]);
+    }
+
+    public function pull_foto_verified(){
+        $this->validate_key();
+
+        if(!$this->db->table_exists('foto_ijazah_verifikasi')){
+            echo json_encode(['status' => 'success', 'data' => []]);
+            return;
+        }
+
+        $verified = $this->db->where('status', 'verified')
+                             ->order_by('verified_at', 'DESC')
+                             ->get('foto_ijazah_verifikasi')
+                             ->result_array();
+
+        foreach($verified as &$v){
+            $file = $v['file_verified'];
+            $full_path = FCPATH . 'uploads/foto_ijazah/verified/' . $file;
+            $v['file_exists'] = (!empty($file) && file_exists($full_path)) ? 1 : 0;
+            $v['download_url'] = base_url('uploads/foto_ijazah/verified/' . $file);
+        }
+
+        echo json_encode([
+            'status' => 'success',
+            'count'  => count($verified),
+            'data'   => $verified
+        ]);
+    }
 }

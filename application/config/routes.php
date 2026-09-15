@@ -43,8 +43,12 @@ $route['api/sync/ppdb_status']     = 'api_sync/sync_ppdb_status';
 $route['api/sync/pull_website']    = 'api_sync/pull_website';
 $route['api/sync/pull_berita']     = 'api_sync/pull_berita';
 $route['api/sync/pull_ppdb']       = 'api_sync/pull_ppdb';
+$route['api/sync/get_existing_foto_mentah'] = 'api_sync/get_existing_foto_mentah';
+$route['api/sync/upload_foto_mentah']       = 'api_sync/upload_foto_mentah';
+$route['api/sync/pull_foto_verified']       = 'api_sync/pull_foto_verified';
 
 $route['api/ppdb/sync'] = 'api_ppdb/sync_pendaftar';
 $route['api/ppdb/confirm_sync'] = 'api_ppdb/confirm_sync';
 $route['api/ppdb/stats'] = 'api_ppdb/stats';
+
 
