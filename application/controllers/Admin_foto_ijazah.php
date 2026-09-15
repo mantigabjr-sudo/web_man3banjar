@@ -184,6 +184,17 @@ class Admin_foto_ijazah extends CI_Controller {
             ->get('foto_ijazah_verifikasi')
             ->result_array();
 
+        // Daftar semua siswa kelas XII yang belum verifikasi (untuk modal admin)
+        $data['all_unverified_siswa'] = $this->db->query("
+            SELECT s.id, s.nisn, s.nis, s.nama_lengkap, k.nama_kelas
+            FROM siswa s
+            JOIN siswa_kelas sk ON sk.siswa_id = s.id
+            JOIN kelas k ON k.id = sk.kelas_id
+            LEFT JOIN foto_ijazah_verifikasi f ON f.siswa_id = s.id AND f.status = 'verified'
+            WHERE sk.kelas_id IN ($kelas_in) AND s.status_siswa = 'aktif' AND f.id IS NULL
+            ORDER BY k.nama_kelas ASC, s.nama_lengkap ASC
+        ")->result_array();
+
         $this->load->view('templates/header', $data);
         $this->load->view('templates/sidebar', $data);
         $this->load->view('admin_foto_ijazah/index', $data);
@@ -201,18 +212,12 @@ class Admin_foto_ijazah extends CI_Controller {
         $added = 0;
         $existing = 0;
 
-        $allowed_ext = ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'JPEG', 'PNG', 'WEBP'];
-
         foreach($files as $file){
             if($file === '.' || $file === '..') continue;
             
-            $file_path = $folder . $file;
-            if(!is_file($file_path)) continue;
+            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+            if(!in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) continue;
 
-            $ext = pathinfo($file, PATHINFO_EXTENSION);
-            if(!in_array($ext, $allowed_ext)) continue;
-
-            // Cek apakah sudah terdaftar di database
             $cek = $this->db->where('file_mentah', $file)->get('foto_ijazah_verifikasi')->row();
             if(!$cek){
                 $this->db->insert('foto_ijazah_verifikasi', [
@@ -430,5 +435,113 @@ class Admin_foto_ijazah extends CI_Controller {
 
         $zip_filename = 'FOTO_IJAZAH_NISN_' . $suffix . '_' . date('Ymd_His') . '.zip';
         $this->zip->download($zip_filename);
+    }
+
+    // Admin verifikasi foto langsung untuk siswa
+    public function verifikasi_langsung(){
+        $siswa_id = (int)$this->input->post('siswa_id');
+        $foto_id  = (int)$this->input->post('foto_id');
+
+        if(empty($siswa_id) || empty($foto_id)){
+            $this->session->set_flashdata('error', 'Pilih siswa dan foto yang akan diverifikasi.');
+            redirect('admin_foto_ijazah');
+            return;
+        }
+
+        // Ambil data siswa
+        $siswa = $this->db->query("
+            SELECT s.*, sk.kelas_id, k.nama_kelas 
+            FROM siswa s
+            JOIN siswa_kelas sk ON sk.siswa_id = s.id
+            JOIN kelas k ON k.id = sk.kelas_id
+            WHERE s.id = ?
+        ", [$siswa_id])->row_array();
+
+        if(!$siswa){
+            $this->session->set_flashdata('error', 'Data siswa tidak ditemukan.');
+            redirect('admin_foto_ijazah');
+            return;
+        }
+
+        // Ambil foto mentah
+        $foto = $this->db->where('id', $foto_id)
+                         ->where('status', 'pending')
+                         ->get('foto_ijazah_verifikasi')
+                         ->row_array();
+
+        if(!$foto){
+            $this->session->set_flashdata('error', 'Foto mentah tidak ditemukan atau sudah terverifikasi.');
+            redirect('admin_foto_ijazah');
+            return;
+        }
+
+        $mentah_path = FCPATH . 'uploads/foto_ijazah/mentah/' . $foto['file_mentah'];
+        if(!file_exists($mentah_path)){
+            $this->session->set_flashdata('error', 'File fisik foto mentah tidak ditemukan di server.');
+            redirect('admin_foto_ijazah');
+            return;
+        }
+
+        // Jika siswa ini sebelumnya sudah diverifikasi foto lain, kembalikan foto lamanya ke pending
+        $old_verif = $this->db->where('siswa_id', $siswa_id)
+                              ->where('status', 'verified')
+                              ->get('foto_ijazah_verifikasi')
+                              ->row();
+        if($old_verif){
+            if(!empty($old_verif->file_verified)){
+                @unlink(FCPATH . 'uploads/foto_ijazah/verified/' . $old_verif->file_verified);
+            }
+            $this->db->where('id', $old_verif->id)->update('foto_ijazah_verifikasi', [
+                'siswa_id'      => NULL,
+                'nisn'          => NULL,
+                'nama_siswa'    => NULL,
+                'file_verified' => NULL,
+                'status'        => 'pending',
+                'verified_at'   => NULL,
+                'catatan'       => 'Diganti dengan foto baru oleh Admin'
+            ]);
+        }
+
+        // Nama file resmi: {NISN}.ext (atau {NIS}.ext jika NISN kosong)
+        $nisn = !empty($siswa['nisn']) ? $siswa['nisn'] : (!empty($siswa['nis']) ? $siswa['nis'] : 'SISWA_'.$siswa_id);
+        $ext  = pathinfo($foto['file_mentah'], PATHINFO_EXTENSION);
+        $ext  = !empty($ext) ? strtolower($ext) : 'jpg';
+        $new_filename = $nisn . '.' . $ext;
+
+        $verified_dir = FCPATH . 'uploads/foto_ijazah/verified/';
+        if(!is_dir($verified_dir)){
+            @mkdir($verified_dir, 0777, true);
+        }
+        $verified_path = $verified_dir . $new_filename;
+
+        if(!copy($mentah_path, $verified_path)){
+            $this->session->set_flashdata('error', 'Gagal menyalin file foto ke folder verified.');
+            redirect('admin_foto_ijazah');
+            return;
+        }
+
+        $admin_name = $this->session->userdata('nama_user') ? $this->session->userdata('nama_user') : 'Admin';
+
+        // Update record foto_ijazah_verifikasi
+        $this->db->where('id', $foto_id)->update('foto_ijazah_verifikasi', [
+            'siswa_id'      => $siswa_id,
+            'nisn'          => $nisn,
+            'nama_siswa'    => $siswa['nama_lengkap'],
+            'kelas_id'      => $siswa['kelas_id'],
+            'file_verified' => $new_filename,
+            'status'        => 'verified',
+            'verified_at'   => date('Y-m-d H:i:s'),
+            'ip_address'    => $this->input->ip_address(),
+            'user_agent'    => 'Admin Panel',
+            'catatan'       => 'Diverifikasi langsung oleh Admin (' . $admin_name . ')'
+        ]);
+
+        // Update tabel siswa
+        $this->db->where('id', $siswa_id)->update('siswa', [
+            'foto' => 'foto_ijazah/verified/' . $new_filename
+        ]);
+
+        $this->session->set_flashdata('success', 'Sukses! Foto untuk siswa <strong>' . htmlspecialchars($siswa['nama_lengkap']) . '</strong> berhasil diverifikasi langsung (File: ' . $new_filename . ').');
+        redirect('admin_foto_ijazah');
     }
 }

@@ -257,14 +257,26 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <?php if(!empty($s['verif_id'])): ?>
-                                                        <a href="<?= base_url('admin_foto_ijazah/reset_klaim/' . $s['verif_id']) ?>" 
-                                                           class="btn btn-outline-danger btn-sm rounded-pill px-2 py-1" 
-                                                           title="Batalkan Verifikasi Siswa Ini"
-                                                           onclick="return confirm('Apakah Anda yakin ingin membatalkan verifikasi foto untuk <?= htmlspecialchars(addslashes($s['nama_lengkap'])) ?>? Foto akan dikembalikan ke galeri belum diklaim.');">
-                                                            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
-                                                        </a>
+                                                        <div class="d-flex justify-content-center gap-1">
+                                                            <button type="button" 
+                                                                    class="btn btn-outline-primary btn-sm rounded-pill px-2 py-1" 
+                                                                    title="Ganti dengan foto lain"
+                                                                    onclick="openPilihFotoModal(<?= $s['siswa_id'] ?>, '<?= htmlspecialchars(addslashes($s['nama_lengkap'])) ?>', '<?= htmlspecialchars($s['nisn'] ?? '-') ?>', '<?= htmlspecialchars($s['nama_kelas']) ?>')">
+                                                                <i class="bi bi-arrow-repeat"></i> Ganti
+                                                            </button>
+                                                            <a href="<?= base_url('admin_foto_ijazah/reset_klaim/' . $s['verif_id']) ?>" 
+                                                               class="btn btn-outline-danger btn-sm rounded-pill px-2 py-1" 
+                                                               title="Batalkan Verifikasi Siswa Ini"
+                                                               onclick="return confirm('Apakah Anda yakin ingin membatalkan verifikasi foto untuk <?= htmlspecialchars(addslashes($s['nama_lengkap'])) ?>? Foto akan dikembalikan ke galeri belum diklaim.');">
+                                                                <i class="bi bi-arrow-counterclockwise"></i>
+                                                            </a>
+                                                        </div>
                                                     <?php else: ?>
-                                                        <span class="text-muted small">Menunggu Siswa</span>
+                                                        <button type="button" 
+                                                                class="btn btn-primary btn-sm rounded-pill px-3 py-1 fw-bold shadow-sm"
+                                                                onclick="openPilihFotoModal(<?= $s['siswa_id'] ?>, '<?= htmlspecialchars(addslashes($s['nama_lengkap'])) ?>', '<?= htmlspecialchars($s['nisn'] ?? '-') ?>', '<?= htmlspecialchars($s['nama_kelas']) ?>')">
+                                                            <i class="bi bi-person-check-fill me-1"></i> Verifikasi
+                                                        </button>
                                                     <?php endif; ?>
                                                 </td>
                                             </tr>
@@ -300,11 +312,17 @@
                                                      onclick="previewModal('<?= base_url('uploads/foto_ijazah/mentah/' . $up['file_mentah']) ?>', '<?= htmlspecialchars(addslashes($up['file_mentah'])) ?>', 'Belum Diklaim')">
                                             </div>
                                             <div class="p-2 text-center bg-white">
-                                                <small class="text-truncate d-block fw-semibold" style="font-size: 11px;" title="<?= htmlspecialchars($up['file_mentah']) ?>">
+                                                <small class="text-truncate d-block fw-semibold mb-1" style="font-size: 11px;" title="<?= htmlspecialchars($up['file_mentah']) ?>">
                                                     <?= htmlspecialchars($up['file_mentah']) ?>
                                                 </small>
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-outline-success rounded-pill px-2 py-1 w-100 fw-bold mb-1" 
+                                                        style="font-size: 11px;"
+                                                        onclick="openPasangKeSiswaModal(<?= $up['id'] ?>, '<?= htmlspecialchars(addslashes($up['file_mentah'])) ?>', '<?= base_url('uploads/foto_ijazah/mentah/' . $up['file_mentah']) ?>')">
+                                                    <i class="bi bi-person-plus-fill me-1"></i> Pasangkan ke Siswa
+                                                </button>
                                                 <a href="<?= base_url('admin_foto_ijazah/hapus_mentah/' . $up['id']) ?>" 
-                                                   class="btn btn-link text-danger p-0 mt-1" style="font-size: 11px;"
+                                                   class="btn btn-link text-danger p-0" style="font-size: 11px;"
                                                    onclick="return confirm('Hapus file foto mentah ini dari server?');">
                                                     <i class="bi bi-trash"></i> Hapus
                                                 </a>
@@ -393,6 +411,154 @@
     </div>
 </div>
 
+<!-- ═══ MODAL PILIH FOTO UNTUK SISWA (DARI TABEL SISWA) ═══ -->
+<div class="modal fade" id="modalPilihFotoUntukSiswa" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 border-0 shadow overflow-hidden">
+            <div class="modal-header py-3 px-4 bg-light border-bottom">
+                <div>
+                    <h6 class="modal-title fw-bold text-dark mb-0">
+                        <i class="bi bi-person-check-fill text-primary me-2"></i>
+                        Verifikasi Foto Langsung: <span id="modalTargetSiswaNama" class="text-success">-</span>
+                    </h6>
+                    <small class="text-muted" style="font-size: 12px;">
+                        Kelas: <strong id="modalTargetSiswaKelas">-</strong> &bull; NISN: <strong id="modalTargetSiswaNisn">-</strong>
+                    </small>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <?= form_open('admin_foto_ijazah/verifikasi_langsung') ?>
+            <input type="hidden" name="siswa_id" id="modalTargetSiswaId" value="">
+            <input type="hidden" name="foto_id" id="modalTargetFotoId" value="">
+
+            <div class="modal-body p-4">
+                <div class="alert alert-info border-0 rounded-3 small py-2 px-3 mb-3 d-flex align-items-center justify-content-between">
+                    <span>
+                        <i class="bi bi-info-circle-fill me-1"></i> Klik pada salah satu foto di bawah ini untuk memasangkannya ke siswa ini.
+                    </span>
+                    <span id="labelFotoTerpilih" class="badge bg-secondary fw-normal">Belum ada foto dipilih</span>
+                </div>
+
+                <div class="mb-3">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light border-end-0 rounded-start-pill"><i class="bi bi-search"></i></span>
+                        <input type="text" id="searchPhotoInModal" class="form-control border-start-0 rounded-end-pill" placeholder="Cari nama file foto..." oninput="filterModalPhotos(this.value)">
+                    </div>
+                </div>
+
+                <?php if(empty($unclaimed_photos)): ?>
+                    <div class="text-center py-5 text-muted border rounded-3 bg-light">
+                        <i class="bi bi-image fs-1 d-block mb-2 text-muted"></i>
+                        Tidak ada foto mentah yang tersedia. Silakan unggah foto mentah terlebih dahulu melalui tombol <strong>Upload Foto Mentah / ZIP</strong>.
+                    </div>
+                <?php else: ?>
+                    <div class="row g-2" id="gridModalPhotos" style="max-height: 380px; overflow-y: auto; padding-right: 4px;">
+                        <?php foreach($unclaimed_photos as $up): ?>
+                            <div class="col-lg-2 col-md-3 col-4 modal-photo-item" data-filename="<?= strtolower($up['file_mentah']) ?>">
+                                <div class="card h-100 border rounded-3 overflow-hidden shadow-sm card-selectable-photo" 
+                                     id="cardPhoto_<?= $up['id'] ?>"
+                                     style="cursor: pointer; transition: all 0.2s;"
+                                     onclick="selectPhotoForStudent(<?= $up['id'] ?>, '<?= htmlspecialchars(addslashes($up['file_mentah'])) ?>')">
+                                    <div style="height: 120px; overflow: hidden; background: #0f172a; position: relative;">
+                                        <img src="<?= base_url('uploads/foto_ijazah/mentah/' . $up['file_mentah']) ?>" 
+                                             alt="Foto Mentah" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+                                        <span class="badge-checked position-absolute top-0 end-0 m-1 badge bg-success rounded-pill d-none">
+                                            <i class="bi bi-check-lg"></i>
+                                        </span>
+                                    </div>
+                                    <div class="p-1 text-center bg-white">
+                                        <small class="text-truncate d-block" style="font-size: 10.5px;" title="<?= htmlspecialchars($up['file_mentah']) ?>">
+                                            <?= htmlspecialchars($up['file_mentah']) ?>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="modal-footer border-top bg-light rounded-bottom-4 py-2 px-4 justify-content-between">
+                <button type="button" class="btn btn-sm btn-light rounded-pill px-3" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" id="btnSubmitPilihFoto" class="btn btn-sm btn-success rounded-pill px-4 fw-bold shadow-sm" disabled>
+                    <i class="bi bi-check-circle-fill me-1"></i> Tetapkan &amp; Verifikasi Foto Ini
+                </button>
+            </div>
+            <?= form_close() ?>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ MODAL PASANGKAN FOTO KE SISWA (DARI TAB FOTO MENTAH) ═══ -->
+<div class="modal fade" id="modalPasangFotoKeSiswa" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow overflow-hidden">
+            <div class="modal-header py-3 px-4 bg-light border-bottom">
+                <h6 class="modal-title fw-bold text-dark mb-0">
+                    <i class="bi bi-person-plus-fill text-success me-2"></i>
+                    Pasangkan Foto Ini ke Siswa
+                </h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <?= form_open('admin_foto_ijazah/verifikasi_langsung') ?>
+            <input type="hidden" name="foto_id" id="modalPasangFotoId" value="">
+
+            <div class="modal-body p-4">
+                <div class="d-flex gap-3 align-items-center mb-4 p-3 bg-light rounded-3 border">
+                    <div style="width: 70px; height: 90px; border-radius: 8px; overflow: hidden; background: #000; flex-shrink: 0;">
+                        <img id="modalPasangFotoPreview" src="" alt="Pratinjau" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="overflow-hidden">
+                        <small class="text-muted d-block" style="font-size: 11px;">File Mentah:</small>
+                        <strong id="modalPasangFotoFilename" class="text-dark d-block text-truncate" style="font-size: 13px;">-</strong>
+                        <span class="badge bg-warning-subtle text-warning fw-bold mt-1" style="font-size: 11px;">Belum Terverifikasi</span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-dark">Pilih Siswa yang Sesuai dengan Foto Ini:</label>
+                    <select name="siswa_id" id="selectPasangSiswa" class="form-select rounded-3" required>
+                        <option value="">-- Pilih Siswa Kelas XII --</option>
+                        
+                        <?php if(!empty($all_unverified_siswa)): ?>
+                            <optgroup label="⭐ Siswa Belum Verifikasi Foto (<?= count($all_unverified_siswa) ?> siswa)">
+                                <?php foreach($all_unverified_siswa as $us): ?>
+                                    <option value="<?= $us['id'] ?>">
+                                        [<?= $us['nama_kelas'] ?>] <?= !empty($us['nisn']) ? $us['nisn'] . ' - ' : '' ?><?= htmlspecialchars($us['nama_lengkap']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        <?php endif; ?>
+
+                        <?php if(!empty($siswa_list)): ?>
+                            <optgroup label="Semua Siswa Kelas XII (Termasuk yang Ingin Ganti Foto)">
+                                <?php foreach($siswa_list as $sl): ?>
+                                    <option value="<?= $sl['siswa_id'] ?>">
+                                        [<?= $sl['nama_kelas'] ?>] <?= !empty($sl['nisn']) ? $sl['nisn'] . ' - ' : '' ?><?= htmlspecialchars($sl['nama_lengkap']) ?> <?= !empty($sl['verif_id']) ? '(Sudah Ada Foto)' : '' ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        <?php endif; ?>
+                    </select>
+                    <small class="text-muted mt-1 d-block" style="font-size: 11px;">
+                        <i class="bi bi-info-circle me-1"></i> Foto otomatis disimpan dengan nama resmi <code>{NISN}.jpg</code>.
+                    </small>
+                </div>
+            </div>
+
+            <div class="modal-footer border-top bg-light rounded-bottom-4 py-2 px-4 justify-content-between">
+                <button type="button" class="btn btn-sm btn-light rounded-pill px-3" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-sm btn-success rounded-pill px-4 fw-bold shadow-sm">
+                    <i class="bi bi-check-circle-fill me-1"></i> Simpan Verifikasi
+                </button>
+            </div>
+            <?= form_close() ?>
+        </div>
+    </div>
+</div>
+
 <script>
 function copyPortalLink(){
     const input = document.getElementById('portalLinkInput');
@@ -407,6 +573,71 @@ function previewModal(url, title, nisn){
     document.getElementById('previewTitle').innerText = title;
     document.getElementById('previewNisn').innerText = nisn ? 'NISN: ' + nisn : '';
     const modal = new bootstrap.Modal(document.getElementById('modalPreviewImage'));
+    modal.show();
+}
+
+// ═══ LOGIKA MODAL PILIH FOTO UNTUK SISWA ═══
+function openPilihFotoModal(siswaId, nama, nisn, kelas){
+    document.getElementById('modalTargetSiswaId').value = siswaId;
+    document.getElementById('modalTargetFotoId').value = '';
+    document.getElementById('modalTargetSiswaNama').innerText = nama;
+    document.getElementById('modalTargetSiswaKelas').innerText = kelas;
+    document.getElementById('modalTargetSiswaNisn').innerText = nisn;
+    
+    document.getElementById('labelFotoTerpilih').className = 'badge bg-secondary fw-normal';
+    document.getElementById('labelFotoTerpilih').innerText = 'Belum ada foto dipilih';
+    document.getElementById('btnSubmitPilihFoto').disabled = true;
+
+    // Reset seleksi kartu
+    document.querySelectorAll('.card-selectable-photo').forEach(card => {
+        card.style.border = '1px solid #dee2e6';
+        card.querySelector('.badge-checked')?.classList.add('d-none');
+    });
+
+    const modal = new bootstrap.Modal(document.getElementById('modalPilihFotoUntukSiswa'));
+    modal.show();
+}
+
+function selectPhotoForStudent(fotoId, filename){
+    document.getElementById('modalTargetFotoId').value = fotoId;
+
+    // Reset kartu lain
+    document.querySelectorAll('.card-selectable-photo').forEach(card => {
+        card.style.border = '1px solid #dee2e6';
+        card.querySelector('.badge-checked')?.classList.add('d-none');
+    });
+
+    // Aktifkan kartu terpilih
+    const activeCard = document.getElementById('cardPhoto_' + fotoId);
+    if(activeCard){
+        activeCard.style.border = '2.5px solid #10b981';
+        activeCard.querySelector('.badge-checked')?.classList.remove('d-none');
+    }
+
+    const lbl = document.getElementById('labelFotoTerpilih');
+    lbl.className = 'badge bg-success fw-bold';
+    lbl.innerText = 'Foto Terpilih: ' + filename;
+
+    document.getElementById('btnSubmitPilihFoto').disabled = false;
+}
+
+function filterModalPhotos(keyword){
+    keyword = keyword.toLowerCase().trim();
+    const items = document.querySelectorAll('.modal-photo-item');
+    items.forEach(item => {
+        const fn = item.getAttribute('data-filename') || '';
+        item.style.display = fn.includes(keyword) ? '' : 'none';
+    });
+}
+
+// ═══ LOGIKA MODAL PASANGKAN FOTO KE SISWA ═══
+function openPasangKeSiswaModal(fotoId, filename, previewUrl){
+    document.getElementById('modalPasangFotoId').value = fotoId;
+    document.getElementById('modalPasangFotoFilename').innerText = filename;
+    document.getElementById('modalPasangFotoPreview').src = previewUrl;
+    document.getElementById('selectPasangSiswa').value = '';
+
+    const modal = new bootstrap.Modal(document.getElementById('modalPasangFotoKeSiswa'));
     modal.show();
 }
 </script>
