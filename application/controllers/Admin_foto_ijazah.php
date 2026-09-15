@@ -384,6 +384,44 @@ class Admin_foto_ijazah extends CI_Controller {
         redirect('admin_foto_ijazah');
     }
 
+    // Download Foto Tunggal per Siswa (Tersedia opsi Maks 1MB & Asli)
+    public function download_single($id){
+        $verif = $this->db->where('id', $id)->where('status', 'verified')->get('foto_ijazah_verifikasi')->row();
+        if(!$verif){
+            $this->session->set_flashdata('error', 'Data verifikasi siswa tidak ditemukan.');
+            redirect('admin_foto_ijazah');
+            return;
+        }
+
+        $file_name = !empty($verif->file_verified) ? $verif->file_verified : ($verif->nisn . '.jpg');
+        $file_path = FCPATH . 'uploads/foto_ijazah/verified/' . $file_name;
+
+        if(!file_exists($file_path)){
+            $this->session->set_flashdata('error', 'File foto fisik tidak ditemukan di server.');
+            redirect('admin_foto_ijazah');
+            return;
+        }
+
+        $compress_1mb = (bool)$this->input->get('compress_1mb');
+        $download_filename = !empty($verif->nisn) ? ($verif->nisn . '.jpg') : $file_name;
+
+        if($compress_1mb){
+            $data = $this->compress_image_max_1mb($file_path, 1048576, 786432);
+            if($data !== false){
+                header('Content-Type: image/jpeg');
+                header('Content-Disposition: attachment; filename="' . $download_filename . '"');
+                header('Content-Length: ' . strlen($data));
+                header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+                header('Pragma: public');
+                echo $data;
+                exit;
+            }
+        }
+
+        $this->load->helper('download');
+        force_download($download_filename, file_get_contents($file_path));
+    }
+
     // Download Semua Foto yang Telah Diverifikasi dalam format ZIP (Bernama {NISN}.jpg)
     public function download_zip(){
         @ini_set('memory_limit', '512M');

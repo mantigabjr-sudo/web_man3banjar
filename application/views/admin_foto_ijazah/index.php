@@ -230,7 +230,7 @@
                                         <th>Kelas</th>
                                         <th>Status Verifikasi</th>
                                         <th>Waktu Verifikasi</th>
-                                        <th style="width: 120px;" class="text-center">Aksi</th>
+                                        <th style="width: 180px;" class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -291,11 +291,35 @@
                                                 <td class="text-center">
                                                     <?php if(!empty($s['verif_id'])): ?>
                                                         <div class="d-flex justify-content-center gap-1">
+                                                            <!-- Dropdown Download Foto Siswa -->
+                                                            <div class="dropdown d-inline-block">
+                                                                <button type="button" 
+                                                                        class="btn btn-success btn-sm rounded-pill px-2 py-1 dropdown-toggle shadow-sm" 
+                                                                        data-bs-toggle="dropdown" 
+                                                                        aria-expanded="false" 
+                                                                        title="Download Foto Siswa Ini">
+                                                                    <i class="bi bi-download me-1"></i> Unduh
+                                                                </button>
+                                                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3 p-2" style="font-size: 12px; min-width: 190px;">
+                                                                    <li><h6 class="dropdown-header text-uppercase text-muted fw-bold py-1" style="font-size: 10px;">Unduh Foto <?= htmlspecialchars($s['nisn'] ?? '') ?></h6></li>
+                                                                    <li>
+                                                                        <a class="dropdown-item rounded-2 py-1 d-flex align-items-center gap-2" href="<?= base_url('admin_foto_ijazah/download_single/' . $s['verif_id'] . '?compress_1mb=1') ?>">
+                                                                            <i class="bi bi-lightning-charge-fill text-warning"></i> Maksimal 1 MB
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="dropdown-item rounded-2 py-1 d-flex align-items-center gap-2" href="<?= base_url('admin_foto_ijazah/download_single/' . $s['verif_id']) ?>">
+                                                                            <i class="bi bi-file-earmark-image text-primary"></i> Ukuran Asli
+                                                                        </a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+
                                                             <button type="button" 
                                                                     class="btn btn-outline-primary btn-sm rounded-pill px-2 py-1" 
                                                                     title="Ganti dengan foto lain"
                                                                     onclick="openPilihFotoModal(<?= $s['siswa_id'] ?>, '<?= htmlspecialchars(addslashes($s['nama_lengkap'])) ?>', '<?= htmlspecialchars($s['nisn'] ?? '-') ?>', '<?= htmlspecialchars($s['nama_kelas']) ?>')">
-                                                                <i class="bi bi-arrow-repeat"></i> Ganti
+                                                                <i class="bi bi-arrow-repeat"></i>
                                                             </button>
                                                             <a href="<?= base_url('admin_foto_ijazah/reset_klaim/' . $s['verif_id']) ?>" 
                                                                class="btn btn-outline-danger btn-sm rounded-pill px-2 py-1" 
