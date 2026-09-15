@@ -86,24 +86,38 @@ class Verifikasi_foto_ijazah extends CI_Controller {
         $this->load->view('public/verifikasi_foto_ijazah/login', $data);
     }
 
-    // AJAX: Ambil daftar siswa berdasarkan kelas XII yang dipilih
-    public function get_siswa_by_kelas(){
-        $kelas_id = (int)$this->input->get('kelas_id');
-        if(empty($kelas_id)){
-            echo json_encode([]);
-            return;
-        }
+    // AJAX: Ambil daftar siswa beserta status verifikasi foto berdasarkan kelas XII yang dipilih
+     public function get_siswa_by_kelas(){
+         $kelas_id = (int)$this->input->get('kelas_id');
+         if(empty($kelas_id)){
+             echo json_encode([]);
+             return;
+         }
 
-        $siswa = $this->db->query("
-            SELECT s.id, s.nama_lengkap, s.nisn, s.nis
-            FROM siswa s
-            JOIN siswa_kelas sk ON sk.siswa_id = s.id
-            WHERE sk.kelas_id = ? AND s.status_siswa = 'aktif'
-            ORDER BY s.nama_lengkap ASC
-        ", [$kelas_id])->result_array();
+         $siswa = $this->db->query("
+             SELECT 
+                 s.id, 
+                 s.nama_lengkap, 
+                 s.nisn, 
+                 s.nis,
+                 f.id as verif_id,
+                 f.status as verif_status,
+                 f.verified_at
+             FROM siswa s
+             JOIN siswa_kelas sk ON sk.siswa_id = s.id
+             LEFT JOIN foto_ijazah_verifikasi f ON f.siswa_id = s.id AND f.status = 'verified'
+             WHERE sk.kelas_id = ? AND (s.status_siswa = 'aktif' OR s.status_siswa = 'Aktif' OR s.status_siswa IS NULL OR s.status_siswa = '')
+             ORDER BY s.nama_lengkap ASC
+         ", [$kelas_id])->result_array();
 
-        echo json_encode($siswa);
-    }
+         foreach($siswa as &$row){
+             $row['is_verified'] = (!empty($row['verif_id']) && $row['verif_status'] === 'verified') ? 1 : 0;
+             $row['verified_at_formatted'] = !empty($row['verified_at']) ? date('d/m/Y H:i', strtotime($row['verified_at'])) : null;
+         }
+
+         header('Content-Type: application/json; charset=utf-8');
+         echo json_encode($siswa);
+     }
 
     // PROSES AUTENTIKASI SISWA
     public function auth_siswa(){
