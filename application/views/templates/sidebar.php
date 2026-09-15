@@ -1061,11 +1061,11 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
 
                 <!-- DATA AKADEMIK -->
                 <?php if($canAkademik): ?>
-                    <button class="menu-toggle <?= is_toggle_active(['admin_siswa','admin_kelas','admin_penempatan','admin_mutasi','admin_alumni','admin_absensi','admin_nilai'], $current) ?>"
+                    <button class="menu-toggle <?= is_toggle_active(['admin_siswa','admin_kelas','admin_penempatan','admin_mutasi','admin_alumni','admin_absensi','admin_nilai','admin_foto_ijazah'], $current) ?>"
                             type="button"
                             data-bs-toggle="collapse"
                             data-bs-target="#menuAkademik"
-                            aria-expanded="<?= is_open_menu(['admin_siswa','admin_kelas','admin_penempatan','admin_mutasi','admin_alumni','admin_absensi','admin_nilai'], $current) ? 'true' : 'false' ?>">
+                            aria-expanded="<?= is_open_menu(['admin_siswa','admin_kelas','admin_penempatan','admin_mutasi','admin_alumni','admin_absensi','admin_nilai','admin_foto_ijazah'], $current) ? 'true' : 'false' ?>">
                         <span class="menu-toggle-main">
                             <span class="menu-ico"><i class="bi bi-book-half"></i></span>
                             <span>Data Akademik</span>
@@ -1073,7 +1073,7 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
                         <i class="bi bi-chevron-down chev"></i>
                     </button>
 
-                    <div class="collapse submenu <?= is_open_menu(['admin_siswa','admin_kelas','admin_penempatan','admin_mutasi','admin_alumni','admin_absensi','admin_nilai'], $current) ?>" id="menuAkademik">
+                    <div class="collapse submenu <?= is_open_menu(['admin_siswa','admin_kelas','admin_penempatan','admin_mutasi','admin_alumni','admin_absensi','admin_nilai','admin_foto_ijazah'], $current) ?>" id="menuAkademik">
                         <a class="<?= is_active_menu('admin_siswa',$current) ?>"
                            href="<?= base_url('admin_siswa') ?>">
                             <span class="sub-dot"></span>
@@ -1114,6 +1114,12 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
                            href="<?= base_url('admin_alumni') ?>">
                             <span class="sub-dot"></span>
                             Data Alumni
+                        </a>
+
+                        <a class="<?= is_active_menu('admin_foto_ijazah',$current) ?>"
+                           href="<?= base_url('admin_foto_ijazah') ?>">
+                            <span class="sub-dot"></span>
+                            Foto Ijazah XII
                         </a>
                     </div>
                 <?php endif; ?>
