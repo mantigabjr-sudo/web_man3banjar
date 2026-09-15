@@ -212,12 +212,18 @@ class Admin_foto_ijazah extends CI_Controller {
         $added = 0;
         $existing = 0;
 
+        $allowed_ext = ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'JPEG', 'PNG', 'WEBP'];
+
         foreach($files as $file){
             if($file === '.' || $file === '..') continue;
             
-            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-            if(!in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) continue;
+            $file_path = $folder . $file;
+            if(!is_file($file_path)) continue;
 
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+            if(!in_array($ext, $allowed_ext)) continue;
+
+            // Cek apakah sudah terdaftar di database
             $cek = $this->db->where('file_mentah', $file)->get('foto_ijazah_verifikasi')->row();
             if(!$cek){
                 $this->db->insert('foto_ijazah_verifikasi', [
@@ -770,6 +776,78 @@ class Admin_foto_ijazah extends CI_Controller {
             'message'    => "Sinkronisasi selesai! $updated data verifikasi tersinkron, $downloaded file foto baru berhasil diunduh.",
             'updated'    => $updated,
             'downloaded' => $downloaded
+        ]);
+    }
+
+    // 4. AJAX: Kirim hasil verifikasi dari lokal ke cloud hosting
+    public function ajax_push_verified_cloud(){
+        header('Content-Type: application/json; charset=utf-8');
+
+        if(!$this->db->table_exists('foto_ijazah_verifikasi')){
+            echo json_encode(['status' => 'error', 'message' => 'Tabel foto_ijazah_verifikasi belum ada.']);
+            return;
+        }
+
+        $verified_list = $this->db->where('status', 'verified')->get('foto_ijazah_verifikasi')->result_array();
+        if(empty($verified_list)){
+            echo json_encode(['status' => 'info', 'message' => 'Belum ada siswa yang terverifikasi di server lokal.']);
+            return;
+        }
+
+        $target_url = rtrim($this->cloud_url, '/') . '/api/sync/push_foto_verified';
+        $verified_dir = FCPATH . 'uploads/foto_ijazah/verified/';
+        $success_count = 0;
+        $failed_count = 0;
+
+        foreach($verified_list as $row){
+            $file_verified = $row['file_verified'];
+            $file_path = $verified_dir . $file_verified;
+
+            $post_fields = [
+                'api_key'       => $this->sync_api_key,
+                'nisn'          => $row['nisn'],
+                'nama_siswa'    => $row['nama_siswa'],
+                'kelas_id'      => $row['kelas_id'],
+                'file_mentah'   => $row['file_mentah'],
+                'file_verified' => $file_verified,
+                'verified_at'   => $row['verified_at'],
+                'catatan'       => $row['catatan']
+            ];
+
+            if(!empty($file_verified) && file_exists($file_path)){
+                $post_fields['file'] = new CURLFile($file_path, mime_content_type($file_path), $file_verified);
+            }
+
+            $ch = curl_init($target_url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'X-API-KEY: ' . $this->sync_api_key
+            ]);
+
+            $res = curl_exec($ch);
+            $err = curl_error($ch);
+            curl_close($ch);
+
+            if(!$err){
+                $json = json_decode($res, true);
+                if($json && $json['status'] === 'success'){
+                    $success_count++;
+                    continue;
+                }
+            }
+            $failed_count++;
+        }
+
+        echo json_encode([
+            'status'  => 'success',
+            'message' => "Berhasil menyinkronkan {$success_count} data verifikasi siswa ke website hosting." . ($failed_count > 0 ? " ({$failed_count} gagal)" : ""),
+            'synced'  => $success_count,
+            'total'   => count($verified_list)
         ]);
     }
 }

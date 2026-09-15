@@ -38,13 +38,16 @@
                                 <i class="bi bi-arrow-repeat me-1"></i> Scan Folder Mentah
                             </a>
                             <button type="button" class="btn btn-info text-white fw-bold rounded-pill px-3 shadow-sm" id="btnBukaModalSync">
-                                <i class="bi bi-cloud-arrow-up-fill me-1"></i> Sinkronkan Foto ke Hosting
+                                <i class="bi bi-images me-1"></i> Sinkron Foto Mentah ke Cloud
                             </button>
-                            <button type="button" class="btn btn-success text-white fw-bold rounded-pill px-3 shadow-sm" id="btnTarikVerifikasiCloud">
-                                <i class="bi bi-cloud-arrow-down-fill me-1"></i> Tarik Hasil Verifikasi Cloud
+                            <button type="button" class="btn btn-warning text-dark fw-bold rounded-pill px-3 shadow-sm" id="btnKirimVerifikasiCloud">
+                                <i class="bi bi-cloud-arrow-up-fill me-1"></i> Kirim Verifikasi ke Hosting
                             </button>
-                            <a href="<?= base_url('admin_foto_ijazah/download_zip' . (!empty($selected_kelas) ? '?kelas_id='.$selected_kelas : '')) ?>" class="btn btn-warning text-dark fw-bold rounded-pill px-3 shadow-sm">
-                                <i class="bi bi-file-earmark-zip-fill me-1"></i> Download ZIP ({NISN}.jpg)
+                            <button type="button" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm" id="btnTarikVerifikasiCloud">
+                                <i class="bi bi-cloud-arrow-down-fill me-1"></i> Tarik dari Hosting
+                            </button>
+                            <a href="<?= base_url('admin_foto_ijazah/download_zip' . (!empty($selected_kelas) ? '?kelas_id='.$selected_kelas : '')) ?>" class="btn btn-outline-light fw-bold rounded-pill px-3 shadow-sm">
+                                <i class="bi bi-file-earmark-zip-fill me-1"></i> Download ZIP
                             </a>
                         </div>
                     </div>
@@ -807,6 +810,36 @@ document.getElementById('btnTarikVerifikasiCloud')?.addEventListener('click', fu
             btn.disabled = false;
             btn.innerHTML = origHtml;
             alert('Terjadi kesalahan koneksi saat menarik data dari hosting.');
+        });
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+// KIRIM HASIL VERIFIKASI DARI LOKAL KE CLOUD HOSTING
+// ═══════════════════════════════════════════════════════════════════════
+document.getElementById('btnKirimVerifikasiCloud')?.addEventListener('click', function(){
+    if(!confirm('Kirim seluruh data siswa yang sudah diverifikasi di komputer lokal ini ke website online man3banjar.sch.id?')) return;
+
+    const btn = this;
+    const origHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Mengirim data...';
+
+    fetch('<?= base_url("admin_foto_ijazah/ajax_push_verified_cloud") ?>')
+        .then(res => res.json())
+        .then(data => {
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+
+            if(data.status === 'success'){
+                alert(data.message || 'Berhasil menyinkronkan data verifikasi ke hosting!');
+            } else {
+                alert(data.message || 'Gagal mengirim data ke server hosting.');
+            }
+        })
+        .catch(err => {
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+            alert('Terjadi kesalahan koneksi saat mengirim data ke hosting.');
         });
 });
 </script>
