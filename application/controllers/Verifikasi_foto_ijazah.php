@@ -19,12 +19,30 @@ class Verifikasi_foto_ijazah extends CI_Controller {
 
         $data['title'] = 'Verifikasi Mandiri Foto Ijazah Siswa Kelas XII';
 
-        // Ambil daftar kelas XII
+        $setting = $this->db->get('settings')->row();
+        $tahun_aktif = !empty($setting->tahun_ajaran) ? trim($setting->tahun_ajaran) : '2026/2027';
+
+        // Ambil daftar kelas XII khusus tahun ajaran aktif
         $data['kelas_list'] = $this->db->query("
             SELECT * FROM kelas 
-            WHERE tingkat = '12' OR tingkat = 'XII' OR nama_kelas LIKE '%XII%' OR nama_kelas LIKE '%12%'
+            WHERE (tingkat = '12' OR tingkat = 'XII' OR nama_kelas LIKE '%XII%')
+            AND tahun_ajaran = ?
             ORDER BY nama_kelas ASC
-        ")->result_array();
+        ", [$tahun_aktif])->result_array();
+
+        // Fallback jika tidak ada exact match
+        if(empty($data['kelas_list'])){
+            $data['kelas_list'] = $this->db->query("
+                SELECT k.*, COUNT(sk.siswa_id) as total_siswa
+                FROM kelas k
+                JOIN siswa_kelas sk ON sk.kelas_id = k.id
+                JOIN siswa s ON s.id = sk.siswa_id AND s.status_siswa = 'aktif'
+                WHERE (k.tingkat = '12' OR k.tingkat = 'XII' OR k.nama_kelas LIKE '%XII%')
+                GROUP BY k.id
+                HAVING total_siswa > 0
+                ORDER BY k.nama_kelas ASC
+            ")->result_array();
+        }
 
         $this->load->view('public/verifikasi_foto_ijazah/login', $data);
     }
