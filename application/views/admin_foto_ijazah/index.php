@@ -56,8 +56,8 @@
                                         <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2" href="<?= base_url('admin_foto_ijazah/download_zip' . (!empty($selected_kelas) ? '?kelas_id='.$selected_kelas.'&compress_1mb=1' : '?compress_1mb=1')) ?>">
                                             <i class="bi bi-lightning-charge-fill text-warning fs-5"></i>
                                             <div>
-                                                <strong class="d-block text-dark" style="font-size: 13px;">Maksimal 1 MB (Rekomendasi)</strong>
-                                                <small class="text-muted" style="font-size: 11px;">Untuk EMIS, PDUM, &amp; Verval PD</small>
+                                                <strong class="d-block text-dark" style="font-size: 13px;">Maksimal 1 MB (~800 - 950 KB)</strong>
+                                                <small class="text-muted" style="font-size: 11px;">Kualitas tajam &amp; pas untuk EMIS/PDUM</small>
                                             </div>
                                         </a>
                                     </li>

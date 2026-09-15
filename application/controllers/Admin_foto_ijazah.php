@@ -463,16 +463,17 @@ class Admin_foto_ijazah extends CI_Controller {
     }
 
     /**
-     * Kompresi file foto menjadi maksimal 1 MB (1048576 bytes)
-     * Tetap menjaga kualitas visual dan rasio aspek
+     * Kompresi file foto agar pas di batas maksimal 1 MB (Target: 800 KB - 990 KB)
+     * Mempertahankan dimensi asli kamera DSLR/studio dan kualitas visual setinggi mungkin
      */
-    private function compress_image_max_1mb($filepath, $max_bytes = 1048576){
+    private function compress_image_max_1mb($filepath, $max_bytes = 1048576, $target_min_bytes = 786432){
         if(!file_exists($filepath)){
             return false;
         }
 
         $filesize = filesize($filepath);
-        if($filesize <= $max_bytes){
+        // Jika file asli sudah di kisaran 750 KB - 1024 KB, pakai langsung tanpa ubah
+        if($filesize <= $max_bytes && $filesize >= $target_min_bytes){
             return file_get_contents($filepath);
         }
 
@@ -500,43 +501,60 @@ class Admin_foto_ijazah extends CI_Controller {
             return file_get_contents($filepath);
         }
 
-        $orig_w = imagesx($img);
-        $orig_h = imagesy($img);
+        $w = imagesx($img);
+        $h = imagesy($img);
 
-        // Jika resolusi foto sangat besar (> 2000px), resize proporsional
-        $max_dim = 2000;
-        if($orig_w > $max_dim || $orig_h > $max_dim){
-            if($orig_w >= $orig_h){
-                $new_w = $max_dim;
-                $new_h = intval($orig_h * ($max_dim / $orig_w));
-            } else {
-                $new_h = $max_dim;
-                $new_w = intval($orig_w * ($max_dim / $orig_h));
+        $best_data = null;
+        $best_size = 0;
+
+        // 1. Coba pada resolusi asli kamera dengan mencari quality JPEG tinggi yang pas di bawah 1 MB
+        for($q = 95; $q >= 60; $q -= 3){
+            ob_start();
+            imagejpeg($img, null, $q);
+            $temp = ob_get_clean();
+            $sz = strlen($temp);
+
+            if($sz <= $max_bytes){
+                $best_data = $temp;
+                $best_size = $sz;
+                // Jika sudah masuk rentang target ideal (>= 750 KB), langsung ambil!
+                if($sz >= $target_min_bytes){
+                    imagedestroy($img);
+                    return $best_data;
+                }
+                break;
             }
-            $new_img = imagecreatetruecolor($new_w, $new_h);
-            $white = imagecolorallocate($new_img, 255, 255, 255);
-            imagefill($new_img, 0, 0, $white);
-
-            imagecopyresampled($new_img, $img, 0, 0, 0, 0, $new_w, $new_h, $orig_w, $orig_h);
-            imagedestroy($img);
-            $img = $new_img;
         }
 
-        // Kompresi bertahap mulai dari quality 85 sampai ukuran <= 1MB
-        $quality = 85;
-        ob_start();
-        imagejpeg($img, null, $quality);
-        $data = ob_get_clean();
+        // 2. Jika resolusi kamera luar biasa besar dan di Q60 masih > 1MB, turunkan sedikit skala secara halus
+        if(!$best_data){
+            for($scale = 0.9; $scale >= 0.5; $scale -= 0.1){
+                $nw = intval($w * $scale);
+                $nh = intval($h * $scale);
+                $new_img = imagecreatetruecolor($nw, $nh);
+                $white = imagecolorallocate($new_img, 255, 255, 255);
+                imagefill($new_img, 0, 0, $white);
+                imagecopyresampled($new_img, $img, 0, 0, 0, 0, $nw, $nh, $w, $h);
 
-        while(strlen($data) > $max_bytes && $quality > 35){
-            $quality -= 5;
-            ob_start();
-            imagejpeg($img, null, $quality);
-            $data = ob_get_clean();
+                for($q = 94; $q >= 70; $q -= 4){
+                    ob_start();
+                    imagejpeg($new_img, null, $q);
+                    $temp = ob_get_clean();
+                    $sz = strlen($temp);
+
+                    if($sz <= $max_bytes){
+                        $best_data = $temp;
+                        imagedestroy($new_img);
+                        imagedestroy($img);
+                        return $best_data;
+                    }
+                }
+                imagedestroy($new_img);
+            }
         }
 
         imagedestroy($img);
-        return $data;
+        return $best_data ?: file_get_contents($filepath);
     }
 
     // Admin verifikasi foto langsung untuk siswa
