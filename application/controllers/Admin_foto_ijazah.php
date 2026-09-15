@@ -128,15 +128,8 @@ class Admin_foto_ijazah extends CI_Controller {
             ];
         }
 
-        // Query Daftar Siswa Kelas XII & Status Fotonya
+        // Query Seluruh Siswa Kelas XII & Status Fotonya (untuk instant filtering tanpa reload)
         $where_clause = "WHERE sk.kelas_id IN ($kelas_in) AND s.status_siswa = 'aktif'";
-        $params = [];
-
-        if(!empty($kelas_id)){
-            $where_clause .= " AND k.id = ?";
-            $params[] = $kelas_id;
-        }
-
         $sql_siswa = "
             SELECT 
                 s.id as siswa_id,
@@ -160,21 +153,7 @@ class Admin_foto_ijazah extends CI_Controller {
             ORDER BY k.nama_kelas ASC, s.nama_lengkap ASC
         ";
 
-        $siswa_result = $this->db->query($sql_siswa, $params)->result_array();
-
-        if(!empty($status_filter)){
-            if($status_filter == 'verified'){
-                $siswa_result = array_filter($siswa_result, function($row){
-                    return !empty($row['verif_id']);
-                });
-            } else if($status_filter == 'unverified'){
-                $siswa_result = array_filter($siswa_result, function($row){
-                    return empty($row['verif_id']);
-                });
-            }
-        }
-
-        $data['siswa_list'] = $siswa_result;
+        $data['siswa_list'] = $this->db->query($sql_siswa)->result_array();
         $data['selected_kelas'] = $kelas_id;
         $data['selected_status'] = $status_filter;
 
@@ -363,6 +342,17 @@ class Admin_foto_ijazah extends CI_Controller {
         ]);
 
         $this->session->set_flashdata('success', 'Verifikasi berhasil di-reset. Foto mentah dikembalikan ke galeri belum diverifikasi.');
+        
+        if($this->input->is_ajax_request() || $this->input->get('is_ajax')){
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'status'  => 'success',
+                'message' => 'Verifikasi berhasil di-reset. Foto mentah dikembalikan ke galeri.',
+                'id'      => $id
+            ]);
+            return;
+        }
+
         redirect('admin_foto_ijazah');
     }
 
@@ -700,6 +690,23 @@ class Admin_foto_ijazah extends CI_Controller {
         ]);
 
         $this->session->set_flashdata('success', 'Sukses! Foto untuk siswa <strong>' . htmlspecialchars($siswa['nama_lengkap']) . '</strong> berhasil diverifikasi langsung (File: ' . $new_filename . ').');
+
+        if($this->input->is_ajax_request() || $this->input->post('is_ajax')){
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'status'        => 'success',
+                'message'       => 'Sukses! Foto untuk siswa ' . $siswa['nama_lengkap'] . ' berhasil diverifikasi.',
+                'siswa_id'      => $siswa_id,
+                'verif_id'      => $foto_id,
+                'nama_lengkap'  => $siswa['nama_lengkap'],
+                'nisn'          => $nisn,
+                'file_verified' => $new_filename,
+                'foto_url'      => base_url('uploads/foto_ijazah/verified/' . $new_filename),
+                'verified_at'   => date('d/m/Y H:i')
+            ]);
+            return;
+        }
+
         redirect('admin_foto_ijazah');
     }
 

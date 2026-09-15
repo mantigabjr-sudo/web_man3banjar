@@ -193,10 +193,11 @@
 
                     <!-- TAB 1: DATA SISWA -->
                     <div class="tab-pane fade show active" id="tab-siswa" role="tabpanel">
-                        <!-- Filter Form -->
-                        <form method="GET" action="<?= base_url('admin_foto_ijazah') ?>" class="row g-2 mb-3 align-items-center">
-                            <div class="col-md-4 col-sm-6">
-                                <select name="kelas_id" class="form-select form-select-sm rounded-pill" onchange="this.form.submit()">
+                        <!-- Filter Form (Instant AJAX / No-Reload) -->
+                        <div class="row g-2 mb-3 align-items-center bg-light p-3 rounded-4 border">
+                            <div class="col-md-3 col-sm-6">
+                                <label class="form-label small fw-bold text-muted mb-1"><i class="bi bi-door-open me-1"></i>Filter Kelas:</label>
+                                <select id="filterKelas" class="form-select form-select-sm rounded-pill">
                                     <option value="">-- Semua Kelas XII --</option>
                                     <?php foreach($kelas_list as $kl): ?>
                                         <option value="<?= $kl['id'] ?>" <?= ($selected_kelas == $kl['id']) ? 'selected' : '' ?>>
@@ -206,21 +207,34 @@
                                 </select>
                             </div>
                             <div class="col-md-3 col-sm-6">
-                                <select name="status" class="form-select form-select-sm rounded-pill" onchange="this.form.submit()">
+                                <label class="form-label small fw-bold text-muted mb-1"><i class="bi bi-check2-circle me-1"></i>Filter Status:</label>
+                                <select id="filterStatus" class="form-select form-select-sm rounded-pill">
                                     <option value="">-- Semua Status --</option>
                                     <option value="verified" <?= ($selected_status == 'verified') ? 'selected' : '' ?>>Sudah Terverifikasi</option>
                                     <option value="unverified" <?= ($selected_status == 'unverified') ? 'selected' : '' ?>>Belum Verifikasi</option>
                                 </select>
                             </div>
-                            <div class="col-md-2">
-                                <a href="<?= base_url('admin_foto_ijazah') ?>" class="btn btn-sm btn-outline-secondary rounded-pill w-100">
-                                    <i class="bi bi-x-circle me-1"></i> Reset
-                                </a>
+                            <div class="col-md-4 col-sm-8">
+                                <label class="form-label small fw-bold text-muted mb-1"><i class="bi bi-search me-1"></i>Cari Nama / NISN:</label>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text bg-white border-end-0 rounded-start-pill"><i class="bi bi-search text-muted"></i></span>
+                                    <input type="text" id="filterCari" class="form-control form-control-sm border-start-0 rounded-end-pill" placeholder="Ketik nama atau NISN siswa...">
+                                </div>
                             </div>
-                        </form>
+                            <div class="col-md-2 col-sm-4 text-end">
+                                <label class="form-label small fw-bold text-muted d-none d-md-block mb-1">&nbsp;</label>
+                                <button type="button" id="btnResetFilter" class="btn btn-sm btn-outline-secondary rounded-pill w-100 fw-semibold">
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+                            <span class="small text-muted" id="filterCountInfo">Menampilkan <strong><?= count($siswa_list) ?></strong> siswa</span>
+                        </div>
 
                         <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0" style="font-size: 13.5px;">
+                            <table class="table table-hover align-middle mb-0" id="tableSiswaFoto" style="font-size: 13.5px;">
                                 <thead class="table-light">
                                     <tr>
                                         <th style="width: 50px;">No</th>
@@ -233,9 +247,9 @@
                                         <th style="width: 180px;" class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="tbodySiswaFoto">
                                     <?php if(empty($siswa_list)): ?>
-                                        <tr>
+                                        <tr id="emptyRowSiswa">
                                             <td colspan="8" class="text-center py-4 text-muted">
                                                 <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                                                 Tidak ada data siswa yang cocok dengan filter.
@@ -243,8 +257,14 @@
                                         </tr>
                                     <?php else: ?>
                                         <?php $no = 1; foreach($siswa_list as $s): ?>
-                                            <tr>
-                                                <td><?= $no++ ?></td>
+                                            <tr id="row-siswa-<?= $s['siswa_id'] ?>" 
+                                                class="row-siswa" 
+                                                data-siswa-id="<?= $s['siswa_id'] ?>"
+                                                data-verif-id="<?= $s['verif_id'] ?? '' ?>"
+                                                data-kelas-id="<?= $s['kelas_id'] ?>"
+                                                data-status="<?= !empty($s['verif_id']) ? 'verified' : 'unverified' ?>"
+                                                data-search="<?= strtolower(htmlspecialchars($s['nama_lengkap'] . ' ' . ($s['nisn'] ?? '') . ' ' . ($s['nis'] ?? '') . ' ' . $s['nama_kelas'])) ?>">
+                                                <td class="col-nomor"><?= $no++ ?></td>
                                                 <td>
                                                     <?php if(!empty($s['file_verified']) && file_exists(FCPATH . 'uploads/foto_ijazah/verified/' . $s['file_verified'])): ?>
                                                         <img src="<?= base_url('uploads/foto_ijazah/verified/' . $s['file_verified']) ?>" 
@@ -321,12 +341,12 @@
                                                                     onclick="openPilihFotoModal(<?= $s['siswa_id'] ?>, '<?= htmlspecialchars(addslashes($s['nama_lengkap'])) ?>', '<?= htmlspecialchars($s['nisn'] ?? '-') ?>', '<?= htmlspecialchars($s['nama_kelas']) ?>')">
                                                                 <i class="bi bi-arrow-repeat"></i>
                                                             </button>
-                                                            <a href="<?= base_url('admin_foto_ijazah/reset_klaim/' . $s['verif_id']) ?>" 
-                                                               class="btn btn-outline-danger btn-sm rounded-pill px-2 py-1" 
-                                                               title="Batalkan Verifikasi Siswa Ini"
-                                                               onclick="return confirm('Apakah Anda yakin ingin membatalkan verifikasi foto untuk <?= htmlspecialchars(addslashes($s['nama_lengkap'])) ?>? Foto akan dikembalikan ke galeri belum diklaim.');">
+                                                            <button type="button" 
+                                                                    class="btn btn-outline-danger btn-sm rounded-pill px-2 py-1" 
+                                                                    title="Batalkan Verifikasi Siswa Ini"
+                                                                    onclick="ajaxResetVerif(<?= $s['verif_id'] ?>, <?= $s['siswa_id'] ?>, '<?= htmlspecialchars(addslashes($s['nama_lengkap'])) ?>', this)">
                                                                 <i class="bi bi-arrow-counterclockwise"></i>
-                                                            </a>
+                                                            </button>
                                                         </div>
                                                     <?php else: ?>
                                                         <button type="button" 
@@ -485,7 +505,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <?= form_open('admin_foto_ijazah/verifikasi_langsung') ?>
+            <?= form_open('admin_foto_ijazah/verifikasi_langsung', ['id' => 'formPilihFotoSiswa']) ?>
             <input type="hidden" name="siswa_id" id="modalTargetSiswaId" value="">
             <input type="hidden" name="foto_id" id="modalTargetFotoId" value="">
 
@@ -559,7 +579,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <?= form_open('admin_foto_ijazah/verifikasi_langsung') ?>
+            <?= form_open('admin_foto_ijazah/verifikasi_langsung', ['id' => 'formPasangFotoSiswa']) ?>
             <input type="hidden" name="foto_id" id="modalPasangFotoId" value="">
 
             <div class="modal-body p-4">
@@ -696,6 +716,225 @@ function openPasangKeSiswaModal(fotoId, filename, previewUrl){
 
     const modal = new bootstrap.Modal(document.getElementById('modalPasangFotoKeSiswa'));
     modal.show();
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// FILTER INSTAN TABEL SISWA (TANPA REFRESH / ZERO RELOAD)
+// ═══════════════════════════════════════════════════════════════════════
+function applyTableFilter(){
+    const kelasVal  = document.getElementById('filterKelas')?.value || '';
+    const statusVal = document.getElementById('filterStatus')?.value || '';
+    const searchVal = (document.getElementById('filterCari')?.value || '').toLowerCase().trim();
+
+    const rows = document.querySelectorAll('#tbodySiswaFoto .row-siswa');
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+        const rowKelas  = row.getAttribute('data-kelas-id') || '';
+        const rowStatus = row.getAttribute('data-status') || '';
+        const rowSearch = row.getAttribute('data-search') || '';
+
+        const matchKelas  = !kelasVal || rowKelas === kelasVal;
+        const matchStatus = !statusVal || rowStatus === statusVal;
+        const matchSearch = !searchVal || rowSearch.includes(searchVal);
+
+        if(matchKelas && matchStatus && matchSearch){
+            row.style.display = '';
+            visibleCount++;
+            const colNo = row.querySelector('.col-nomor');
+            if(colNo) colNo.innerText = visibleCount;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    const info = document.getElementById('filterCountInfo');
+    if(info){
+        info.innerHTML = 'Menampilkan <strong>' + visibleCount + '</strong> dari ' + rows.length + ' siswa';
+    }
+
+    // Update URL Download ZIP mengikuti kelas yang difilter
+    const dropdownZipItems = document.querySelectorAll('#dropdownDownloadZip + ul a');
+    dropdownZipItems.forEach(item => {
+        let href = item.getAttribute('href');
+        if(href){
+            href = href.replace(/[?&]kelas_id=\d+/, '');
+            const sep = href.includes('?') ? '&' : '?';
+            if(kelasVal){
+                href = href + sep + 'kelas_id=' + kelasVal;
+            }
+            item.setAttribute('href', href);
+        }
+    });
+}
+
+document.getElementById('filterKelas')?.addEventListener('change', applyTableFilter);
+document.getElementById('filterStatus')?.addEventListener('change', applyTableFilter);
+document.getElementById('filterCari')?.addEventListener('input', applyTableFilter);
+document.getElementById('btnResetFilter')?.addEventListener('click', function(){
+    if(document.getElementById('filterKelas')) document.getElementById('filterKelas').value = '';
+    if(document.getElementById('filterStatus')) document.getElementById('filterStatus').value = '';
+    if(document.getElementById('filterCari')) document.getElementById('filterCari').value = '';
+    applyTableFilter();
+});
+
+// Jalankan filter saat halaman selesai dimuat jika ada filter awal
+document.addEventListener('DOMContentLoaded', applyTableFilter);
+
+// ═══════════════════════════════════════════════════════════════════════
+// AKSI VERIFIKASI FOTO VIA AJAX (TANPA REFRESH)
+// ═══════════════════════════════════════════════════════════════════════
+function handleAjaxVerifSubmit(form, submitBtn){
+    const origBtnHtml = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Menyimpan...';
+
+    const formData = new FormData(form);
+    formData.append('is_ajax', '1');
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(res => res.json())
+    .then(data => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origBtnHtml;
+
+        if(data.status === 'success'){
+            // Tutup modal
+            const modalEl = form.closest('.modal');
+            if(modalEl){
+                const modalInst = bootstrap.Modal.getInstance(modalEl);
+                if(modalInst) modalInst.hide();
+            }
+
+            // Update baris siswa di tabel
+            updateRowVerified(data);
+            alert(data.message || 'Foto siswa berhasil diverifikasi!');
+        } else {
+            alert(data.message || 'Gagal memverifikasi foto.');
+        }
+    })
+    .catch(err => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origBtnHtml;
+        alert('Terjadi kesalahan saat memproses verifikasi.');
+    });
+}
+
+document.getElementById('formPilihFotoSiswa')?.addEventListener('submit', function(e){
+    e.preventDefault();
+    handleAjaxVerifSubmit(this, document.getElementById('btnSubmitPilihFoto'));
+});
+
+document.getElementById('formPasangFotoSiswa')?.addEventListener('submit', function(e){
+    e.preventDefault();
+    const btn = this.querySelector('button[type="submit"]');
+    handleAjaxVerifSubmit(this, btn);
+});
+
+// Update DOM baris siswa ketika berhasil diverifikasi
+function updateRowVerified(d){
+    const row = document.getElementById('row-siswa-' + d.siswa_id);
+    if(!row) return;
+
+    row.setAttribute('data-status', 'verified');
+    row.setAttribute('data-verif-id', d.verif_id);
+
+    // Kolom Foto (index 1)
+    const tdFoto = row.cells[1];
+    tdFoto.innerHTML = '<img src="' + d.foto_url + '" alt="Foto" class="rounded-3 shadow-sm" style="width: 48px; height: 60px; object-fit: cover; cursor: pointer;" onclick="previewModal(\'' + d.foto_url + '\', \'' + (d.nama_lengkap || '').replace(/'/g, "\\'") + '\', \'' + (d.nisn || '') + '\')">';
+
+    // Kolom Status (index 5)
+    const tdStatus = row.cells[5];
+    tdStatus.innerHTML = '<span class="badge bg-success-subtle text-success fw-bold px-3 py-1 rounded-pill"><i class="bi bi-check-circle-fill me-1"></i> Terverifikasi</span><div class="small text-muted mt-1" style="font-size: 11px;">File: ' + d.file_verified + '</div>';
+
+    // Kolom Waktu (index 6)
+    const tdWaktu = row.cells[6];
+    tdWaktu.innerHTML = '<span class="text-dark small">' + (d.verified_at || 'Baru saja') + '</span><div class="small text-muted" style="font-size: 10.5px;">Admin Panel</div>';
+
+    // Kolom Aksi (index 7)
+    const tdAksi = row.cells[7];
+    const namaEsc = (d.nama_lengkap || '').replace(/'/g, "\\'");
+    const nisnEsc = d.nisn || '';
+    const kelasNama = row.cells[4]?.innerText?.trim() || '';
+
+    tdAksi.innerHTML = `
+        <div class="d-flex justify-content-center gap-1">
+            <div class="dropdown d-inline-block">
+                <button type="button" class="btn btn-success btn-sm rounded-pill px-2 py-1 dropdown-toggle shadow-sm" data-bs-toggle="dropdown" aria-expanded="false" title="Download Foto Siswa Ini">
+                    <i class="bi bi-download me-1"></i> Unduh
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3 p-2" style="font-size: 12px; min-width: 190px;">
+                    <li><h6 class="dropdown-header text-uppercase text-muted fw-bold py-1" style="font-size: 10px;">Unduh Foto ` + nisnEsc + `</h6></li>
+                    <li><a class="dropdown-item rounded-2 py-1 d-flex align-items-center gap-2" href="<?= base_url('admin_foto_ijazah/download_single/') ?>` + d.verif_id + `?compress_1mb=1"><i class="bi bi-lightning-charge-fill text-warning"></i> Maksimal 1 MB</a></li>
+                    <li><a class="dropdown-item rounded-2 py-1 d-flex align-items-center gap-2" href="<?= base_url('admin_foto_ijazah/download_single/') ?>` + d.verif_id + `"><i class="bi bi-file-earmark-image text-primary"></i> Ukuran Asli</a></li>
+                </ul>
+            </div>
+            <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-2 py-1" title="Ganti dengan foto lain" onclick="openPilihFotoModal(` + d.siswa_id + `, '` + namaEsc + `', '` + nisnEsc + `', '` + kelasNama + `')">
+                <i class="bi bi-arrow-repeat"></i>
+            </button>
+            <button type="button" class="btn btn-outline-danger btn-sm rounded-pill px-2 py-1" title="Batalkan Verifikasi Siswa Ini" onclick="ajaxResetVerif(` + d.verif_id + `, ` + d.siswa_id + `, '` + namaEsc + `', this)">
+                <i class="bi bi-arrow-counterclockwise"></i>
+            </button>
+        </div>
+    `;
+
+    applyTableFilter();
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// AKSI BATALKAN VERIFIKASI (RESET KLAIM) VIA AJAX (TANPA REFRESH)
+// ═══════════════════════════════════════════════════════════════════════
+function ajaxResetVerif(verifId, siswaId, namaSiswa, btnElement){
+    if(!confirm('Apakah Anda yakin ingin membatalkan verifikasi foto untuk ' + namaSiswa + '? Foto akan dikembalikan ke galeri belum diklaim.')) return;
+
+    const origHtml = btnElement.innerHTML;
+    btnElement.disabled = true;
+    btnElement.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+    fetch('<?= base_url("admin_foto_ijazah/reset_klaim/") ?>' + verifId + '?is_ajax=1', {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'success'){
+            const row = document.getElementById('row-siswa-' + siswaId);
+            if(row){
+                row.setAttribute('data-status', 'unverified');
+                row.removeAttribute('data-verif-id');
+
+                // Kolom Foto
+                row.cells[1].innerHTML = '<div class="bg-light rounded-3 d-flex align-items-center justify-content-center text-muted border" style="width: 48px; height: 60px; font-size: 20px;"><i class="bi bi-person"></i></div>';
+
+                // Kolom Status
+                row.cells[5].innerHTML = '<span class="badge bg-warning-subtle text-warning fw-bold px-3 py-1 rounded-pill"><i class="bi bi-clock-history me-1"></i> Belum Verifikasi</span>';
+
+                // Kolom Waktu
+                row.cells[6].innerHTML = '<span class="text-muted">-</span>';
+
+                // Kolom Aksi
+                const namaEsc = namaSiswa.replace(/'/g, "\\'");
+                const nisn = row.cells[2]?.innerText?.trim() || '';
+                const kelas = row.cells[4]?.innerText?.trim() || '';
+
+                row.cells[7].innerHTML = '<button type="button" class="btn btn-primary btn-sm rounded-pill px-3 py-1 fw-bold shadow-sm" onclick="openPilihFotoModal(' + siswaId + ', \'' + namaEsc + '\', \'' + nisn + '\', \'' + kelas + '\')"><i class="bi bi-person-check-fill me-1"></i> Verifikasi</button>';
+            }
+            applyTableFilter();
+            alert(data.message || 'Verifikasi berhasil dibatalkan.');
+        } else {
+            btnElement.disabled = false;
+            btnElement.innerHTML = origHtml;
+            alert(data.message || 'Gagal membatalkan verifikasi.');
+        }
+    })
+    .catch(err => {
+        btnElement.disabled = false;
+        btnElement.innerHTML = origHtml;
+        alert('Terjadi kesalahan koneksi.');
+    });
 }
 
 // ═══════════════════════════════════════════════════════════════════════
