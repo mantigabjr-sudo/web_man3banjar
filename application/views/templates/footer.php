@@ -74,36 +74,6 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 <?php endif; ?>
 
-<?php if($footer_can_bk_admin): ?>
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-    var menuAkademik = document.getElementById('menuAkademik');
-
-    if(!menuAkademik){
-        return;
-    }
-
-    if(!menuAkademik.querySelector('a[href$="/admin_bk_bp"], a[href*="admin_bk_bp"]')){
-        var link = document.createElement('a');
-        link.href = '<?= base_url('admin_bk_bp') ?>';
-        link.className = '<?= strpos($footer_current, 'admin_bk_bp') === 0 ? 'active-menu' : '' ?>';
-        link.innerHTML = '<span class="sub-dot"></span>Monitoring BK/BP';
-        menuAkademik.appendChild(link);
-    }
-
-    <?php if(strpos($footer_current, 'admin_bk_bp') === 0): ?>
-    menuAkademik.classList.add('show');
-
-    var toggle = document.querySelector('[data-bs-target="#menuAkademik"]');
-    if(toggle){
-        toggle.classList.add('active-toggle');
-        toggle.setAttribute('aria-expanded', 'true');
-    }
-    <?php endif; ?>
-});
-</script>
-<?php endif; ?>
-
 <?php if($footer_current == 'berita'): ?>
 <script>
 document.addEventListener('DOMContentLoaded', function(){

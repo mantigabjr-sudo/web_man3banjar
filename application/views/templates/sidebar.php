@@ -106,31 +106,21 @@ if(!function_exists('can_admin_menu')){
 if(!function_exists('role_label')){
     function role_label($role){
         $labels = [
-            'admin'            => 'Admin Master',
-            'admin_master'     => 'Admin Master',
-            'admin_pmb'        => 'Panitia PMB',
-            'admin_ppdb'       => 'Panitia PMB',
+            'admin'            => 'Admin Website & Humas',
+            'admin_master'     => 'Admin Website & Humas',
             'admin_humas'      => 'Admin Humas',
             'wakil_humas'      => 'Wakil Humas',
             'operator_humas'   => 'Operator Humas',
-            'admin_kesiswaan'  => 'Admin Kesiswaan',
-            'admin_kurikulum'  => 'Admin Kurikulum',
-            'admin_sarpras'    => 'Admin Sarpras',
-            'guru'             => 'Guru',
-            'teknisi'          => 'Teknisi'
+            'admin_pmb'        => 'Panitia PPDB',
+            'admin_ppdb'       => 'Panitia PPDB',
         ];
 
-        return $labels[$role] ?? strtoupper((string)$role);
+        return $labels[$role] ?? 'Admin Website';
     }
 }
 
-$canWebsite   = is_admin_panel() && can_admin_menu('website');
-$canPPDB      = is_admin_panel() && can_admin_menu('ppdb');
-$canAkademik  = is_admin_panel() && can_admin_menu('akademik');
-$canKurikulum = is_admin_panel() && can_admin_menu('kurikulum');
-$canSarpras   = is_admin_panel() && can_admin_menu('sarpras');
-
-$canMasterMenu = is_admin_panel() && is_admin_master();
+$canWebsite   = true;
+$canPPDB      = true;
 
 $roleText = role_label($role);
 $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
@@ -614,9 +604,9 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
 
 <div class="admin-mobile-topbar">
     <div class="mobile-brand">
-        <span>L</span>
+        <span><i class="bi bi-globe2"></i></span>
         <div>
-            LabSys
+            Portal Web
             <div style="font-size:11px;color:#64748b;font-weight:600;line-height:1;">
                 MAN 3 Banjar
             </div>
@@ -636,10 +626,10 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
         <!-- BRAND HEADER -->
         <div class="sidebar-brand">
             <div class="brand-icon">
-                <i class="bi bi-mortarboard-fill"></i>
+                <i class="bi bi-globe2"></i>
             </div>
             <div class="brand-title">
-                <strong>LabSys</strong>
+                <strong>Portal Web</strong>
                 <small>MAN 3 Banjar</small>
             </div>
         </div>
@@ -742,472 +732,61 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
 					</div>
                 <?php endif; ?>
 
-                <!-- TATA USAHA -->
-                <?php if($canMasterMenu): ?>
-                    <button class="menu-toggle <?= is_toggle_active(['admin_tata_usaha'], $current) ?>"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#menuTU"
-                            aria-expanded="<?= is_open_menu(['admin_tata_usaha'], $current) ? 'true' : 'false' ?>">
-                        <span class="menu-toggle-main">
-                            <span class="menu-ico"><i class="bi bi-folder2-open"></i></span>
-                            <span>Tata Usaha</span>
-                        </span>
-                        <i class="bi bi-chevron-down chev"></i>
-                    </button>
+                <!-- LAYANAN ONLINE -->
+                <div class="menu-section">Layanan Online</div>
 
-                    <div class="collapse submenu <?= is_open_menu(['admin_tata_usaha'], $current) ?>" id="menuTU">
-                        <a href="<?= base_url('admin_tata_usaha') ?>"
-                           class="<?= $seg1 == 'admin_tata_usaha' && empty($seg2) ? 'active-menu' : '' ?>">
-                            <span class="sub-dot"></span>
-                            Dashboard TU
-                        </a>
+                <!-- VERIFIKASI FOTO IJAZAH XII -->
+                <a href="<?= base_url('admin_foto_ijazah') ?>"
+                   class="menu-link <?= is_active_menu('admin_foto_ijazah',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-camera-fill"></i></span>
+                    <span>Foto Ijazah XII</span>
+                </a>
 
-                        <a href="<?= base_url('admin_tata_usaha/surat') ?>"
-                           class="<?= is_active_menu('admin_tata_usaha/surat',$current) ?>">
-                            <span class="sub-dot"></span>
-                            Surat
-                        </a>
+                <!-- PPDB ONLINE -->
+                <button class="menu-toggle <?= is_toggle_active(['admin_ppdb'], $current) ?>"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#menuPPDB"
+                        aria-expanded="<?= is_open_menu(['admin_ppdb'], $current) ? 'true' : 'false' ?>">
+                    <span class="menu-toggle-main">
+                        <span class="menu-ico"><i class="bi bi-person-check-fill"></i></span>
+                        <span>PPDB Online</span>
+                    </span>
+                    <i class="bi bi-chevron-down chev"></i>
+                </button>
 
-                        <a href="<?= base_url('admin_tata_usaha/izin_siswa') ?>"
-                           class="<?= is_active_menu('admin_tata_usaha/izin_siswa',$current) ?>">
-                            <span class="sub-dot"></span>
-                            Izin Siswa
-                        </a>
-
-                        <a href="<?= base_url('admin_tata_usaha/izin_guru') ?>"
-                           class="<?= is_active_menu('admin_tata_usaha/izin_guru',$current) ?>">
-                            <span class="sub-dot"></span>
-                            Izin Guru
-                        </a>
-
-                        <?php if($role == 'admin_master'): ?>
-                            <a href="<?= base_url('kepala_cuti') ?>"
-                               class="<?= is_active_menu('kepala_cuti',$current) ?>">
-                                <span class="sub-dot"></span>
-                                Approval Cuti
-                            </a>
-                        <?php else: ?>
-                            <a href="<?= base_url('admin_tata_usaha/cuti_asn') ?>"
-                               class="<?= is_active_menu('admin_tata_usaha/cuti_asn',$current) ?>">
-                                <span class="sub-dot"></span>
-                                Cuti ASN
-                            </a>
-                        <?php endif; ?>
-
-                        <a href="<?= base_url('admin_tata_usaha/rekap') ?>"
-                           class="<?= is_active_menu('admin_tata_usaha/rekap',$current) ?>">
-                            <span class="sub-dot"></span>
-                            Export Rekap TU
-                        </a>
-                    </div>
-                <?php endif; ?>
-
-                <!-- SARANA PRASARANA -->
-                <?php if($canSarpras): ?>
-                    <button class="menu-toggle <?= is_toggle_active(['admin_sarpras','inventory','maintenance','admin_tata_usaha/mutasi_barang','admin_tata_usaha/peminjaman_barang'], $current) ?>"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#menuSarpras"
-                            aria-expanded="<?= is_open_menu(['admin_sarpras','inventory','maintenance','admin_tata_usaha/mutasi_barang','admin_tata_usaha/peminjaman_barang'], $current) ? 'true' : 'false' ?>">
-                        <span class="menu-toggle-main">
-                            <span class="menu-ico"><i class="bi bi-box-seam-fill"></i></span>
-                            <span>Sarana Prasarana</span>
-                        </span>
-                        <i class="bi bi-chevron-down chev"></i>
-                    </button>
-
-                    <div class="collapse submenu <?= is_open_menu(['admin_sarpras','inventory','maintenance','admin_tata_usaha/mutasi_barang','admin_tata_usaha/peminjaman_barang'], $current) ?>" id="menuSarpras">
-                        <a class="<?= ($current == 'admin_sarpras') ? 'active-menu' : '' ?>"
-                           href="<?= base_url('admin_sarpras') ?>">
-                            <span class="sub-dot"></span>
-                            Inventaris Terpadu (Kelas &amp; Lab)
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_sarpras/laporan_kerusakan',$current) ?>"
-                           href="<?= base_url('admin_sarpras/laporan_kerusakan') ?>">
-                            <span class="sub-dot"></span>
-                            Laporan Kerusakan
-                        </a>
-
-                        <a class="<?= is_active_menu('inventory',$current) ?>"
-                           href="<?= base_url('inventory') ?>">
-                            <span class="sub-dot"></span>
-                            Data Aset Lab
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_tata_usaha/mutasi_barang',$current) ?>"
-                           href="<?= base_url('admin_tata_usaha/mutasi_barang') ?>">
-                            <span class="sub-dot"></span>
-                            Mutasi Barang
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_tata_usaha/peminjaman_barang',$current) ?>"
-                           href="<?= base_url('admin_tata_usaha/peminjaman_barang') ?>">
-                            <span class="sub-dot"></span>
-                            Peminjaman Barang
-                        </a>
-
-                        <a class="<?= is_active_menu('maintenance',$current) ?>"
-                           href="<?= base_url('maintenance') ?>">
-                            <span class="sub-dot"></span>
-                            Maintenance
-                        </a>
-                    </div>
-                <?php endif; ?>
-
-                <!-- KELOLA PMB -->
-                <?php if($canPPDB): ?>
-                    <button class="menu-toggle <?= is_toggle_active(['admin_ppdb'], $current) ?>"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#menuPPDB"
-                            aria-expanded="<?= is_open_menu(['admin_ppdb'], $current) ? 'true' : 'false' ?>">
-                        <span class="menu-toggle-main">
-                            <span class="menu-ico"><i class="bi bi-mortarboard-fill"></i></span>
-                            <span>Kelola PMB</span>
-                        </span>
-                        <i class="bi bi-chevron-down chev"></i>
-                    </button>
-
-                    <div class="collapse submenu <?= is_open_menu(['admin_ppdb'], $current) ?>" id="menuPPDB">
-                        <a class="<?= is_active_menu('admin_ppdb/dashboard',$current) ?>"
-                           href="<?= base_url('admin_ppdb/dashboard') ?>">
-                            <span class="sub-dot"></span>
-                            Dashboard PMB
-                        </a>
-
-                        <a class="<?= ($current == 'admin_ppdb') ? 'active-menu' : '' ?>"
-                           href="<?= base_url('admin_ppdb') ?>">
-                            <span class="sub-dot"></span>
-                            Calon Peserta
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_ppdb/verifikasi',$current) ?>"
-                           href="<?= base_url('admin_ppdb/verifikasi') ?>">
-                            <span class="sub-dot"></span>
-                            Verifikasi Berkas
-                        </a>
-                        
-                        <a class="<?= is_active_menu('admin_ppdb/monitoring_berkas',$current) ?>"
-                           href="<?= base_url('admin_ppdb/monitoring_berkas') ?>">
-                            <span class="sub-dot"></span>
-                            Monitoring Berkas
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_ppdb/diterima',$current) ?>"
-                           href="<?= base_url('admin_ppdb/diterima') ?>">
-                            <span class="sub-dot"></span>
-                            Peserta Diterima
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_ppdb/ditolak',$current) ?>"
-                           href="<?= base_url('admin_ppdb/ditolak') ?>">
-                            <span class="sub-dot"></span>
-                            Peserta Ditolak
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_ppdb/migrasi_data',$current) ?>"
-                           href="<?= base_url('admin_ppdb/migrasi_data') ?>">
-                            <span class="sub-dot"></span>
-                            Migrasi Data
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_ppdb/settings',$current) ?>"
-                           href="<?= base_url('admin_ppdb/settings') ?>">
-                            <span class="sub-dot"></span>
-                            Pengaturan PMB
-                        </a>
-                    </div>
-                <?php endif; ?>
-
-                <!-- DATA PTK -->
-                <?php if($canMasterMenu): ?>
-                    <button class="menu-toggle <?= is_toggle_active(['admin_ptk','guru_mengajar','wali_absensi','kepala_rekap'], $current) ?>"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#menuPTK"
-                            aria-expanded="<?= is_open_menu(['admin_ptk','guru_mengajar','wali_absensi','kepala_rekap'], $current) ? 'true' : 'false' ?>">
-                        <span class="menu-toggle-main">
-                            <span class="menu-ico"><i class="bi bi-person-badge-fill"></i></span>
-                            <span>Data PTK</span>
-                        </span>
-                        <i class="bi bi-chevron-down chev"></i>
-                    </button>
-
-                    <div class="collapse submenu <?= is_open_menu(['admin_ptk','admin_ptk/akg','guru_mengajar','wali_absensi','kepala_rekap'], $current) ?>" id="menuPTK">
-                        <a class="<?= ($current == 'admin_ptk') ? 'active-menu' : '' ?>"
-                           href="<?= base_url('admin_ptk') ?>">
-                            <span class="sub-dot"></span>
-                            Daftar PTK
-                        </a>
-						<a class="<?= is_active_menu('admin_ptk/akg',$current) ?>"
-                           href="<?= base_url('admin_ptk/akg') ?>">
-                            <span class="sub-dot"></span>
-                            Kebutuhan Guru (AKG)
-                        </a>
-						<a class="<?= is_active_menu('admin_jenis_berkas_ptk',$current) ?>"
-                           href="<?= base_url('admin_jenis_berkas_ptk') ?>">
-                            <span class="sub-dot"></span>
-                            Jenis Berkas PTK
-                        </a>
-						<a class="<?= is_active_menu('admin_berkas_ptk',$current) ?>"
-                           href="<?= base_url('admin_berkas_ptk') ?>">
-                            <span class="sub-dot"></span>
-                            Monitoring Berkas PTK
-                        </a>
-                        <a class="<?= is_active_menu('admin_ptk/wali_kelas',$current) ?>"
-                           href="<?= base_url('admin_ptk/wali_kelas') ?>">
-                            <span class="sub-dot"></span>
-                            Wali Kelas
-                        </a>
-
-                        <a class="<?= is_active_menu('guru_mengajar',$current) ?>"
-                           href="<?= base_url('guru_mengajar') ?>">
-                            <span class="sub-dot"></span>
-                            Kelas yang Diajar
-                        </a>
-
-                        <a class="<?= is_active_menu('wali_absensi',$current) ?>"
-                           href="<?= base_url('wali_absensi') ?>">
-                            <span class="sub-dot"></span>
-                            Rekap Wali Kelas
-                        </a>
-
-                        <a class="<?= is_active_menu('kepala_rekap',$current) ?>"
-                           href="<?= base_url('kepala_rekap') ?>">
-                            <span class="sub-dot"></span>
-                            Rekap Global
-                        </a>
-                    </div>
-                <?php endif; ?>
-
-                <!-- KURIKULUM -->
-                <?php if($canKurikulum): ?>
-                    <button class="menu-toggle <?= is_toggle_active(['admin_tugas_mengajar','admin_jadwal_mengajar','admin_mapel'], $current) ?>"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#menuKurikulum"
-                            aria-expanded="<?= is_open_menu(['admin_tugas_mengajar','admin_jadwal_mengajar','admin_mapel'], $current) ? 'true' : 'false' ?>">
-                        <span class="menu-toggle-main">
-                            <span class="menu-ico"><i class="bi bi-journal-bookmark-fill"></i></span>
-                            <span>Kurikulum</span>
-                        </span>
-                        <i class="bi bi-chevron-down chev"></i>
-                    </button>
-
-                    <div class="collapse submenu <?= is_open_menu(['admin_tugas_mengajar','admin_jadwal_mengajar','admin_mapel'], $current) ?>" id="menuKurikulum">
-                        <a class="<?= is_active_menu('admin_mapel',$current) ?>"
-                           href="<?= base_url('admin_mapel') ?>">
-                            <span class="sub-dot"></span>
-                            Data Mapel
-                        </a>
-
-                        <a class="<?= ($current == 'admin_tugas_mengajar') ? 'active-menu' : '' ?>"
-                           href="<?= base_url('admin_tugas_mengajar') ?>">
-                            <span class="sub-dot"></span>
-                            Tugas Mengajar
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_tugas_mengajar/bulk',$current) ?>"
-                           href="<?= base_url('admin_tugas_mengajar/bulk') ?>">
-                            <span class="sub-dot"></span>
-                            Input Cepat Mengajar
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_tugas_mengajar/rekap',$current) ?>"
-                           href="<?= base_url('admin_tugas_mengajar/rekap') ?>">
-                            <span class="sub-dot"></span>
-                            Rekap Matriks Mengajar
-                        </a>
-
-                        <a class="<?= ($current == 'admin_jadwal_mengajar') ? 'active-menu' : '' ?>"
-                           href="<?= base_url('admin_jadwal_mengajar') ?>">
-                            <span class="sub-dot"></span>
-                            Jadwal Mengajar
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_jadwal_mengajar/builder',$current) ?>"
-                           href="<?= base_url('admin_jadwal_mengajar/builder') ?>">
-                            <span class="sub-dot"></span>
-                            Jadwal Builder
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_jadwal_mengajar/rekap',$current) ?>"
-                           href="<?= base_url('admin_jadwal_mengajar/rekap') ?>">
-                            <span class="sub-dot"></span>
-                            Rekap Jadwal
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_ptk/akg',$current) ?>"
-                           href="<?= base_url('admin_ptk/akg') ?>">
-                            <span class="sub-dot"></span>
-                            Kebutuhan Guru (AKG)
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_jadwal_mengajar/pengaturan',$current) ?>"
-                           href="<?= base_url('admin_jadwal_mengajar/pengaturan') ?>">
-                            <span class="sub-dot"></span>
-                            Pengaturan Jadwal
-                        </a>
-
-                        <a class="<?= ($current == 'admin_laboratorium') ? 'active-menu' : '' ?>"
-                           href="<?= base_url('admin_laboratorium') ?>">
-                            <span class="sub-dot"></span>
-                            Jadwal Laboratorium
-                        </a>
-                    </div>
-                <?php endif; ?>
-
-                <!-- DATA AKADEMIK -->
-                <?php if($canAkademik): ?>
-                    <button class="menu-toggle <?= is_toggle_active(['admin_siswa','admin_kelas','admin_penempatan','admin_mutasi','admin_alumni','admin_absensi','admin_nilai','admin_foto_ijazah'], $current) ?>"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#menuAkademik"
-                            aria-expanded="<?= is_open_menu(['admin_siswa','admin_kelas','admin_penempatan','admin_mutasi','admin_alumni','admin_absensi','admin_nilai','admin_foto_ijazah'], $current) ? 'true' : 'false' ?>">
-                        <span class="menu-toggle-main">
-                            <span class="menu-ico"><i class="bi bi-book-half"></i></span>
-                            <span>Data Akademik</span>
-                        </span>
-                        <i class="bi bi-chevron-down chev"></i>
-                    </button>
-
-                    <div class="collapse submenu <?= is_open_menu(['admin_siswa','admin_kelas','admin_penempatan','admin_mutasi','admin_alumni','admin_absensi','admin_nilai','admin_foto_ijazah'], $current) ?>" id="menuAkademik">
-                        <a class="<?= is_active_menu('admin_siswa',$current) ?>"
-                           href="<?= base_url('admin_siswa') ?>">
-                            <span class="sub-dot"></span>
-                            Data Master Siswa
-                        </a>
-
-                        <a class="<?= ($current == 'admin_kelas') ? 'active-menu' : '' ?>"
-                           href="<?= base_url('admin_kelas') ?>">
-                            <span class="sub-dot"></span>
-                            Data Master Kelas
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_penempatan',$current) ?>"
-                           href="<?= base_url('admin_penempatan') ?>">
-                            <span class="sub-dot"></span>
-                            Penempatan Siswa
-                        </a>
-
-                        <a href="<?= base_url('admin_absensi') ?>"
-                           class="<?= $seg1 == 'admin_absensi' ? 'active-menu' : '' ?>">
-                            <span class="sub-dot"></span>
-                            Rekap Absensi
-                        </a>
-
-                        <a href="<?= base_url('admin_nilai') ?>"
-                           class="<?= $seg1 == 'admin_nilai' ? 'active-menu' : '' ?>">
-                            <span class="sub-dot"></span>
-                            Monitoring Nilai
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_mutasi',$current) ?>"
-                           href="<?= base_url('admin_mutasi') ?>">
-                            <span class="sub-dot"></span>
-                            Mutasi Siswa
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_alumni',$current) ?>"
-                           href="<?= base_url('admin_alumni') ?>">
-                            <span class="sub-dot"></span>
-                            Data Alumni
-                        </a>
-
-                        <a class="<?= is_active_menu('admin_foto_ijazah',$current) ?>"
-                           href="<?= base_url('admin_foto_ijazah') ?>">
-                            <span class="sub-dot"></span>
-                            Foto Ijazah XII
-                        </a>
-                    </div>
-                <?php endif; ?>
-
-                <!-- SISTEM & INTEGRASI -->
-                <div class="menu-section">Sistem &amp; Pengaturan</div>
-
-                <!-- PENGATURAN -->
-                <?php if($canMasterMenu): ?>
-					<button class="menu-toggle <?= is_toggle_active(['admin_settings','admin_users'], $current) ?>"
-							type="button"
-							data-bs-toggle="collapse"
-							data-bs-target="#menuPengaturan"
-							aria-expanded="<?= is_open_menu(['admin_settings','admin_users'], $current) ? 'true' : 'false' ?>">
-						<span class="menu-toggle-main">
-							<span class="menu-ico"><i class="bi bi-gear-fill"></i></span>
-							<span>Pengaturan</span>
-						</span>
-						<i class="bi bi-chevron-down chev"></i>
-					</button>
-
-					<div class="collapse submenu <?= is_open_menu(['admin_settings','admin_users'], $current) ?>" id="menuPengaturan">
-						<a href="<?= base_url('admin_settings/periode_akademik') ?>"
-						   class="<?= ($seg1 == 'admin_settings' && $seg2 == 'periode_akademik') ? 'active-menu' : '' ?>">
-							<span class="sub-dot"></span>
-							Periode Akademik
-						</a>
-						<a href="<?= base_url('admin_settings/kepala_madrasah') ?>"
-						   class="<?= ($seg1 == 'admin_settings' && $seg2 == 'kepala_madrasah') ? 'active-menu' : '' ?>">
-							<span class="sub-dot"></span>
-							Setting Kepala Madrasah
-						</a>
-						<a href="<?= base_url('admin_users') ?>"
-						   class="<?= $seg1 == 'admin_users' ? 'active-menu' : '' ?>">
-							<span class="sub-dot"></span>
-							Setting User
-						</a>
-						<a href="<?= base_url('admin_cctv') ?>"
-						   class="<?= $seg1 == 'admin_cctv' ? 'active-menu' : '' ?>">
-							<span class="sub-dot"></span>
-							Kelola CCTV &amp; Kamera
-						</a>
-					</div>
-                <?php endif; ?>
-
-                <!-- SINKRONISASI CLOUD -->
-                <?php if(is_admin_panel() && !in_array($role, ['admin_pmb', 'admin_ppdb'])): ?>
-                    <a href="<?= base_url('admin_cloud_sync') ?>"
-                       class="menu-link <?= is_active_menu('admin_cloud_sync',$current) ?>">
-                        <span class="menu-ico"><i class="bi bi-clouds-fill"></i></span>
-                        <span>Sinkronisasi Cloud</span>
+                <div class="collapse submenu <?= is_open_menu(['admin_ppdb'], $current) ?>" id="menuPPDB">
+                    <a class="<?= is_active_menu('admin_ppdb/dashboard',$current) ?>"
+                       href="<?= base_url('admin_ppdb/dashboard') ?>">
+                        <span class="sub-dot"></span>
+                        Dashboard PPDB
                     </a>
-                <?php endif; ?>
 
-            <?php endif; ?>
+                    <a class="<?= ($current == 'admin_ppdb') ? 'active-menu' : '' ?>"
+                       href="<?= base_url('admin_ppdb') ?>">
+                        <span class="sub-dot"></span>
+                        Calon Siswa
+                    </a>
 
-            <!-- PORTAL GURU -->
-            <?php if($role == 'guru'): ?>
-                <div class="menu-section">Portal Guru</div>
+                    <a class="<?= is_active_menu('admin_ppdb/verifikasi',$current) ?>"
+                       href="<?= base_url('admin_ppdb/verifikasi') ?>">
+                        <span class="sub-dot"></span>
+                        Verifikasi Berkas
+                    </a>
 
-                <a href="<?= base_url('booking') ?>"
-                   class="menu-link <?= is_active_menu('booking',$current) ?>">
-                    <span class="menu-ico"><i class="bi bi-calendar2-check-fill"></i></span>
-                    <span>Booking Lab</span>
-                </a>
+                    <a class="<?= is_active_menu('admin_ppdb/diterima',$current) ?>"
+                       href="<?= base_url('admin_ppdb/diterima') ?>">
+                        <span class="sub-dot"></span>
+                        Siswa Diterima
+                    </a>
 
-                <a href="<?= base_url('maintenance') ?>"
-                   class="menu-link <?= is_active_menu('maintenance',$current) ?>">
-                    <span class="menu-ico"><i class="bi bi-exclamation-triangle-fill"></i></span>
-                    <span>Lapor Kerusakan</span>
-                </a>
-            <?php endif; ?>
+                    <a class="<?= is_active_menu('admin_ppdb/settings',$current) ?>"
+                       href="<?= base_url('admin_ppdb/settings') ?>">
+                        <span class="sub-dot"></span>
+                        Pengaturan PPDB
+                    </a>
+                </div>
 
-            <!-- PORTAL TEKNISI -->
-            <?php if($role == 'teknisi'): ?>
-                <div class="menu-section">Portal Teknisi</div>
-
-                <a href="<?= base_url('maintenance') ?>"
-                   class="menu-link <?= is_active_menu('maintenance',$current) ?>">
-                    <span class="menu-ico"><i class="bi bi-tools"></i></span>
-                    <span>Maintenance</span>
-                </a>
-
-                <a href="<?= base_url('inventory') ?>"
-                   class="menu-link <?= is_active_menu('inventory',$current) ?>">
-                    <span class="menu-ico"><i class="bi bi-boxes"></i></span>
-                    <span>Inventaris</span>
-                </a>
             <?php endif; ?>
 
         </div>
