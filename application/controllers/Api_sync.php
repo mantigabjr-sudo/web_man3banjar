@@ -826,4 +826,111 @@ class Api_sync extends CI_Controller {
             'data'   => $verified
         ]);
     }
+
+    public function push_foto_verified(){
+        $this->validate_key();
+
+        $nisn          = trim($this->input->post('nisn') ?? '');
+        $nama_siswa    = trim($this->input->post('nama_siswa') ?? '');
+        $kelas_id      = $this->input->post('kelas_id') ?: null;
+        $file_mentah   = trim($this->input->post('file_mentah') ?? '');
+        $file_verified = trim($this->input->post('file_verified') ?? '');
+        $verified_at   = $this->input->post('verified_at') ?: date('Y-m-d H:i:s');
+        $catatan       = $this->input->post('catatan') ?: null;
+
+        if(empty($nisn) && empty($file_mentah)){
+            echo json_encode(['status' => 'error', 'message' => 'NISN atau file mentah wajib disertakan.']);
+            return;
+        }
+
+        // 1. Simpan file foto verified jika ada yang diupload
+        if(!empty($_FILES['file']['name'])){
+            $folder_verified = FCPATH . 'uploads/foto_ijazah/verified/';
+            if(!is_dir($folder_verified)){
+                @mkdir($folder_verified, 0777, true);
+            }
+            $orig_name = !empty($file_verified) ? $file_verified : basename($_FILES['file']['name']);
+            $target = $folder_verified . $orig_name;
+            @move_uploaded_file($_FILES['file']['tmp_name'], $target);
+            $file_verified = $orig_name;
+        }
+
+        // 2. Cari siswa_id di database hosting berdasarkan NISN
+        $siswa_id = null;
+        if($this->db->table_exists('siswa') && !empty($nisn)){
+            $siswa = $this->db->where('nisn', $nisn)->get('siswa')->row();
+            if($siswa){
+                $siswa_id = $siswa->id;
+                if(!empty($file_verified)){
+                    $this->db->where('id', $siswa->id)->update('siswa', [
+                        'foto' => 'foto_ijazah/verified/' . $file_verified
+                    ]);
+                }
+            }
+        }
+
+        // 3. Pastikan tabel foto_ijazah_verifikasi ada
+        if(!$this->db->table_exists('foto_ijazah_verifikasi')){
+            $this->db->query("
+                CREATE TABLE IF NOT EXISTS `foto_ijazah_verifikasi` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `siswa_id` int(11) DEFAULT NULL,
+                  `nisn` varchar(20) DEFAULT NULL,
+                  `nama_siswa` varchar(150) DEFAULT NULL,
+                  `kelas_id` int(11) DEFAULT NULL,
+                  `file_mentah` varchar(255) NOT NULL,
+                  `file_verified` varchar(255) DEFAULT NULL,
+                  `status` enum('pending','verified','rejected') DEFAULT 'pending',
+                  `verified_at` datetime DEFAULT NULL,
+                  `ip_address` varchar(45) DEFAULT NULL,
+                  `user_agent` varchar(255) DEFAULT NULL,
+                  `catatan` varchar(255) DEFAULT NULL,
+                  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+                  PRIMARY KEY (`id`),
+                  KEY `idx_siswa_id` (`siswa_id`),
+                  KEY `idx_nisn` (`nisn`),
+                  KEY `idx_status` (`status`),
+                  KEY `idx_kelas_id` (`kelas_id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            ");
+        }
+
+        // 4. Update or Insert
+        $cek = null;
+        if(!empty($nisn)){
+            $cek = $this->db->where('nisn', $nisn)->get('foto_ijazah_verifikasi')->row();
+        }
+        if(!$cek && !empty($file_mentah)){
+            $cek = $this->db->where('file_mentah', $file_mentah)->get('foto_ijazah_verifikasi')->row();
+        }
+
+        $data_save = [
+            'siswa_id'      => $siswa_id,
+            'nisn'          => $nisn,
+            'nama_siswa'    => $nama_siswa,
+            'kelas_id'      => $kelas_id,
+            'file_mentah'   => $file_mentah,
+            'file_verified' => $file_verified,
+            'status'        => 'verified',
+            'verified_at'   => $verified_at,
+            'catatan'       => $catatan,
+            'ip_address'    => $this->input->ip_address(),
+            'user_agent'    => $this->input->user_agent()
+        ];
+
+        if($cek){
+            $this->db->where('id', $cek->id)->update('foto_ijazah_verifikasi', $data_save);
+        } else {
+            $data_save['created_at'] = date('Y-m-d H:i:s');
+            $this->db->insert('foto_ijazah_verifikasi', $data_save);
+        }
+
+        echo json_encode([
+            'status'   => 'success',
+            'message'  => "Data verifikasi untuk {$nama_siswa} ({$nisn}) berhasil disinkronkan ke hosting.",
+            'nisn'     => $nisn,
+            'filename' => $file_verified
+        ]);
+    }
 }
+

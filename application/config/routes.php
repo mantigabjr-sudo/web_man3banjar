@@ -46,6 +46,7 @@ $route['api/sync/pull_ppdb']       = 'api_sync/pull_ppdb';
 $route['api/sync/get_existing_foto_mentah'] = 'api_sync/get_existing_foto_mentah';
 $route['api/sync/upload_foto_mentah']       = 'api_sync/upload_foto_mentah';
 $route['api/sync/pull_foto_verified']       = 'api_sync/pull_foto_verified';
+$route['api/sync/push_foto_verified']       = 'api_sync/push_foto_verified';
 
 $route['api/ppdb/sync'] = 'api_ppdb/sync_pendaftar';
 $route['api/ppdb/confirm_sync'] = 'api_ppdb/confirm_sync';
