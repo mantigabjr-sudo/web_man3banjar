@@ -12,6 +12,45 @@ class Admin_foto_ijazah extends CI_Controller {
         if(!in_array($this->session->userdata('role'), $allowed)){
             redirect('dashboard');
         }
+        $this->ensure_setup();
+    }
+
+    private function ensure_setup(){
+        // 1. Pastikan tabel foto_ijazah_verifikasi tersedia
+        if (!$this->db->table_exists('foto_ijazah_verifikasi')) {
+            $this->db->query("
+                CREATE TABLE IF NOT EXISTS `foto_ijazah_verifikasi` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `siswa_id` int(11) DEFAULT NULL,
+                  `nisn` varchar(20) DEFAULT NULL,
+                  `nama_siswa` varchar(150) DEFAULT NULL,
+                  `kelas_id` int(11) DEFAULT NULL,
+                  `file_mentah` varchar(255) NOT NULL,
+                  `file_verified` varchar(255) DEFAULT NULL,
+                  `status` enum('pending','verified','rejected') DEFAULT 'pending',
+                  `verified_at` datetime DEFAULT NULL,
+                  `ip_address` varchar(45) DEFAULT NULL,
+                  `user_agent` varchar(255) DEFAULT NULL,
+                  `catatan` varchar(255) DEFAULT NULL,
+                  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+                  PRIMARY KEY (`id`),
+                  KEY `idx_siswa_id` (`siswa_id`),
+                  KEY `idx_nisn` (`nisn`),
+                  KEY `idx_status` (`status`),
+                  KEY `idx_kelas_id` (`kelas_id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            ");
+        }
+
+        // 2. Pastikan folder uploads tersedia
+        $dir_mentah = FCPATH . 'uploads/foto_ijazah/mentah/';
+        if(!is_dir($dir_mentah)){
+            @mkdir($dir_mentah, 0777, true);
+        }
+        $dir_verified = FCPATH . 'uploads/foto_ijazah/verified/';
+        if(!is_dir($dir_verified)){
+            @mkdir($dir_verified, 0777, true);
+        }
     }
 
     public function index(){
