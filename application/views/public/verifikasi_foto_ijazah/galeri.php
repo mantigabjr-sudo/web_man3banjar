@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title ?? 'Pilih Foto Ijazah') ?> - MAN 3 Banjar</title>
     
+    <!-- Favicon / Logo Tab Browser -->
+    <link rel="icon" type="image/png" href="<?= base_url('assets/brand/logo-man3.png') ?>">
+    <link rel="shortcut icon" type="image/png" href="<?= base_url('assets/brand/logo-man3.png') ?>">
+    <link rel="apple-touch-icon" href="<?= base_url('assets/brand/logo-man3.png') ?>">
+    
     <!-- Bootstrap 5 CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -121,8 +126,8 @@
 <nav class="navbar-verif sticky-top mb-4">
     <div class="container d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center gap-3">
-            <div class="brand-badge">
-                <i class="bi bi-mortarboard-fill"></i>
+            <div class="brand-badge" style="background: #ffffff; border: 1px solid #e2e8f0; padding: 3px;">
+                <img src="<?= base_url('assets/brand/logo-man3.png') ?>" alt="Logo MAN 3 Banjar" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
             <div>
                 <strong class="d-block text-dark" style="font-size: 15px; line-height: 1.2;">Verifikasi Foto Ijazah</strong>

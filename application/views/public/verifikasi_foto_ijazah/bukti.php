@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title ?? 'Bukti Verifikasi Foto') ?> - MAN 3 Banjar</title>
     
+    <!-- Favicon / Logo Tab Browser -->
+    <link rel="icon" type="image/png" href="<?= base_url('assets/brand/logo-man3.png') ?>">
+    <link rel="shortcut icon" type="image/png" href="<?= base_url('assets/brand/logo-man3.png') ?>">
+    <link rel="apple-touch-icon" href="<?= base_url('assets/brand/logo-man3.png') ?>">
+    
     <!-- Bootstrap 5 CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -101,8 +106,11 @@
 <div class="cert-card">
     <!-- Header -->
     <div class="cert-header">
+        <div class="mb-2">
+            <img src="<?= base_url('assets/brand/logo-man3.png') ?>" alt="Logo MAN 3 Banjar" style="height: 48px; width: 48px; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));">
+        </div>
         <span class="badge bg-white text-success fw-bold px-3 py-1 rounded-pill mb-2" style="font-size: 11px;">
-            <i class="bi bi-mortarboard-fill me-1"></i> BUKTI RESMI DIGITAL
+            <i class="bi bi-shield-check me-1"></i> BUKTI RESMI DIGITAL
         </span>
         <h4 class="fw-bold mb-1 text-white">Tanda Terima Verifikasi Foto Ijazah</h4>
         <p class="mb-0 text-white-50 small">Madrasah Aliyah Negeri 3 Banjar &bull; Tahun Ajaran 2025/2026</p>

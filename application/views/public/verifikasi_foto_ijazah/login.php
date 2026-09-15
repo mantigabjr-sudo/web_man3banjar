@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title ?? 'Verifikasi Mandiri Foto Ijazah Siswa') ?> - MAN 3 Banjar</title>
     
+    <!-- Favicon / Logo Tab Browser -->
+    <link rel="icon" type="image/png" href="<?= base_url('assets/brand/logo-man3.png') ?>">
+    <link rel="shortcut icon" type="image/png" href="<?= base_url('assets/brand/logo-man3.png') ?>">
+    <link rel="apple-touch-icon" href="<?= base_url('assets/brand/logo-man3.png') ?>">
+    
     <!-- Bootstrap 5 CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -268,8 +273,8 @@
         <!-- ═══ HEADER PORTAL ═══ -->
         <div class="header-verif">
             <div class="d-flex align-items-center gap-3">
-                <div class="badge-madrasah flex-shrink-0">
-                    <i class="bi bi-mortarboard-fill"></i>
+                <div class="badge-madrasah flex-shrink-0" style="background: rgba(255,255,255,0.95); padding: 5px;">
+                    <img src="<?= base_url('assets/brand/logo-man3.png') ?>" alt="Logo MAN 3 Banjar" style="width: 100%; height: 100%; object-fit: contain;">
                 </div>
                 <div>
                     <span class="badge bg-white text-success fw-bold px-3 py-1 rounded-pill mb-2" style="font-size: 11px; letter-spacing: 0.5px;">
