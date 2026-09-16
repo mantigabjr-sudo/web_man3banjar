@@ -754,6 +754,12 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
                     <span>Banner Slider</span>
                 </a>
 
+                <a href="<?= base_url('admin_website/pengumuman') ?>"
+                   class="menu-link <?= is_active_menu('admin_website/pengumuman',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-megaphone-fill"></i></span>
+                    <span>Pengumuman Beranda</span>
+                </a>
+
                 <a href="<?= base_url('admin_website/profil') ?>"
                    class="menu-link <?= is_active_menu('admin_website/profil',$current) ?>">
                     <span class="menu-ico"><i class="bi bi-building"></i></span>
@@ -851,6 +857,9 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
                     </a>
                     <a class="<?= is_active_menu('admin_banner',$current) ?>" href="<?= base_url('admin_banner') ?>">
                         <span class="sub-dot"></span> Banner Slider
+                    </a>
+                    <a class="<?= is_active_menu('admin_website/pengumuman',$current) ?>" href="<?= base_url('admin_website/pengumuman') ?>">
+                        <span class="sub-dot"></span> Pengumuman Beranda
                     </a>
                     <a class="<?= is_active_menu('admin_website/profil',$current) ?>" href="<?= base_url('admin_website/profil') ?>">
                         <span class="sub-dot"></span> Profil Madrasah

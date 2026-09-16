@@ -598,4 +598,79 @@ public function delete_galeri($id){
         $this->session->set_flashdata('success', 'File berhasil dihapus.');
         redirect('admin_website/download');
     }
+
+    private function ensureTablePengumuman(){
+        if(!$this->db->table_exists('website_pengumuman')){
+            $sql = "CREATE TABLE IF NOT EXISTS `website_pengumuman` (
+                `id` int(11) NOT NULL AUTO_INCREMENT,
+                `aktif` tinyint(1) NOT NULL DEFAULT 1,
+                `badge` varchar(100) DEFAULT 'PENGUMUMAN PENTING',
+                `judul` varchar(255) NOT NULL,
+                `isi` text DEFAULT NULL,
+                `tombol_teks` varchar(100) DEFAULT NULL,
+                `tombol_url` varchar(255) DEFAULT NULL,
+                `tema_warna` varchar(50) DEFAULT 'emerald',
+                `updated_at` datetime DEFAULT NULL,
+                PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+            $this->db->query($sql);
+
+            $this->db->insert('website_pengumuman', [
+                'id'          => 1,
+                'aktif'       => 1,
+                'badge'       => 'PENGUMUMAN KELAS XII',
+                'judul'       => 'Verifikasi Mandiri Foto Ijazah Siswa Telah Dibuka',
+                'isi'         => 'Siswa kelas XII diharapkan memverifikasi fotonya agar tersimpan resmi dengan nama NISN sebelum dicetak.',
+                'tombol_teks' => 'Verifikasi Sekarang →',
+                'tombol_url'  => 'verifikasi_foto_ijazah',
+                'tema_warna'  => 'emerald',
+                'updated_at'  => date('Y-m-d H:i:s')
+            ]);
+        }
+    }
+
+    public function pengumuman(){
+        $this->ensureTablePengumuman();
+
+        $data['pengumuman'] = $this->db
+            ->limit(1)
+            ->get('website_pengumuman')
+            ->row();
+
+        $this->load->view('admin_website/pengumuman', $data);
+    }
+
+    public function save_pengumuman(){
+        $this->ensureTablePengumuman();
+
+        $aktif = (int)$this->input->post('aktif');
+        $badge = trim($this->input->post('badge') ?? '');
+        $judul = trim($this->input->post('judul') ?? '');
+        $isi   = trim($this->input->post('isi') ?? '');
+        $tombol_teks = trim($this->input->post('tombol_teks') ?? '');
+        $tombol_url  = trim($this->input->post('tombol_url') ?? '');
+        $tema_warna  = trim($this->input->post('tema_warna') ?? 'emerald');
+
+        $row = $this->db->limit(1)->get('website_pengumuman')->row();
+
+        $payload = [
+            'aktif'       => $aktif,
+            'badge'       => $badge,
+            'judul'       => $judul,
+            'isi'         => $isi,
+            'tombol_teks' => $tombol_teks,
+            'tombol_url'  => $tombol_url,
+            'tema_warna'  => $tema_warna,
+            'updated_at'  => date('Y-m-d H:i:s')
+        ];
+
+        if($row){
+            $this->db->where('id', $row->id)->update('website_pengumuman', $payload);
+        } else {
+            $this->db->insert('website_pengumuman', $payload);
+        }
+
+        $this->session->set_flashdata('success', 'Pengumuman beranda berhasil diperbarui.');
+        redirect('admin_website/pengumuman');
+    }
 }

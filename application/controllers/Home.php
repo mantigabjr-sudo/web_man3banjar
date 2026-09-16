@@ -17,6 +17,16 @@ class Home extends CI_Controller {
                 ->result();
         }
 
+        $data['pengumuman_beranda'] = null;
+        if($this->db->table_exists('website_pengumuman')){
+            $data['pengumuman_beranda'] = $this->db
+                ->where('aktif', 1)
+                ->order_by('id', 'DESC')
+                ->limit(1)
+                ->get('website_pengumuman')
+                ->row();
+        }
+
         $this->db->where('status_berita', 'Published');
 
         if($this->db->field_exists('is_featured', 'berita')){
