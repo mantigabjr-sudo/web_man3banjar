@@ -640,10 +640,28 @@ public function delete_galeri($id){
         $this->load->view('admin_website/pengumuman', $data);
     }
 
+    public function toggle_pengumuman(){
+        $this->ensureTablePengumuman();
+
+        $row = $this->db->limit(1)->get('website_pengumuman')->row();
+        if($row){
+            $new_status = $row->aktif ? 0 : 1;
+            $this->db->where('id', $row->id)->update('website_pengumuman', [
+                'aktif' => $new_status,
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+            $msg = $new_status 
+                ? 'Status pengumuman beranda berhasil diubah menjadi: AKTIF (Tampil di Beranda).' 
+                : 'Status pengumuman beranda berhasil diubah menjadi: NONAKTIF (Disembunyikan dari Beranda).';
+            $this->session->set_flashdata('success', $msg);
+        }
+        redirect('admin_website/pengumuman');
+    }
+
     public function save_pengumuman(){
         $this->ensureTablePengumuman();
 
-        $aktif = (int)$this->input->post('aktif');
+        $aktif = ($this->input->post('aktif') !== null) ? (int)$this->input->post('aktif') : 0;
         $badge = trim($this->input->post('badge') ?? '');
         $judul = trim($this->input->post('judul') ?? '');
         $isi   = trim($this->input->post('isi') ?? '');
@@ -670,7 +688,8 @@ public function delete_galeri($id){
             $this->db->insert('website_pengumuman', $payload);
         }
 
-        $this->session->set_flashdata('success', 'Pengumuman beranda berhasil diperbarui.');
+        $status_txt = ($aktif === 1) ? 'AKTIF (Tampil di Beranda)' : 'NONAKTIF (Disembunyikan)';
+        $this->session->set_flashdata('success', 'Pengaturan pengumuman berhasil disimpan. Status: ' . $status_txt);
         redirect('admin_website/pengumuman');
     }
 }

@@ -20,7 +20,7 @@
             </div>
         <?php endif; ?>
 
-        <!-- ═══ HEADER BANNER (TEMA FOTO IJAZAH) ═══ -->
+        <!-- ═══ HEADER BANNER ═══ -->
         <div class="card border-0 rounded-4 shadow-sm mb-4 text-white position-relative overflow-hidden" 
              style="background: linear-gradient(135deg, #064e3b 0%, #059669 60%, #10b981 100%);">
             <div class="card-body p-4 p-md-5 position-relative" style="z-index: 2;">
@@ -31,11 +31,22 @@
                         </span>
                         <h2 class="fw-bold mb-2 text-white">Banner Pengumuman Beranda</h2>
                         <p class="mb-3 text-white-50" style="font-size: 14px; max-width: 620px;">
-                            Kelola banner sorotan penting di beranda website madrasah. Anda dapat mengaktifkan pengumuman untuk verifikasi ijazah, PMB, info libur, atau menonaktifkannya kapan saja dengan satu klik.
+                            Kelola banner sorotan penting di beranda website madrasah. Anda dapat mengaktifkan atau mematikan penayangannya secara instan kapan saja.
                         </p>
-                        <div class="d-flex flex-wrap gap-2 pt-1">
+                        <div class="d-flex flex-wrap gap-2 pt-1 align-items-center">
+                            <!-- Tombol Sakelar Cepat 1-Klik -->
+                            <?php if(!empty($pengumuman->aktif)): ?>
+                                <a href="<?= base_url('admin_website/toggle_pengumuman') ?>" class="btn btn-danger fw-bold rounded-pill px-3 shadow-sm">
+                                    <i class="bi bi-power me-1"></i> Matikan Pengumuman (Set OFF)
+                                </a>
+                            <?php else: ?>
+                                <a href="<?= base_url('admin_website/toggle_pengumuman') ?>" class="btn btn-warning text-dark fw-bold rounded-pill px-3 shadow-sm">
+                                    <i class="bi bi-power me-1"></i> Aktifkan Pengumuman (Set ON)
+                                </a>
+                            <?php endif; ?>
+
                             <a href="<?= base_url() ?>" target="_blank" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm">
-                                <i class="bi bi-box-arrow-up-right text-success me-1"></i> Pratinjau Beranda Website
+                                <i class="bi bi-box-arrow-up-right text-success me-1"></i> Buka Beranda Website
                             </a>
                         </div>
                     </div>
@@ -45,30 +56,69 @@
             <div style="position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%); border-radius: 50%;"></div>
         </div>
 
-        <form method="post" action="<?= base_url('admin_website/save_pengumuman') ?>">
+        <form method="post" action="<?= base_url('admin_website/save_pengumuman') ?>" id="formPengumuman">
+            <!-- Hidden Input Nilai Aktif (0 atau 1) yang dijamin terkirim -->
+            <input type="hidden" name="aktif" id="inputAktif" value="<?= !empty($pengumuman->aktif) ? '1' : '0' ?>">
+
             <div class="row g-4">
                 
                 <!-- Kolom Kiri: Form Konfigurasi -->
                 <div class="col-lg-6">
+                    
+                    <!-- ═══ KOTAK SWITCH STATUS ON / OFF ═══ -->
                     <div class="card border-0 rounded-4 shadow-sm mb-4">
                         <div class="card-header bg-white border-bottom pt-3 pb-2 px-4 d-flex justify-content-between align-items-center">
-                            <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-sliders text-success me-2"></i> Pengaturan Konten Pengumuman</h6>
+                            <h6 class="fw-bold mb-0 text-dark">
+                                <i class="bi bi-toggle2-on text-success me-2"></i> Status Penayangan di Beranda
+                            </h6>
+                            <span id="badgeStatusHeader" class="badge <?= !empty($pengumuman->aktif) ? 'bg-success' : 'bg-danger' ?> px-3 py-1 rounded-pill" style="font-size: 12px;">
+                                <?= !empty($pengumuman->aktif) ? '● AKTIF' : '○ NONAKTIF' ?>
+                            </span>
                         </div>
                         <div class="card-body p-4">
+                            <p class="small text-muted mb-3">
+                                Pilih apakah banner pengumuman ini tampil di halaman depan website atau disembunyikan:
+                            </p>
 
-                            <!-- Toggle Status Aktif -->
-                            <div class="p-3 rounded-4 bg-light mb-4 border d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="fw-bold text-dark mb-1">Status Pengumuman di Beranda</h6>
-                                    <small class="text-muted">Tampilkan atau sembunyikan banner ini dari halaman depan.</small>
+                            <!-- Tombol Pilihan Interaktif Besar -->
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <button type="button" id="btnPilihAktif" class="btn w-100 py-3 rounded-4 fw-bold border-2 d-flex flex-column align-items-center justify-content-center gap-1 transition-all <?= !empty($pengumuman->aktif) ? 'btn-success shadow' : 'btn-outline-secondary' ?>">
+                                        <i class="bi bi-check-circle-fill fs-2"></i>
+                                        <span class="fs-6">AKTIF (ON)</span>
+                                        <small class="fw-normal" style="font-size: 11px;">Tampil di Halaman Depan</small>
+                                    </button>
                                 </div>
-                                <div class="form-check form-switch fs-4 mb-0">
-                                    <input class="form-check-input" type="checkbox" role="switch" name="aktif" value="1" id="switchAktif" <?= (!empty($pengumuman->aktif)) ? 'checked' : '' ?>>
+                                <div class="col-6">
+                                    <button type="button" id="btnPilihNonaktif" class="btn w-100 py-3 rounded-4 fw-bold border-2 d-flex flex-column align-items-center justify-content-center gap-1 transition-all <?= empty($pengumuman->aktif) ? 'btn-danger shadow' : 'btn-outline-secondary' ?>">
+                                        <i class="bi bi-eye-slash-fill fs-2"></i>
+                                        <span class="fs-6">NONAKTIF (OFF)</span>
+                                        <small class="fw-normal" style="font-size: 11px;">Sembunyikan dari Beranda</small>
+                                    </button>
                                 </div>
                             </div>
 
+                            <!-- Indikator Keterangan Status -->
+                            <div class="mt-3 p-3 rounded-3 bg-light border d-flex align-items-center gap-2">
+                                <i id="iconStatusDesc" class="bi <?= !empty($pengumuman->aktif) ? 'bi-check-circle-fill text-success' : 'bi-info-circle-fill text-danger' ?> fs-5"></i>
+                                <span class="small" id="textStatusDesc">
+                                    <?= !empty($pengumuman->aktif) 
+                                        ? 'Pengumuman saat ini <strong>AKTIF</strong> dan sedang tampil kepada seluruh pengunjung beranda.' 
+                                        : 'Pengumuman saat ini <strong>NONAKTIF</strong> (disembunyikan dari pengunjung beranda).' ?>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ═══ KONTEN PENGUMUMAN ═══ -->
+                    <div class="card border-0 rounded-4 shadow-sm mb-4">
+                        <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
+                            <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-card-heading text-success me-2"></i> Rincian Teks Pengumuman</h6>
+                        </div>
+                        <div class="card-body p-4">
+
                             <div class="mb-3">
-                                <label class="form-label fw-bold small text-muted">Teks Label / Kategori Badge</label>
+                                <label class="form-label fw-bold small text-muted">Kategori / Badge Label</label>
                                 <input type="text" name="badge" id="inputBadge" class="form-control rounded-3" 
                                        value="<?= htmlspecialchars($pengumuman->badge ?? 'PENGUMUMAN PENTING', ENT_QUOTES, 'UTF-8') ?>" 
                                        placeholder="Contoh: PENGUMUMAN KELAS XII">
@@ -84,7 +134,7 @@
                             <div class="mb-3">
                                 <label class="form-label fw-bold small text-muted">Isi Ringkas Pengumuman</label>
                                 <textarea name="isi" id="inputIsi" class="form-control rounded-3" rows="3" 
-                                          placeholder="Tuliskan keterangan detail pengumuman..."><?= htmlspecialchars($pengumuman->isi ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
+                                          placeholder="Tuliskan keterangan ringkas pengumuman..."><?= htmlspecialchars($pengumuman->isi ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
                             </div>
 
                             <div class="row g-3 mb-3">
@@ -95,7 +145,7 @@
                                            placeholder="Contoh: Verifikasi Sekarang →">
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label fw-bold small text-muted">Tautan / URL Tombol</label>
+                                    <label class="form-label fw-bold small text-muted">Tautan / Link Tujuan</label>
                                     <input type="text" name="tombol_url" class="form-control rounded-3" 
                                            value="<?= htmlspecialchars($pengumuman->tombol_url ?? '', ENT_QUOTES, 'UTF-8') ?>" 
                                            placeholder="verifikasi_foto_ijazah atau https://...">
@@ -106,13 +156,13 @@
                                 <label class="form-label fw-bold small text-muted">Tema Warna Banner</label>
                                 <select name="tema_warna" id="selectTema" class="form-select rounded-3">
                                     <option value="emerald" <?= (($pengumuman->tema_warna ?? 'emerald') === 'emerald') ? 'selected' : '' ?>>Hijau Emerald (Default MAN 3 Banjar)</option>
-                                    <option value="blue" <?= (($pengumuman->tema_warna ?? '') === 'blue') ? 'selected' : '' ?>>Biru Samudra (Info Resmi / PMB)</option>
+                                    <option value="blue" <?= (($pengumuman->tema_warna ?? '') === 'blue') ? 'selected' : '' ?>>Biru Samudra (Info Akademik / PMB)</option>
                                     <option value="amber" <?= (($pengumuman->tema_warna ?? '') === 'amber') ? 'selected' : '' ?>>Kuning Amber (Pemberitahuan Mendesak)</option>
                                     <option value="slate" <?= (($pengumuman->tema_warna ?? '') === 'slate') ? 'selected' : '' ?>>Dark Slate (Elegan & Formal)</option>
                                 </select>
                             </div>
 
-                            <button type="submit" class="btn btn-success fw-bold rounded-pill w-100 py-2 shadow-sm">
+                            <button type="submit" class="btn btn-success fw-bold rounded-pill w-100 py-3 shadow-sm fs-6">
                                 <i class="bi bi-check-circle-fill me-1"></i> Simpan Pengaturan Pengumuman
                             </button>
 
@@ -122,16 +172,27 @@
 
                 <!-- Kolom Kanan: Live Interactive Preview -->
                 <div class="col-lg-6">
-                    <div class="card border-0 rounded-4 shadow-sm mb-4">
-                        <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
+                    <div class="card border-0 rounded-4 shadow-sm mb-4 sticky-top" style="top: 20px; z-index: 10;">
+                        <div class="card-header bg-white border-bottom pt-3 pb-2 px-4 d-flex justify-content-between align-items-center">
                             <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-eye-fill text-success me-2"></i> Pratinjau Tampilan Beranda</h6>
+                            <span class="badge bg-light text-dark border small">Live Preview</span>
                         </div>
                         <div class="card-body p-4 bg-light">
-                            <p class="small text-muted mb-3">Beginilah tampilan banner di halaman beranda website publik pengunjung:</p>
+                            
+                            <!-- Box Notifikasi Status Pratinjau -->
+                            <div id="previewStatusNotice" class="alert <?= !empty($pengumuman->aktif) ? 'alert-success border-success' : 'alert-danger border-danger' ?> py-2 px-3 rounded-3 mb-3 d-flex align-items-center gap-2">
+                                <i id="previewStatusIcon" class="bi <?= !empty($pengumuman->aktif) ? 'bi-check-circle-fill text-success' : 'bi-eye-slash-fill text-danger' ?> fs-5"></i>
+                                <div class="small" id="previewStatusText">
+                                    <?= !empty($pengumuman->aktif) 
+                                        ? '<strong>Banner AKTIF:</strong> Banner ini akan langsung tampil di beranda website pengunjung.' 
+                                        : '<strong>Banner NONAKTIF:</strong> Banner ini sedang disembunyikan dari beranda website.' ?>
+                                </div>
+                            </div>
 
-                            <!-- Live Card Box -->
-                            <div id="previewCard" class="p-3 p-md-4 rounded-4 shadow-sm border d-flex flex-column flex-md-row align-items-center justify-content-between gap-3"
-                                 style="background: linear-gradient(135deg, #064e3b 0%, #059669 100%); color: #ffffff; transition: all 0.3s ease;">
+                            <!-- Live Banner Card Box -->
+                            <div id="previewCard" class="p-3 p-md-4 rounded-4 shadow-sm border d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 position-relative"
+                                 style="background: linear-gradient(135deg, #064e3b 0%, #059669 100%); color: #ffffff; transition: all 0.3s ease; <?= empty($pengumuman->aktif) ? 'opacity: 0.45; filter: grayscale(40%); border: 2px dashed #dc3545 !important;' : '' ?>">
+                                
                                 <div class="d-flex align-items-center gap-3">
                                     <div class="p-3 rounded-4 bg-white text-success fw-bold fs-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px; flex-shrink: 0;">
                                         <i class="bi bi-megaphone-fill"></i>
@@ -156,8 +217,8 @@
                             </div>
 
                             <div class="mt-4 p-3 bg-white rounded-3 border small text-muted">
-                                <i class="bi bi-info-circle-fill text-primary me-1"></i>
-                                Jika switch status dinonaktifkan (OFF), maka banner ini otomatis tidak akan tampil di beranda dan halaman muka akan langsung menampilkan berita & konten madrasah.
+                                <i class="bi bi-shield-check text-success me-1"></i>
+                                <strong>Tips:</strong> Anda dapat mengklik tombol <em>"Matikan Pengumuman"</em> atau <em>"Aktifkan Pengumuman"</em> di header atas untuk beralih status secara instan tanpa perlu mengisi ulang form.
                             </div>
 
                         </div>
@@ -172,6 +233,13 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
+    const inputAktif     = document.getElementById('inputAktif');
+    const btnPilihAktif  = document.getElementById('btnPilihAktif');
+    const btnPilihNonaktif = document.getElementById('btnPilihNonaktif');
+    const badgeStatusHeader = document.getElementById('badgeStatusHeader');
+    const iconStatusDesc = document.getElementById('iconStatusDesc');
+    const textStatusDesc = document.getElementById('textStatusDesc');
+
     const inputBadge = document.getElementById('inputBadge');
     const inputJudul = document.getElementById('inputJudul');
     const inputIsi   = document.getElementById('inputIsi');
@@ -183,6 +251,58 @@ document.addEventListener('DOMContentLoaded', function(){
     const previewIsi   = document.getElementById('previewIsi');
     const previewBtn   = document.getElementById('previewBtn');
     const previewCard  = document.getElementById('previewCard');
+
+    const previewStatusNotice = document.getElementById('previewStatusNotice');
+    const previewStatusIcon   = document.getElementById('previewStatusIcon');
+    const previewStatusText   = document.getElementById('previewStatusText');
+
+    function setStatus(isAktif){
+        inputAktif.value = isAktif ? '1' : '0';
+
+        if(isAktif){
+            btnPilihAktif.className = 'btn w-100 py-3 rounded-4 fw-bold border-2 d-flex flex-column align-items-center justify-content-center gap-1 transition-all btn-success shadow';
+            btnPilihNonaktif.className = 'btn w-100 py-3 rounded-4 fw-bold border-2 d-flex flex-column align-items-center justify-content-center gap-1 transition-all btn-outline-secondary';
+            
+            badgeStatusHeader.className = 'badge bg-success px-3 py-1 rounded-pill';
+            badgeStatusHeader.innerHTML = '● AKTIF';
+
+            iconStatusDesc.className = 'bi bi-check-circle-fill text-success fs-5';
+            textStatusDesc.innerHTML = 'Pengumuman saat ini <strong>AKTIF</strong> dan sedang tampil kepada seluruh pengunjung beranda.';
+
+            previewStatusNotice.className = 'alert alert-success border-success py-2 px-3 rounded-3 mb-3 d-flex align-items-center gap-2';
+            previewStatusIcon.className   = 'bi bi-check-circle-fill text-success fs-5';
+            previewStatusText.innerHTML   = '<strong>Banner AKTIF:</strong> Banner ini akan langsung tampil di beranda website pengunjung.';
+
+            previewCard.style.opacity = '1';
+            previewCard.style.filter = 'none';
+            previewCard.style.border = '1px solid rgba(0,0,0,0.1)';
+        } else {
+            btnPilihAktif.className = 'btn w-100 py-3 rounded-4 fw-bold border-2 d-flex flex-column align-items-center justify-content-center gap-1 transition-all btn-outline-secondary';
+            btnPilihNonaktif.className = 'btn w-100 py-3 rounded-4 fw-bold border-2 d-flex flex-column align-items-center justify-content-center gap-1 transition-all btn-danger shadow';
+            
+            badgeStatusHeader.className = 'badge bg-danger px-3 py-1 rounded-pill';
+            badgeStatusHeader.innerHTML = '○ NONAKTIF';
+
+            iconStatusDesc.className = 'bi bi-info-circle-fill text-danger fs-5';
+            textStatusDesc.innerHTML = 'Pengumuman saat ini <strong>NONAKTIF</strong> (disembunyikan dari pengunjung beranda).';
+
+            previewStatusNotice.className = 'alert alert-danger border-danger py-2 px-3 rounded-3 mb-3 d-flex align-items-center gap-2';
+            previewStatusIcon.className   = 'bi bi-eye-slash-fill text-danger fs-5';
+            previewStatusText.innerHTML   = '<strong>Banner NONAKTIF:</strong> Banner ini sedang disembunyikan dari beranda website.';
+
+            previewCard.style.opacity = '0.45';
+            previewCard.style.filter = 'grayscale(40%)';
+            previewCard.style.border = '2px dashed #dc3545';
+        }
+    }
+
+    btnPilihAktif.addEventListener('click', function(){
+        setStatus(true);
+    });
+
+    btnPilihNonaktif.addEventListener('click', function(){
+        setStatus(false);
+    });
 
     function updatePreview(){
         previewBadge.textContent = inputBadge.value.trim() || 'PENGUMUMAN';
