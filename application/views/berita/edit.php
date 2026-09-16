@@ -1,6 +1,3 @@
-<?php $this->load->view('templates/header'); ?>
-<?php $this->load->view('templates/sidebar'); ?>
-
 <?php
 $judul = $berita->judul ?? '';
 $isi = $berita->isi ?? '';
@@ -16,272 +13,243 @@ $poster_file = !empty($poster) ? FCPATH.'assets/news/poster/'.$poster : '';
 ?>
 
 <div class="content">
+    <div class="container-fluid py-4">
 
-    <div class="page-header">
-        <div class="page-title-group">
-            <span class="page-category">Kelola Website / Berita</span>
-            <h1 class="page-title">Edit Konten Berita</h1>
-            <p class="page-subtitle">Perbarui teks artikel, kategori, foto sampul, foto kegiatan, dan poster pamflet media sosial.</p>
-        </div>
-        <div class="header-actions d-flex gap-2">
-            <a href="<?= base_url('berita') ?>" class="btn-modern btn-modern-light text-decoration-none">
-                <i class="fa fa-arrow-left me-1"></i> Kembali ke Daftar
-            </a>
-            <a href="<?= base_url('berita/detail/'.$berita->id) ?>" target="_blank" class="btn-modern btn-modern-light text-decoration-none">
-                <i class="fa fa-external-link-alt me-1"></i> Pratinjau
-            </a>
-        </div>
-    </div>
+        <!-- ALERT NOTIFIKASI -->
+        <?php if($this->session->flashdata('success')): ?>
+            <div class="alert alert-success alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4" role="alert">
+                <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                <?= $this->session->flashdata('success') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+        <?php if($this->session->flashdata('error')): ?>
+            <div class="alert alert-danger alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                <?= $this->session->flashdata('error') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
 
-    <?php if($this->session->flashdata('success')): ?>
-        <div class="alert alert-success d-flex align-items-center mb-4" role="alert">
-            <i class="fa fa-check-circle me-2 fs-5"></i>
-            <div><?= $this->session->flashdata('success') ?></div>
-        </div>
-    <?php endif; ?>
-
-    <?php if($this->session->flashdata('error')): ?>
-        <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
-            <i class="fa fa-exclamation-circle me-2 fs-5"></i>
-            <div><?= $this->session->flashdata('error') ?></div>
-        </div>
-    <?php endif; ?>
-
-    <form method="post" action="<?= base_url('berita/update/'.$berita->id) ?>" enctype="multipart/form-data">
-        <div class="row g-4">
-            
-            <!-- Kolom Kiri: Konten Utama & Galeri Kegiatan -->
-            <div class="col-lg-8">
-                <div class="modern-card mb-4">
-                    <div class="modern-card-header">
-                        <h2 class="modern-card-title">Konten & Naskah Berita</h2>
-                        <p class="modern-card-subtitle">Ubah naskah, kategori serta status penerbitan berita ini.</p>
-                    </div>
-                    <div class="modern-card-body">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Judul Berita</label>
-                            <input type="text" 
-                                   name="judul" 
-                                   class="input-modern" 
-                                   value="<?= htmlspecialchars($judul, ENT_QUOTES, 'UTF-8') ?>" 
-                                   required>
+        <!-- ═══ HEADER BANNER (TEMA FOTO IJAZAH) ═══ -->
+        <div class="card border-0 rounded-4 shadow-sm mb-4 text-white position-relative overflow-hidden" 
+             style="background: linear-gradient(135deg, #064e3b 0%, #059669 60%, #10b981 100%);">
+            <div class="card-body p-4 p-md-5 position-relative" style="z-index: 2;">
+                <div class="row align-items-center g-3">
+                    <div class="col-lg-8">
+                        <span class="badge bg-white text-success fw-bold px-3 py-1 rounded-pill mb-2" style="font-size: 11.5px;">
+                            <i class="bi bi-pencil-fill me-1"></i> EDITOR ARTIKEL
+                        </span>
+                        <h2 class="fw-bold mb-2 text-white">Edit Konten Berita</h2>
+                        <p class="mb-3 text-white-50" style="font-size: 14px; max-width: 620px;">
+                            Perbarui naskah artikel, kategori warta, foto sampul, foto kegiatan tambahan, serta konfigurasi pamflet media sosial.
+                        </p>
+                        <div class="d-flex flex-wrap gap-2 pt-1">
+                            <a href="<?= base_url('berita') ?>" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm">
+                                <i class="bi bi-arrow-left me-1"></i> Kembali ke Daftar
+                            </a>
+                            <a href="<?= base_url('berita/detail/'.$berita->id) ?>" target="_blank" class="btn btn-outline-light fw-bold rounded-pill px-3 shadow-sm">
+                                <i class="bi bi-box-arrow-up-right me-1"></i> Pratinjau Berita
+                            </a>
                         </div>
-
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Kategori Berita</label>
-                                <select name="kategori" class="input-modern" required>
-                                    <?php foreach($kategori_options as $opt): ?>
-                                        <option value="<?= $opt ?>" <?= $kategori == $opt ? 'selected' : '' ?>><?= $opt ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Status Publikasi</label>
-                                <select name="status_berita" class="input-modern">
-                                    <option value="Draft" <?= $status == 'Draft' ? 'selected' : '' ?>>Draft (Belum Tampil)</option>
-                                    <option value="Published" <?= $status == 'Published' ? 'selected' : '' ?>>Published (Tayang)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="mb-0">
-                            <label class="form-label fw-bold">Isi Naskah Berita</label>
-                            <textarea name="isi" 
-                                      class="input-modern" 
-                                      rows="12" 
-                                      style="line-height:1.7;" 
-                                      required><?= htmlspecialchars($isi, ENT_QUOTES, 'UTF-8') ?></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Foto Tambahan -->
-                <div class="modern-card">
-                    <div class="modern-card-header">
-                        <h2 class="modern-card-title">Foto Kegiatan Tambahan</h2>
-                        <p class="modern-card-subtitle">Unggah beberapa foto dokumentasi kegiatan untuk galeri dan bahan poster otomatis.</p>
-                    </div>
-                    <div class="modern-card-body">
-                        <div class="mb-4 p-3 bg-light rounded-4 border border-dashed text-center">
-                            <input type="file" name="gambar_multi[]" id="gambarMultiEditBerita" class="form-control" accept="image/*" multiple>
-                            <div class="small text-muted mt-2">Pilih beberapa foto sekaligus. Gambar lama tetap tersimpan.</div>
-                            <div class="d-flex flex-wrap gap-2 justify-content-center mt-3" id="previewMultiEditBerita"></div>
-                        </div>
-
-                        <label class="form-label fw-bold text-muted small text-uppercase">Foto Kegiatan Tersimpan:</label>
-                        <?php if(!empty($gambar_berita)): ?>
-                            <div class="row g-3">
-                                <?php foreach($gambar_berita as $g): ?>
-                                    <?php $file = FCPATH.'assets/news/'.$g->gambar; ?>
-                                    <?php if(!empty($g->gambar) && file_exists($file)): ?>
-                                        <div class="col-6 col-md-4">
-                                            <div class="border rounded-3 overflow-hidden shadow-sm position-relative">
-                                                <img src="<?= base_url('assets/news/'.$g->gambar) ?>" 
-                                                     alt="Foto kegiatan" 
-                                                     style="width:100%; height:130px; object-fit:cover; display:block;">
-                                                <div class="p-2 bg-white d-flex justify-content-between align-items-center">
-                                                    <a href="<?= base_url('assets/news/'.$g->gambar) ?>" target="_blank" class="btn btn-sm btn-light py-0 px-2 text-primary" style="font-size:11px;">
-                                                        <i class="fa fa-eye"></i>
-                                                    </a>
-                                                    <a href="<?= base_url('berita/delete_gambar/'.$g->id) ?>" class="btn btn-sm btn-light py-0 px-2 text-danger" onclick="return confirm('Hapus foto kegiatan ini?')" style="font-size:11px;">
-                                                        <i class="fa fa-trash"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php else: ?>
-                            <div class="text-center py-4 text-muted small border rounded-3 bg-light">
-                                <i class="fa fa-images d-block fs-3 mb-1 text-secondary"></i>
-                                Belum ada foto kegiatan tambahan yang diunggah.
-                            </div>
-                        <?php endif; ?>
                     </div>
                 </div>
             </div>
+            <!-- Hiasan Bulat Transparan -->
+            <div style="position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%); border-radius: 50%;"></div>
+        </div>
 
-            <!-- Kolom Kanan: Foto Utama, Poster Pamflet, & Info -->
-            <div class="col-lg-4">
+        <form method="post" action="<?= base_url('berita/update/'.$berita->id) ?>" enctype="multipart/form-data">
+            <div class="row g-4">
                 
-                <!-- Foto Sampul Utama -->
-                <div class="modern-card mb-4">
-                    <div class="modern-card-header">
-                        <h2 class="modern-card-title">Sampul Utama</h2>
-                        <p class="modern-card-subtitle">Gambar thumbnail yang tampil di halaman depan.</p>
+                <!-- Kolom Kiri: Naskah & Galeri Kegiatan -->
+                <div class="col-lg-8">
+                    <div class="card border-0 rounded-4 shadow-sm mb-4">
+                        <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
+                            <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-journal-text text-success me-2"></i> Konten &amp; Naskah Berita</h6>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted">Judul Berita</label>
+                                <input type="text" name="judul" class="form-control rounded-3" value="<?= htmlspecialchars($judul, ENT_QUOTES, 'UTF-8') ?>" required>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small text-muted">Kategori Berita</label>
+                                    <select name="kategori" class="form-select rounded-3" required>
+                                        <?php foreach($kategori_options as $opt): ?>
+                                            <option value="<?= $opt ?>" <?= $kategori == $opt ? 'selected' : '' ?>><?= $opt ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small text-muted">Status Publikasi</label>
+                                    <select name="status_berita" class="form-select rounded-3">
+                                        <option value="Draft" <?= $status == 'Draft' ? 'selected' : '' ?>>Draft</option>
+                                        <option value="Published" <?= $status == 'Published' ? 'selected' : '' ?>>Published</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-0">
+                                <label class="form-label fw-bold small text-muted">Isi Naskah Berita</label>
+                                <textarea name="isi" class="form-control rounded-3" rows="12" style="line-height:1.7;" required><?= htmlspecialchars($isi, ENT_QUOTES, 'UTF-8') ?></textarea>
+                            </div>
+                        </div>
                     </div>
-                    <div class="modern-card-body">
-                        <div class="text-center mb-3">
-                            <div id="previewEditBerita" style="border-radius:14px; overflow:hidden; border:1px solid #e2e8f0; background:#f8fafc; min-height:160px; display:flex; align-items:center; justify-content:center;">
-                                <?php if(!empty($gambar) && file_exists($gambar_file)): ?>
-                                    <img src="<?= base_url('assets/news/'.$gambar) ?>" alt="Sampul Utama" style="width:100%; max-height:220px; object-fit:cover;">
-                                <?php else: ?>
-                                    <span class="text-muted small">Belum ada foto sampul</span>
-                                <?php endif; ?>
+
+                    <!-- Foto Kegiatan Tambahan -->
+                    <div class="card border-0 rounded-4 shadow-sm mb-4">
+                        <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
+                            <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-images text-success me-2"></i> Foto Kegiatan Tambahan (Multi-Foto)</h6>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="p-3 bg-light rounded-4 border mb-4 text-center">
+                                <input type="file" name="gambar_multi[]" class="form-control rounded-3 mb-2" id="gambarMultiEditBerita" accept="image/*" multiple>
+                                <small class="text-muted d-block">Pilih beberapa gambar sekaligus untuk menambahkan foto kegiatan ke galeri berita &amp; pamflet.</small>
+                                <div class="d-flex flex-wrap gap-2 justify-content-center mt-3" id="previewMultiEditBerita"></div>
                             </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small text-muted">Ganti Foto Sampul</label>
-                            <input type="file" name="gambar" class="input-modern py-2" id="gambarEditBerita" accept="image/*">
-                        </div>
-
-                        <?php if(!empty($gambar) && file_exists($gambar_file)): ?>
-                            <div class="form-check p-2 bg-light rounded-3 border">
-                                <input class="form-check-input ms-0 me-2" type="checkbox" name="hapus_gambar_utama" value="1" id="chkHapusSampul">
-                                <label class="form-check-label small text-danger fw-bold" for="chkHapusSampul">
-                                    Hapus foto sampul saat menyimpan
-                                </label>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
-                <!-- Pengaturan Poster Otomatis -->
-                <div class="modern-card mb-4">
-                    <div class="modern-card-header">
-                        <h2 class="modern-card-title">Poster Pamflet</h2>
-                        <p class="modern-card-subtitle">Generate pamflet otomatis untuk Instagram/WA.</p>
-                    </div>
-                    <div class="modern-card-body">
-                        <?php if(!empty($poster) && file_exists($poster_file)): ?>
-                            <div class="mb-3 border rounded-3 overflow-hidden shadow-sm">
-                                <img src="<?= base_url('assets/news/poster/'.$poster) ?>" alt="Poster Berita" style="width:100%; display:block;">
-                            </div>
-                        <?php else: ?>
-                            <div class="text-center py-3 text-muted small bg-light rounded-3 mb-3 border">
-                                <i class="fa fa-id-badge d-block fs-3 mb-1 text-secondary"></i>
-                                Poster belum digenerate.
-                            </div>
-                        <?php endif; ?>
-
-                        <div class="mb-2">
-                            <label class="form-label fw-bold small text-muted">Mode Gambar</label>
-                            <select name="poster_fit_mode" class="input-modern py-1 px-2" style="font-size:13px;">
-                                <option value="cover" <?= ($berita->poster_fit_mode ?? 'cover') == 'cover' ? 'selected' : '' ?>>Penuh / Crop Rapi</option>
-                                <option value="contain" <?= ($berita->poster_fit_mode ?? '') == 'contain' ? 'selected' : '' ?>>Gambar Utuh / Tidak Terpotong</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-2">
-                            <label class="form-label fw-bold small text-muted">Fokus Posisi</label>
-                            <select name="poster_focus" class="input-modern py-1 px-2" style="font-size:13px;">
-                                <option value="center" <?= ($berita->poster_focus ?? 'center') == 'center' ? 'selected' : '' ?>>Tengah (Center)</option>
-                                <option value="top" <?= ($berita->poster_focus ?? '') == 'top' ? 'selected' : '' ?>>Atas (Top)</option>
-                                <option value="bottom" <?= ($berita->poster_focus ?? '') == 'bottom' ? 'selected' : '' ?>>Bawah (Bottom)</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small text-muted">Tata Letak (Layout)</label>
-                            <select name="poster_layout" class="input-modern py-1 px-2" style="font-size:13px;">
-                                <option value="auto" <?= ($berita->poster_layout ?? 'auto') == 'auto' ? 'selected' : '' ?>>Otomatis</option>
-                                <option value="single" <?= ($berita->poster_layout ?? '') == 'single' ? 'selected' : '' ?>>1 Foto Besar</option>
-                                <option value="two" <?= ($berita->poster_layout ?? '') == 'two' ? 'selected' : '' ?>>2 Foto</option>
-                                <option value="three" <?= ($berita->poster_layout ?? '') == 'three' ? 'selected' : '' ?>>3 Foto</option>
-                                <option value="grid" <?= ($berita->poster_layout ?? '') == 'grid' ? 'selected' : '' ?>>Grid 5 Foto</option>
-                            </select>
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <a href="<?= base_url('berita/regenerate_pamflet/'.$berita->id) ?>" 
-                               class="btn-modern btn-modern-light text-center py-2 text-decoration-none"
-                               onclick="return confirm('Generate ulang pamflet sekarang? Pastikan perubahan teks sudah disimpan lebih dahulu.')">
-                                <i class="fa fa-magic me-1 text-warning"></i> Generate Ulang Poster
-                            </a>
-                            <?php if(!empty($poster) && file_exists($poster_file)): ?>
-                                <a href="<?= base_url('berita/download_pamflet/'.$berita->id) ?>" 
-                                   class="btn-modern btn-modern-light text-center py-2 text-decoration-none text-success">
-                                    <i class="fa fa-download me-1"></i> Download Gambar JPG
-                                </a>
+                            <label class="form-label fw-bold text-muted small text-uppercase">Foto Kegiatan Tersimpan:</label>
+                            <?php if(!empty($gambar_berita)): ?>
+                                <div class="row g-3">
+                                    <?php foreach($gambar_berita as $g): ?>
+                                        <?php $file = FCPATH.'assets/news/'.$g->gambar; ?>
+                                        <?php if(!empty($g->gambar) && file_exists($file)): ?>
+                                            <div class="col-6 col-md-4">
+                                                <div class="border rounded-3 overflow-hidden shadow-sm">
+                                                    <img src="<?= base_url('assets/news/'.$g->gambar) ?>" 
+                                                         alt="Foto kegiatan" 
+                                                         style="width:100%; height:120px; object-fit:cover; display:block;">
+                                                    <div class="p-2 bg-white d-flex justify-content-between align-items-center">
+                                                        <a href="<?= base_url('assets/news/'.$g->gambar) ?>" target="_blank" class="btn btn-sm btn-light rounded-pill px-2 py-0 text-primary small">
+                                                            <i class="bi bi-eye-fill"></i>
+                                                        </a>
+                                                        <a href="<?= base_url('berita/delete_gambar/'.$g->id) ?>" class="btn btn-sm btn-light rounded-pill px-2 py-0 text-danger small" onclick="return confirm('Hapus foto ini?')">
+                                                            <i class="bi bi-trash-fill"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php else: ?>
+                                <div class="text-center py-4 text-muted small bg-light rounded-3 border">
+                                    <i class="bi bi-images fs-2 d-block text-secondary mb-1"></i>
+                                    Belum ada foto kegiatan tambahan yang diunggah.
+                                </div>
                             <?php endif; ?>
                         </div>
                     </div>
                 </div>
 
-                <!-- Info Metadata -->
-                <div class="modern-card mb-4">
-                    <div class="modern-card-body p-3">
-                        <div class="d-flex justify-content-between py-2 border-bottom">
-                            <span class="small text-muted">ID Artikel</span>
-                            <span class="fw-bold small">#<?= $berita->id ?></span>
+                <!-- Kolom Kanan: Sampul, Pamflet & Action -->
+                <div class="col-lg-4">
+                    <!-- Foto Sampul -->
+                    <div class="card border-0 rounded-4 shadow-sm mb-4">
+                        <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
+                            <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-image-fill text-success me-2"></i> Sampul Utama</h6>
                         </div>
-                        <div class="d-flex justify-content-between py-2 border-bottom">
-                            <span class="small text-muted">Kategori</span>
-                            <span class="badge bg-light text-primary border"><?= htmlspecialchars($kategori, ENT_QUOTES, 'UTF-8') ?></span>
+                        <div class="card-body p-4">
+                            <div class="text-center mb-3">
+                                <div id="previewEditBerita" class="rounded-3 border overflow-hidden bg-light d-flex align-items-center justify-content-center" style="min-height:160px;">
+                                    <?php if(!empty($gambar) && file_exists($gambar_file)): ?>
+                                        <img src="<?= base_url('assets/news/'.$gambar) ?>" alt="Sampul" style="width:100%; max-height:220px; object-fit:cover;">
+                                    <?php else: ?>
+                                        <span class="text-muted small">Belum ada foto sampul</span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted">Ganti Foto Sampul</label>
+                                <input type="file" name="gambar" class="form-control rounded-3" id="gambarEditBerita" accept="image/*">
+                            </div>
+
+                            <?php if(!empty($gambar) && file_exists($gambar_file)): ?>
+                                <div class="form-check p-2 bg-light rounded-3 border">
+                                    <input class="form-check-input ms-0 me-2" type="checkbox" name="hapus_gambar_utama" value="1" id="chkHapusSampul">
+                                    <label class="form-check-label small text-danger fw-bold" for="chkHapusSampul">
+                                        Hapus sampul saat menyimpan
+                                    </label>
+                                </div>
+                            <?php endif; ?>
                         </div>
-                        <div class="d-flex justify-content-between py-2 border-bottom">
-                            <span class="small text-muted">Status</span>
-                            <span class="pill-status <?= $status == 'Published' ? 'pill-success' : 'pill-warning' ?>" style="font-size:11px; padding:3px 8px;">
-                                <?= $status ?>
-                            </span>
+                    </div>
+
+                    <!-- Poster Pamflet -->
+                    <div class="card border-0 rounded-4 shadow-sm mb-4">
+                        <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
+                            <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-magic text-success me-2"></i> Poster Pamflet Otomatis</h6>
                         </div>
-                        <div class="d-flex justify-content-between py-2 border-bottom">
-                            <span class="small text-muted">Dibuat Pada</span>
-                            <span class="small fw-bold"><?= !empty($berita->created_at) ? date('d M Y H:i', strtotime($berita->created_at)) : '-' ?></span>
+                        <div class="card-body p-4">
+                            <?php if(!empty($poster) && file_exists($poster_file)): ?>
+                                <div class="mb-3 border rounded-3 overflow-hidden shadow-sm">
+                                    <img src="<?= base_url('assets/news/poster/'.$poster) ?>" alt="Poster Berita" style="width:100%; display:block;">
+                                </div>
+                            <?php else: ?>
+                                <div class="text-center py-3 text-muted small bg-light rounded-3 mb-3 border">
+                                    Poster belum digenerate.
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="mb-2">
+                                <label class="form-label fw-bold small text-muted">Mode Gambar</label>
+                                <select name="poster_fit_mode" class="form-select form-select-sm rounded-3">
+                                    <option value="cover" <?= ($berita->poster_fit_mode ?? 'cover') == 'cover' ? 'selected' : '' ?>>Penuh / Crop Rapi</option>
+                                    <option value="contain" <?= ($berita->poster_fit_mode ?? '') == 'contain' ? 'selected' : '' ?>>Gambar Utuh</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label fw-bold small text-muted">Fokus Posisi</label>
+                                <select name="poster_focus" class="form-select form-select-sm rounded-3">
+                                    <option value="center" <?= ($berita->poster_focus ?? 'center') == 'center' ? 'selected' : '' ?>>Tengah (Center)</option>
+                                    <option value="top" <?= ($berita->poster_focus ?? '') == 'top' ? 'selected' : '' ?>>Atas (Top)</option>
+                                    <option value="bottom" <?= ($berita->poster_focus ?? '') == 'bottom' ? 'selected' : '' ?>>Bawah (Bottom)</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted">Tata Letak (Layout)</label>
+                                <select name="poster_layout" class="form-select form-select-sm rounded-3">
+                                    <option value="auto" <?= ($berita->poster_layout ?? 'auto') == 'auto' ? 'selected' : '' ?>>Otomatis</option>
+                                    <option value="single" <?= ($berita->poster_layout ?? '') == 'single' ? 'selected' : '' ?>>1 Foto Besar</option>
+                                    <option value="two" <?= ($berita->poster_layout ?? '') == 'two' ? 'selected' : '' ?>>2 Foto</option>
+                                    <option value="three" <?= ($berita->poster_layout ?? '') == 'three' ? 'selected' : '' ?>>3 Foto</option>
+                                    <option value="grid" <?= ($berita->poster_layout ?? '') == 'grid' ? 'selected' : '' ?>>Grid 5 Foto</option>
+                                </select>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <a href="<?= base_url('berita/regenerate_pamflet/'.$berita->id) ?>" 
+                                   class="btn btn-warning btn-sm rounded-pill fw-bold shadow-sm"
+                                   onclick="return confirm('Generate ulang pamflet sekarang? Simpan perubahan naskah lebih dahulu jika ada yang baru diedit.')">
+                                    <i class="bi bi-magic me-1"></i> Generate Ulang Poster
+                                </a>
+                                <?php if(!empty($poster) && file_exists($poster_file)): ?>
+                                    <a href="<?= base_url('berita/download_pamflet/'.$berita->id) ?>" class="btn btn-success btn-sm rounded-pill fw-bold shadow-sm">
+                                        <i class="bi bi-download me-1"></i> Download JPG
+                                    </a>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                        <div class="d-flex justify-content-between py-2">
-                            <span class="small text-muted">Dipublikasi</span>
-                            <span class="small fw-bold"><?= !empty($berita->published_at) ? date('d M Y H:i', strtotime($berita->published_at)) : '-' ?></span>
-                        </div>
+                    </div>
+
+                    <!-- Tombol Simpan -->
+                    <div class="card border-0 rounded-4 shadow-sm p-3 mb-4">
+                        <button type="submit" class="btn btn-success fw-bold rounded-pill w-100 py-3 shadow-sm fs-6">
+                            <i class="bi bi-check-circle-fill me-2"></i> Simpan Perubahan Berita
+                        </button>
                     </div>
                 </div>
 
-                <!-- Tombol Simpan Utama -->
-                <div class="modern-card p-3">
-                    <button type="submit" class="btn-modern btn-modern-primary w-100 py-3 fs-6">
-                        <i class="fa fa-save me-2"></i> Simpan Perubahan Berita
-                    </button>
-                </div>
-
             </div>
+        </form>
 
-        </div>
-    </form>
-
+    </div>
 </div>
 
 <script>
@@ -325,5 +293,3 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 });
 </script>
-
-<?php $this->load->view('templates/footer'); ?>

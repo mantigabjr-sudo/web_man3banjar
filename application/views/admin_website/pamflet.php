@@ -1,202 +1,165 @@
-<?php $this->load->view('templates/header'); ?>
-<?php $this->load->view('templates/sidebar'); ?>
-
 <div class="content">
+    <div class="container-fluid py-4">
 
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="page-header-info">
-            <span class="page-badge-label">
-                <i class="bi bi-card-image"></i> Publikasi Visual
-            </span>
-            <h1 class="page-title">Pamflet Informasi</h1>
-            <p class="page-subtitle">Kelola pamflet digital, pengumuman grafis, dan brosur kegiatan madrasah.</p>
-        </div>
-        <div class="page-actions">
-            <a href="<?= base_url('website/pamflet') ?>" target="_blank" class="btn-modern-secondary">
-                <i class="bi bi-box-arrow-up-right"></i> Lihat di Website
-            </a>
-        </div>
-    </div>
+        <!-- ALERT NOTIFIKASI -->
+        <?php if($this->session->flashdata('success')): ?>
+            <div class="alert alert-success alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4" role="alert">
+                <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                <?= $this->session->flashdata('success') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+        <?php if($this->session->flashdata('error')): ?>
+            <div class="alert alert-danger alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                <?= $this->session->flashdata('error') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
 
-    <?php if($this->session->flashdata('success')): ?>
-        <div class="alert alert-success border-0 rounded-4 shadow-sm mb-4 d-flex align-items-center gap-2">
-            <i class="bi bi-check-circle-fill fs-5"></i>
-            <div><?= $this->session->flashdata('success') ?></div>
-        </div>
-    <?php endif; ?>
-    <?php if($this->session->flashdata('error')): ?>
-        <div class="alert alert-danger border-0 rounded-4 shadow-sm mb-4 d-flex align-items-center gap-2">
-            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
-            <div><?= $this->session->flashdata('error') ?></div>
-        </div>
-    <?php endif; ?>
-
-    <div class="row g-4">
-        <!-- Form Tambah Pamflet (Kiri) -->
-        <div class="col-lg-4">
-            <div class="modern-card">
-                <div class="modern-card-header">
-                    <div>
-                        <h2 class="modern-card-title"><i class="bi bi-plus-circle-fill text-success"></i> Upload Pamflet Baru</h2>
-                        <p class="modern-card-subtitle">Pamflet otomatis tersimpan sebagai Draft.</p>
+        <!-- ═══ HEADER BANNER (TEMA FOTO IJAZAH) ═══ -->
+        <div class="card border-0 rounded-4 shadow-sm mb-4 text-white position-relative overflow-hidden" 
+             style="background: linear-gradient(135deg, #064e3b 0%, #059669 60%, #10b981 100%);">
+            <div class="card-body p-4 p-md-5 position-relative" style="z-index: 2;">
+                <div class="row align-items-center g-3">
+                    <div class="col-lg-8">
+                        <span class="badge bg-white text-success fw-bold px-3 py-1 rounded-pill mb-2" style="font-size: 11.5px;">
+                            <i class="bi bi-file-earmark-image-fill me-1"></i> PAMFLET &amp; POSTER
+                        </span>
+                        <h2 class="fw-bold mb-2 text-white">Pamflet &amp; Poster Pengumuman</h2>
+                        <p class="mb-3 text-white-50" style="font-size: 14px; max-width: 620px;">
+                            Kelola arsip pamflet digital, poster kegiatan, brosur PMB, dan infografis pengumuman yang dapat dilihat dan diunduh oleh publik.
+                        </p>
+                        <div class="d-flex flex-wrap gap-2 pt-1">
+                            <a href="<?= base_url() ?>" target="_blank" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm">
+                                <i class="bi bi-box-arrow-up-right text-success me-1"></i> Lihat di Website
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <div class="modern-card-body">
-                    <form method="post" action="<?= base_url('admin_website/save_pamflet') ?>" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <label class="form-label-modern">Judul Pamflet <span class="text-danger">*</span></label>
-                            <input type="text" name="judul" class="input-modern" placeholder="Contoh: Brosur PPDB 2026/2027" required>
-                        </div>
+            </div>
+            <!-- Hiasan Bulat Transparan -->
+            <div style="position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%); border-radius: 50%;"></div>
+        </div>
 
-                        <div class="mb-3">
-                            <label class="form-label-modern">Tanggal Penerbitan</label>
-                            <input type="date" name="tanggal" class="input-modern" value="<?= date('Y-m-d') ?>">
-                        </div>
+        <div class="row g-4">
+            <!-- Form Upload Pamflet -->
+            <div class="col-lg-4">
+                <div class="card border-0 rounded-4 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
+                        <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-cloud-arrow-up-fill text-success me-2"></i> Unggah Pamflet Baru</h6>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post" action="<?= base_url('admin_website/add_pamflet') ?>" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted">Judul Pamflet / Pengumuman</label>
+                                <input type="text" name="judul" class="form-control rounded-3" placeholder="Contoh: Brosur PPDB 2026/2027" required>
+                            </div>
 
-                        <div class="mb-3">
-                            <label class="form-label-modern">Deskripsi Singkat</label>
-                            <textarea name="deskripsi" class="textarea-modern" rows="3" placeholder="Informasi singkat isi pamflet..."></textarea>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label-modern">File Gambar Pamflet <span class="text-danger">*</span></label>
-                            <div class="p-3 border rounded-3 bg-light text-center mb-2" id="previewWrapper" style="min-height: 140px; display:flex; align-items:center; justify-content:center;">
-                                <div id="previewPamflet" class="text-muted small">
-                                    <i class="bi bi-image fs-3 d-block mb-1 text-secondary"></i>
-                                    Preview pamflet akan tampil di sini
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted">Pilih File Gambar</label>
+                                <input type="file" name="gambar" class="form-control rounded-3 mb-2" id="inputPamflet" accept="image/*" required>
+                                
+                                <div class="p-2 border rounded-3 bg-light text-center" id="previewPamflet" style="min-height: 120px; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 12px;">
+                                    Pratinjau Pamflet
                                 </div>
                             </div>
-                            <input type="file" name="gambar" id="gambarPamflet" class="input-modern" accept="image/*" required>
-                            <span class="form-help-modern">Format JPG, PNG, WEBP. Maks 4MB.</span>
-                        </div>
 
-                        <button type="submit" class="btn-modern-primary w-100 justify-content-center">
-                            <i class="bi bi-cloud-arrow-up-fill"></i> Simpan Pamflet
-                        </button>
-                    </form>
+                            <button type="submit" class="btn btn-success fw-bold rounded-pill w-100 py-2 shadow-sm">
+                                <i class="bi bi-cloud-arrow-up-fill me-1"></i> Unggah Pamflet
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Daftar Pamflet (Kanan) -->
-        <div class="col-lg-8">
-            <div class="modern-card">
-                <div class="modern-card-header">
-                    <div>
-                        <h2 class="modern-card-title"><i class="bi bi-card-heading text-success"></i> Arsip Pamflet</h2>
-                        <p class="modern-card-subtitle">Pamflet Published akan tampil di galeri pamflet publik.</p>
+            <!-- Tabel Pamflet -->
+            <div class="col-lg-8">
+                <div class="card border-0 rounded-4 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom pt-3 pb-2 px-4 d-flex justify-content-between align-items-center">
+                        <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-file-earmark-image text-success me-2"></i> Arsip Pamflet Tersimpan</h6>
+                        <span class="badge bg-success-subtle text-success rounded-pill fw-bold px-3 py-1"><?= count($pamflet ?? []) ?> Pamflet</span>
                     </div>
-                    <span class="pill-status pill-status-neutral"><?= count($pamflet ?? []) ?> Pamflet</span>
-                </div>
-                <div class="modern-card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table-modern datatable">
-                            <thead>
-                                <tr>
-                                    <th style="width: 70px;">Media</th>
-                                    <th>Judul &amp; Keterangan</th>
-                                    <th>Tanggal</th>
-                                    <th>Status</th>
-                                    <th class="text-end" style="width: 140px;">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if(!empty($pamflet)): ?>
-                                    <?php foreach($pamflet as $p): ?>
-                                        <?php $gambar_file = !empty($p->gambar) ? FCPATH.'assets/pamflet/'.$p->gambar : ''; ?>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" style="width:100%">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th style="width:100px;" class="ps-4">Preview</th>
+                                        <th>Judul Pamflet</th>
+                                        <th style="width:140px;">Tanggal Unggah</th>
+                                        <th style="width:130px;" class="text-end pe-4">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if(empty($pamflet)): ?>
                                         <tr>
-                                            <td>
-                                                <div style="width: 54px; height: 54px; border-radius: 10px; overflow: hidden; background: #f1f5f9; border: 1px solid #e2e8f0; display:flex; align-items:center; justify-content:center;">
-                                                    <?php if(!empty($p->gambar) && file_exists($gambar_file)): ?>
-                                                        <img src="<?= base_url('assets/pamflet/'.$p->gambar) ?>" alt="Pamflet" style="width:100%; height:100%; object-fit:cover;">
-                                                    <?php else: ?>
-                                                        <i class="bi bi-image text-muted"></i>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="fw-bold" style="font-size: 14px;"><?= htmlspecialchars($p->judul) ?></div>
-                                                <?php if(!empty($p->deskripsi)): ?>
-                                                    <div class="text-muted small text-truncate" style="max-width: 280px;"><?= htmlspecialchars($p->deskripsi) ?></div>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="text-muted small">
-                                                <?= !empty($p->tanggal) ? date('d M Y', strtotime($p->tanggal)) : '-' ?>
-                                            </td>
-                                            <td>
-                                                <?php if($p->status == 'Published'): ?>
-                                                    <span class="pill-status pill-status-success">Published</span>
-                                                <?php else: ?>
-                                                    <span class="pill-status pill-status-warning">Draft</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="text-end">
-                                                <div class="d-inline-flex gap-1">
-                                                    <?php if(!empty($p->gambar) && file_exists($gambar_file)): ?>
-                                                        <a href="<?= base_url('assets/pamflet/'.$p->gambar) ?>" target="_blank" class="btn-icon-modern" title="Lihat Ukuran Asli">
-                                                            <i class="bi bi-eye"></i>
-                                                        </a>
-                                                    <?php endif; ?>
-                                                    <?php if($p->status == 'Published'): ?>
-                                                        <a href="<?= base_url('admin_website/draft_pamflet/'.$p->id) ?>" class="btn-icon-modern" onclick="return confirm('Ubah status ke Draft?')" title="Kembalikan ke Draft">
-                                                            <i class="bi bi-pause-circle text-warning"></i>
-                                                        </a>
-                                                    <?php else: ?>
-                                                        <a href="<?= base_url('admin_website/publish_pamflet/'.$p->id) ?>" class="btn-icon-modern" onclick="return confirm('Publikasikan pamflet ini?')" title="Tayangkan">
-                                                            <i class="bi bi-play-circle text-success"></i>
-                                                        </a>
-                                                    <?php endif; ?>
-                                                    <a href="<?= base_url('admin_website/delete_pamflet/'.$p->id) ?>" class="btn-icon-modern btn-danger-icon" onclick="return confirm('Hapus pamflet ini?')" title="Hapus Pamflet">
-                                                        <i class="bi bi-trash"></i>
-                                                    </a>
-                                                </div>
+                                            <td colspan="4" class="text-center py-5 text-muted">
+                                                <i class="bi bi-file-earmark-image fs-1 text-secondary mb-2 d-block opacity-50"></i>
+                                                Belum ada pamflet yang diunggah.
                                             </td>
                                         </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="5">
-                                            <div class="empty-state-modern py-4">
-                                                <div class="empty-state-icon">
-                                                    <i class="bi bi-card-image"></i>
-                                                </div>
-                                                <div class="empty-state-title">Belum ada pamflet informasi</div>
-                                                <p class="empty-state-desc">Unggah pamflet pertama Anda melalui formulir di samping.</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                                    <?php else: ?>
+                                        <?php foreach($pamflet as $p): ?>
+                                            <tr>
+                                                <td class="ps-4">
+                                                    <img src="<?= base_url('uploads/pamflet/'.$p->gambar) ?>" 
+                                                         alt="Pamflet" 
+                                                         class="rounded-3 shadow-sm"
+                                                         style="width:80px; height:90px; object-fit:cover; border:1px solid #e2e8f0;">
+                                                </td>
+                                                <td>
+                                                    <div class="fw-bold text-dark" style="font-size:14px;"><?= htmlspecialchars($p->judul ?? '-', ENT_QUOTES, 'UTF-8') ?></div>
+                                                    <div class="small text-muted mt-1"><?= htmlspecialchars($p->gambar ?? '', ENT_QUOTES, 'UTF-8') ?></div>
+                                                </td>
+                                                <td>
+                                                    <span class="small text-muted"><?= !empty($p->created_at) ? date('d M Y', strtotime($p->created_at)) : '-' ?></span>
+                                                </td>
+                                                <td class="text-end pe-4">
+                                                    <div class="d-inline-flex gap-1">
+                                                        <a href="<?= base_url('uploads/pamflet/'.$p->gambar) ?>" target="_blank" class="btn btn-sm btn-light rounded-pill px-2 py-1 text-primary shadow-sm" title="Lihat Asli">
+                                                            <i class="bi bi-eye-fill"></i>
+                                                        </a>
+                                                        <a href="<?= base_url('admin_website/delete_pamflet/'.$p->id) ?>" 
+                                                           class="btn btn-sm btn-light rounded-pill px-2 py-1 text-danger shadow-sm"
+                                                           onclick="return confirm('Hapus pamflet ini?')"
+                                                           title="Hapus">
+                                                            <i class="bi bi-trash-fill"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
+    </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-    const input = document.getElementById('gambarPamflet');
-    const preview = document.getElementById('previewPamflet');
+    const inputP = document.getElementById('inputPamflet');
+    const previewP = document.getElementById('previewPamflet');
 
-    if(input && preview){
-        input.addEventListener('change', function(){
+    if(inputP && previewP){
+        inputP.addEventListener('change', function(){
             const file = this.files[0];
             if(!file){
-                preview.innerHTML = '<i class="bi bi-image fs-3 d-block mb-1 text-secondary"></i>Preview pamflet akan tampil di sini';
+                previewP.innerHTML = 'Pratinjau Pamflet';
                 return;
             }
             const reader = new FileReader();
             reader.onload = function(e){
-                preview.innerHTML = '<img src="'+e.target.result+'" alt="Preview" style="max-height:160px; max-width:100%; border-radius:10px; object-fit:contain;">';
+                previewP.innerHTML = '<img src="'+e.target.result+'" style="max-width:100%; max-height:160px; border-radius:10px; object-fit:cover;">';
             };
             reader.readAsDataURL(file);
         });
     }
 });
 </script>
-
-<?php $this->load->view('templates/footer'); ?>

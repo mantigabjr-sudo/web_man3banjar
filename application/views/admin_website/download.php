@@ -1,158 +1,145 @@
-<?php $this->load->view('templates/header'); ?>
-<?php $this->load->view('templates/sidebar'); ?>
-
 <div class="content">
+    <div class="container-fluid py-4">
 
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="page-header-info">
-            <span class="page-badge-label">
-                <i class="bi bi-cloud-arrow-down-fill"></i> Pusat Unduhan
-            </span>
-            <h1 class="page-title">Data Unduhan Berkas</h1>
-            <p class="page-subtitle">Kelola file formulir, panduan, silabus, dan dokumen publik yang dapat diunduh bebas oleh siswa/wali.</p>
-        </div>
-        <div class="page-actions">
-            <a href="<?= base_url('website/download') ?>" target="_blank" class="btn-modern-secondary">
-                <i class="bi bi-box-arrow-up-right"></i> Lihat di Website
-            </a>
-        </div>
-    </div>
+        <!-- ALERT NOTIFIKASI -->
+        <?php if($this->session->flashdata('success')): ?>
+            <div class="alert alert-success alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4" role="alert">
+                <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                <?= $this->session->flashdata('success') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+        <?php if($this->session->flashdata('error')): ?>
+            <div class="alert alert-danger alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                <?= $this->session->flashdata('error') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
 
-    <?php if($this->session->flashdata('success')): ?>
-        <div class="alert alert-success border-0 rounded-4 shadow-sm mb-4 d-flex align-items-center gap-2">
-            <i class="bi bi-check-circle-fill fs-5"></i>
-            <div><?= $this->session->flashdata('success') ?></div>
-        </div>
-    <?php endif; ?>
-    <?php if($this->session->flashdata('error')): ?>
-        <div class="alert alert-danger border-0 rounded-4 shadow-sm mb-4 d-flex align-items-center gap-2">
-            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
-            <div><?= $this->session->flashdata('error') ?></div>
-        </div>
-    <?php endif; ?>
-
-    <div class="row g-4">
-        <!-- Form Upload Berkas (Kiri) -->
-        <div class="col-lg-4">
-            <div class="modern-card">
-                <div class="modern-card-header">
-                    <div>
-                        <h2 class="modern-card-title"><i class="bi bi-cloud-arrow-up-fill text-success"></i> Upload Dokumen Baru</h2>
-                        <p class="modern-card-subtitle">File otomatis tayang di halaman unduhan publik.</p>
+        <!-- ═══ HEADER BANNER (TEMA FOTO IJAZAH) ═══ -->
+        <div class="card border-0 rounded-4 shadow-sm mb-4 text-white position-relative overflow-hidden" 
+             style="background: linear-gradient(135deg, #064e3b 0%, #059669 60%, #10b981 100%);">
+            <div class="card-body p-4 p-md-5 position-relative" style="z-index: 2;">
+                <div class="row align-items-center g-3">
+                    <div class="col-lg-8">
+                        <span class="badge bg-white text-success fw-bold px-3 py-1 rounded-pill mb-2" style="font-size: 11.5px;">
+                            <i class="bi bi-file-earmark-arrow-down-fill me-1"></i> DOKUMEN &amp; BERKAS PUBLIK
+                        </span>
+                        <h2 class="fw-bold mb-2 text-white">Unduhan Berkas &amp; Formulir</h2>
+                        <p class="mb-3 text-white-50" style="font-size: 14px; max-width: 620px;">
+                            Kelola berkas publik seperti formulir pendaftaran, SK penetapan, kalender akademik, modul, dan dokumen resmi madrasah dalam format PDF, Word, Excel, maupun ZIP.
+                        </p>
+                        <div class="d-flex flex-wrap gap-2 pt-1">
+                            <a href="<?= base_url('download') ?>" target="_blank" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm">
+                                <i class="bi bi-box-arrow-up-right text-success me-1"></i> Pratinjau Unduhan Publik
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div class="modern-card-body">
-                    <form method="post" action="<?= base_url('admin_website/save_download') ?>" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <label class="form-label-modern">Nama / Judul Dokumen <span class="text-danger">*</span></label>
-                            <input type="text" name="judul" class="input-modern" placeholder="Contoh: Formulir Pendaftaran Ulang PPDB" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label-modern">Tanggal Dokumen</label>
-                            <input type="date" name="tanggal" class="input-modern" value="<?= date('Y-m-d') ?>">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label-modern">Keterangan Dokumen</label>
-                            <textarea name="keterangan" class="textarea-modern" rows="3" placeholder="Informasi singkat peruntukan file ini..."></textarea>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label-modern">File Berkas <span class="text-danger">*</span></label>
-                            <input type="file" name="file_download" class="input-modern" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar" required>
-                            <span class="form-help-modern">Format: PDF, Word, Excel, PowerPoint, ZIP, RAR. Maks 10MB.</span>
-                        </div>
-
-                        <button type="submit" class="btn-modern-primary w-100 justify-content-center">
-                            <i class="bi bi-cloud-arrow-up-fill"></i> Upload &amp; Publikasikan
-                        </button>
-                    </form>
                 </div>
             </div>
+            <!-- Hiasan Bulat Transparan -->
+            <div style="position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%); border-radius: 50%;"></div>
         </div>
 
-        <!-- Daftar Dokumen (Kanan) -->
-        <div class="col-lg-8">
-            <div class="modern-card">
-                <div class="modern-card-header">
-                    <div>
-                        <h2 class="modern-card-title"><i class="bi bi-folder2-open text-success"></i> Berkas Terpublikasi</h2>
-                        <p class="modern-card-subtitle">Daftar file yang siap diunduh oleh publik.</p>
+        <div class="row g-4">
+            <!-- Form Upload Berkas -->
+            <div class="col-lg-4">
+                <div class="card border-0 rounded-4 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
+                        <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-cloud-arrow-up-fill text-success me-2"></i> Unggah Berkas Baru</h6>
                     </div>
-                    <span class="pill-status pill-status-neutral"><?= count($downloads ?? []) ?> File</span>
+                    <div class="card-body p-4">
+                        <form method="post" action="<?= base_url('admin_website/add_download') ?>" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted">Nama / Judul Dokumen</label>
+                                <input type="text" name="judul" class="form-control rounded-3" placeholder="Contoh: Formulir Pendaftaran PPDB 2026" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold small text-muted">Pilih Berkas Dokumen</label>
+                                <input type="file" name="file" class="form-control rounded-3" required>
+                                <div class="form-text small mt-1">Mendukung format: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, ZIP, RAR (Maks 20MB).</div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success fw-bold rounded-pill w-100 py-2 shadow-sm">
+                                <i class="bi bi-cloud-arrow-up-fill me-1"></i> Unggah Berkas
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                <div class="modern-card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table-modern datatable">
-                            <thead>
-                                <tr>
-                                    <th style="width: 50px;">Tipe</th>
-                                    <th>Nama Berkas &amp; Deskripsi</th>
-                                    <th>Tanggal</th>
-                                    <th class="text-end" style="width: 130px;">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if(!empty($downloads)): ?>
-                                    <?php foreach($downloads as $d): ?>
-                                        <?php
-                                            $ext = strtolower(pathinfo($d->file_path, PATHINFO_EXTENSION));
-                                            $icon = 'bi-file-earmark-text text-secondary';
-                                            if($ext == 'pdf') $icon = 'bi-file-earmark-pdf-fill text-danger';
-                                            elseif(in_array($ext, ['doc','docx'])) $icon = 'bi-file-earmark-word-fill text-primary';
-                                            elseif(in_array($ext, ['xls','xlsx'])) $icon = 'bi-file-earmark-excel-fill text-success';
-                                            elseif(in_array($ext, ['zip','rar'])) $icon = 'bi-file-earmark-zip-fill text-warning';
-                                        ?>
+            </div>
+
+            <!-- Tabel Daftar Berkas -->
+            <div class="col-lg-8">
+                <div class="card border-0 rounded-4 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom pt-3 pb-2 px-4 d-flex justify-content-between align-items-center">
+                        <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-folder-fill text-success me-2"></i> Daftar Dokumen Tersedia</h6>
+                        <span class="badge bg-success-subtle text-success rounded-pill fw-bold px-3 py-1"><?= count($download ?? []) ?> Berkas</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" style="width:100%">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th style="width:60px;" class="ps-4">Tipe</th>
+                                        <th>Nama Berkas</th>
+                                        <th style="width:130px;">Tanggal</th>
+                                        <th style="width:140px;" class="text-end pe-4">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if(empty($download)): ?>
                                         <tr>
-                                            <td>
-                                                <div style="width: 44px; height: 44px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; display:flex; align-items:center; justify-content:center; font-size: 20px;">
-                                                    <i class="bi <?= $icon ?>"></i>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="fw-bold" style="font-size: 14px;"><?= htmlspecialchars($d->judul) ?></div>
-                                                <div class="text-muted small text-truncate" style="max-width: 320px;">
-                                                    <?= htmlspecialchars($d->keterangan ?? '') ?>
-                                                </div>
-                                            </td>
-                                            <td class="text-muted small">
-                                                <?= !empty($d->tanggal) ? date('d M Y', strtotime($d->tanggal)) : '-' ?>
-                                            </td>
-                                            <td class="text-end">
-                                                <div class="d-inline-flex gap-1">
-                                                    <a href="<?= base_url('assets/downloads/'.$d->file_path) ?>" target="_blank" class="btn-icon-modern" title="Download File">
-                                                        <i class="bi bi-download text-success"></i>
-                                                    </a>
-                                                    <a href="<?= base_url('admin_website/delete_download/'.$d->id) ?>" class="btn-icon-modern btn-danger-icon" onclick="return confirm('Hapus file ini permanen?')" title="Hapus File">
-                                                        <i class="bi bi-trash"></i>
-                                                    </a>
-                                                </div>
+                                            <td colspan="4" class="text-center py-5 text-muted">
+                                                <i class="bi bi-file-earmark-arrow-down fs-1 text-secondary mb-2 d-block opacity-50"></i>
+                                                Belum ada berkas unduhan yang diunggah.
                                             </td>
                                         </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="4">
-                                            <div class="empty-state-modern py-4">
-                                                <div class="empty-state-icon">
-                                                    <i class="bi bi-folder-x"></i>
-                                                </div>
-                                                <div class="empty-state-title">Belum ada file dokumen</div>
-                                                <p class="empty-state-desc">Unggah file dokumen pertama Anda melalui formulir di samping.</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                                    <?php else: ?>
+                                        <?php foreach($download as $d): ?>
+                                            <?php 
+                                            $ext = strtolower(pathinfo($d->file, PATHINFO_EXTENSION)); 
+                                            $iconClass = 'bi-file-earmark text-secondary';
+                                            if($ext == 'pdf') $iconClass = 'bi-file-earmark-pdf-fill text-danger';
+                                            elseif(in_array($ext, ['doc','docx'])) $iconClass = 'bi-file-earmark-word-fill text-primary';
+                                            elseif(in_array($ext, ['xls','xlsx'])) $iconClass = 'bi-file-earmark-excel-fill text-success';
+                                            elseif(in_array($ext, ['zip','rar'])) $iconClass = 'bi-file-earmark-zip-fill text-warning';
+                                            ?>
+                                            <tr>
+                                                <td class="ps-4">
+                                                    <i class="bi <?= $iconClass ?> fs-3"></i>
+                                                </td>
+                                                <td>
+                                                    <div class="fw-bold text-dark" style="font-size:14px;"><?= htmlspecialchars($d->judul ?? '-', ENT_QUOTES, 'UTF-8') ?></div>
+                                                    <div class="small text-muted mt-1"><?= htmlspecialchars($d->file ?? '', ENT_QUOTES, 'UTF-8') ?></div>
+                                                </td>
+                                                <td>
+                                                    <span class="small text-muted"><?= !empty($d->created_at) ? date('d M Y', strtotime($d->created_at)) : '-' ?></span>
+                                                </td>
+                                                <td class="text-end pe-4">
+                                                    <div class="d-inline-flex gap-1">
+                                                        <a href="<?= base_url('uploads/download/'.$d->file) ?>" target="_blank" class="btn btn-sm btn-light rounded-pill px-3 py-1 text-primary shadow-sm" download title="Unduh">
+                                                            <i class="bi bi-download me-1"></i> Unduh
+                                                        </a>
+                                                        <a href="<?= base_url('admin_website/delete_download/'.$d->id) ?>" 
+                                                           class="btn btn-sm btn-light rounded-pill px-2 py-1 text-danger shadow-sm"
+                                                           onclick="return confirm('Hapus berkas unduhan ini?')"
+                                                           title="Hapus">
+                                                            <i class="bi bi-trash-fill"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
-
 </div>
-
-<?php $this->load->view('templates/footer'); ?>
