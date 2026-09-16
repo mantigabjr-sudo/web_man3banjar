@@ -845,8 +845,8 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
                     <span>Dashboard Utama</span>
                 </a>
 
-                <!-- SECTION: WEBSITE MADRASAH -->
-                <div class="menu-section">Website Madrasah</div>
+                <!-- SECTION: MODUL WEBSITE -->
+                <div class="menu-section">Modul Website</div>
 
                 <!-- 1. Publikasi & Berita -->
                 <button class="menu-toggle <?= is_toggle_active(['berita','admin_website/pengumuman','admin_banner','admin_website/pamflet'], $current) ?>"
@@ -929,8 +929,8 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
                     </a>
                 </div>
 
-                <!-- SECTION: ADMIN PMB / PPDB -->
-                <div class="menu-section">Admin PMB / PPDB</div>
+                <!-- SECTION: MODUL MADRASAH -->
+                <div class="menu-section">Modul Madrasah</div>
 
                 <button class="menu-toggle <?= is_toggle_active(['admin_ppdb'], $current) ?>"
                         type="button"
