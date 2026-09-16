@@ -119,8 +119,30 @@ if(!function_exists('role_label')){
     }
 }
 
-$canWebsite   = true;
-$canPPDB      = true;
+$is_pmb_role = in_array($role, ['admin_pmb', 'admin_ppdb']);
+$is_web_role = in_array($role, ['admin_website', 'admin_humas', 'operator_humas', 'wakil_humas']);
+$is_master   = in_array($role, ['admin', 'admin_master']);
+
+// Konfigurasi Branding & Tema Sesuai Role Portal
+if($is_pmb_role && !$is_master){
+    $portal_title = 'Portal PMB';
+    $portal_sub   = 'MAN 3 Banjar';
+    $portal_icon  = 'bi-mortarboard-fill';
+    $portal_grad  = 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #3b82f6 100%)';
+    $portal_shadow= 'rgba(37, 99, 235, 0.25)';
+} elseif($is_web_role && !$is_master){
+    $portal_title = 'Admin Website';
+    $portal_sub   = 'MAN 3 Banjar';
+    $portal_icon  = 'bi-globe2';
+    $portal_grad  = 'linear-gradient(135deg, #064e3b 0%, #059669 60%, #10b981 100%)';
+    $portal_shadow= 'rgba(5, 150, 105, 0.22)';
+} else {
+    $portal_title = 'Super Admin';
+    $portal_sub   = 'MAN 3 Banjar';
+    $portal_icon  = 'bi-shield-shaded';
+    $portal_grad  = 'linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #059669 100%)';
+    $portal_shadow= 'rgba(15, 23, 42, 0.25)';
+}
 
 $roleText = role_label($role);
 $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
@@ -168,9 +190,9 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
     gap: 12px;
     padding: 14px 16px;
     border-radius: 20px;
-    background: linear-gradient(135deg, #064e3b 0%, #059669 60%, #10b981 100%);
+    background: <?= $portal_grad ?>;
     color: #ffffff;
-    box-shadow: 0 12px 28px rgba(5, 150, 105, 0.22);
+    box-shadow: 0 12px 28px <?= $portal_shadow ?>;
     margin-bottom: 12px;
     position: relative;
     overflow: hidden;
@@ -242,14 +264,14 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
     width: 40px;
     height: 40px;
     border-radius: 13px;
-    background: #dcfce7;
-    color: #15803d;
+    background: <?= $is_pmb_role && !$is_master ? '#dbeafe' : '#dcfce7' ?>;
+    color: <?= $is_pmb_role && !$is_master ? '#1e40af' : '#15803d' ?>;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 800;
     font-size: 16px;
-    border: 1px solid #bbf7d0;
+    border: 1px solid <?= $is_pmb_role && !$is_master ? '#bfdbfe' : '#bbf7d0' ?>;
 }
 .user-status-dot{
     position: absolute;
@@ -277,14 +299,14 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
 }
 .user-mini-role{
     display: inline-block;
-    color: #047857;
-    background: #ecfdf5;
+    color: <?= $is_pmb_role && !$is_master ? '#1e40af' : '#047857' ?>;
+    background: <?= $is_pmb_role && !$is_master ? '#eff6ff' : '#ecfdf5' ?>;
     font-size: 11px;
     font-weight: 700;
     padding: 1.5px 8px;
     border-radius: 6px;
     margin-top: 3px;
-    border: 1px solid #d1fae5;
+    border: 1px solid <?= $is_pmb_role && !$is_master ? '#dbeafe' : '#d1fae5' ?>;
     line-height: 1.2;
 }
 
@@ -558,7 +580,7 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
         width: 38px;
         height: 38px;
         border-radius: 12px;
-        background: linear-gradient(135deg, #064e3b, #10b981);
+        background: <?= $portal_grad ?>;
         color: white;
         display: flex;
         align-items: center;
@@ -604,11 +626,11 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
 
 <div class="admin-mobile-topbar">
     <div class="mobile-brand">
-        <span><i class="bi bi-globe2"></i></span>
+        <span><i class="bi <?= $portal_icon ?>"></i></span>
         <div>
-            Portal Web
+            <?= $portal_title ?>
             <div style="font-size:11px;color:#64748b;font-weight:600;line-height:1;">
-                MAN 3 Banjar
+                <?= $portal_sub ?>
             </div>
         </div>
     </div>
@@ -626,11 +648,11 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
         <!-- BRAND HEADER -->
         <div class="sidebar-brand">
             <div class="brand-icon">
-                <i class="bi bi-globe2"></i>
+                <i class="bi <?= $portal_icon ?>"></i>
             </div>
             <div class="brand-title">
-                <strong>Portal Web</strong>
-                <small>MAN 3 Banjar</small>
+                <strong><?= $portal_title ?></strong>
+                <small><?= $portal_sub ?></small>
             </div>
         </div>
 
@@ -651,141 +673,255 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
         <!-- SCROLLABLE MENU -->
         <div class="sidebar-scroll">
 
-            <!-- 1. UTAMA -->
-            <div class="menu-section">Menu Utama</div>
+            <?php if($is_pmb_role && !$is_master): ?>
+                <!-- =================================================== -->
+                <!-- PORTAL KHUSUS: ADMIN PMB / PPDB                      -->
+                <!-- =================================================== -->
 
-            <a href="<?= base_url('dashboard') ?>"
-               class="menu-link <?= is_active_menu('dashboard',$current) ?>">
-                <span class="menu-ico"><i class="bi bi-grid-1x2-fill"></i></span>
-                <span>Dashboard</span>
-            </a>
+                <div class="menu-section">Menu Utama</div>
 
-            <?php if(is_admin_panel()): ?>
+                <a href="<?= base_url('admin_ppdb/dashboard') ?>"
+                   class="menu-link <?= is_active_menu('admin_ppdb/dashboard',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-speedometer2"></i></span>
+                    <span>Dashboard PMB</span>
+                </a>
 
-                <div class="menu-section">Modul Madrasah</div>
+                <div class="menu-section">Penerimaan Siswa Baru</div>
 
-                <!-- WEBSITE MADRASAH -->
-                <?php if($canWebsite): ?>
-                    <button class="menu-toggle <?= is_toggle_active(['berita','admin_website','admin_struktur'], $current) ?>"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#menuWebsite"
-                            aria-expanded="<?= is_open_menu(['berita','admin_website','admin_struktur'], $current) ? 'true' : 'false' ?>">
-                        <span class="menu-toggle-main">
-                            <span class="menu-ico"><i class="bi bi-globe2"></i></span>
-                            <span>Website Madrasah</span>
-                        </span>
-                        <i class="bi bi-chevron-down chev"></i>
-                    </button>
+                <a href="<?= base_url('admin_ppdb') ?>"
+                   class="menu-link <?= ($current == 'admin_ppdb') ? 'active-menu' : '' ?>">
+                    <span class="menu-ico"><i class="bi bi-people-fill"></i></span>
+                    <span>Data Calon Siswa</span>
+                </a>
 
-                    <div class="collapse submenu <?= is_open_menu(['berita','admin_website','admin_struktur'], $current) ?>" id="menuWebsite">
-						<a class="<?= is_active_menu('berita',$current) ?>"
-						   href="<?= base_url('berita') ?>">
-							<span class="sub-dot"></span>
-							Kelola Berita
-						</a>
+                <a href="<?= base_url('admin_ppdb/verifikasi') ?>"
+                   class="menu-link <?= is_active_menu('admin_ppdb/verifikasi',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-check2-circle"></i></span>
+                    <span>Verifikasi Berkas</span>
+                </a>
 
-						<a class="<?= is_active_menu('admin_website/profil',$current) ?>"
-						   href="<?= base_url('admin_website/profil') ?>">
-							<span class="sub-dot"></span>
-							Profil Website
-						</a>
+                <a href="<?= base_url('admin_ppdb/diterima') ?>"
+                   class="menu-link <?= is_active_menu('admin_ppdb/diterima',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-person-check-fill"></i></span>
+                    <span>Siswa Diterima</span>
+                </a>
 
-                        <a class="<?= is_active_menu('admin_struktur',$current) ?>"
-                           href="<?= base_url('admin_struktur') ?>">
-                            <span class="sub-dot"></span>
-                            Struktur Organisasi
-                        </a>
+                <a href="<?= base_url('admin_ppdb/ditolak') ?>"
+                   class="menu-link <?= is_active_menu('admin_ppdb/ditolak',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-person-x-fill"></i></span>
+                    <span>Siswa Ditolak</span>
+                </a>
 
-						<a class="<?= is_active_menu('admin_website/video',$current) ?>"
-						   href="<?= base_url('admin_website/video') ?>">
-							<span class="sub-dot"></span>
-							Video Profil
-						</a>
-						<a class="<?= is_active_menu('admin_website/pamflet',$current) ?>"
-						   href="<?= base_url('admin_website/pamflet') ?>">
-							<span class="sub-dot"></span>
-							Pamflet Informasi
-						</a>
-						<a class="<?= is_active_menu('admin_website/ptk',$current) ?>"
-						   href="<?= base_url('admin_website/ptk') ?>">
-							<span class="sub-dot"></span>
-							PTK Website
-						</a>
-						<a class="<?= is_active_menu('admin_website/tentang',$current) ?>"
-						   href="<?= base_url('admin_website/tentang') ?>">
-							<span class="sub-dot"></span>
-							Tentang Madrasah
-						</a>
+                <div class="menu-section">Konfigurasi PMB</div>
 
-						<a class="<?= is_active_menu('admin_website/galeri',$current) ?>"
-						   href="<?= base_url('admin_website/galeri') ?>">
-							<span class="sub-dot"></span>
-							Galeri Madrasah
-						</a>
-						
-						<a class="<?= is_active_menu('admin_website/download',$current) ?>"
-						   href="<?= base_url('admin_website/download') ?>">
-							<span class="sub-dot"></span>
-							Data Download
-						</a>
-					</div>
-                <?php endif; ?>
+                <a href="<?= base_url('admin_ppdb/settings') ?>"
+                   class="menu-link <?= is_active_menu('admin_ppdb/settings',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-sliders"></i></span>
+                    <span>Pengaturan PMB</span>
+                </a>
 
-                <!-- LAYANAN ONLINE -->
-                <div class="menu-section">Layanan Online</div>
+                <div class="menu-section">Tautan Publik</div>
 
-                <!-- VERIFIKASI FOTO IJAZAH XII -->
+                <a href="<?= base_url('ppdb') ?>" target="_blank" class="menu-link">
+                    <span class="menu-ico"><i class="bi bi-box-arrow-up-right"></i></span>
+                    <span>Form Pendaftaran PMB</span>
+                </a>
+
+            <?php elseif($is_web_role && !$is_master): ?>
+                <!-- =================================================== -->
+                <!-- PORTAL KHUSUS: ADMIN WEBSITE & HUMAS                -->
+                <!-- =================================================== -->
+
+                <div class="menu-section">Menu Utama</div>
+
+                <a href="<?= base_url('dashboard') ?>"
+                   class="menu-link <?= is_active_menu('dashboard',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-grid-1x2-fill"></i></span>
+                    <span>Dashboard Web</span>
+                </a>
+
+                <div class="menu-section">Konten Website</div>
+
+                <a href="<?= base_url('berita') ?>"
+                   class="menu-link <?= is_active_menu('berita',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-newspaper"></i></span>
+                    <span>Kelola Berita</span>
+                </a>
+
+                <a href="<?= base_url('admin_banner') ?>"
+                   class="menu-link <?= is_active_menu('admin_banner',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-images"></i></span>
+                    <span>Banner Slider</span>
+                </a>
+
+                <a href="<?= base_url('admin_website/profil') ?>"
+                   class="menu-link <?= is_active_menu('admin_website/profil',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-building"></i></span>
+                    <span>Profil Madrasah</span>
+                </a>
+
+                <a href="<?= base_url('admin_struktur') ?>"
+                   class="menu-link <?= is_active_menu('admin_struktur',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-diagram-3-fill"></i></span>
+                    <span>Struktur Organisasi</span>
+                </a>
+
+                <a href="<?= base_url('admin_website/video') ?>"
+                   class="menu-link <?= is_active_menu('admin_website/video',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-play-btn-fill"></i></span>
+                    <span>Video Profil</span>
+                </a>
+
+                <a href="<?= base_url('admin_website/pamflet') ?>"
+                   class="menu-link <?= is_active_menu('admin_website/pamflet',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-card-image"></i></span>
+                    <span>Pamflet Informasi</span>
+                </a>
+
+                <a href="<?= base_url('admin_website/ptk') ?>"
+                   class="menu-link <?= is_active_menu('admin_website/ptk',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-person-badge"></i></span>
+                    <span>PTK Website</span>
+                </a>
+
+                <a href="<?= base_url('admin_website/tentang') ?>"
+                   class="menu-link <?= is_active_menu('admin_website/tentang',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-info-circle-fill"></i></span>
+                    <span>Tentang Madrasah</span>
+                </a>
+
+                <a href="<?= base_url('admin_website/galeri') ?>"
+                   class="menu-link <?= is_active_menu('admin_website/galeri',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-camera-reels-fill"></i></span>
+                    <span>Galeri Foto</span>
+                </a>
+
+                <a href="<?= base_url('admin_website/download') ?>"
+                   class="menu-link <?= is_active_menu('admin_website/download',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-cloud-arrow-down-fill"></i></span>
+                    <span>Data Download</span>
+                </a>
+
+                <div class="menu-section">Layanan Siswa</div>
+
                 <a href="<?= base_url('admin_foto_ijazah') ?>"
                    class="menu-link <?= is_active_menu('admin_foto_ijazah',$current) ?>">
                     <span class="menu-ico"><i class="bi bi-camera-fill"></i></span>
                     <span>Foto Ijazah XII</span>
                 </a>
 
-                <!-- PPDB ONLINE -->
+                <div class="menu-section">Tautan Publik</div>
+
+                <a href="<?= base_url() ?>" target="_blank" class="menu-link">
+                    <span class="menu-ico"><i class="bi bi-globe"></i></span>
+                    <span>Lihat Website Depan</span>
+                </a>
+
+            <?php else: ?>
+                <!-- =================================================== -->
+                <!-- PORTAL LENGKAP: SUPER ADMINISTRATOR (ADMIN / MASTER) -->
+                <!-- =================================================== -->
+
+                <div class="menu-section">Menu Utama</div>
+
+                <a href="<?= base_url('dashboard') ?>"
+                   class="menu-link <?= is_active_menu('dashboard',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-grid-1x2-fill"></i></span>
+                    <span>Dashboard Utama</span>
+                </a>
+
+                <!-- SECTION: ADMIN WEBSITE -->
+                <div class="menu-section">Admin Website</div>
+
+                <button class="menu-toggle <?= is_toggle_active(['berita','admin_website','admin_banner','admin_struktur'], $current) ?>"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#menuWebsite"
+                        aria-expanded="<?= is_open_menu(['berita','admin_website','admin_banner','admin_struktur'], $current) ? 'true' : 'false' ?>">
+                    <span class="menu-toggle-main">
+                        <span class="menu-ico"><i class="bi bi-globe2"></i></span>
+                        <span>Kelola Konten Web</span>
+                    </span>
+                    <i class="bi bi-chevron-down chev"></i>
+                </button>
+
+                <div class="collapse submenu <?= is_open_menu(['berita','admin_website','admin_banner','admin_struktur'], $current) ?>" id="menuWebsite">
+                    <a class="<?= is_active_menu('berita',$current) ?>" href="<?= base_url('berita') ?>">
+                        <span class="sub-dot"></span> Kelola Berita
+                    </a>
+                    <a class="<?= is_active_menu('admin_banner',$current) ?>" href="<?= base_url('admin_banner') ?>">
+                        <span class="sub-dot"></span> Banner Slider
+                    </a>
+                    <a class="<?= is_active_menu('admin_website/profil',$current) ?>" href="<?= base_url('admin_website/profil') ?>">
+                        <span class="sub-dot"></span> Profil Madrasah
+                    </a>
+                    <a class="<?= is_active_menu('admin_struktur',$current) ?>" href="<?= base_url('admin_struktur') ?>">
+                        <span class="sub-dot"></span> Struktur Organisasi
+                    </a>
+                    <a class="<?= is_active_menu('admin_website/video',$current) ?>" href="<?= base_url('admin_website/video') ?>">
+                        <span class="sub-dot"></span> Video Profil
+                    </a>
+                    <a class="<?= is_active_menu('admin_website/pamflet',$current) ?>" href="<?= base_url('admin_website/pamflet') ?>">
+                        <span class="sub-dot"></span> Pamflet Informasi
+                    </a>
+                    <a class="<?= is_active_menu('admin_website/ptk',$current) ?>" href="<?= base_url('admin_website/ptk') ?>">
+                        <span class="sub-dot"></span> PTK Website
+                    </a>
+                    <a class="<?= is_active_menu('admin_website/tentang',$current) ?>" href="<?= base_url('admin_website/tentang') ?>">
+                        <span class="sub-dot"></span> Tentang Madrasah
+                    </a>
+                    <a class="<?= is_active_menu('admin_website/galeri',$current) ?>" href="<?= base_url('admin_website/galeri') ?>">
+                        <span class="sub-dot"></span> Galeri Foto
+                    </a>
+                    <a class="<?= is_active_menu('admin_website/download',$current) ?>" href="<?= base_url('admin_website/download') ?>">
+                        <span class="sub-dot"></span> Data Download
+                    </a>
+                </div>
+
+                <!-- SECTION: ADMIN PMB / PPDB -->
+                <div class="menu-section">Admin PMB / PPDB</div>
+
                 <button class="menu-toggle <?= is_toggle_active(['admin_ppdb'], $current) ?>"
                         type="button"
                         data-bs-toggle="collapse"
                         data-bs-target="#menuPPDB"
                         aria-expanded="<?= is_open_menu(['admin_ppdb'], $current) ? 'true' : 'false' ?>">
                     <span class="menu-toggle-main">
-                        <span class="menu-ico"><i class="bi bi-person-check-fill"></i></span>
-                        <span>PPDB Online</span>
+                        <span class="menu-ico"><i class="bi bi-mortarboard-fill"></i></span>
+                        <span>Penerimaan Siswa</span>
                     </span>
                     <i class="bi bi-chevron-down chev"></i>
                 </button>
 
                 <div class="collapse submenu <?= is_open_menu(['admin_ppdb'], $current) ?>" id="menuPPDB">
-                    <a class="<?= is_active_menu('admin_ppdb/dashboard',$current) ?>"
-                       href="<?= base_url('admin_ppdb/dashboard') ?>">
-                        <span class="sub-dot"></span>
-                        Dashboard PPDB
+                    <a class="<?= is_active_menu('admin_ppdb/dashboard',$current) ?>" href="<?= base_url('admin_ppdb/dashboard') ?>">
+                        <span class="sub-dot"></span> Dashboard PMB
                     </a>
-
-                    <a class="<?= ($current == 'admin_ppdb') ? 'active-menu' : '' ?>"
-                       href="<?= base_url('admin_ppdb') ?>">
-                        <span class="sub-dot"></span>
-                        Calon Siswa
+                    <a class="<?= ($current == 'admin_ppdb') ? 'active-menu' : '' ?>" href="<?= base_url('admin_ppdb') ?>">
+                        <span class="sub-dot"></span> Data Calon Siswa
                     </a>
-
-                    <a class="<?= is_active_menu('admin_ppdb/verifikasi',$current) ?>"
-                       href="<?= base_url('admin_ppdb/verifikasi') ?>">
-                        <span class="sub-dot"></span>
-                        Verifikasi Berkas
+                    <a class="<?= is_active_menu('admin_ppdb/verifikasi',$current) ?>" href="<?= base_url('admin_ppdb/verifikasi') ?>">
+                        <span class="sub-dot"></span> Verifikasi Berkas
                     </a>
-
-                    <a class="<?= is_active_menu('admin_ppdb/diterima',$current) ?>"
-                       href="<?= base_url('admin_ppdb/diterima') ?>">
-                        <span class="sub-dot"></span>
-                        Siswa Diterima
+                    <a class="<?= is_active_menu('admin_ppdb/diterima',$current) ?>" href="<?= base_url('admin_ppdb/diterima') ?>">
+                        <span class="sub-dot"></span> Siswa Diterima
                     </a>
-
-                    <a class="<?= is_active_menu('admin_ppdb/settings',$current) ?>"
-                       href="<?= base_url('admin_ppdb/settings') ?>">
-                        <span class="sub-dot"></span>
-                        Pengaturan PPDB
+                    <a class="<?= is_active_menu('admin_ppdb/ditolak',$current) ?>" href="<?= base_url('admin_ppdb/ditolak') ?>">
+                        <span class="sub-dot"></span> Siswa Ditolak
+                    </a>
+                    <a class="<?= is_active_menu('admin_ppdb/settings',$current) ?>" href="<?= base_url('admin_ppdb/settings') ?>">
+                        <span class="sub-dot"></span> Pengaturan PMB
                     </a>
                 </div>
+
+                <!-- SECTION: LAYANAN KHUSUS -->
+                <div class="menu-section">Layanan Khusus</div>
+
+                <a href="<?= base_url('admin_foto_ijazah') ?>"
+                   class="menu-link <?= is_active_menu('admin_foto_ijazah',$current) ?>">
+                    <span class="menu-ico"><i class="bi bi-camera-fill"></i></span>
+                    <span>Foto Ijazah XII</span>
+                </a>
 
             <?php endif; ?>
 

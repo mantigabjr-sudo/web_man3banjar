@@ -7,7 +7,27 @@ $route['translate_uri_dashes'] = FALSE;
 
 // Dashboard & Admin Portal
 $route['dashboard'] = 'dashboard';
-$route['admin'] = 'dashboard';
+$route['admin']     = 'dashboard';
+$route['admin_web'] = 'dashboard';
+
+// Berita Management
+$route['berita']                             = 'berita';
+$route['berita/add']                         = 'berita/add';
+$route['berita/detail/(:num)']               = 'berita/detail/$1';
+$route['berita/publish/(:num)']              = 'berita/publish/$1';
+$route['berita/draft/(:num)']                = 'berita/draft/$1';
+$route['berita/edit/(:num)']                 = 'berita_admin_actions/edit/$1';
+$route['berita/update/(:num)']               = 'berita_admin_actions/update/$1';
+$route['berita/delete/(:num)']               = 'berita_admin_actions/delete/$1';
+$route['berita/delete_gambar/(:num)']        = 'berita_admin_actions/delete_gambar/$1';
+$route['berita/regenerate_pamflet/(:num)']   = 'berita_admin_actions/regenerate_pamflet/$1';
+$route['berita/download_pamflet/(:num)']     = 'berita_admin_actions/download_pamflet/$1';
+
+// Admin Banner Slider & Organigram
+$route['admin_banner']                       = 'admin_banner';
+$route['admin_banner/(:any)']                = 'admin_banner/$1';
+$route['admin_struktur']                     = 'admin_struktur';
+$route['admin_struktur/(:any)']              = 'admin_struktur/$1';
 
 // PMB (Penerimaan Murid Baru) & PPDB Public
 $route['pmb'] = 'ppdb';

@@ -22,34 +22,88 @@
         </div>
 
         <!-- Section: Fitur Utama -->
-        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-grid-fill text-success me-2"></i> Modul Layanan Aktif</h5>
+        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-grid-fill text-success me-2"></i> Modul Pengelolaan Aktif</h5>
 
         <div class="row g-3 mb-4">
 
-            <!-- Card 1: Verifikasi Foto Ijazah -->
+            <!-- Card 1: Kelola Website & Berita -->
             <div class="col-lg-4 col-md-6">
                 <div class="card border-0 rounded-4 shadow-sm h-100 p-3 hover-shadow" style="transition: all 0.2s; border-left: 5px solid #10b981 !important;">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div class="p-3 rounded-3 bg-success-subtle text-success fs-3">
+                            <i class="bi bi-newspaper"></i>
+                        </div>
+                        <span class="badge bg-success text-white fw-bold rounded-pill px-3 py-1">Website Konten</span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1">Berita &amp; Artikel</h5>
+                    <p class="text-muted small mb-3">
+                        Publikasi berita kegiatan madrasah, artikel edukasi, prestasi siswa, dan informasi madrasah.
+                    </p>
+                    <div class="d-flex justify-content-between p-2 rounded-3 bg-light border mb-3 small">
+                        <span>Total Berita: <strong><?= $total_berita ?? 0 ?> Artikel</strong></span>
+                        <span class="text-success fw-bold">Published: <?= $total_berita_pub ?? 0 ?></span>
+                    </div>
+                    <div class="d-flex gap-2 mt-auto">
+                        <a href="<?= base_url('berita') ?>" class="btn btn-success rounded-pill fw-bold flex-grow-1 shadow-sm">
+                            <i class="bi bi-newspaper me-1"></i> Kelola Berita &rarr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Media & Profil Website -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card border-0 rounded-4 shadow-sm h-100 p-3 hover-shadow" style="transition: all 0.2s; border-left: 5px solid #f59e0b !important;">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="p-3 rounded-3 bg-warning-subtle text-warning fs-3">
+                            <i class="bi bi-images"></i>
+                        </div>
+                        <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1">Media Visual</span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1">Banner, Galeri &amp; Profil</h5>
+                    <p class="text-muted small mb-3">
+                        Kelola banner homepage, video profil madrasah, pamflet pengumuman, dan galeri kegiatan.
+                    </p>
+                    <div class="d-flex justify-content-between p-2 rounded-3 bg-light border mb-3 small">
+                        <span>Banner: <strong><?= $total_banner ?? 0 ?></strong> | Galeri: <strong><?= $total_galeri ?? 0 ?></strong></span>
+                        <span>Pamflet: <strong><?= $total_pamflet ?? 0 ?></strong></span>
+                    </div>
+                    <div class="d-flex gap-2 mt-auto">
+                        <a href="<?= base_url('admin_banner') ?>" class="btn btn-outline-warning text-dark rounded-pill fw-bold flex-grow-1 shadow-sm">
+                            <i class="bi bi-images me-1"></i> Banner
+                        </a>
+                        <a href="<?= base_url('admin_website/profil') ?>" class="btn btn-warning rounded-pill fw-bold flex-grow-1 shadow-sm">
+                            <i class="bi bi-building me-1"></i> Profil Web
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Verifikasi Foto Ijazah XII -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card border-0 rounded-4 shadow-sm h-100 p-3 hover-shadow" style="transition: all 0.2s; border-left: 5px solid #06b6d4 !important;">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="p-3 rounded-3 bg-info-subtle text-info fs-3">
                             <i class="bi bi-mortarboard-fill"></i>
                         </div>
-                        <span class="badge bg-success text-white fw-bold rounded-pill px-3 py-1">Aktif</span>
+                        <span class="badge bg-info text-white fw-bold rounded-pill px-3 py-1">Layanan Siswa</span>
                     </div>
                     <h5 class="fw-bold text-dark mb-1">Foto Ijazah Kelas XII</h5>
                     <p class="text-muted small mb-3">
-                        Kelola verifikasi mandiri foto ijazah siswa kelas XII, verifikasi langsung admin, dan download ZIP siap cetak format {NISN}.jpg.
+                        Verifikasi foto ijazah siswa kelas XII, persetujuan admin, dan download ZIP format {NISN}.jpg maksimal 1MB.
                     </p>
                     <div class="d-flex justify-content-between p-2 rounded-3 bg-light border mb-3 small">
-                        <span>Terverifikasi: <strong><?= $total_verified_foto ?></strong></span>
-                        <span>Foto Mentah: <strong><?= $total_pending_foto ?></strong></span>
+                        <span>Terverifikasi: <strong><?= $total_verified_foto ?? 0 ?></strong></span>
+                        <span>Foto Mentah: <strong><?= $total_pending_foto ?? 0 ?></strong></span>
                     </div>
-                    <a href="<?= base_url('admin_foto_ijazah') ?>" class="btn btn-success rounded-pill fw-bold w-100 mt-auto shadow-sm">
-                        <i class="bi bi-camera-fill me-1"></i> Buka Kelola Foto Ijazah &rarr;
+                    <a href="<?= base_url('admin_foto_ijazah') ?>" class="btn btn-info text-white rounded-pill fw-bold w-100 mt-auto shadow-sm">
+                        <i class="bi bi-camera-fill me-1"></i> Buka Foto Ijazah &rarr;
                     </a>
                 </div>
             </div>
 
-            <!-- Card 2: PPDB / PMB Online -->
+            <?php if(in_array($role ?? '', ['admin', 'admin_master'])): ?>
+            <!-- Card 4: PPDB / PMB Online (Khusus Super Admin) -->
             <div class="col-lg-4 col-md-6">
                 <div class="card border-0 rounded-4 shadow-sm h-100 p-3 hover-shadow" style="transition: all 0.2s; border-left: 5px solid #3b82f6 !important;">
                     <div class="d-flex justify-content-between align-items-start mb-3">
@@ -60,45 +114,18 @@
                     </div>
                     <h5 class="fw-bold text-dark mb-1">Penerimaan Murid Baru</h5>
                     <p class="text-muted small mb-3">
-                        Verifikasi berkas pendaftaran calon peserta didik baru, monitoring pendaftar, dan export kelulusan PMB.
+                        Verifikasi berkas pendaftaran calon peserta didik baru, monitoring kuota, dan status seleksi PMB.
                     </p>
                     <div class="d-flex justify-content-between p-2 rounded-3 bg-light border mb-3 small">
-                        <span>Total Pendaftar: <strong><?= $total_ppdb ?> Siswa</strong></span>
-                        <span class="text-success fw-bold">Online 24 Jam</span>
+                        <span>Total Pendaftar: <strong><?= $total_ppdb ?? 0 ?> Siswa</strong></span>
+                        <span class="text-success fw-bold">Online</span>
                     </div>
-                    <a href="<?= base_url('admin_ppdb') ?>" class="btn btn-primary rounded-pill fw-bold w-100 mt-auto shadow-sm">
-                        <i class="bi bi-person-check-fill me-1"></i> Buka Kelola PMB &rarr;
+                    <a href="<?= base_url('admin_ppdb/dashboard') ?>" class="btn btn-primary rounded-pill fw-bold w-100 mt-auto shadow-sm">
+                        <i class="bi bi-mortarboard-fill me-1"></i> Buka Portal PMB &rarr;
                     </a>
                 </div>
             </div>
-
-            <!-- Card 3: Kelola Website & Berita -->
-            <div class="col-lg-4 col-md-6">
-                <div class="card border-0 rounded-4 shadow-sm h-100 p-3 hover-shadow" style="transition: all 0.2s; border-left: 5px solid #f59e0b !important;">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div class="p-3 rounded-3 bg-warning-subtle text-warning fs-3">
-                            <i class="bi bi-globe2"></i>
-                        </div>
-                        <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1">Website Profil</span>
-                    </div>
-                    <h5 class="fw-bold text-dark mb-1">Berita &amp; Informasi</h5>
-                    <p class="text-muted small mb-3">
-                        Publikasi berita kegiatan madrasah, artikel edukasi, pembaruan galeri foto, profil sekolah, dan pamflet pengumuman.
-                    </p>
-                    <div class="d-flex justify-content-between p-2 rounded-3 bg-light border mb-3 small">
-                        <span>Total Berita: <strong><?= $total_berita ?> Artikel</strong></span>
-                        <span class="text-muted">Siap Tayang</span>
-                    </div>
-                    <div class="d-flex gap-2 mt-auto">
-                        <a href="<?= base_url('berita') ?>" class="btn btn-outline-warning text-dark rounded-pill fw-bold flex-grow-1 shadow-sm">
-                            <i class="bi bi-newspaper me-1"></i> Berita
-                        </a>
-                        <a href="<?= base_url('admin_website/profil') ?>" class="btn btn-warning rounded-pill fw-bold flex-grow-1 shadow-sm">
-                            <i class="bi bi-gear-fill me-1"></i> Profil
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <?php endif; ?>
 
         </div>
 

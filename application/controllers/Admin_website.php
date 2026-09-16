@@ -18,6 +18,7 @@ class Admin_website extends CI_Controller {
         $allowed = [
             'admin',
             'admin_master',
+            'admin_website',
             'admin_humas',
             'wakil_humas',
             'operator_humas'

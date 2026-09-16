@@ -12,6 +12,7 @@ if(!function_exists('admin_panel_roles')){
         return [
             'admin',
             'admin_master',
+            'admin_website',
             'admin_pmb',
             'admin_ppdb',
             'admin_humas',
@@ -65,8 +66,9 @@ if(!function_exists('can_admin_menu')){
         }
 
         $map = [
-            'website'   => ['admin_humas', 'wakil_humas', 'operator_humas'],
-            'berita'    => ['admin_humas', 'wakil_humas', 'operator_humas'],
+            'website'     => ['admin_website', 'admin_humas', 'wakil_humas', 'operator_humas'],
+            'berita'      => ['admin_website', 'admin_humas', 'wakil_humas', 'operator_humas'],
+            'foto_ijazah' => ['admin_website', 'admin_humas', 'wakil_humas', 'operator_humas', 'admin_kesiswaan', 'admin_kurikulum'],
 
             'ppdb'      => ['admin_kesiswaan', 'admin_pmb', 'admin_ppdb'],
             'akademik'  => ['admin_kesiswaan'],
@@ -108,16 +110,17 @@ if(!function_exists('role_label')){
     function role_label($role){
 
         $labels = [
-            'admin' => 'Admin Master',
-            'admin_master' => 'Kepala Madrasah',
-            'admin_pmb' => 'Panitia PMB',
-            'admin_ppdb' => 'Panitia PMB',
-            'admin_humas' => 'Wakamad Humas',
-            'wakil_humas' => 'Wakil Humas',
-            'operator_humas' => 'Operator Humas',
+            'admin'           => 'Super Administrator',
+            'admin_master'    => 'Kepala Madrasah',
+            'admin_website'   => 'Admin Website & Humas',
+            'admin_humas'     => 'Admin Website & Humas',
+            'wakil_humas'     => 'Wakil Humas',
+            'operator_humas'  => 'Operator Website',
+            'admin_pmb'       => 'Admin PMB / PPDB',
+            'admin_ppdb'      => 'Admin PMB / PPDB',
             'admin_kesiswaan' => 'Wakamad Kesiswaan',
             'admin_kurikulum' => 'Wakamad Kurikulum',
-            'admin_sarpras' => 'Wakamad Sarpras',
+            'admin_sarpras'   => 'Wakamad Sarpras',
             'guru' => 'Guru',
             'teknisi' => 'Teknisi'
         ];

@@ -8,7 +8,7 @@ class Admin_foto_ijazah extends CI_Controller {
         if(!$this->session->userdata('logged_in')){
             redirect('auth');
         }
-        $allowed = ['admin', 'admin_master', 'admin_kesiswaan', 'admin_kurikulum'];
+        $allowed = ['admin', 'admin_master', 'admin_website', 'admin_humas', 'wakil_humas', 'operator_humas', 'admin_kesiswaan', 'admin_kurikulum'];
         if(!in_array($this->session->userdata('role'), $allowed)){
             redirect('dashboard');
         }
