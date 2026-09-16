@@ -1,3 +1,6 @@
+<?php $this->load->view('templates/header'); ?>
+<?php $this->load->view('templates/sidebar'); ?>
+
 <div class="content">
     <div class="container-fluid py-4">
 
@@ -143,3 +146,5 @@
 
     </div>
 </div>
+
+<?php $this->load->view('templates/footer'); ?>

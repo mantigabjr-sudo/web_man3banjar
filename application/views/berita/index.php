@@ -1,3 +1,6 @@
+<?php $this->load->view('templates/header'); ?>
+<?php $this->load->view('templates/sidebar'); ?>
+
 <?php
 $total_semua = isset($total_semua) ? $total_semua : 0;
 $total_published = isset($total_published) ? $total_published : 0;
@@ -358,3 +361,5 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 });
 </script>
+
+<?php $this->load->view('templates/footer'); ?>

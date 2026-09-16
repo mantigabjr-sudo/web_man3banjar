@@ -60,6 +60,10 @@ class Dashboard extends CI_Controller {
             ? $this->db->count_all_results('website_video') 
             : 0;
 
+        $data['total_download'] = $this->db->table_exists('website_download') 
+            ? $this->db->count_all_results('website_download') 
+            : 0;
+
         // Stats PPDB (khusus Super Admin)
         $data['total_ppdb'] = $this->db->table_exists('ppdb') 
             ? $this->db->count_all_results('ppdb') 

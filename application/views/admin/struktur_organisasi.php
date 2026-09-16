@@ -1,3 +1,6 @@
+<?php $this->load->view('templates/header'); ?>
+<?php $this->load->view('templates/sidebar'); ?>
+
 <div class="content">
     <div class="container-fluid py-4">
 
@@ -278,3 +281,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+<?php $this->load->view('templates/footer'); ?>

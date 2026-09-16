@@ -1,3 +1,6 @@
+<?php $this->load->view('templates/header'); ?>
+<?php $this->load->view('templates/sidebar'); ?>
+
 <?php
 $judul = $berita->judul ?? '';
 $isi = $berita->isi ?? '';
@@ -293,3 +296,5 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 });
 </script>
+
+<?php $this->load->view('templates/footer'); ?>

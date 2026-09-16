@@ -1,3 +1,6 @@
+<?php $this->load->view('templates/header'); ?>
+<?php $this->load->view('templates/sidebar'); ?>
+
 <?php
 $total_ptk = !empty($ptk) ? count($ptk) : 0;
 $total_tampil = 0;
@@ -219,3 +222,5 @@ $total_sembunyi = $total_ptk - $total_tampil;
 
     </div>
 </div>
+
+<?php $this->load->view('templates/footer'); ?>
