@@ -55,6 +55,8 @@ class Admin_website extends CI_Controller {
 			'instagram_url' => $this->input->post('instagram_url'),
 			'youtube_url'   => $this->input->post('youtube_url'),
 			'jam_layanan'   => $this->input->post('jam_layanan'),
+			'nsm'           => $this->input->post('nsm'),
+			'npsn'          => $this->input->post('npsn'),
             'updated_at'  => date('Y-m-d H:i:s')
         ];
 
