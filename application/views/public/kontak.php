@@ -71,13 +71,13 @@
                         <div>
                             <h6 class="fw-bold mb-1" style="color: #0f172a; font-size: 16px;">Telepon &amp; WhatsApp</h6>
                             <p class="mb-1 text-muted" style="font-size: 13.5px;">
-                                <?php if(!empty($profil_website->no_telepon)): ?>
-                                    <span class="d-block fw-semibold" style="color: #334155;"><i class="bi bi-telephone me-1"></i> <?= htmlspecialchars($profil_website->no_telepon, ENT_QUOTES, 'UTF-8') ?></span>
+                                <?php if(!empty($profil_website->telepon)): ?>
+                                    <span class="d-block fw-semibold" style="color: #334155;"><i class="bi bi-telephone me-1"></i> <?= htmlspecialchars($profil_website->telepon, ENT_QUOTES, 'UTF-8') ?></span>
                                 <?php endif; ?>
-                                <?php if(!empty($profil_website->wa_number)): ?>
-                                    <span class="d-block text-success fw-semibold"><i class="bi bi-whatsapp me-1"></i> <?= htmlspecialchars($profil_website->wa_number, ENT_QUOTES, 'UTF-8') ?></span>
+                                <?php if(!empty($profil_website->whatsapp)): ?>
+                                    <span class="d-block text-success fw-semibold"><i class="bi bi-whatsapp me-1"></i> <?= htmlspecialchars($profil_website->whatsapp, ENT_QUOTES, 'UTF-8') ?></span>
                                 <?php endif; ?>
-                                <?php if(empty($profil_website->no_telepon) && empty($profil_website->wa_number)): ?>
+                                <?php if(empty($profil_website->telepon) && empty($profil_website->whatsapp)): ?>
                                     <span class="text-muted">+62 812-3456-7890</span>
                                 <?php endif; ?>
                             </p>
@@ -97,7 +97,7 @@
                             <h6 class="fw-bold mb-1" style="color: #0f172a; font-size: 16px;">Email &amp; Jam Layanan</h6>
                             <p class="mb-0 text-muted" style="font-size: 13.5px; line-height: 1.5;">
                                 <span class="d-block fw-semibold text-primary"><i class="bi bi-envelope me-1"></i> <?= !empty($profil_website->email) ? htmlspecialchars($profil_website->email, ENT_QUOTES, 'UTF-8') : 'info@man3banjar.sch.id' ?></span>
-                                <span class="d-block text-secondary mt-1"><i class="bi bi-clock me-1"></i> Senin – Jumat: 07.30 – 16.00 WITA</span>
+                                <span class="d-block text-secondary mt-1"><i class="bi bi-clock me-1"></i> <?= !empty($profil_website->jam_layanan) ? htmlspecialchars($profil_website->jam_layanan, ENT_QUOTES, 'UTF-8') : 'Senin – Jumat: 07.30 – 16.00 WITA' ?></span>
                             </p>
                         </div>
                     </div>
@@ -168,7 +168,8 @@
                                     </button>
                                     
                                     <?php 
-                                    $wa_clean = !empty($profil_website->wa_number) ? preg_replace('/[^0-9]/', '', $profil_website->wa_number) : '';
+                                    $wa_raw = !empty($profil_website->whatsapp) ? $profil_website->whatsapp : (!empty($profil_website->telepon) ? $profil_website->telepon : '');
+                                    $wa_clean = preg_replace('/[^0-9]/', '', $wa_raw);
                                     if(substr($wa_clean, 0, 1) === '0') $wa_clean = '62' . substr($wa_clean, 1);
                                     ?>
                                     <?php if(!empty($wa_clean)): ?>

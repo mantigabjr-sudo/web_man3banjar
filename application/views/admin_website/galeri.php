@@ -31,10 +31,10 @@
                         </span>
                         <h2 class="fw-bold mb-2 text-white">Galeri Foto Kegiatan</h2>
                         <p class="mb-3 text-white-50" style="font-size: 14px; max-width: 620px;">
-                            Kelola album foto dokumentasi kegiatan belajar, perlombaan, upacara, ekstrakurikuler, dan momen prestasi MAN 3 Banjar yang ditampilkan pada galeri website.
+                            Kelola album foto dokumentasi kegiatan belajar, perlombaan, upacara, ekstrakurikuler, dan momen prestasi MAN 3 Banjar. Terbitkan foto agar tampil pada galeri website publik.
                         </p>
                         <div class="d-flex flex-wrap gap-2 pt-1">
-                            <a href="<?= base_url('galeri') ?>" target="_blank" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm">
+                            <a href="<?= base_url('website/galeri') ?>" target="_blank" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm">
                                 <i class="bi bi-box-arrow-up-right text-success me-1"></i> Pratinjau Galeri Publik
                             </a>
                         </div>
@@ -53,14 +53,24 @@
                         <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-cloud-arrow-up-fill text-success me-2"></i> Tambah Foto Galeri</h6>
                     </div>
                     <div class="card-body p-4">
-                        <form method="post" action="<?= base_url('admin_website/add_galeri') ?>" enctype="multipart/form-data">
+                        <form method="post" action="<?= base_url('admin_website/save_galeri') ?>" enctype="multipart/form-data">
                             <div class="mb-3">
-                                <label class="form-label fw-bold small text-muted">Judul / Keterangan Foto</label>
-                                <input type="text" name="judul" class="form-control rounded-3" placeholder="Contoh: Upacara Peringatan Hari Santri" required>
+                                <label class="form-label fw-bold small text-muted">Judul / Keterangan Foto <span class="text-danger">*</span></label>
+                                <input type="text" name="judul" class="form-control rounded-3" placeholder="Contoh: Upacara Hari Santri Nasional" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted">Tanggal Kegiatan</label>
+                                <input type="date" name="tanggal" class="form-control rounded-3" value="<?= date('Y-m-d') ?>">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted">Deskripsi Tambahan (Opsional)</label>
+                                <textarea name="deskripsi" class="form-control rounded-3" rows="3" placeholder="Cerita singkat atau catatan dokumentasi..."></textarea>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label fw-bold small text-muted">Pilih File Foto</label>
+                                <label class="form-label fw-bold small text-muted">Pilih File Foto <span class="text-danger">*</span></label>
                                 <input type="file" name="gambar" class="form-control rounded-3 mb-2" id="inputGaleri" accept="image/*" required>
                                 
                                 <div class="p-2 border rounded-3 bg-light text-center" id="previewGaleri" style="min-height: 120px; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 12px;">
@@ -89,9 +99,9 @@
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width:100px;" class="ps-4">Preview</th>
-                                        <th>Judul &amp; Keterangan</th>
-                                        <th style="width:130px;">Tanggal</th>
-                                        <th style="width:130px;" class="text-end pe-4">Aksi</th>
+                                        <th>Judul &amp; Tanggal</th>
+                                        <th style="width:110px;" class="text-center">Status</th>
+                                        <th style="width:140px;" class="text-end pe-4">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -104,24 +114,56 @@
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach($galeri as $g): ?>
+                                            <?php
+                                            $galeri_url = base_url('assets/galeri/'.$g->gambar);
+                                            ?>
                                             <tr>
                                                 <td class="ps-4">
-                                                    <img src="<?= base_url('uploads/galeri/'.$g->gambar) ?>" 
-                                                         alt="Galeri" 
-                                                         class="rounded-3 shadow-sm"
-                                                         style="width:80px; height:60px; object-fit:cover; border:1px solid #e2e8f0;">
+                                                    <a href="<?= $galeri_url ?>" target="_blank">
+                                                        <img src="<?= $galeri_url ?>" 
+                                                             alt="Galeri" 
+                                                             class="rounded-3 shadow-sm"
+                                                             style="width:80px; height:60px; object-fit:cover; border:1px solid #e2e8f0;">
+                                                    </a>
                                                 </td>
                                                 <td>
                                                     <div class="fw-bold text-dark" style="font-size:14px;"><?= htmlspecialchars($g->judul ?? '-', ENT_QUOTES, 'UTF-8') ?></div>
-                                                    <div class="small text-muted mt-1"><?= htmlspecialchars($g->gambar ?? '', ENT_QUOTES, 'UTF-8') ?></div>
+                                                    <?php if(!empty($g->deskripsi)): ?>
+                                                        <div class="small text-muted text-truncate" style="max-width: 260px;"><?= htmlspecialchars($g->deskripsi, ENT_QUOTES, 'UTF-8') ?></div>
+                                                    <?php endif; ?>
+                                                    <div class="small text-muted mt-1">
+                                                        <i class="bi bi-calendar3 me-1"></i><?= !empty($g->tanggal) ? date('d M Y', strtotime($g->tanggal)) : (!empty($g->created_at) ? date('d M Y', strtotime($g->created_at)) : '-') ?>
+                                                    </div>
                                                 </td>
-                                                <td>
-                                                    <span class="small text-muted"><?= !empty($g->created_at) ? date('d M Y', strtotime($g->created_at)) : '-' ?></span>
+                                                <td class="text-center">
+                                                    <?php if($g->status === 'Published'): ?>
+                                                        <span class="badge bg-success-subtle text-success fw-bold rounded-pill px-3 py-1">
+                                                            <i class="bi bi-check-circle-fill me-1"></i> Published
+                                                        </span>
+                                                    <?php else: ?>
+                                                        <span class="badge bg-secondary-subtle text-secondary fw-bold rounded-pill px-3 py-1">
+                                                            <i class="bi bi-clock me-1"></i> Draft
+                                                        </span>
+                                                    <?php endif; ?>
                                                 </td>
                                                 <td class="text-end pe-4">
                                                     <div class="d-inline-flex gap-1">
-                                                        <a href="<?= base_url('uploads/galeri/'.$g->gambar) ?>" target="_blank" class="btn btn-sm btn-light rounded-pill px-2 py-1 text-primary shadow-sm" title="Lihat Foto">
-                                                            <i class="bi bi-eye-fill"></i>
+                                                        <?php if($g->status === 'Published'): ?>
+                                                            <a href="<?= base_url('admin_website/draft_galeri/'.$g->id) ?>" 
+                                                               class="btn btn-sm btn-light rounded-pill px-2 py-1 text-warning shadow-sm"
+                                                               title="Jadikan Draft">
+                                                                <i class="bi bi-eye-slash-fill"></i>
+                                                            </a>
+                                                        <?php else: ?>
+                                                            <a href="<?= base_url('admin_website/publish_galeri/'.$g->id) ?>" 
+                                                               class="btn btn-sm btn-light rounded-pill px-2 py-1 text-success shadow-sm"
+                                                               title="Terbitkan ke Website (Publish)">
+                                                                <i class="bi bi-eye-fill"></i>
+                                                            </a>
+                                                        <?php endif; ?>
+
+                                                        <a href="<?= $galeri_url ?>" target="_blank" class="btn btn-sm btn-light rounded-pill px-2 py-1 text-primary shadow-sm" title="Lihat Asli">
+                                                            <i class="bi bi-box-arrow-up-right"></i>
                                                         </a>
                                                         <a href="<?= base_url('admin_website/delete_galeri/'.$g->id) ?>" 
                                                            class="btn btn-sm btn-light rounded-pill px-2 py-1 text-danger shadow-sm"

@@ -31,10 +31,10 @@
                         </span>
                         <h2 class="fw-bold mb-2 text-white">Video YouTube Website</h2>
                         <p class="mb-3 text-white-50" style="font-size: 14px; max-width: 620px;">
-                            Kelola video YouTube yang disematkan pada beranda madrasah. Cukup masukkan link URL atau ID video YouTube untuk menampilkan video beserta thumbnail otomatis.
+                            Kelola video profil dan dokumentasi YouTube yang disematkan pada beranda madrasah. Klik <strong>Publish</strong> pada salah satu video agar video tersebut tampil langsung di beranda website publik.
                         </p>
                         <div class="d-flex flex-wrap gap-2 pt-1">
-                            <a href="<?= base_url() ?>" target="_blank" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm">
+                            <a href="<?= base_url() ?>#media" target="_blank" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm">
                                 <i class="bi bi-box-arrow-up-right text-success me-1"></i> Pratinjau di Beranda
                             </a>
                         </div>
@@ -53,16 +53,21 @@
                         <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-plus-circle-fill text-success me-2"></i> Tambah Video Baru</h6>
                     </div>
                     <div class="card-body p-4">
-                        <form method="post" action="<?= base_url('admin_website/add_video') ?>">
+                        <form method="post" action="<?= base_url('admin_website/save_video') ?>">
                             <div class="mb-3">
-                                <label class="form-label fw-bold small text-muted">Judul Video</label>
+                                <label class="form-label fw-bold small text-muted">Judul Video <span class="text-danger">*</span></label>
                                 <input type="text" name="judul" class="form-control rounded-3" placeholder="Contoh: Profil MAN 3 Banjar 2026" required>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label fw-bold small text-muted">Link / URL YouTube</label>
-                                <input type="text" name="link" class="form-control rounded-3" id="inputYoutubeLink" placeholder="https://www.youtube.com/watch?v=..." required>
-                                <div class="form-text small mt-1">Bisa URL panjang YouTube, link share <code>youtu.be/xxx</code>, atau YouTube Shorts.</div>
+                                <label class="form-label fw-bold small text-muted">Link / URL YouTube <span class="text-danger">*</span></label>
+                                <input type="text" name="youtube_url" class="form-control rounded-3" id="inputYoutubeLink" placeholder="https://www.youtube.com/watch?v=..." required>
+                                <div class="form-text small mt-1">Mendukung link share <code>youtu.be/xxx</code>, URL panjang, maupun Shorts.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted">Deskripsi Singkat (Opsional)</label>
+                                <textarea name="deskripsi" class="form-control rounded-3" rows="3" placeholder="Keterangan singkat video profil..."></textarea>
                             </div>
 
                             <div class="mb-4">
@@ -73,7 +78,7 @@
                             </div>
 
                             <button type="submit" class="btn btn-success fw-bold rounded-pill w-100 py-2 shadow-sm">
-                                <i class="bi bi-save me-1"></i> Simpan Video
+                                <i class="bi bi-save me-1"></i> Simpan Video (Draft)
                             </button>
                         </form>
                     </div>
@@ -85,7 +90,7 @@
                 <div class="card border-0 rounded-4 shadow-sm mb-4">
                     <div class="card-header bg-white border-bottom pt-3 pb-2 px-4 d-flex justify-content-between align-items-center">
                         <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-play-circle-fill text-success me-2"></i> Video Tersimpan</h6>
-                        <span class="badge bg-success-subtle text-success rounded-pill fw-bold px-3 py-1"><?= count($videos ?? []) ?> Video</span>
+                        <span class="badge bg-success-subtle text-success rounded-pill fw-bold px-3 py-1"><?= count($video ?? []) ?> Video</span>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -94,32 +99,36 @@
                                     <tr>
                                         <th style="width:120px;" class="ps-4">Thumbnail</th>
                                         <th>Judul &amp; URL Video</th>
-                                        <th style="width:100px;" class="text-end pe-4">Aksi</th>
+                                        <th style="width:110px;" class="text-center">Status</th>
+                                        <th style="width:140px;" class="text-end pe-4">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if(empty($videos)): ?>
+                                    <?php if(empty($video)): ?>
                                         <tr>
-                                            <td colspan="3" class="text-center py-5 text-muted">
+                                            <td colspan="4" class="text-center py-5 text-muted">
                                                 <i class="bi bi-youtube fs-1 text-secondary mb-2 d-block opacity-50"></i>
                                                 Belum ada video YouTube yang ditambahkan.
                                             </td>
                                         </tr>
                                     <?php else: ?>
-                                        <?php foreach($videos as $v): ?>
+                                        <?php foreach($video as $v): ?>
                                             <?php
                                             $yt_id = '';
-                                            if(preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $v->link, $match)){
+                                            $raw_yt = $v->youtube_url ?? '';
+                                            if(preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?|shorts)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $raw_yt, $match)){
                                                 $yt_id = $match[1];
                                             }
                                             ?>
                                             <tr>
                                                 <td class="ps-4">
                                                     <?php if(!empty($yt_id)): ?>
-                                                        <img src="https://img.youtube.com/vi/<?= $yt_id ?>/mqdefault.jpg" 
-                                                             alt="Thumbnail" 
-                                                             class="rounded-3 shadow-sm"
-                                                             style="width:100px; height:58px; object-fit:cover; border:1px solid #e2e8f0;">
+                                                        <a href="<?= htmlspecialchars($raw_yt, ENT_QUOTES, 'UTF-8') ?>" target="_blank">
+                                                            <img src="https://img.youtube.com/vi/<?= $yt_id ?>/mqdefault.jpg" 
+                                                                 alt="Thumbnail" 
+                                                                 class="rounded-3 shadow-sm"
+                                                                 style="width:100px; height:58px; object-fit:cover; border:1px solid #e2e8f0;">
+                                                        </a>
                                                     <?php else: ?>
                                                         <div class="rounded-3 bg-light border d-flex align-items-center justify-content-center text-muted small" style="width:100px; height:58px;">
                                                             No Image
@@ -128,16 +137,47 @@
                                                 </td>
                                                 <td>
                                                     <div class="fw-bold text-dark" style="font-size:14px;"><?= htmlspecialchars($v->judul ?? '-', ENT_QUOTES, 'UTF-8') ?></div>
-                                                    <a href="<?= htmlspecialchars($v->link ?? '', ENT_QUOTES, 'UTF-8') ?>" target="_blank" class="small text-success text-decoration-none d-inline-flex align-items-center gap-1 mt-1">
+                                                    <?php if(!empty($v->deskripsi)): ?>
+                                                        <div class="small text-muted text-truncate" style="max-width: 280px;"><?= htmlspecialchars($v->deskripsi, ENT_QUOTES, 'UTF-8') ?></div>
+                                                    <?php endif; ?>
+                                                    <a href="<?= htmlspecialchars($raw_yt, ENT_QUOTES, 'UTF-8') ?>" target="_blank" class="small text-success text-decoration-none d-inline-flex align-items-center gap-1 mt-1">
                                                         <i class="bi bi-box-arrow-up-right"></i> Buka di YouTube
                                                     </a>
                                                 </td>
+                                                <td class="text-center">
+                                                    <?php if($v->status === 'Published'): ?>
+                                                        <span class="badge bg-success-subtle text-success fw-bold rounded-pill px-3 py-1">
+                                                            <i class="bi bi-broadcast me-1"></i> Published
+                                                        </span>
+                                                    <?php else: ?>
+                                                        <span class="badge bg-secondary-subtle text-secondary fw-bold rounded-pill px-3 py-1">
+                                                            <i class="bi bi-clock me-1"></i> Draft
+                                                        </span>
+                                                    <?php endif; ?>
+                                                </td>
                                                 <td class="text-end pe-4">
-                                                    <a href="<?= base_url('admin_website/delete_video/'.$v->id) ?>" 
-                                                       class="btn btn-sm btn-light rounded-pill px-3 py-1 text-danger shadow-sm"
-                                                       onclick="return confirm('Hapus video ini?')">
-                                                        <i class="bi bi-trash-fill me-1"></i> Hapus
-                                                    </a>
+                                                    <div class="d-inline-flex gap-1">
+                                                        <?php if($v->status === 'Published'): ?>
+                                                            <a href="<?= base_url('admin_website/draft_video/'.$v->id) ?>" 
+                                                               class="btn btn-sm btn-light rounded-pill px-2 py-1 text-warning shadow-sm"
+                                                               title="Jadikan Draft">
+                                                                <i class="bi bi-eye-slash-fill"></i>
+                                                            </a>
+                                                        <?php else: ?>
+                                                            <a href="<?= base_url('admin_website/publish_video/'.$v->id) ?>" 
+                                                               class="btn btn-sm btn-light rounded-pill px-2 py-1 text-success shadow-sm"
+                                                               title="Tampilkan di Beranda Utama (Publish)">
+                                                                <i class="bi bi-broadcast me-1"></i> Publish
+                                                            </a>
+                                                        <?php endif; ?>
+
+                                                        <a href="<?= base_url('admin_website/delete_video/'.$v->id) ?>" 
+                                                           class="btn btn-sm btn-light rounded-pill px-2 py-1 text-danger shadow-sm"
+                                                           onclick="return confirm('Hapus video ini?')"
+                                                           title="Hapus Video">
+                                                            <i class="bi bi-trash-fill"></i>
+                                                        </a>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -160,12 +200,12 @@ document.addEventListener('DOMContentLoaded', function(){
 
     if(inputLink && preview){
         inputLink.addEventListener('input', function(){
-            const url = this.value;
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const url = this.value.trim();
+            const regExp = /(?:youtube(?:-nocookie)?\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i;
             const match = url.match(regExp);
 
-            if(match && match[2].length === 11){
-                preview.innerHTML = '<img src="https://img.youtube.com/vi/' + match[2] + '/mqdefault.jpg" style="max-width:100%; border-radius:10px;">';
+            if(match && match[1] && match[1].length === 11){
+                preview.innerHTML = '<img src="https://img.youtube.com/vi/' + match[1] + '/mqdefault.jpg" style="max-width:100%; max-height:140px; border-radius:10px; object-fit:cover;">';
             } else {
                 preview.innerHTML = 'Thumbnail Otomatis YouTube';
             }

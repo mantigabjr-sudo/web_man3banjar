@@ -53,20 +53,31 @@
                         <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-cloud-arrow-up-fill text-success me-2"></i> Tambah Banner Baru</h6>
                     </div>
                     <div class="card-body p-4">
-                        <form method="post" action="<?= base_url('admin_banner/add') ?>" enctype="multipart/form-data">
+                        <form method="post" action="<?= base_url('admin_banner/save') ?>" enctype="multipart/form-data">
                             <div class="mb-3">
-                                <label class="form-label fw-bold small text-muted">Judul Banner (Opsional)</label>
-                                <input type="text" name="judul" class="form-control rounded-3" placeholder="Contoh: Selamat Datang di MAN 3 Banjar">
+                                <label class="form-label fw-bold small text-muted">Judul Banner <span class="text-danger">*</span></label>
+                                <input type="text" name="judul" class="form-control rounded-3" placeholder="Contoh: Selamat Datang di MAN 3 Banjar" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted">Subjudul (Opsional)</label>
+                                <input type="text" name="subjudul" class="form-control rounded-3" placeholder="Contoh: Madrasah Berkarakter Islami & Berprestasi">
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label fw-bold small text-muted">Deskripsi Singkat (Opsional)</label>
-                                <textarea name="deskripsi" class="form-control rounded-3" rows="3" placeholder="Teks penjelasan singkat banner..."></textarea>
+                                <textarea name="deskripsi" class="form-control rounded-3" rows="2" placeholder="Teks penjelasan singkat banner..."></textarea>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-bold small text-muted">Tautan Tombol Aksi (Opsional)</label>
-                                <input type="text" name="link" class="form-control rounded-3" placeholder="https://...">
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label fw-bold small text-muted">Teks Tombol</label>
+                                    <input type="text" name="button_text" class="form-control rounded-3" placeholder="Contoh: Selengkapnya">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label fw-bold small text-muted">Tautan Tombol</label>
+                                    <input type="text" name="button_url" class="form-control rounded-3" placeholder="https://...">
+                                </div>
                             </div>
 
                             <div class="row g-2 mb-3">
@@ -77,14 +88,14 @@
                                 <div class="col-6">
                                     <label class="form-label fw-bold small text-muted">Status</label>
                                     <select name="status" class="form-select rounded-3">
-                                        <option value="1">Aktif</option>
-                                        <option value="0">Nonaktif</option>
+                                        <option value="Published">Published (Tampil)</option>
+                                        <option value="Draft">Draft (Disimpan)</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label fw-bold small text-muted">Unggah File Gambar</label>
+                                <label class="form-label fw-bold small text-muted">Unggah File Gambar <span class="text-danger">*</span></label>
                                 <input type="file" name="gambar" class="form-control rounded-3 mb-2" id="inputGambarBanner" accept="image/*" required>
                                 
                                 <div class="p-2 border rounded-3 bg-light text-center" id="previewBox" style="min-height: 120px; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 12px;">
@@ -114,9 +125,9 @@
                                     <tr>
                                         <th style="width:110px;" class="ps-4">Preview</th>
                                         <th>Judul &amp; Informasi</th>
-                                        <th style="width:90px;" class="text-center">Urutan</th>
+                                        <th style="width:80px;" class="text-center">Urutan</th>
                                         <th style="width:110px;" class="text-center">Status</th>
-                                        <th style="width:120px;" class="text-end pe-4">Aksi</th>
+                                        <th style="width:140px;" class="text-end pe-4">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -129,44 +140,80 @@
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach($banner as $b): ?>
+                                            <?php
+                                            $img_file = FCPATH.'assets/banner/'.$b->gambar;
+                                            $img_url = base_url('assets/banner/'.$b->gambar);
+                                            ?>
                                             <tr>
                                                 <td class="ps-4">
-                                                    <img src="<?= base_url('uploads/banner/'.$b->gambar) ?>" 
-                                                         alt="Banner" 
-                                                         class="rounded-3 shadow-sm"
-                                                         style="width:90px; height:50px; object-fit:cover; border:1px solid #e2e8f0;">
+                                                    <a href="<?= $img_url ?>" target="_blank">
+                                                        <img src="<?= $img_url ?>" 
+                                                             alt="Banner" 
+                                                             class="rounded-3 shadow-sm"
+                                                             style="width:90px; height:50px; object-fit:cover; border:1px solid #e2e8f0;">
+                                                    </a>
                                                 </td>
                                                 <td>
                                                     <div class="fw-bold text-dark" style="font-size:14px;"><?= htmlspecialchars($b->judul ?? '-', ENT_QUOTES, 'UTF-8') ?></div>
-                                                    <div class="small text-muted text-truncate" style="max-width: 280px;"><?= htmlspecialchars($b->deskripsi ?? '', ENT_QUOTES, 'UTF-8') ?></div>
+                                                    <?php if(!empty($b->subjudul)): ?>
+                                                        <div class="small text-success fw-semibold"><?= htmlspecialchars($b->subjudul, ENT_QUOTES, 'UTF-8') ?></div>
+                                                    <?php endif; ?>
+                                                    <?php if(!empty($b->deskripsi)): ?>
+                                                        <div class="small text-muted text-truncate" style="max-width: 260px;"><?= htmlspecialchars($b->deskripsi, ENT_QUOTES, 'UTF-8') ?></div>
+                                                    <?php endif; ?>
+                                                    <?php if(!empty($b->button_text)): ?>
+                                                        <span class="badge bg-light text-secondary border rounded-pill mt-1" style="font-size:10.5px;">
+                                                            <i class="bi bi-link-45deg me-1"></i><?= htmlspecialchars($b->button_text, ENT_QUOTES, 'UTF-8') ?>
+                                                        </span>
+                                                    <?php endif; ?>
                                                 </td>
                                                 <td class="text-center">
                                                     <span class="badge bg-light text-dark border rounded-pill px-3 py-1 fw-bold">#<?= (int)$b->urutan ?></span>
                                                 </td>
                                                 <td class="text-center">
-                                                    <?php if($b->status == 1): ?>
-                                                        <span class="badge bg-success-subtle text-success fw-bold rounded-pill px-3 py-1">Aktif</span>
+                                                    <?php if($b->status === 'Published'): ?>
+                                                        <span class="badge bg-success-subtle text-success fw-bold rounded-pill px-3 py-1">
+                                                            <i class="bi bi-check-circle-fill me-1"></i> Published
+                                                        </span>
                                                     <?php else: ?>
-                                                        <span class="badge bg-secondary-subtle text-secondary fw-bold rounded-pill px-3 py-1">Nonaktif</span>
+                                                        <span class="badge bg-secondary-subtle text-secondary fw-bold rounded-pill px-3 py-1">
+                                                            <i class="bi bi-clock me-1"></i> Draft
+                                                        </span>
                                                     <?php endif; ?>
                                                 </td>
                                                 <td class="text-end pe-4">
                                                     <div class="d-inline-flex gap-1">
+                                                        <?php if($b->status === 'Published'): ?>
+                                                            <a href="<?= base_url('admin_banner/draft/'.$b->id) ?>" 
+                                                               class="btn btn-sm btn-light rounded-pill px-2 py-1 text-warning shadow-sm"
+                                                               title="Jadikan Draft (Sembunyikan dari beranda)">
+                                                                <i class="bi bi-eye-slash-fill"></i>
+                                                            </a>
+                                                        <?php else: ?>
+                                                            <a href="<?= base_url('admin_banner/publish/'.$b->id) ?>" 
+                                                               class="btn btn-sm btn-light rounded-pill px-2 py-1 text-success shadow-sm"
+                                                               title="Terbitkan ke Beranda Website">
+                                                                <i class="bi bi-eye-fill"></i>
+                                                            </a>
+                                                        <?php endif; ?>
+
                                                         <button type="button" 
                                                                 class="btn btn-sm btn-light rounded-pill px-2 py-1 text-primary shadow-sm btn-edit-banner"
                                                                 data-id="<?= $b->id ?>"
                                                                 data-judul="<?= htmlspecialchars($b->judul ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                                                data-subjudul="<?= htmlspecialchars($b->subjudul ?? '', ENT_QUOTES, 'UTF-8') ?>"
                                                                 data-deskripsi="<?= htmlspecialchars($b->deskripsi ?? '', ENT_QUOTES, 'UTF-8') ?>"
-                                                                data-link="<?= htmlspecialchars($b->link ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                                                data-btntext="<?= htmlspecialchars($b->button_text ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                                                data-btnurl="<?= htmlspecialchars($b->button_url ?? '', ENT_QUOTES, 'UTF-8') ?>"
                                                                 data-urutan="<?= $b->urutan ?>"
                                                                 data-status="<?= $b->status ?>"
                                                                 title="Edit Banner">
                                                             <i class="bi bi-pencil-fill"></i>
                                                         </button>
                                                         <a href="<?= base_url('admin_banner/delete/'.$b->id) ?>" 
-                                                           class="btn btn-sm btn-light rounded-pill px-2 py-1 text-danger shadow-sm"
-                                                           onclick="return confirm('Hapus banner ini dari slider?')"
-                                                           title="Hapus Banner">
+                                                            class="btn btn-sm btn-light rounded-pill px-2 py-1 text-danger shadow-sm"
+                                                            onclick="return confirm('Hapus banner ini dari slider?')"
+                                                            title="Hapus Banner">
                                                             <i class="bi bi-trash-fill"></i>
                                                         </a>
                                                     </div>
@@ -189,31 +236,42 @@
 <div class="modal fade" id="modalEditBanner" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
-            <form method="post" action="<?= base_url('admin_banner/update') ?>" enctype="multipart/form-data">
+            <form method="post" id="formEditBanner" action="" enctype="multipart/form-data">
                 <input type="hidden" name="id" id="edit_id">
 
                 <div class="modal-header px-4 pt-4 pb-3 border-0 bg-light">
                     <div>
                         <h5 class="modal-title fw-bold text-dark mb-1">Edit Banner Slider</h5>
-                        <p class="text-muted small mb-0">Ubah judul, urutan, atau ganti file gambar.</p>
+                        <p class="text-muted small mb-0">Ubah judul, teks tombol, urutan, atau ganti file gambar.</p>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body px-4 py-3">
                     <div class="mb-3">
-                        <label class="form-label fw-bold small text-muted">Judul Banner</label>
-                        <input type="text" name="judul" id="edit_judul" class="form-control rounded-3">
+                        <label class="form-label fw-bold small text-muted">Judul Banner <span class="text-danger">*</span></label>
+                        <input type="text" name="judul" id="edit_judul" class="form-control rounded-3" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Subjudul</label>
+                        <input type="text" name="subjudul" id="edit_subjudul" class="form-control rounded-3">
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold small text-muted">Deskripsi Singkat</label>
-                        <textarea name="deskripsi" id="edit_deskripsi" class="form-control rounded-3" rows="3"></textarea>
+                        <textarea name="deskripsi" id="edit_deskripsi" class="form-control rounded-3" rows="2"></textarea>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold small text-muted">Tautan / Link</label>
-                        <input type="text" name="link" id="edit_link" class="form-control rounded-3">
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-bold small text-muted">Teks Tombol</label>
+                            <input type="text" name="button_text" id="edit_btntext" class="form-control rounded-3">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bold small text-muted">Tautan Tombol</label>
+                            <input type="text" name="button_url" id="edit_btnurl" class="form-control rounded-3">
+                        </div>
                     </div>
 
                     <div class="row g-2 mb-3">
@@ -224,8 +282,8 @@
                         <div class="col-6">
                             <label class="form-label fw-bold small text-muted">Status</label>
                             <select name="status" id="edit_status" class="form-select rounded-3">
-                                <option value="1">Aktif</option>
-                                <option value="0">Nonaktif</option>
+                                <option value="Published">Published (Tampil)</option>
+                                <option value="Draft">Draft (Disimpan)</option>
                             </select>
                         </div>
                     </div>
@@ -270,12 +328,17 @@ document.addEventListener('DOMContentLoaded', function(){
     const editBtns = document.querySelectorAll('.btn-edit-banner');
     editBtns.forEach(btn => {
         btn.addEventListener('click', function(){
-            document.getElementById('edit_id').value = this.dataset.id;
+            const id = this.dataset.id;
+            document.getElementById('edit_id').value = id;
             document.getElementById('edit_judul').value = this.dataset.judul;
+            document.getElementById('edit_subjudul').value = this.dataset.subjudul;
             document.getElementById('edit_deskripsi').value = this.dataset.deskripsi;
-            document.getElementById('edit_link').value = this.dataset.link;
+            document.getElementById('edit_btntext').value = this.dataset.btntext;
+            document.getElementById('edit_btnurl').value = this.dataset.btnurl;
             document.getElementById('edit_urutan').value = this.dataset.urutan;
             document.getElementById('edit_status').value = this.dataset.status;
+
+            document.getElementById('formEditBanner').action = '<?= base_url('admin_banner/update/') ?>' + id;
 
             var modal = new bootstrap.Modal(document.getElementById('modalEditBanner'));
             modal.show();

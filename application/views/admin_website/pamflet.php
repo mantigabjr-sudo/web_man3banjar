@@ -31,10 +31,10 @@
                         </span>
                         <h2 class="fw-bold mb-2 text-white">Pamflet &amp; Poster Pengumuman</h2>
                         <p class="mb-3 text-white-50" style="font-size: 14px; max-width: 620px;">
-                            Kelola arsip pamflet digital, poster kegiatan, brosur PMB, dan infografis pengumuman yang dapat dilihat dan diunduh oleh publik.
+                            Kelola arsip pamflet digital, poster kegiatan, brosur PMB, dan infografis pengumuman yang dapat dilihat dan diunduh oleh publik. Terbitkan pamflet agar tampil di beranda dan arsip publik.
                         </p>
                         <div class="d-flex flex-wrap gap-2 pt-1">
-                            <a href="<?= base_url() ?>" target="_blank" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm">
+                            <a href="<?= base_url('website/pamflet') ?>" target="_blank" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm">
                                 <i class="bi bi-box-arrow-up-right text-success me-1"></i> Lihat di Website
                             </a>
                         </div>
@@ -53,14 +53,24 @@
                         <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-cloud-arrow-up-fill text-success me-2"></i> Unggah Pamflet Baru</h6>
                     </div>
                     <div class="card-body p-4">
-                        <form method="post" action="<?= base_url('admin_website/add_pamflet') ?>" enctype="multipart/form-data">
+                        <form method="post" action="<?= base_url('admin_website/save_pamflet') ?>" enctype="multipart/form-data">
                             <div class="mb-3">
-                                <label class="form-label fw-bold small text-muted">Judul Pamflet / Pengumuman</label>
+                                <label class="form-label fw-bold small text-muted">Judul Pamflet <span class="text-danger">*</span></label>
                                 <input type="text" name="judul" class="form-control rounded-3" placeholder="Contoh: Brosur PPDB 2026/2027" required>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label fw-bold small text-muted">Pilih File Gambar</label>
+                                <label class="form-label fw-bold small text-muted">Tanggal Publikasi</label>
+                                <input type="date" name="tanggal" class="form-control rounded-3" value="<?= date('Y-m-d') ?>">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted">Deskripsi Singkat (Opsional)</label>
+                                <textarea name="deskripsi" class="form-control rounded-3" rows="3" placeholder="Keterangan singkat pamflet..."></textarea>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold small text-muted">Pilih File Gambar <span class="text-danger">*</span></label>
                                 <input type="file" name="gambar" class="form-control rounded-3 mb-2" id="inputPamflet" accept="image/*" required>
                                 
                                 <div class="p-2 border rounded-3 bg-light text-center" id="previewPamflet" style="min-height: 120px; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 12px;">
@@ -88,10 +98,10 @@
                             <table class="table table-hover align-middle mb-0" style="width:100%">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th style="width:100px;" class="ps-4">Preview</th>
-                                        <th>Judul Pamflet</th>
-                                        <th style="width:140px;">Tanggal Unggah</th>
-                                        <th style="width:130px;" class="text-end pe-4">Aksi</th>
+                                        <th style="width:90px;" class="ps-4">Preview</th>
+                                        <th>Judul &amp; Informasi</th>
+                                        <th style="width:110px;" class="text-center">Status</th>
+                                        <th style="width:140px;" class="text-end pe-4">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -104,24 +114,56 @@
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach($pamflet as $p): ?>
+                                            <?php
+                                            $pamflet_url = base_url('assets/pamflet/'.$p->gambar);
+                                            ?>
                                             <tr>
                                                 <td class="ps-4">
-                                                    <img src="<?= base_url('uploads/pamflet/'.$p->gambar) ?>" 
-                                                         alt="Pamflet" 
-                                                         class="rounded-3 shadow-sm"
-                                                         style="width:80px; height:90px; object-fit:cover; border:1px solid #e2e8f0;">
+                                                    <a href="<?= $pamflet_url ?>" target="_blank">
+                                                        <img src="<?= $pamflet_url ?>" 
+                                                             alt="Pamflet" 
+                                                             class="rounded-3 shadow-sm"
+                                                             style="width:70px; height:80px; object-fit:cover; border:1px solid #e2e8f0;">
+                                                    </a>
                                                 </td>
                                                 <td>
                                                     <div class="fw-bold text-dark" style="font-size:14px;"><?= htmlspecialchars($p->judul ?? '-', ENT_QUOTES, 'UTF-8') ?></div>
-                                                    <div class="small text-muted mt-1"><?= htmlspecialchars($p->gambar ?? '', ENT_QUOTES, 'UTF-8') ?></div>
+                                                    <?php if(!empty($p->deskripsi)): ?>
+                                                        <div class="small text-muted text-truncate" style="max-width: 260px;"><?= htmlspecialchars($p->deskripsi, ENT_QUOTES, 'UTF-8') ?></div>
+                                                    <?php endif; ?>
+                                                    <div class="small text-muted mt-1">
+                                                        <i class="bi bi-calendar3 me-1"></i><?= !empty($p->tanggal) ? date('d M Y', strtotime($p->tanggal)) : (!empty($p->created_at) ? date('d M Y', strtotime($p->created_at)) : '-') ?>
+                                                    </div>
                                                 </td>
-                                                <td>
-                                                    <span class="small text-muted"><?= !empty($p->created_at) ? date('d M Y', strtotime($p->created_at)) : '-' ?></span>
+                                                <td class="text-center">
+                                                    <?php if($p->status === 'Published'): ?>
+                                                        <span class="badge bg-success-subtle text-success fw-bold rounded-pill px-3 py-1">
+                                                            <i class="bi bi-check-circle-fill me-1"></i> Published
+                                                        </span>
+                                                    <?php else: ?>
+                                                        <span class="badge bg-secondary-subtle text-secondary fw-bold rounded-pill px-3 py-1">
+                                                            <i class="bi bi-clock me-1"></i> Draft
+                                                        </span>
+                                                    <?php endif; ?>
                                                 </td>
                                                 <td class="text-end pe-4">
                                                     <div class="d-inline-flex gap-1">
-                                                        <a href="<?= base_url('uploads/pamflet/'.$p->gambar) ?>" target="_blank" class="btn btn-sm btn-light rounded-pill px-2 py-1 text-primary shadow-sm" title="Lihat Asli">
-                                                            <i class="bi bi-eye-fill"></i>
+                                                        <?php if($p->status === 'Published'): ?>
+                                                            <a href="<?= base_url('admin_website/draft_pamflet/'.$p->id) ?>" 
+                                                               class="btn btn-sm btn-light rounded-pill px-2 py-1 text-warning shadow-sm"
+                                                               title="Jadikan Draft">
+                                                                <i class="bi bi-eye-slash-fill"></i>
+                                                            </a>
+                                                        <?php else: ?>
+                                                            <a href="<?= base_url('admin_website/publish_pamflet/'.$p->id) ?>" 
+                                                               class="btn btn-sm btn-light rounded-pill px-2 py-1 text-success shadow-sm"
+                                                               title="Terbitkan ke Website (Publish)">
+                                                                <i class="bi bi-eye-fill"></i>
+                                                            </a>
+                                                        <?php endif; ?>
+
+                                                        <a href="<?= $pamflet_url ?>" target="_blank" class="btn btn-sm btn-light rounded-pill px-2 py-1 text-primary shadow-sm" title="Lihat Asli">
+                                                            <i class="bi bi-box-arrow-up-right"></i>
                                                         </a>
                                                         <a href="<?= base_url('admin_website/delete_pamflet/'.$p->id) ?>" 
                                                            class="btn btn-sm btn-light rounded-pill px-2 py-1 text-danger shadow-sm"

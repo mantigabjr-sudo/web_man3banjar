@@ -488,7 +488,8 @@ if(!empty($profil_website->whatsapp)){
         <?php
         $video_raw_url = '';
         if(!empty($video_profil)){
-            if(!empty($video_profil->url_video)) $video_raw_url = $video_profil->url_video;
+            if(!empty($video_profil->youtube_url)) $video_raw_url = $video_profil->youtube_url;
+            elseif(!empty($video_profil->url_video)) $video_raw_url = $video_profil->url_video;
             elseif(!empty($video_profil->link_video)) $video_raw_url = $video_profil->link_video;
             elseif(!empty($video_profil->url)) $video_raw_url = $video_profil->url;
             elseif(!empty($video_profil->link)) $video_raw_url = $video_profil->link;
