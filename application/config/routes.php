@@ -51,6 +51,22 @@ $route['kontak']                = 'website/kontak';
 $route['website/kontak']        = 'website/kontak';
 $route['hubungi_kami']          = 'website/kontak';
 
+// Halaman Publik Madrasah & Alias Navigasi
+$route['tentang']               = 'website/tentang';
+$route['website/tentang']       = 'website/tentang';
+$route['profil']                = 'website/tentang';
+$route['sejarah']               = 'website/sejarah';
+$route['visi_misi']             = 'website/visi_misi';
+$route['fasilitas']             = 'website/fasilitas';
+$route['ptk']                   = 'website/ptk';
+$route['galeri']                = 'website/galeri';
+$route['pamflet']               = 'website/pamflet';
+$route['download']              = 'website/download';
+$route['struktur']              = 'website/struktur';
+$route['struktur/(:any)']       = 'website/struktur/$1';
+$route['website/portal']        = 'website/berita';
+$route['portal']                = 'website/berita';
+
 // REST API Sync ke LabSys Server Lokal (Two-Way Sync)
 $route['api/sync/status']          = 'api_sync/status';
 $route['api/sync/berita']          = 'api_sync/sync_berita';

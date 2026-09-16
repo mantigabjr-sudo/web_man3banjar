@@ -48,11 +48,11 @@ $filter_tanggal_akhir = $filter_tanggal_akhir ?? '';
                             <button type="button" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalTambahBerita">
                                 <i class="bi bi-plus-circle-fill text-success me-1"></i> Tulis Berita Baru
                             </button>
-                            <a href="<?= base_url('admin_cloud_sync/sync_berita') ?>" class="btn btn-outline-light fw-bold rounded-pill px-3 shadow-sm" onclick="return confirm('Kirim seluruh berita lokal ke website online man3banjar.sch.id?');">
-                                <i class="bi bi-cloud-arrow-up-fill me-1"></i> Sinkronisasi ke Cloud
+                            <a href="<?= base_url('website/berita') ?>" target="_blank" class="btn btn-outline-light fw-bold rounded-pill px-3 shadow-sm">
+                                <i class="bi bi-box-arrow-up-right me-1"></i> Lihat Berita Publik
                             </a>
                             <a href="<?= base_url() ?>" target="_blank" class="btn btn-outline-light fw-bold rounded-pill px-3 shadow-sm">
-                                <i class="bi bi-box-arrow-up-right me-1"></i> Halaman Depan
+                                <i class="bi bi-globe me-1"></i> Halaman Depan
                             </a>
                         </div>
                     </div>

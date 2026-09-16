@@ -49,11 +49,11 @@ $total_sembunyi = $total_ptk - $total_tampil;
                             Atur guru dan tenaga kependidikan yang ditampilkan pada direktori website madrasah. Tentukan nomor urutan untuk mengatur posisi tampilan personil.
                         </p>
                         <div class="d-flex flex-wrap gap-2 pt-1">
-                            <a href="<?= base_url('admin_ptk') ?>" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm">
-                                <i class="bi bi-person-lines-fill text-success me-1"></i> Master Data PTK
+                            <a href="<?= base_url('website/ptk') ?>" target="_blank" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm">
+                                <i class="bi bi-box-arrow-up-right text-success me-1"></i> Lihat Direktori Website
                             </a>
-                            <a href="<?= base_url('ptk') ?>" target="_blank" class="btn btn-outline-light fw-bold rounded-pill px-3 shadow-sm">
-                                <i class="bi bi-box-arrow-up-right me-1"></i> Pratinjau di Website
+                            <a href="<?= base_url('admin_struktur') ?>" class="btn btn-outline-light fw-bold rounded-pill px-3 shadow-sm">
+                                <i class="bi bi-diagram-3 me-1"></i> Struktur Organisasi
                             </a>
                         </div>
                     </div>
@@ -184,10 +184,6 @@ $total_sembunyi = $total_ptk - $total_tampil;
 
                                         <td class="text-end pe-4">
                                             <div class="d-inline-flex gap-1">
-                                                <a href="<?= base_url('admin_ptk/detail/'.$p->id) ?>" class="btn btn-sm btn-light rounded-pill px-2 py-1 text-primary shadow-sm" title="Profil">
-                                                    <i class="bi bi-person-fill"></i>
-                                                </a>
-
                                                 <?php if(!empty($p->tampil_website)): ?>
                                                     <a href="<?= base_url('admin_website/hide_ptk/'.$p->id) ?>" 
                                                        class="btn btn-sm btn-light rounded-pill px-2 py-1 text-warning shadow-sm"

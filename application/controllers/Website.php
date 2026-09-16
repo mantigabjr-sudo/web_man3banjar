@@ -794,6 +794,16 @@ class Website extends CI_Controller {
         $this->load->view('public/fasilitas', $data);
     }
 
+    public function tentang() {
+        $data = $this->base_data('Tentang Madrasah');
+        if(!empty($data['profil_website']->fasilitas)){
+            $data['fasilitas_items'] = array_filter(array_map('trim', explode("\n", $data['profil_website']->fasilitas)));
+        } else {
+            $data['fasilitas_items'] = [];
+        }
+        $this->load->view('public/tentang', $data);
+    }
+
     public function download() {
         $data = $this->base_data('Download File');
         $data['downloads'] = $this->db
