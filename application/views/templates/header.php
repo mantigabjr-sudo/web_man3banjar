@@ -9,19 +9,25 @@
 	<link rel="shortcut icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
 	<link rel="apple-touch-icon" href="<?= base_url('assets/img/favicon.png') ?>">
 
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;750;800&display=swap" rel="stylesheet">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
 	<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
     <link rel="stylesheet" href="<?= base_url('assets/css/berita-admin-polish.css?v=1') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/css/admin-modern.css?v=2.0') ?>">
 	
    <style>
 
 body{
-    background: linear-gradient(135deg,#f8fffb,#eefcf3,#ffffff);
-    font-family:'Segoe UI',sans-serif;
-    color:#1e293b;
+    background: #f8fafc;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #0f172a;
 }
 
 .sidebar{

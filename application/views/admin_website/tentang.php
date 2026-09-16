@@ -3,217 +3,163 @@
 
 <div class="content">
 
-<style>
-.about-admin-hero{
-    background:
-        radial-gradient(circle at top right, rgba(34,197,94,.16), transparent 34%),
-        linear-gradient(135deg,#ecfdf5,#ffffff);
-    border:1px solid #dcfce7;
-    border-radius:24px;
-    padding:22px;
-    box-shadow:0 14px 35px rgba(15,23,42,.06);
-    margin-bottom:20px;
-}
-
-.about-admin-hero p{
-    color:#64748b;
-    font-weight:700;
-    margin:5px 0 0;
-}
-
-.about-card{
-    background:#fff;
-    border:1px solid #e2e8f0;
-    border-radius:24px;
-    box-shadow:0 14px 35px rgba(15,23,42,.06);
-    overflow:hidden;
-}
-
-.about-head{
-    padding:18px 20px;
-    border-bottom:1px solid #e2e8f0;
-}
-
-.about-head h5{
-    margin:0;
-    color:#14532d;
-    font-weight:950;
-}
-
-.about-head small{
-    display:block;
-    color:#64748b;
-    font-weight:700;
-    margin-top:4px;
-}
-
-.about-body{
-    padding:22px;
-}
-
-.about-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:16px;
-}
-
-.about-field{
-    margin-bottom:0;
-}
-
-.about-field label{
-    display:block;
-    color:#334155;
-    font-size:13px;
-    font-weight:850;
-    margin-bottom:7px;
-}
-
-.about-input,
-.about-textarea{
-    width:100%;
-    border:1px solid #cbd5e1;
-    background:#f8fafc;
-    border-radius:16px;
-    padding:11px 13px;
-    color:#0f172a;
-    font-weight:700;
-    outline:none;
-}
-
-.about-input{
-    min-height:46px;
-}
-
-.about-textarea{
-    min-height:190px;
-    resize:vertical;
-    line-height:1.7;
-}
-
-.about-input:focus,
-.about-textarea:focus{
-    background:white;
-    border-color:#22c55e;
-    box-shadow:0 0 0 4px rgba(34,197,94,.12);
-}
-
-.about-full{
-    grid-column:1 / -1;
-}
-
-.about-help{
-    display:block;
-    color:#64748b;
-    font-size:12px;
-    font-weight:700;
-    margin-top:6px;
-}
-
-.about-footer{
-    padding:18px 20px;
-    border-top:1px solid #e2e8f0;
-    display:flex;
-    justify-content:flex-end;
-}
-
-.btn-about-save{
-    min-height:46px;
-    border:0;
-    border-radius:16px;
-    padding:0 18px;
-    background:linear-gradient(135deg,#15803d,#22c55e);
-    color:white;
-    font-weight:950;
-    box-shadow:0 12px 26px rgba(22,163,74,.22);
-}
-
-@media(max-width:768px){
-    .about-grid{
-        grid-template-columns:1fr;
-    }
-
-    .about-admin-hero,
-    .about-card{
-        border-radius:20px;
-    }
-
-    .about-body{
-        padding:18px;
-    }
-
-    .btn-about-save{
-        width:100%;
-    }
-}
-</style>
-
-<div class="about-admin-hero">
-    <h2 class="glow mb-1">Tentang Madrasah</h2>
-    <p>Kelola sejarah, fasilitas, prestasi, ekstrakurikuler, dan lokasi madrasah pada halaman website.</p>
-</div>
-
-<?php if($this->session->flashdata('success')): ?>
-    <div class="alert alert-success rounded-4">
-        <?= $this->session->flashdata('success') ?>
-    </div>
-<?php endif; ?>
-
-<form method="post" action="<?= base_url('admin_website/save_tentang') ?>">
-
-    <div class="about-card">
-        <div class="about-head">
-            <h5>Konten Tentang Madrasah</h5>
-            <small>Isi setiap data dengan rapi. Untuk daftar fasilitas/prestasi/ekstrakurikuler, isi satu item per baris.</small>
+    <div class="page-header">
+        <div class="page-title-group">
+            <span class="page-category">Kelola Website</span>
+            <h1 class="page-title">Tentang Madrasah</h1>
+            <p class="page-subtitle">Kelola narasi sejarah, daftar fasilitas unggulan, prestasi, ekstrakurikuler, dan peta lokasi madrasah.</p>
         </div>
+        <div class="header-actions">
+            <a href="https://man3banjar.sch.id/tentang" target="_blank" class="btn-modern btn-modern-light">
+                <i class="fa fa-external-link-alt me-1"></i> Pratinjau Halaman
+            </a>
+        </div>
+    </div>
 
-        <div class="about-body">
-            <div class="about-grid">
+    <?php if($this->session->flashdata('success')): ?>
+        <div class="alert alert-success d-flex align-items-center mb-4" role="alert">
+            <i class="fa fa-check-circle me-2 fs-5"></i>
+            <div><?= $this->session->flashdata('success') ?></div>
+        </div>
+    <?php endif; ?>
 
-                <div class="about-field about-full">
-                    <label>Sejarah / Tentang Madrasah</label>
-                    <textarea name="sejarah" class="about-textarea"><?= htmlspecialchars($profil->sejarah ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
+    <?php if($this->session->flashdata('error')): ?>
+        <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+            <i class="fa fa-exclamation-circle me-2 fs-5"></i>
+            <div><?= $this->session->flashdata('error') ?></div>
+        </div>
+    <?php endif; ?>
+
+    <form method="post" action="<?= base_url('admin_website/save_tentang') ?>">
+        <div class="row g-4">
+            
+            <!-- Kolom Sejarah & Maps -->
+            <div class="col-lg-7">
+                <div class="modern-card mb-4">
+                    <div class="modern-card-header">
+                        <h2 class="modern-card-title">Sejarah & Profil Singkat</h2>
+                        <p class="modern-card-subtitle">Ceritakan sejarah berdirinya madrasah, perjalanan, dan perkembangannya.</p>
+                    </div>
+                    <div class="modern-card-body">
+                        <div class="form-group mb-0">
+                            <label class="form-label fw-bold">Narasi Sejarah Madrasah</label>
+                            <textarea name="sejarah" 
+                                      class="input-modern" 
+                                      rows="9"
+                                      placeholder="Tuliskan sejarah berdirinya MAN 3 Banjar..."
+                                      style="line-height:1.7;"><?= htmlspecialchars($profil->sejarah ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
+                            <div class="form-text mt-2 text-muted">
+                                <i class="fa fa-info-circle me-1"></i> Gunakan paragraf yang terstruktur agar nyaman dibaca oleh pengunjung website.
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="about-field">
-                    <label>Fasilitas</label>
-                    <textarea name="fasilitas" class="about-textarea"><?= htmlspecialchars($profil->fasilitas ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
-                    <small class="about-help">Contoh: Laboratorium Komputer, Perpustakaan, Musholla. Isi satu per baris.</small>
-                </div>
+                <div class="modern-card">
+                    <div class="modern-card-header">
+                        <h2 class="modern-card-title">Integrasi Peta Lokasi</h2>
+                        <p class="modern-card-subtitle">Sematkan peta Google Maps resmi madrasah.</p>
+                    </div>
+                    <div class="modern-card-body">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold">Google Maps Embed URL</label>
+                            <input type="text"
+                                   name="maps_embed_url"
+                                   class="input-modern"
+                                   value="<?= htmlspecialchars($profil->maps_embed_url ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                   placeholder="https://www.google.com/maps/embed?pb=...">
+                            <div class="form-text mt-2 text-muted">
+                                <i class="fa fa-map-marker-alt me-1 text-danger"></i> Dapatkan melalui: Google Maps &rarr; Bagikan (Share) &rarr; Sematkan peta (Embed a map) &rarr; Salin URL pada atribut <code>src="..."</code>.
+                            </div>
+                        </div>
 
-                <div class="about-field">
-                    <label>Prestasi</label>
-                    <textarea name="prestasi" class="about-textarea"><?= htmlspecialchars($profil->prestasi ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
-                    <small class="about-help">Isi satu prestasi per baris.</small>
+                        <?php if(!empty($profil->maps_embed_url)): ?>
+                            <div class="mt-3">
+                                <label class="form-label fw-bold text-muted small">Pratinjau Peta Saat Ini:</label>
+                                <div style="border-radius:14px; overflow:hidden; border:1px solid #e2e8f0; height:220px;">
+                                    <iframe src="<?= htmlspecialchars($profil->maps_embed_url, ENT_QUOTES, 'UTF-8') ?>" 
+                                            width="100%" 
+                                            height="100%" 
+                                            style="border:0;" 
+                                            allowfullscreen="" 
+                                            loading="lazy" 
+                                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
-
-                <div class="about-field">
-                    <label>Ekstrakurikuler</label>
-                    <textarea name="ekstrakurikuler" class="about-textarea"><?= htmlspecialchars($profil->ekstrakurikuler ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
-                    <small class="about-help">Isi satu ekstrakurikuler per baris.</small>
-                </div>
-
-                <div class="about-field">
-                    <label>Google Maps Embed URL</label>
-                    <input type="text"
-                           name="maps_embed_url"
-                           class="about-input"
-                           value="<?= htmlspecialchars($profil->maps_embed_url ?? '', ENT_QUOTES, 'UTF-8') ?>"
-                           placeholder="https://www.google.com/maps/embed?...">
-                    <small class="about-help">Gunakan link embed dari Google Maps, bukan link biasa.</small>
-                </div>
-
             </div>
-        </div>
 
-        <div class="about-footer">
-            <button class="btn-about-save">
-                Simpan Tentang Madrasah
-            </button>
-        </div>
-    </div>
+            <!-- Kolom Fasilitas, Prestasi, Ekstrakurikuler -->
+            <div class="col-lg-5">
+                <div class="modern-card mb-4">
+                    <div class="modern-card-header">
+                        <h2 class="modern-card-title">Fasilitas Madrasah</h2>
+                        <p class="modern-card-subtitle">Fasilitas penunjang kegiatan belajar mengajar.</p>
+                    </div>
+                    <div class="modern-card-body">
+                        <div class="form-group mb-0">
+                            <label class="form-label fw-bold">Daftar Fasilitas (1 item per baris)</label>
+                            <textarea name="fasilitas" 
+                                      class="input-modern" 
+                                      rows="5"
+                                      placeholder="Gedung Laboratorium Komputer&#10;Perpustakaan Digital&#10;Musholla As-Salam&#10;Lapangan Futsal & Basket"><?= htmlspecialchars($profil->fasilitas ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
+                            <div class="form-text mt-2 text-muted">
+                                Pisahkan setiap fasilitas dengan tombol Enter (baris baru).
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-</form>
+                <div class="modern-card mb-4">
+                    <div class="modern-card-header">
+                        <h2 class="modern-card-title">Prestasi Siswa & Guru</h2>
+                        <p class="modern-card-subtitle">Pencapaian akademik & non-akademik.</p>
+                    </div>
+                    <div class="modern-card-body">
+                        <div class="form-group mb-0">
+                            <label class="form-label fw-bold">Daftar Prestasi (1 item per baris)</label>
+                            <textarea name="prestasi" 
+                                      class="input-modern" 
+                                      rows="5"
+                                      placeholder="Juara 1 KSM Kimia Tingkat Provinsi 2025&#10;Juara 2 Lomba Robotik Nasional&#10;Medali Emas Olimpiade Bahasa Arab"><?= htmlspecialchars($profil->prestasi ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
+                            <div class="form-text mt-2 text-muted">
+                                Pisahkan setiap prestasi dengan tombol Enter (baris baru).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modern-card mb-4">
+                    <div class="modern-card-header">
+                        <h2 class="modern-card-title">Ekstrakurikuler</h2>
+                        <p class="modern-card-subtitle">Kegiatan minat dan bakat siswa.</p>
+                    </div>
+                    <div class="modern-card-body">
+                        <div class="form-group mb-0">
+                            <label class="form-label fw-bold">Daftar Ekstrakurikuler (1 item per baris)</label>
+                            <textarea name="ekstrakurikuler" 
+                                      class="input-modern" 
+                                      rows="5"
+                                      placeholder="Pramuka Gugus Depan MAN 3&#10;PMR (Palang Merah Remaja)&#10;Paskibraka&#10;Klub Robotik & Coding&#10;Hadrah & Seni Islami"><?= htmlspecialchars($profil->ekstrakurikuler ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
+                            <div class="form-text mt-2 text-muted">
+                                Pisahkan setiap ekstrakurikuler dengan tombol Enter (baris baru).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tombol Simpan -->
+                <div class="modern-card bg-white p-3">
+                    <button type="submit" class="btn-modern btn-modern-primary w-100 py-3 fs-6">
+                        <i class="fa fa-save me-2"></i> Simpan Perubahan Tentang Madrasah
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </form>
 
 </div>
 
