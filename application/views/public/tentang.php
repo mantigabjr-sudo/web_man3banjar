@@ -2,10 +2,12 @@
 
 <header class="web-archive-hero">
     <div class="container">
-        <div class="detail-breadcrumb justify-content-center" style="margin-bottom: 16px;">
+        <div class="detail-breadcrumb">
             <a href="<?= base_url() ?>"><i class="bi bi-house-door"></i> Beranda</a>
             <span>/</span>
             <strong>Profil Madrasah</strong>
+            <span>/</span>
+            <strong>Tentang Madrasah</strong>
         </div>
         <h1>Tentang Madrasah</h1>
         <p><?= htmlspecialchars($nama_madrasah ?? 'MAN 3 Banjar', ENT_QUOTES, 'UTF-8') ?></p>

@@ -16,19 +16,26 @@ if (!function_exists('get_initials_struktur')) {
 }
 ?>
 
-<header class="web-archive-hero text-center" style="background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.35), transparent 50%), radial-gradient(circle at bottom left, rgba(2, 44, 34, 0.5), transparent 50%), linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%) !important; color: #ffffff !important; padding: 55px 0 50px 0 !important;">
-    <div class="container d-flex flex-column align-items-center text-center">
-        <div class="detail-breadcrumb d-flex justify-content-center align-items-center mb-3">
-            <a href="<?= base_url() ?>" style="color: #a7f3d0 !important; text-decoration: none; font-weight: 600;"><i class="bi bi-house-door"></i> Beranda</a>
-            <span style="color: rgba(255,255,255,0.4); margin: 0 6px;">/</span>
-            <strong style="color: #ffffff; font-weight: 700;">Struktur Organisasi</strong>
+<header class="web-archive-hero">
+    <div class="container">
+        <div class="detail-breadcrumb">
+            <a href="<?= base_url() ?>"><i class="bi bi-house-door"></i> Beranda</a>
+            <span>/</span>
+            <strong>Profil Madrasah</strong>
+            <span>/</span>
+            <strong>Struktur Organisasi</strong>
         </div>
-        <h1 style="color: #ffffff !important; font-weight: 900; font-size: clamp(1.8rem, 3.5vw, 2.4rem); letter-spacing: -0.02em; margin-bottom: 8px; text-shadow: 0 2px 10px rgba(0,0,0,0.15);"><?= htmlspecialchars($kategori_nama, ENT_QUOTES, 'UTF-8') ?></h1>
-        <p style="color: #ecfdf5 !important; font-size: 14.5px; line-height: 1.6; margin: 0 auto; max-width: 680px; font-weight: 500;">Bagan Struktur Organisasi <?= htmlspecialchars($kategori_nama, ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($nama_madrasah ?? 'MAN 3 Banjar', ENT_QUOTES, 'UTF-8') ?></p>
+        <h1><?= htmlspecialchars($kategori_nama, ENT_QUOTES, 'UTF-8') ?></h1>
+        <p>Bagan Struktur Organisasi <?= htmlspecialchars($kategori_nama, ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($nama_madrasah ?? 'MAN 3 Banjar', ENT_QUOTES, 'UTF-8') ?></p>
     </div>
 </header>
 
-<section class="web-section" style="background: #f8fafc; padding: 40px 0 80px 0;">
+<?php 
+$active_profil_tab = 'struktur'; 
+$this->load->view('public/partials/subnav_profil', ['active_profil_tab' => $active_profil_tab]); 
+?>
+
+<section class="web-section" style="background: #f8fafc; padding: 10px 0 80px 0;">
     <div class="container">
 
         <!-- Navigasi Kategori Tab -->

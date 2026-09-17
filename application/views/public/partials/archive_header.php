@@ -25,7 +25,8 @@ if(!function_exists('web_clean')){
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="<?= base_url('assets/css/website-home.css?v=21') ?>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= base_url('assets/css/website-home.css?v=22') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/css/website-news-polish.css?v=2') ?>">
 </head>
 
@@ -33,8 +34,8 @@ if(!function_exists('web_clean')){
 
 <div class="web-topbar">
     <div class="container web-topbar-inner">
-        <span>Portal Resmi <?= htmlspecialchars($nama_madrasah, ENT_QUOTES, 'UTF-8') ?></span>
-        <span>Berita • PPDB • Akademik • Tata Usaha</span>
+        <span><i class="bi bi-building"></i> Portal Resmi <?= htmlspecialchars($nama_madrasah, ENT_QUOTES, 'UTF-8') ?></span>
+        <span><i class="bi bi-grid-3x3-gap-fill"></i> Berita • PPDB • Akademik • Tata Usaha</span>
     </div>
 </div>
 

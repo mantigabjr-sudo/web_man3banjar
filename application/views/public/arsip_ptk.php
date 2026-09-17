@@ -347,21 +347,26 @@ $m_kep  = $matrix['kependidikan'] ?? [];
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-<header class="ptk-hero-gradient">
+<header class="web-archive-hero">
     <div class="container">
-        <div class="detail-breadcrumb mb-2" style="color: rgba(255,255,255,0.85);">
-            <a href="<?= base_url() ?>" style="color: #ffffff; text-decoration: none;"><i class="bi bi-house-door"></i> Beranda</a>
-            <span class="mx-2">/</span>
-            <strong>Statistik &amp; Direktori PTK</strong>
+        <div class="detail-breadcrumb">
+            <a href="<?= base_url() ?>"><i class="bi bi-house-door"></i> Beranda</a>
+            <span>/</span>
+            <strong>Profil Madrasah</strong>
+            <span>/</span>
+            <strong>Direktori PTK</strong>
         </div>
-        <h1 class="fw-bold mb-2" style="font-size: 2.2rem;">Pendidik &amp; Tenaga Kependidikan</h1>
-        <p class="mb-0" style="color: rgba(255,255,255,0.9); font-size: 1.05rem;">
-            Profil statistik resmi, komposisi kepegawaian, dan direktori lengkap <?= htmlspecialchars($nama_madrasah ?? 'MAN 3 Banjar', ENT_QUOTES, 'UTF-8') ?>.
-        </p>
+        <h1>Pendidik &amp; Tenaga Kependidikan</h1>
+        <p>Profil statistik resmi, komposisi kepegawaian, dan direktori lengkap <?= htmlspecialchars($nama_madrasah ?? 'MAN 3 Banjar', ENT_QUOTES, 'UTF-8') ?></p>
     </div>
 </header>
 
-<section class="py-5" style="background: #f8fafc; min-height: 80vh;">
+<?php 
+$active_profil_tab = 'ptk'; 
+$this->load->view('public/partials/subnav_profil', ['active_profil_tab' => $active_profil_tab]); 
+?>
+
+<section class="web-section" style="background: #f8fafc; padding: 10px 0 80px 0;">
     <div class="container">
 
         <!-- ═══ 1. STATS HIGHLIGHT CARDS (4 CARDS) ═══ -->

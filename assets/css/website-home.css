@@ -893,63 +893,138 @@ img { max-width: 100%; }
 /* ─── Archive Pages ─── */
 .web-archive-hero {
     background: 
-        radial-gradient(circle at 80% 10%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
-        linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        radial-gradient(circle at top right, rgba(16, 185, 129, 0.35), transparent 50%),
+        radial-gradient(circle at bottom left, rgba(2, 44, 34, 0.5), transparent 50%),
+        linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%) !important;
     position: relative;
     overflow: hidden;
-    padding: 60px 0 48px;
+    padding: 55px 0 50px;
     text-align: center;
-    border-bottom: 1px solid #e2e8f0;
+    color: #ffffff !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 .web-archive-hero::before {
-    display: none;
+    content: "";
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, rgba(0,0,0,0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
 }
 .web-archive-hero .container {
     position: relative;
     z-index: 2;
 }
 .web-archive-hero h1 {
-    color: #0f172a;
-    font-size: 2.5rem;
+    color: #ffffff !important;
+    font-size: clamp(1.8rem, 3.5vw, 2.4rem);
     font-weight: 800;
-    margin-bottom: 12px;
-    text-shadow: none;
-    letter-spacing: -0.025em;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.18);
+    letter-spacing: -0.02em;
 }
 .web-archive-hero p {
-    color: #475569;
-    font-size: 1.1rem;
-    max-width: 650px;
+    color: #ecfdf5 !important;
+    font-size: 15px;
+    max-width: 680px;
     margin: 0 auto;
     font-weight: 500;
     line-height: 1.6;
 }
 .web-archive-hero .detail-breadcrumb {
+    display: flex;
+    align-items: center;
     justify-content: center;
-    margin-bottom: 16px;
+    gap: 8px;
+    margin-bottom: 14px;
+    font-size: 13.5px;
 }
 .web-archive-hero .detail-breadcrumb a {
-    color: #64748b !important;
+    color: #a7f3d0 !important;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
 }
 .web-archive-hero .detail-breadcrumb a:hover {
-    color: var(--c-emerald-600) !important;
+    color: #ffffff !important;
+    text-decoration: underline;
 }
 .web-archive-hero .detail-breadcrumb span {
-    color: #cbd5e1 !important;
+    color: rgba(255, 255, 255, 0.4) !important;
 }
 .web-archive-hero .detail-breadcrumb strong {
-    color: #0f172a !important;
+    color: #ffffff !important;
+    font-weight: 700;
 }
 .web-archive-hero .web-section-label {
     display: inline-block;
     padding: 6px 14px;
     border-radius: var(--radius-full);
-    background: #ecfdf5;
-    color: var(--c-emerald-700);
+    background: rgba(16, 185, 129, 0.2);
+    color: #a7f3d0;
     font-size: 12px;
     font-weight: 700;
     margin-bottom: 12px;
-    border: 1px solid #dcfce7;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* ─── Sub-Nav Pills Profil Madrasah ─── */
+.web-subnav-wrapper {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 14px 0;
+    margin-bottom: 35px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+.web-subnav-pills {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.web-subnav-pills .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #475569;
+    text-decoration: none;
+    background: #f1f5f9;
+    transition: all 0.25s ease;
+    border: 1px solid transparent;
+}
+.web-subnav-pills .nav-link:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+    transform: translateY(-1px);
+}
+.web-subnav-pills .nav-link.active {
+    background: #065f46;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(6, 95, 70, 0.25);
+    border-color: #047857;
+}
+
+/* ─── Standardized Content Card ─── */
+.web-content-card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.web-content-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
+    border-color: #cbd5e1;
 }
 .web-archive-filter {
     margin-bottom: 28px;

@@ -83,7 +83,7 @@ $kategori = !empty($berita->kategori) ? $berita->kategori : 'Berita Madrasah';
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Gunakan design system utama -->
-    <link rel="stylesheet" href="<?= base_url('assets/css/website-home.css?v=21') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/css/website-home.css?v=22') ?>">
 
     <script type="application/ld+json">
     <?= json_encode([
@@ -108,9 +108,9 @@ $kategori = !empty($berita->kategori) ? $berita->kategori : 'Berita Madrasah';
         ],
         'mainEntityOfPage' => [
             '@type' => 'WebPage',
-            '@id' => $canonical_url
+            '@id' => current_url()
         ]
-    ], JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) ?>
+    ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ?>
     </script>
 </head>
 
@@ -156,15 +156,36 @@ $kategori = !empty($berita->kategori) ? $berita->kategori : 'Berita Madrasah';
                         Profil Madrasah
                     </a>
                     <ul class="dropdown-menu shadow-sm">
-                        <li><a class="dropdown-item" href="<?= base_url() ?>#tentang">Sejarah & Fasilitas</a></li>
-                        <li><a class="dropdown-item" href="<?= base_url() ?>#visi-misi">Visi & Misi</a></li>
-                        <li><a class="dropdown-item" href="<?= base_url() ?>#profil">Profil Singkat</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('website/sejarah') ?>">Sejarah</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('website/visi_misi') ?>">Visi &amp; Misi</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('website/fasilitas') ?>">Fasilitas</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="<?= base_url('website/struktur/tenaga-pendidik') ?>">Tenaga Pendidik</a></li>
-                        <li><a class="dropdown-item" href="<?= base_url('website/struktur/kependidikan') ?>">Kependidikan</a></li>
-                        <li><a class="dropdown-item" href="<?= base_url('website/struktur/koordinator') ?>">Koordinator</a></li>
+                        <li><h6 class="dropdown-header text-uppercase fw-bold text-success" style="font-size: 10.5px; letter-spacing: 0.5px;"><i class="bi bi-diagram-3 me-1"></i> Struktur Organisasi PTK</h6></li>
+                        <li>
+                            <a class="dropdown-item py-1" href="<?= base_url('website/struktur/tenaga-pendidik') ?>">
+                                <div class="fw-semibold" style="font-size: 13.5px;">Tenaga Pendidik</div>
+                                <small class="text-muted d-block" style="font-size: 11px;">Bagan Struktur Dewan Guru &amp; Pimpinan</small>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-1" href="<?= base_url('website/struktur/kependidikan') ?>">
+                                <div class="fw-semibold" style="font-size: 13.5px;">Kependidikan</div>
+                                <small class="text-muted d-block" style="font-size: 11px;">Staf Tata Usaha &amp; Layanan Madrasah</small>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-1" href="<?= base_url('website/struktur/koordinator') ?>">
+                                <div class="fw-semibold" style="font-size: 13.5px;">Koordinator &amp; Ekskul</div>
+                                <small class="text-muted d-block" style="font-size: 11px;">Pembina Kegiatan &amp; Ekstrakurikuler</small>
+                            </a>
+                        </li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="<?= base_url('website/ptk') ?>">Direktori PTK Lengkap</a></li>
+                        <li>
+                            <a class="dropdown-item py-1" href="<?= base_url('website/ptk') ?>">
+                                <div class="fw-semibold text-success" style="font-size: 13.5px;"><i class="bi bi-people-fill me-1"></i> Direktori PTK Lengkap</div>
+                                <small class="text-muted d-block" style="font-size: 11px;">Daftar Profil Guru &amp; Tenaga Kependidikan</small>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
