@@ -344,11 +344,18 @@ class Admin_foto_ijazah extends CI_Controller {
         $this->session->set_flashdata('success', 'Verifikasi berhasil di-reset. Foto mentah dikembalikan ke galeri belum diverifikasi.');
         
         if($this->input->is_ajax_request() || $this->input->get('is_ajax')){
+            $tot_verified = $this->db->where('status', 'verified')->count_all_results('foto_ijazah_verifikasi');
+            $tot_pending  = $this->db->where('status', 'pending')->count_all_results('foto_ijazah_verifikasi');
+
             header('Content-Type: application/json; charset=utf-8');
             echo json_encode([
-                'status'  => 'success',
-                'message' => 'Verifikasi berhasil di-reset. Foto mentah dikembalikan ke galeri.',
-                'id'      => $id
+                'status'               => 'success',
+                'message'              => 'Verifikasi berhasil di-reset. Foto mentah dikembalikan ke galeri.',
+                'id'                   => (int)$id,
+                'file_mentah'          => $verif->file_mentah,
+                'foto_url'             => base_url('uploads/foto_ijazah/mentah/' . $verif->file_mentah),
+                'total_verified'       => $tot_verified,
+                'total_pending_photos' => $tot_pending
             ]);
             return;
         }
@@ -691,18 +698,29 @@ class Admin_foto_ijazah extends CI_Controller {
 
         $this->session->set_flashdata('success', 'Sukses! Foto untuk siswa <strong>' . htmlspecialchars($siswa['nama_lengkap']) . '</strong> berhasil diverifikasi langsung (File: ' . $new_filename . ').');
 
+        $tot_verified = $this->db->where('status', 'verified')->count_all_results('foto_ijazah_verifikasi');
+        $tot_pending  = $this->db->where('status', 'pending')->count_all_results('foto_ijazah_verifikasi');
+
         if($this->input->is_ajax_request() || $this->input->post('is_ajax')){
             header('Content-Type: application/json; charset=utf-8');
             echo json_encode([
-                'status'        => 'success',
-                'message'       => 'Sukses! Foto untuk siswa ' . $siswa['nama_lengkap'] . ' berhasil diverifikasi.',
-                'siswa_id'      => $siswa_id,
-                'verif_id'      => $foto_id,
-                'nama_lengkap'  => $siswa['nama_lengkap'],
-                'nisn'          => $nisn,
-                'file_verified' => $new_filename,
-                'foto_url'      => base_url('uploads/foto_ijazah/verified/' . $new_filename),
-                'verified_at'   => date('d/m/Y H:i')
+                'status'               => 'success',
+                'message'              => 'Sukses! Foto untuk siswa ' . $siswa['nama_lengkap'] . ' berhasil diverifikasi.',
+                'siswa_id'             => $siswa_id,
+                'verif_id'             => $foto_id,
+                'nama_lengkap'         => $siswa['nama_lengkap'],
+                'nisn'                 => $nisn,
+                'file_verified'        => $new_filename,
+                'foto_url'             => base_url('uploads/foto_ijazah/verified/' . $new_filename),
+                'verified_at'          => date('d/m/Y H:i'),
+                'is_replacement'       => $old_verif ? true : false,
+                'old_photo'            => $old_verif ? [
+                    'id'          => (int)$old_verif->id,
+                    'file_mentah' => $old_verif->file_mentah,
+                    'url'         => base_url('uploads/foto_ijazah/mentah/' . $old_verif->file_mentah)
+                ] : null,
+                'total_verified'       => $tot_verified,
+                'total_pending_photos' => $tot_pending
             ]);
             return;
         }

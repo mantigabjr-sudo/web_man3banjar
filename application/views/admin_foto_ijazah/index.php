@@ -116,7 +116,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <span class="text-muted small fw-bold text-uppercase">Sudah Terverifikasi</span>
-                            <h3 class="fw-bold text-success mb-0 mt-1"><?= number_format($total_verified) ?></h3>
+                            <h3 class="fw-bold text-success mb-0 mt-1" id="stat-foto-verified-count"><?= number_format($total_verified) ?></h3>
                             <small class="text-success fw-semibold">
                                 <?= $total_siswa_xii > 0 ? round(($total_verified / $total_siswa_xii) * 100) : 0 ?>% dari total siswa
                             </small>
@@ -132,7 +132,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <span class="text-muted small fw-bold text-uppercase">Foto Mentah Tersedia</span>
-                            <h3 class="fw-bold text-warning mb-0 mt-1"><?= number_format($total_pending_photos) ?></h3>
+                            <h3 class="fw-bold text-warning mb-0 mt-1" id="stat-foto-mentah-count"><?= number_format($total_pending_photos) ?></h3>
                             <small class="text-muted">Siap diklaim oleh siswa</small>
                         </div>
                         <div class="p-3 bg-warning-subtle text-warning rounded-4 fs-3">
@@ -182,7 +182,7 @@
                     </li>
                     <li class="nav-item">
                         <button class="nav-link fw-bold rounded-pill px-3 text-dark" id="tab-mentah-btn" data-bs-toggle="pill" data-bs-target="#tab-mentah" type="button">
-                            <i class="bi bi-image me-1"></i> Foto Mentah Belum Diklaim (<?= count($unclaimed_photos) ?>)
+                            <i class="bi bi-image me-1"></i> Foto Mentah Belum Diklaim (<span id="badge-mentah-tab-count"><?= count($unclaimed_photos) ?></span>)
                         </button>
                     </li>
                 </ul>
@@ -367,21 +367,21 @@
                     <!-- TAB 2: FOTO MENTAH BELUM DIKLAIM -->
                     <div class="tab-pane fade" id="tab-mentah" role="tabpanel">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="text-muted small">Total <strong><?= count($unclaimed_photos) ?></strong> foto mentah di folder server yang belum diklaim siswa.</span>
+                            <span class="text-muted small">Total <strong id="text-mentah-total-count"><?= count($unclaimed_photos) ?></strong> foto mentah di folder server yang belum diklaim siswa.</span>
                             <button class="btn btn-sm btn-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#modalUploadFoto">
                                 <i class="bi bi-plus-circle me-1"></i> Tambah Foto Baru
                             </button>
                         </div>
 
-                        <?php if(empty($unclaimed_photos)): ?>
-                            <div class="text-center py-5 text-muted">
-                                <i class="bi bi-images fs-1 d-block mb-2 text-muted"></i>
-                                Tidak ada foto mentah yang belum diklaim. Semua foto telah terverifikasi atau belum diunggah.
-                            </div>
-                        <?php else: ?>
-                            <div class="row g-3">
+                        <div id="placeholderEmptyMentah" class="text-center py-5 text-muted empty-mentah-placeholder" style="<?= empty($unclaimed_photos) ? '' : 'display:none;' ?>">
+                            <i class="bi bi-images fs-1 d-block mb-2 text-muted"></i>
+                            Tidak ada foto mentah yang belum diklaim. Semua foto telah terverifikasi atau belum diunggah.
+                        </div>
+
+                        <div class="row g-3" id="gridTabMentahPhotos">
+                            <?php if(!empty($unclaimed_photos)): ?>
                                 <?php foreach($unclaimed_photos as $up): ?>
-                                    <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-6" id="unclaimed-card-col-<?= $up['id'] ?>">
                                         <div class="card h-100 border rounded-3 overflow-hidden shadow-sm">
                                             <div style="height: 180px; overflow: hidden; background: #f8fafc; position: relative;">
                                                 <img src="<?= base_url('uploads/foto_ijazah/mentah/' . $up['file_mentah']) ?>" 
@@ -524,15 +524,15 @@
                     </div>
                 </div>
 
-                <?php if(empty($unclaimed_photos)): ?>
-                    <div class="text-center py-5 text-muted border rounded-3 bg-light">
-                        <i class="bi bi-image fs-1 d-block mb-2 text-muted"></i>
-                        Tidak ada foto mentah yang tersedia. Silakan unggah foto mentah terlebih dahulu melalui tombol <strong>Upload Foto Mentah / ZIP</strong>.
-                    </div>
-                <?php else: ?>
-                    <div class="row g-2" id="gridModalPhotos" style="max-height: 380px; overflow-y: auto; padding-right: 4px;">
+                <div id="modalEmptyPlaceholder" class="text-center py-5 text-muted border rounded-3 bg-light" style="<?= empty($unclaimed_photos) ? '' : 'display:none;' ?>">
+                    <i class="bi bi-image fs-1 d-block mb-2 text-muted"></i>
+                    Tidak ada foto mentah yang tersedia. Silakan unggah foto mentah terlebih dahulu melalui tombol <strong>Upload Foto Mentah / ZIP</strong>.
+                </div>
+
+                <div class="row g-2" id="gridModalPhotos" style="max-height: 380px; overflow-y: auto; padding-right: 4px; <?= empty($unclaimed_photos) ? 'display:none;' : '' ?>">
+                    <?php if(!empty($unclaimed_photos)): ?>
                         <?php foreach($unclaimed_photos as $up): ?>
-                            <div class="col-lg-2 col-md-3 col-4 modal-photo-item" data-filename="<?= strtolower($up['file_mentah']) ?>">
+                            <div class="col-lg-2 col-md-3 col-4 modal-photo-item" id="modal-photo-col-<?= $up['id'] ?>" data-filename="<?= strtolower($up['file_mentah']) ?>">
                                 <div class="card h-100 border rounded-3 overflow-hidden shadow-sm card-selectable-photo" 
                                      id="cardPhoto_<?= $up['id'] ?>"
                                      style="cursor: pointer; transition: all 0.2s;"
@@ -782,6 +782,139 @@ document.getElementById('btnResetFilter')?.addEventListener('click', function(){
 document.addEventListener('DOMContentLoaded', applyTableFilter);
 
 // ═══════════════════════════════════════════════════════════════════════
+// HELPER MANIPULASI DOM FOTO MENTAH TANPA RELOAD
+// ═══════════════════════════════════════════════════════════════════════
+function removeUnclaimedPhotoFromUI(fotoId){
+    // 1. Hapus dari Tab Foto Mentah Belum Diklaim
+    const tabCard = document.getElementById('unclaimed-card-col-' + fotoId);
+    if(tabCard){
+        tabCard.remove();
+    }
+
+    // 2. Hapus dari Modal Pilih Foto Siswa
+    const modalItem = document.getElementById('modal-photo-col-' + fotoId);
+    if(modalItem){
+        modalItem.remove();
+    }
+
+    // Periksa apakah grid tab sekarang kosong
+    const gridTab = document.getElementById('gridTabMentahPhotos');
+    const placeholderTab = document.getElementById('placeholderEmptyMentah');
+    if(gridTab && placeholderTab){
+        if(gridTab.children.length === 0){
+            placeholderTab.style.display = '';
+        }
+    }
+
+    // Periksa apakah modal photo grid kosong
+    const gridModal = document.getElementById('gridModalPhotos');
+    const placeholderModal = document.getElementById('modalEmptyPlaceholder');
+    if(gridModal && placeholderModal){
+        if(gridModal.querySelectorAll('.modal-photo-item').length === 0){
+            gridModal.style.display = 'none';
+            placeholderModal.style.display = '';
+        }
+    }
+}
+
+function addUnclaimedPhotoToUI(photo){
+    if(!photo || !photo.id || !photo.file_mentah) return;
+
+    const baseUploadMentah = '<?= base_url("uploads/foto_ijazah/mentah/") ?>';
+    const filenameEsc = photo.file_mentah.replace(/'/g, "\\'");
+    const photoUrl = photo.url || photo.foto_url || (baseUploadMentah + photo.file_mentah);
+
+    // 1. Munculkan kembali ke Tab Foto Mentah jika belum ada
+    const gridTab = document.getElementById('gridTabMentahPhotos');
+    const placeholderTab = document.getElementById('placeholderEmptyMentah');
+    if(gridTab){
+        if(placeholderTab) placeholderTab.style.display = 'none';
+
+        if(!document.getElementById('unclaimed-card-col-' + photo.id)){
+            const colHtml = `
+                <div class="col-xl-2 col-lg-3 col-md-4 col-6" id="unclaimed-card-col-${photo.id}">
+                    <div class="card h-100 border rounded-3 overflow-hidden shadow-sm">
+                        <div style="height: 180px; overflow: hidden; background: #f8fafc; position: relative;">
+                            <img src="${photoUrl}" 
+                                 alt="Foto Mentah" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
+                                 onclick="previewModal('${photoUrl}', '${filenameEsc}', 'Belum Diklaim')">
+                        </div>
+                        <div class="p-2 text-center bg-white">
+                            <small class="text-truncate d-block fw-semibold mb-1" style="font-size: 11px;" title="${photo.file_mentah}">
+                                ${photo.file_mentah}
+                            </small>
+                            <button type="button" 
+                                    class="btn btn-sm btn-outline-success rounded-pill px-2 py-1 w-100 fw-bold mb-1" 
+                                    style="font-size: 11px;"
+                                    onclick="openPasangKeSiswaModal(${photo.id}, '${filenameEsc}', '${photoUrl}')">
+                                <i class="bi bi-person-plus-fill me-1"></i> Pasangkan ke Siswa
+                            </button>
+                            <a href="<?= base_url('admin_foto_ijazah/hapus_mentah/') ?>${photo.id}" 
+                               class="btn btn-link text-danger p-0" style="font-size: 11px;"
+                               onclick="return confirm('Hapus file foto mentah ini dari server?');">
+                                <i class="bi bi-trash"></i> Hapus
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            gridTab.insertAdjacentHTML('afterbegin', colHtml);
+        }
+    }
+
+    // 2. Munculkan kembali ke Modal Pilih Foto Siswa jika belum ada
+    const gridModal = document.getElementById('gridModalPhotos');
+    const placeholderModal = document.getElementById('modalEmptyPlaceholder');
+    if(gridModal){
+        if(placeholderModal) placeholderModal.style.display = 'none';
+        gridModal.style.display = '';
+
+        if(!document.getElementById('modal-photo-col-' + photo.id)){
+            const modalItemHtml = `
+                <div class="col-lg-2 col-md-3 col-4 modal-photo-item" id="modal-photo-col-${photo.id}" data-filename="${photo.file_mentah.toLowerCase()}">
+                    <div class="card h-100 border rounded-3 overflow-hidden shadow-sm card-selectable-photo" 
+                         id="cardPhoto_${photo.id}"
+                         style="cursor: pointer; transition: all 0.2s;"
+                         onclick="selectPhotoForStudent(${photo.id}, '${filenameEsc}')">
+                        <div style="height: 120px; overflow: hidden; background: #0f172a; position: relative;">
+                            <img src="${photoUrl}" 
+                                 alt="Foto Mentah" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+                            <span class="badge-checked position-absolute top-0 end-0 m-1 badge bg-success rounded-pill d-none">
+                                <i class="bi bi-check-lg"></i>
+                            </span>
+                        </div>
+                        <div class="p-1 text-center bg-white">
+                            <small class="text-truncate d-block" style="font-size: 10.5px;" title="${photo.file_mentah}">
+                                ${photo.file_mentah}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            `;
+            gridModal.insertAdjacentHTML('afterbegin', modalItemHtml);
+        }
+    }
+}
+
+function updateFotoCounters(pendingCount, verifiedCount){
+    if(pendingCount !== undefined && pendingCount !== null){
+        const elStat = document.getElementById('stat-foto-mentah-count');
+        if(elStat) elStat.innerText = Number(pendingCount).toLocaleString('id-ID');
+
+        const elTabBadge = document.getElementById('badge-mentah-tab-count');
+        if(elTabBadge) elTabBadge.innerText = pendingCount;
+
+        const elTextTotal = document.getElementById('text-mentah-total-count');
+        if(elTextTotal) elTextTotal.innerText = pendingCount;
+    }
+
+    if(verifiedCount !== undefined && verifiedCount !== null){
+        const elVerifStat = document.getElementById('stat-foto-verified-count');
+        if(elVerifStat) elVerifStat.innerText = Number(verifiedCount).toLocaleString('id-ID');
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
 // AKSI VERIFIKASI FOTO VIA AJAX (TANPA REFRESH)
 // ═══════════════════════════════════════════════════════════════════════
 function handleAjaxVerifSubmit(form, submitBtn){
@@ -810,7 +943,20 @@ function handleAjaxVerifSubmit(form, submitBtn){
                 if(modalInst) modalInst.hide();
             }
 
-            // Update baris siswa di tabel
+            // 1. Hapus foto mentah yang baru dipasangkan dari UI tab & modal
+            if(data.verif_id){
+                removeUnclaimedPhotoFromUI(data.verif_id);
+            }
+
+            // 2. Jika ini penggantian foto dan ada foto lama, kembalikan foto lama ke UI mentah
+            if(data.is_replacement && data.old_photo){
+                addUnclaimedPhotoToUI(data.old_photo);
+            }
+
+            // 3. Update counter angka secara instan
+            updateFotoCounters(data.total_pending_photos, data.total_verified);
+
+            // 4. Update baris siswa di tabel
             updateRowVerified(data);
             alert(data.message || 'Foto siswa berhasil diverifikasi!');
         } else {
@@ -901,6 +1047,18 @@ function ajaxResetVerif(verifId, siswaId, namaSiswa, btnElement){
     .then(res => res.json())
     .then(data => {
         if(data.status === 'success'){
+            // 1. Kembalikan foto mentah yang di-reset ke UI tab & modal
+            if(data.id && data.file_mentah){
+                addUnclaimedPhotoToUI({
+                    id: data.id,
+                    file_mentah: data.file_mentah,
+                    url: data.foto_url
+                });
+            }
+
+            // 2. Perbarui counter secara instan
+            updateFotoCounters(data.total_pending_photos, data.total_verified);
+
             const row = document.getElementById('row-siswa-' + siswaId);
             if(row){
                 row.setAttribute('data-status', 'unverified');
