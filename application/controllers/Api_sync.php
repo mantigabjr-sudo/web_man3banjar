@@ -108,12 +108,47 @@ class Api_sync extends CI_Controller {
 
         foreach($tables as $tbl){
             if(isset($payload[$tbl]) && $this->db->table_exists($tbl)){
-                $this->db->empty_table($tbl);
                 $rows = $payload[$tbl];
                 if(!empty($rows)){
-                    $this->db->insert_batch($tbl, $rows);
+                    // Auto-sync struktur kolom baru agar jika ada penambahan kolom di lokal otomatis dibuat di server hosting
+                    $existing_fields = $this->db->list_fields($tbl);
+                    $first_row = $rows[0];
+                    foreach($first_row as $col => $val){
+                        if(!in_array($col, $existing_fields)){
+                            $is_long = strlen((string)$val) > 255 || in_array($col, [
+                                'isi_profil', 'visi', 'misi', 'tujuan', 'alamat', 'sejarah', 
+                                'fasilitas', 'prestasi', 'ekstrakurikuler', 'maps_embed_url', 
+                                'facebook_url', 'instagram_url', 'youtube_url', 'hero_deskripsi', 'sambutan_isi'
+                            ]);
+                            $col_type = $is_long ? 'TEXT' : 'VARCHAR(255)';
+                            $this->db->query("ALTER TABLE `{$tbl}` ADD COLUMN `{$col}` {$col_type} NULL");
+                        }
+                    }
+
+                    // Muat ulang daftar field setelah alter
+                    $existing_fields = $this->db->list_fields($tbl);
+
+                    // Bersihkan data row hanya pada kolom yang valid
+                    $clean_rows = [];
+                    foreach($rows as $r){
+                        $clean_r = [];
+                        foreach($existing_fields as $f){
+                            if(array_key_exists($f, $r)){
+                                $clean_r[$f] = $r[$f];
+                            }
+                        }
+                        $clean_rows[] = $clean_r;
+                    }
+
+                    $this->db->empty_table($tbl);
+                    if(!empty($clean_rows)){
+                        $this->db->insert_batch($tbl, $clean_rows);
+                    }
+                    $stats[$tbl] = count($clean_rows);
+                } else {
+                    $this->db->empty_table($tbl);
+                    $stats[$tbl] = 0;
                 }
-                $stats[$tbl] = count($rows);
             }
         }
 
