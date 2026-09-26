@@ -42,23 +42,71 @@ class Admin_website extends CI_Controller {
     public function save_profil(){
 
         $data = [
+            // Pengaturan Hero Beranda Portal
+            'hero_badge'               => $this->input->post('hero_badge'),
+            'hero_judul'               => $this->input->post('hero_judul'),
+            'hero_deskripsi'           => $this->input->post('hero_deskripsi'),
+            'hero_tombol_utama_teks'   => $this->input->post('hero_tombol_utama_teks'),
+            'hero_tombol_utama_url'    => $this->input->post('hero_tombol_utama_url'),
+            'hero_tombol_kedua_teks'   => $this->input->post('hero_tombol_kedua_teks'),
+            'hero_tombol_kedua_url'    => $this->input->post('hero_tombol_kedua_url'),
+
+            // Pengaturan Sambutan Kepala Madrasah
+            'sambutan_judul'           => $this->input->post('sambutan_judul'),
+            'sambutan_isi'             => $this->input->post('sambutan_isi'),
+            'sambutan_nama'            => $this->input->post('sambutan_nama'),
+            'sambutan_jabatan'         => $this->input->post('sambutan_jabatan'),
+
+            // Profil & Visi Misi
             'judul_profil' => $this->input->post('judul_profil'),
             'isi_profil'  => $this->input->post('isi_profil'),
             'visi'        => $this->input->post('visi'),
             'misi'        => $this->input->post('misi'),
             'tujuan'      => $this->input->post('tujuan'),
-            'alamat'      => $this->input->post('alamat'),
-            'telepon'     => $this->input->post('telepon'),
-            'email'       => $this->input->post('email'),
+
+            // Kontak & Identitas
+            'alamat'        => $this->input->post('alamat'),
+            'telepon'       => $this->input->post('telepon'),
+            'email'         => $this->input->post('email'),
 			'whatsapp'      => $this->input->post('whatsapp'),
-			'facebook_url'  => $this->input->post('facebook_url'),
-			'instagram_url' => $this->input->post('instagram_url'),
-			'youtube_url'   => $this->input->post('youtube_url'),
 			'jam_layanan'   => $this->input->post('jam_layanan'),
+			'rdm_url'       => (!empty(trim($this->input->post('rdm_url'))) && strpos(trim($this->input->post('rdm_url')), 'http://') !== 0 && strpos(trim($this->input->post('rdm_url')), 'https://') !== 0)
+			                   ? 'https://' . trim($this->input->post('rdm_url'))
+			                   : trim($this->input->post('rdm_url')),
+			'facebook_url'  => (!empty(trim($this->input->post('facebook_url'))) && strpos(trim($this->input->post('facebook_url')), 'http://') !== 0 && strpos(trim($this->input->post('facebook_url')), 'https://') !== 0)
+			                   ? 'https://' . trim($this->input->post('facebook_url'))
+			                   : trim($this->input->post('facebook_url')),
+			'instagram_url' => (!empty(trim($this->input->post('instagram_url'))) && strpos(trim($this->input->post('instagram_url')), 'http://') !== 0 && strpos(trim($this->input->post('instagram_url')), 'https://') !== 0)
+			                   ? 'https://' . trim($this->input->post('instagram_url'))
+			                   : trim($this->input->post('instagram_url')),
+			'youtube_url'   => (!empty(trim($this->input->post('youtube_url'))) && strpos(trim($this->input->post('youtube_url')), 'http://') !== 0 && strpos(trim($this->input->post('youtube_url')), 'https://') !== 0)
+			                   ? 'https://' . trim($this->input->post('youtube_url'))
+			                   : trim($this->input->post('youtube_url')),
 			'nsm'           => $this->input->post('nsm'),
 			'npsn'          => $this->input->post('npsn'),
-            'updated_at'  => date('Y-m-d H:i:s')
+            'updated_at'    => date('Y-m-d H:i:s')
         ];
+
+        // Upload foto sambutan jika ada
+        if(!empty($_FILES['sambutan_foto']['name'])){
+            $upload_path = './uploads/website/';
+            if(!is_dir($upload_path)){
+                mkdir($upload_path, 0777, true);
+            }
+
+            $config['upload_path']   = $upload_path;
+            $config['allowed_types'] = 'jpg|jpeg|png|webp';
+            $config['max_size']      = 4096;
+            $config['encrypt_name']  = TRUE;
+
+            $this->load->library('upload', $config);
+            $this->upload->initialize($config);
+
+            if($this->upload->do_upload('sambutan_foto')){
+                $upload_data = $this->upload->data();
+                $data['sambutan_foto'] = $upload_data['file_name'];
+            }
+        }
 
         $profil = $this->db
             ->limit(1)
@@ -72,7 +120,7 @@ class Admin_website extends CI_Controller {
             $this->db->insert('website_profil', $data);
         }
 
-        $this->session->set_flashdata('success', 'Profil website berhasil diperbarui.');
+        $this->session->set_flashdata('success', 'Profil dan informasi beranda website berhasil diperbarui.');
         redirect('admin_website/profil');
     }
 

@@ -20,8 +20,10 @@ if(!function_exists('web_clean')){
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Arsip informasi, berita, pengumuman, kegiatan, dan publikasi resmi <?= htmlspecialchars($nama_madrasah, ENT_QUOTES, 'UTF-8') ?>.">
 
-    <link rel="icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
-    <link rel="shortcut icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= base_url('assets/brand/logo-man3.png') ?>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= base_url('assets/brand/logo-man3.png') ?>">
+    <link rel="shortcut icon" href="<?= base_url('favicon.ico') ?>" type="image/x-icon">
+    <link rel="apple-touch-icon" href="<?= base_url('assets/brand/logo-man3.png') ?>">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -140,7 +142,22 @@ if(!function_exists('web_clean')){
                         <li><a class="dropdown-item fw-bold text-success" href="<?= base_url('website/monitoring_kbm') ?>"><i class="bi bi-broadcast text-danger me-1"></i> Live Monitoring KBM</a></li>
                         <li><a class="dropdown-item fw-bold text-dark" href="<?= base_url('verifikasi_foto_ijazah') ?>"><i class="bi bi-mortarboard-fill text-success me-1"></i> Verifikasi Foto Ijazah XII</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="https://rdm.man3banjar.com" target="_blank" rel="noopener">Rapor Digital (RDM)</a></li>
+                        <?php
+                        $rdm_target_url = 'https://rdm.man3banjar.com';
+                        if(!empty($profil_website->rdm_url)){
+                            $rdm_target_url = $profil_website->rdm_url;
+                        } else {
+                            $ci_inst = &get_instance();
+                            if(isset($ci_inst->db)){
+                                $pw_row = $ci_inst->db->select('rdm_url')->limit(1)->get('website_profil')->row();
+                                if(!empty($pw_row->rdm_url)) $rdm_target_url = $pw_row->rdm_url;
+                            }
+                        }
+                        if(strpos($rdm_target_url, 'http://') !== 0 && strpos($rdm_target_url, 'https://') !== 0){
+                            $rdm_target_url = 'https://' . $rdm_target_url;
+                        }
+                        ?>
+                        <li><a class="dropdown-item" href="<?= htmlspecialchars($rdm_target_url, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">Rapor Digital (RDM)</a></li>
                     </ul>
                 </li>
 

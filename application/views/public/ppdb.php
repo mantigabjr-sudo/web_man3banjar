@@ -7,9 +7,10 @@
 <title><?= htmlspecialchars($nama_ppdb ?? 'PMB') ?> MAN 3 Banjar — <?= !empty($settings->judul_panjang_ppdb) ? htmlspecialchars($settings->judul_panjang_ppdb) : 'Penerimaan Murid Baru' ?></title>
 <meta name="description" content="Halaman pendaftaran <?= !empty($settings->judul_panjang_ppdb) ? htmlspecialchars($settings->judul_panjang_ppdb) : 'Penerimaan Murid Baru' ?> (<?= htmlspecialchars($nama_ppdb ?? 'PMB') ?>) MAN 3 Banjar. Daftar online, lengkapi data, dan pantau status pendaftaran Anda.">
 
-<link rel="icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
-<link rel="shortcut icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
-<link rel="apple-touch-icon" href="<?= base_url('assets/img/favicon.png') ?>">
+<link rel="icon" type="image/png" sizes="32x32" href="<?= base_url('assets/brand/logo-man3.png') ?>">
+<link rel="icon" type="image/png" sizes="16x16" href="<?= base_url('assets/brand/logo-man3.png') ?>">
+<link rel="shortcut icon" href="<?= base_url('favicon.ico') ?>" type="image/x-icon">
+<link rel="apple-touch-icon" href="<?= base_url('assets/brand/logo-man3.png') ?>">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -1691,7 +1692,7 @@ a { text-decoration: none; color: inherit; }
         </div>
 
         <div class="footer-bottom">
-            <span>&copy; <?= date('Y') ?> <?= $nama_madrasah ?> — <?= $judul_panjang ?>.</span>
+            <span>&copy; <?= date('Y') ?> <?= $nama_madrasah ?> — <?= $judul_panjang ?>. | capthdr</span>
             <span>Powered by <strong style="color: #34d399;">LabSys</strong> Madrasah Digital</span>
         </div>
     </div>
@@ -1888,5 +1889,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<?php $this->load->view('public/partials/web_toast_helper'); ?>
 </body>
 </html>

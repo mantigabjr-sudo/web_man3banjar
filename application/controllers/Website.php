@@ -422,6 +422,11 @@ class Website extends CI_Controller {
             'koordinator' => 'Koordinator'
         ];
 
+        if(empty($slug)){
+            redirect('website/struktur/tenaga-pendidik');
+            return;
+        }
+
         if(!array_key_exists($slug, $map)){
             show_404();
         }
