@@ -608,7 +608,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                     <div>
                         <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                             <strong class="text-success" style="font-size: 14.5px;">Portal Eviden Zona Integritas (WBK/WBBM)</strong>
-                            <span class="badge bg-warning text-dark font-monospace fw-bold px-2 py-1"><i class="bi bi-key-fill me-1"></i>PIN: 123456</span>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill font-monospace" style="font-size: 11px;"><i class="bi bi-shield-lock-fill me-1"></i>Akses Terproteksi PIN</span>
                         </div>
                         <span class="small text-muted d-block">Dokumen 6 Pokja Pembangunan ZI dipisahkan ke portal khusus terproteksi PIN bagi Tim Pokja ZI dan Tim Penilai (TPI/TPN).</span>
                     </div>
@@ -1065,14 +1065,14 @@ $logged_user_name = $this->session->userdata('username') ?? '';
 
                     <!-- 6. Kode Keamanan PTK (Jika belum login) -->
                     <?php if(!$is_user_logged_in): ?>
-                        <div class="p-3 rounded-3 border bg-warning-subtle mb-2">
+                        <div class="p-3 rounded-3 border bg-light mb-2">
                             <div class="d-flex align-items-center justify-content-between mb-1">
                                 <label class="form-label fw-bold small text-dark mb-0">
-                                    <i class="bi bi-shield-lock-fill text-warning me-1"></i> Kode PIN Pengunggah Madrasah <span class="text-danger">*</span>
+                                    <i class="bi bi-shield-lock-fill text-success me-1"></i> Kode PIN Pengunggah Madrasah <span class="text-danger">*</span>
                                 </label>
-                                <span class="badge bg-warning text-dark font-monospace">PIN: 123456</span>
+                                <span class="badge bg-secondary-subtle text-secondary rounded-pill font-monospace" style="font-size: 11px;">Otorisasi PTK</span>
                             </div>
-                            <input type="password" name="pin_keamanan" class="form-control rounded-3 mt-1" placeholder="Masukkan PIN resmi madrasah..." value="123456" required>
+                            <input type="password" name="pin_keamanan" class="form-control rounded-3 mt-1" placeholder="Masukkan PIN resmi madrasah..." required autocomplete="off">
                             <small class="text-muted d-block mt-1" style="font-size: 11px;">
                                 Pengamanan terhadap spam bot internet. Anda juga bisa langsung login ke akun LabSys untuk bebas PIN.
                             </small>

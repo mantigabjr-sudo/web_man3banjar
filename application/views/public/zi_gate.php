@@ -189,22 +189,17 @@ $this->load->view('public/partials/archive_header');
 
             <form action="<?= base_url('website/unlock_zi') ?>" method="POST">
                 <div class="mb-4">
-                    <label class="form-label small fw-bold text-muted text-uppercase d-block text-center" style="letter-spacing: 0.5px;">
+                    <label class="form-label small fw-bold text-muted text-uppercase d-block text-center mb-3" style="letter-spacing: 0.5px;">
                         Masukkan PIN Akses Eviden ZI
                     </label>
-                    <div class="text-center mb-3">
-                        <span class="badge bg-warning-subtle text-dark border border-warning px-3 py-1 font-monospace" style="font-size: 12px;">
-                            <i class="bi bi-shield-lock-fill text-warning me-1"></i> PIN Default Madrasah: <strong>123456</strong>
-                        </span>
-                    </div>
                     <div class="zi-pin-input-group">
-                        <input type="password" name="pin_zi" id="inputPinZi" class="form-control zi-pin-input" placeholder="Ketik 123456..." required autofocus autocomplete="off">
+                        <input type="password" name="pin_zi" id="inputPinZi" class="form-control zi-pin-input" placeholder="Ketik PIN Akses..." required autofocus autocomplete="off">
                         <button type="button" class="btn-toggle-pin" onclick="togglePinVisibility()" title="Lihat PIN">
                             <i class="bi bi-eye-slash-fill" id="eyeIcon"></i>
                         </button>
                     </div>
                     <div class="text-center mt-2 text-muted" style="font-size: 11.5px;">
-                        <i class="bi bi-info-circle me-1"></i> Masukkan <strong>123456</strong> untuk membuka dan melihat berkas eviden ZI.
+                        <i class="bi bi-shield-lock me-1"></i> Masukkan 6 digit kode PIN resmi dari Tim Pokja ZI MAN 3 Banjar.
                     </div>
                 </div>
 
