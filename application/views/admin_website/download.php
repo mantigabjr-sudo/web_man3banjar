@@ -56,7 +56,7 @@ $area_names = [
 <div class="content">
     <div class="container-fluid py-4">
 
-        <!-- ALERT NOTIFIKASI -->
+        <!-- ═══ ALERT NOTIFIKASI ═══ -->
         <?php if($this->session->flashdata('success')): ?>
             <div class="alert alert-success alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4 d-flex align-items-center gap-2" role="alert">
                 <i class="bi bi-check-circle-fill text-success fs-5"></i>
@@ -72,303 +72,487 @@ $area_names = [
             </div>
         <?php endif; ?>
 
-        <!-- ═══ HEADER BANNER ═══ -->
-        <div class="card border-0 rounded-4 shadow-sm mb-4 text-white position-relative overflow-hidden" 
-             style="background: linear-gradient(135deg, #064e3b 0%, #059669 60%, #10b981 100%);">
-            <div class="card-body p-4 p-md-5 position-relative" style="z-index: 2;">
-                <div class="row align-items-center g-3">
-                    <div class="col-lg-7">
-                        <span class="badge bg-white text-success fw-bold px-3 py-1 rounded-pill mb-2" style="font-size: 11.5px;">
-                            <i class="bi bi-cloud-check-fill me-1"></i> PUSAT DOKUMEN &amp; EVIDEN ZI
+        <!-- ═══ 1. HERO PAGE HEADER (Standar LabSys 2026 - Clean Solid White Card) ═══ -->
+        <div class="card border-0 rounded-4 shadow-sm mb-4 bg-white border" style="border-color: #e2e8f0 !important;">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
+                        <span class="badge px-3 py-1 rounded-pill fw-bold mb-2" 
+                              style="background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; font-size: 11.5px;">
+                            <i class="bi bi-shield-check me-1"></i> Zona Integritas &amp; Cloud Drive
                         </span>
-                        <h2 class="fw-bold mb-2 text-white">Kelola Cloud Drive &amp; Unduhan Berkas</h2>
-                        <p class="mb-3 text-white-50" style="font-size: 14px; max-width: 620px;">
-                            Pusat tata kelola dokumen madrasah: eviden penilaian Zona Integritas (WBK/WBBM Pokja I s.d. VI), modul kurikulum, administrasi kepegawaian/TU, dan formulir publik.
+                        <h3 class="fw-bold mb-1 text-dark">Pusat Dokumen &amp; Eviden ZI</h3>
+                        <p class="text-muted mb-0 small" style="font-size: 13.5px;">
+                            Tata kelola dokumen eviden 6 Pokja Pembangunan ZI (WBK), administrasi madrasah, dan berkas unduhan publik.
                         </p>
-                        <div class="d-flex flex-wrap gap-2 pt-1">
-                            <a href="<?= base_url('website/download') ?>" target="_blank" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm d-inline-flex align-items-center gap-1">
-                                <i class="bi bi-box-arrow-up-right text-success"></i> Unduhan Publik
-                            </a>
-                            <a href="<?= base_url('website/zona_integritas') ?>" target="_blank" class="btn btn-warning text-dark fw-bold rounded-pill px-3 shadow-sm d-inline-flex align-items-center gap-1">
-                                <i class="bi bi-shield-lock-fill"></i> Portal Eviden ZI (<?= $stats['zi_total'] ?? 0 ?>)
-                            </a>
-                        </div>
                     </div>
-
-                    <!-- Widget PIN Akses ZI -->
-                    <div class="col-lg-5 text-lg-end">
-                        <div class="p-3 rounded-4 d-inline-block text-start" style="background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); min-width: 250px;">
-                            <div class="d-flex align-items-center justify-content-between mb-2">
-                                <span class="small text-white-50 text-uppercase fw-bold" style="font-size: 11px;">
-                                    <i class="bi bi-shield-lock-fill text-warning me-1"></i> PIN Akses Eviden ZI
-                                </span>
-                                <button type="button" class="btn btn-xs btn-light rounded-pill px-2 py-0 fw-bold" style="font-size: 11px;" data-bs-toggle="modal" data-bs-target="#modalUbahPinZi">
-                                    <i class="bi bi-pencil-square"></i> Ubah
-                                </button>
-                            </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="h3 fw-bold text-warning mb-0 font-monospace tracking-wide" style="letter-spacing: 3px;">
-                                    <?= htmlspecialchars($pin_zi ?? '123456') ?>
-                                </span>
-                                <span class="badge bg-white-subtle text-white border border-white-50 rounded-pill small" style="font-size: 10px;">Aktif</span>
-                            </div>
-                            <div class="small text-white-50 mt-1" style="font-size: 11px;">
-                                Berikan PIN ini kepada Tim Penilai (TPI/TPN) atau Tim Pokja.
-                            </div>
-                        </div>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <button type="button" class="btn btn-success rounded-pill px-3 py-2 fw-bold text-white shadow-sm" style="font-size: 13px;" data-bs-toggle="modal" data-bs-target="#modalTambahDokumen">
+                            <i class="bi bi-cloud-arrow-up-fill me-1"></i> + Unggah Dokumen
+                        </button>
+                        <button type="button" class="btn btn-outline-warning rounded-pill px-3 py-2 fw-bold text-dark" style="font-size: 13px;" data-bs-toggle="modal" data-bs-target="#modalUbahPinZi" title="Atur PIN Akses Eviden ZI">
+                            <i class="bi bi-key-fill text-warning me-1"></i> PIN ZI: <span class="badge bg-warning-subtle text-dark font-monospace"><?= htmlspecialchars($pin_zi ?? '123456') ?></span>
+                        </button>
+                        <a href="<?= base_url('website/zona_integritas') ?>" target="_blank" class="btn btn-outline-success rounded-pill px-3 py-2 fw-semibold" style="font-size: 13px;">
+                            <i class="bi bi-shield-lock me-1"></i> Portal ZI
+                        </a>
+                        <a href="<?= base_url('website/download') ?>" target="_blank" class="btn btn-outline-secondary rounded-pill px-3 py-2 fw-semibold" style="font-size: 13px;">
+                            <i class="bi bi-box-arrow-up-right me-1"></i> Unduhan Publik
+                        </a>
                     </div>
                 </div>
             </div>
-            <div style="position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%); border-radius: 50%;"></div>
         </div>
 
-        <div class="row g-4">
-            <!-- Form Upload Berkas -->
-            <div class="col-lg-4">
-                <div class="card border-0 rounded-4 shadow-sm mb-4">
-                    <div class="card-header bg-white border-bottom pt-3 pb-2 px-4">
-                        <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-cloud-arrow-up-fill text-success me-2"></i> Unggah / Tambah Dokumen</h6>
-                    </div>
-                    <div class="card-body p-4">
-                        <form method="post" action="<?= base_url('admin_website/save_download') ?>" enctype="multipart/form-data">
-                            
-                            <div class="mb-3">
-                                <label class="form-label fw-bold small text-muted">Kategori Dokumen / Pilar <span class="text-danger">*</span></label>
-                                <select name="kategori_pilar" id="adminKategoriPilar" class="form-select rounded-3" required onchange="handleAdminKategoriChange(this.value)">
-                                    <option value="zi" selected>⭐ Zona Integritas (WBK / WBBM)</option>
-                                    <option value="akademik">📚 Kurikulum &amp; Modul Ajar</option>
-                                    <option value="kepegawaian">🗄️ Kepegawaian &amp; Tata Usaha</option>
-                                    <option value="kesiswaan">🏆 Kesiswaan &amp; Ekstrakurikuler</option>
-                                    <option value="sarpras">🔬 Sarpras &amp; Laboratorium</option>
-                                    <option value="umum">📄 Formulir Publik &amp; Brosur</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3" id="adminWrapperAreaZi">
-                                <label class="form-label fw-bold small text-muted" id="adminLabelSubKategori">Pokja Perubahan ZI <span class="text-danger">*</span></label>
-                                <select name="area_zi" id="adminAreaZi" class="form-select rounded-3 text-success fw-bold" required>
-                                    <option value="area1">Pokja I: Manajemen Perubahan</option>
-                                    <option value="area2">Pokja II: Penataan Tatalaksana</option>
-                                    <option value="area3">Pokja III: Penataan Manajemen SDM</option>
-                                    <option value="area4">Pokja IV: Penguatan Akuntabilitas</option>
-                                    <option value="area5">Pokja V: Penguatan Pengawasan</option>
-                                    <option value="area6">Pokja VI: Kualitas Pelayanan Publik</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-bold small text-muted">Nama / Judul Dokumen <span class="text-danger">*</span></label>
-                                <input type="text" name="judul" class="form-control rounded-3" placeholder="Contoh: SK Tim Pokja ZI WBK 2026" required>
-                            </div>
-
-                            <div class="row g-2 mb-3">
-                                <div class="col-6">
-                                    <label class="form-label fw-bold small text-muted">Tanggal Dokumen</label>
-                                    <input type="date" name="tanggal" class="form-control rounded-3" value="<?= date('Y-m-d') ?>">
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label fw-bold small text-muted">Lini / Unit Kerja</label>
-                                    <input type="text" name="lini_unit" class="form-control rounded-3" placeholder="Contoh: Tim Pokja I">
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-bold small text-muted">Nama Pengunggah (PIC)</label>
-                                <input type="text" name="pengunggah" class="form-control rounded-3" value="<?= $this->session->userdata('username') ?? 'Admin' ?>" placeholder="Nama staf / guru pengunggah">
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-bold small text-muted">Keterangan Singkat (Opsional)</label>
-                                <textarea name="keterangan" class="form-control rounded-3" rows="2" placeholder="Catatan peruntukan berkas..."></textarea>
-                            </div>
-
-                            <!-- Pilihan Sumber -->
-                            <div class="mb-4">
-                                <label class="form-label fw-bold small text-muted d-block">Jenis Sumber Dokumen <span class="text-danger">*</span></label>
-                                <div class="d-flex gap-3 mb-2">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="tipe_sumber" id="sumberFileRadio" value="file" checked onchange="toggleAdminSumber('file')">
-                                        <label class="form-check-label small fw-semibold" for="sumberFileRadio">Upload File Fisik</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="tipe_sumber" id="sumberDriveRadio" value="drive_link" onchange="toggleAdminSumber('drive_link')">
-                                        <label class="form-check-label small fw-semibold" for="sumberDriveRadio">Link Google Drive</label>
-                                    </div>
-                                </div>
-
-                                <div id="adminFilePane">
-                                    <input type="file" name="file_download" id="adminFileInput" class="form-control rounded-3" required>
-                                    <div class="form-text small mt-1">Mendukung: PDF, DOCX, XLSX, PPTX, ZIP (Maks 20MB).</div>
-                                </div>
-
-                                <div id="adminDrivePane" style="display: none;">
-                                    <input type="url" name="link_drive" id="adminDriveInput" class="form-control rounded-3" placeholder="https://drive.google.com/drive/folders/...">
-                                    <div class="form-text small mt-1">Tempel link folder atau file Google Drive yang sudah diset publik.</div>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-success fw-bold rounded-pill w-100 py-2 shadow-sm">
-                                <i class="bi bi-cloud-arrow-up-fill me-1"></i> Simpan Dokumen
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tabel Daftar Berkas -->
-            <div class="col-lg-8">
-                <div class="card border-0 rounded-4 shadow-sm mb-4">
-                    <div class="card-header bg-white border-bottom pt-3 pb-2 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
-                        <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-folder-fill text-success me-2"></i> Daftar Dokumen Tersedia</h6>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-success-subtle text-success rounded-pill fw-bold px-3 py-1"><?= count($downloads ?? []) ?> Total Dokumen</span>
-                            <span class="badge bg-primary-subtle text-primary rounded-pill fw-bold px-3 py-1"><?= $stats['zi_total'] ?? 0 ?> Eviden ZI</span>
+        <!-- ═══ 2. KPI / STATISTIC CARDS STRIP (Standar LabSys 2026) ═══ -->
+        <div class="row g-3 mb-4">
+            <!-- Total Dokumen -->
+            <div class="col-6 col-lg-3">
+                <div class="card border-0 rounded-4 shadow-sm p-3 h-100 bg-white">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 p-2.5 bg-primary-subtle text-primary fs-4 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="bi bi-folder2-open"></i>
                         </div>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0" style="width:100%">
-                                <thead class="bg-light">
-                                    <tr>
-                                        <th style="width:50px;" class="ps-4">Tipe</th>
-                                        <th>Nama Berkas &amp; Keterangan</th>
-                                        <th style="width:150px;">Kategori</th>
-                                        <th style="width:140px;">Pengunggah</th>
-                                        <th style="width:110px;">Tanggal</th>
-                                        <th style="width:130px;" class="text-end pe-4">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if(empty($downloads)): ?>
-                                        <tr>
-                                            <td colspan="6" class="text-center py-5 text-muted">
-                                                <i class="bi bi-file-earmark-arrow-down fs-1 text-secondary mb-2 d-block opacity-50"></i>
-                                                Belum ada berkas unduhan yang diunggah.
-                                            </td>
-                                        </tr>
-                                    <?php else: ?>
-                                        <?php foreach($downloads as $d): ?>
-                                            <?php 
-                                            $is_drive = (!empty($d->link_drive) || ($d->file_path ?? '') === 'drive_link');
-                                            $ext = strtolower(pathinfo($d->file_path ?? '', PATHINFO_EXTENSION)); 
-                                            
-                                            if($is_drive){
-                                                $iconClass = 'bi-google text-success';
-                                                $file_url = $d->link_drive;
-                                            } else {
-                                                $iconClass = 'bi-file-earmark text-secondary';
-                                                if($ext == 'pdf') $iconClass = 'bi-file-earmark-pdf-fill text-danger';
-                                                elseif(in_array($ext, ['doc','docx'])) $iconClass = 'bi-file-earmark-word-fill text-primary';
-                                                elseif(in_array($ext, ['xls','xlsx'])) $iconClass = 'bi-file-earmark-excel-fill text-success';
-                                                elseif(in_array($ext, ['ppt','pptx'])) $iconClass = 'bi-file-earmark-ppt-fill text-warning';
-                                                elseif(in_array($ext, ['zip','rar'])) $iconClass = 'bi-file-earmark-zip-fill text-purple';
-                                                
-                                                $file_url = base_url('assets/downloads/'.$d->file_path);
-                                            }
-
-                                            $kategori = strtolower($d->kategori_pilar ?? 'umum');
-                                            $area = strtolower($d->area_zi ?? '');
-                                            ?>
-                                            <tr>
-                                                <td class="ps-4">
-                                                    <i class="bi <?= $iconClass ?> fs-3"></i>
-                                                </td>
-                                                <td>
-                                                    <div class="fw-bold text-dark" style="font-size:14px;"><?= htmlspecialchars($d->judul ?? '-', ENT_QUOTES, 'UTF-8') ?></div>
-                                                    <?php if(!empty($d->keterangan)): ?>
-                                                        <div class="small text-muted text-truncate" style="max-width: 250px;"><?= htmlspecialchars($d->keterangan, ENT_QUOTES, 'UTF-8') ?></div>
-                                                    <?php endif; ?>
-                                                    <?php if($is_drive): ?>
-                                                        <div class="small text-success mt-1" style="font-size:11px;">
-                                                            <i class="bi bi-link-45deg"></i> Google Drive Cloud Link
-                                                        </div>
-                                                    <?php else: ?>
-                                                        <div class="small text-muted mt-1 font-monospace" style="font-size:11px;">
-                                                            <?= htmlspecialchars($d->file_path ?? '', ENT_QUOTES, 'UTF-8') ?>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td>
-                                                    <?php if($kategori === 'zi' && !empty($area)): ?>
-                                                        <span class="badge bg-success-subtle text-success rounded-pill fw-bold">
-                                                            <i class="bi bi-shield-check"></i> <?= str_replace('AREA', 'POKJA ', strtoupper($area)) ?>
-                                                        </span>
-                                                        <div class="small text-muted" style="font-size:10px;"><?= $area_names[$area] ?? 'Zona Integritas' ?></div>
-                                                    <?php elseif(!empty($area) && isset($area_names[$area])): ?>
-                                                        <span class="badge bg-secondary-subtle text-secondary rounded-pill fw-bold">
-                                                            <?= strtoupper($kategori) ?>
-                                                        </span>
-                                                        <div class="small text-dark fw-semibold mt-1" style="font-size:11px;">
-                                                            <?= htmlspecialchars($area_names[$area], ENT_QUOTES, 'UTF-8') ?>
-                                                        </div>
-                                                    <?php else: ?>
-                                                        <span class="badge bg-secondary-subtle text-secondary rounded-pill fw-bold">
-                                                            <?= strtoupper($kategori) ?>
-                                                        </span>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td>
-                                                    <div class="small fw-semibold text-dark"><?= htmlspecialchars($d->pengunggah ?: 'PTK', ENT_QUOTES, 'UTF-8') ?></div>
-                                                    <?php if(!empty($d->lini_unit)): ?>
-                                                        <div class="small text-muted" style="font-size:11px;"><?= htmlspecialchars($d->lini_unit, ENT_QUOTES, 'UTF-8') ?></div>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td>
-                                                    <span class="small text-muted">
-                                                        <i class="bi bi-calendar3 me-1"></i><?= !empty($d->tanggal) ? date('d M Y', strtotime($d->tanggal)) : (!empty($d->created_at) ? date('d M Y', strtotime($d->created_at)) : '-') ?>
-                                                    </span>
-                                                </td>
-                                                <td class="text-end pe-4">
-                                                    <div class="d-inline-flex gap-1">
-                                                        <?php if($is_drive): ?>
-                                                            <a href="<?= $file_url ?>" target="_blank" class="btn btn-sm btn-light rounded-pill px-3 py-1 text-success shadow-sm" title="Buka Link Google Drive">
-                                                                <i class="bi bi-box-arrow-up-right"></i>
-                                                            </a>
-                                                        <?php else: ?>
-                                                            <a href="<?= $file_url ?>" target="_blank" class="btn btn-sm btn-light rounded-pill px-3 py-1 text-primary shadow-sm" download title="Unduh Berkas">
-                                                                <i class="bi bi-download me-1"></i>
-                                                            </a>
-                                                        <?php endif; ?>
-                                                        <a href="<?= base_url('admin_website/delete_download/'.$d->id) ?>" 
-                                                           class="btn btn-sm btn-light rounded-pill px-2 py-1 text-danger shadow-sm"
-                                                           onclick="return confirm('Hapus berkas unduhan ini?')"
-                                                           title="Hapus">
-                                                            <i class="bi bi-trash-fill"></i>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
+                        <div>
+                            <span class="text-muted small fw-bold text-uppercase d-block" style="font-size: 11px;">Total Berkas</span>
+                            <h4 class="fw-bold mb-0 text-dark"><?= number_format($stats['total'] ?? count($downloads ?? [])) ?></h4>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- Eviden ZI (6 Pokja) -->
+            <div class="col-6 col-lg-3">
+                <div class="card border-0 rounded-4 shadow-sm p-3 h-100 bg-white">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 p-2.5 bg-success-subtle text-success fs-4 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <div>
+                            <span class="text-muted small fw-bold text-uppercase d-block" style="font-size: 11px;">Eviden ZI (6 Pokja)</span>
+                            <h4 class="fw-bold mb-0 text-success"><?= number_format($stats['zi_total'] ?? 0) ?></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modul Kurikulum & Akademik -->
+            <div class="col-6 col-lg-3">
+                <div class="card border-0 rounded-4 shadow-sm p-3 h-100 bg-white">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 p-2.5 bg-info-subtle text-info fs-4 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="bi bi-journal-bookmark-fill"></i>
+                        </div>
+                        <div>
+                            <span class="text-muted small fw-bold text-uppercase d-block" style="font-size: 11px;">Akademik &amp; Modul</span>
+                            <h4 class="fw-bold mb-0 text-info"><?= number_format($stats['akademik'] ?? 0) ?></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Administrasi & Publik -->
+            <div class="col-6 col-lg-3">
+                <div class="card border-0 rounded-4 shadow-sm p-3 h-100 bg-white">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 p-2.5 bg-warning-subtle text-warning fs-4 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="bi bi-building"></i>
+                        </div>
+                        <div>
+                            <span class="text-muted small fw-bold text-uppercase d-block" style="font-size: 11px;">Kepegawaian &amp; TU</span>
+                            <h4 class="fw-bold mb-0 text-warning"><?= number_format(($stats['kepegawaian'] ?? 0) + ($stats['kesiswaan'] ?? 0) + ($stats['sarpras'] ?? 0) + ($stats['umum'] ?? 0)) ?></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ 3. FILTER, SEARCH & CATEGORY CHIPS STRIP ═══ -->
+        <div class="card border-0 rounded-4 shadow-sm mb-4 bg-white">
+            <div class="card-body p-3 p-md-4">
+                <div class="row g-3 align-items-center">
+                    
+                    <!-- Search Input -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 rounded-start-pill text-muted ps-3">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" id="adminTableSearch" class="form-control bg-light border-start-0 rounded-end-pill py-2" placeholder="Cari nama dokumen, pengunggah, keterangan..." style="font-size: 13.5px;">
+                        </div>
+                    </div>
+
+                    <!-- Filter Kategori Pilar -->
+                    <div class="col-lg-3 col-md-6">
+                        <select id="filterPilar" class="form-select rounded-pill px-3 py-2 fw-semibold" style="font-size: 13.5px;" onchange="filterAdminTable()">
+                            <option value="all">Semua Kategori Pilar</option>
+                            <option value="zi">⭐ Zona Integritas (WBK)</option>
+                            <option value="akademik">📚 Kurikulum &amp; Modul Ajar</option>
+                            <option value="kepegawaian">🗄️ Kepegawaian &amp; Tata Usaha</option>
+                            <option value="kesiswaan">🏆 Kesiswaan &amp; Ekskul</option>
+                            <option value="sarpras">🔬 Sarpras &amp; Lab</option>
+                            <option value="umum">📄 Formulir Publik &amp; Brosur</option>
+                        </select>
+                    </div>
+
+                    <!-- Filter Khusus Pokja ZI -->
+                    <div class="col-lg-3 col-md-6">
+                        <select id="filterPokja" class="form-select rounded-pill px-3 py-2 text-success fw-bold" style="font-size: 13.5px;" onchange="filterAdminTable()">
+                            <option value="all">Semua Pokja ZI (I s.d VI)</option>
+                            <option value="area1">Pokja I: Manajemen Perubahan</option>
+                            <option value="area2">Pokja II: Penataan Tatalaksana</option>
+                            <option value="area3">Pokja III: Penataan Manajemen SDM</option>
+                            <option value="area4">Pokja IV: Penguatan Akuntabilitas</option>
+                            <option value="area5">Pokja V: Penguatan Pengawasan</option>
+                            <option value="area6">Pokja VI: Kualitas Pelayanan Publik</option>
+                        </select>
+                    </div>
+
+                    <!-- Reset Filter Button -->
+                    <div class="col-lg-2 col-md-6 text-lg-end">
+                        <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-2 fw-semibold w-100 w-lg-auto" onclick="resetAdminFilter()">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filter
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ 4. TABEL DATA UTAMA (Full Width - Gaya Tabel Ijazah) ═══ -->
+        <div class="card border-0 rounded-4 shadow-sm overflow-hidden bg-white mb-4">
+            
+            <!-- Header Table Strip -->
+            <div class="d-flex justify-content-between align-items-center p-3 px-4 border-bottom bg-light bg-opacity-50 flex-wrap gap-2">
+                <div class="fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 14.5px;">
+                    <i class="bi bi-table text-success fs-5"></i> Daftar Dokumen &amp; Berkas
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="small text-muted" style="font-size: 13px;">
+                        Menampilkan <strong id="visibleCount"><?= count($downloads ?? []) ?></strong> dari <strong><?= count($downloads ?? []) ?></strong> berkas
+                    </span>
+                </div>
+            </div>
+
+            <!-- Table Responsive Container -->
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="tableAdminDownload" style="font-size: 13.5px; width: 100%;">
+                    <thead class="bg-light text-muted small text-uppercase">
+                        <tr>
+                            <th class="ps-4 text-center" style="width: 50px;">No</th>
+                            <th style="width: 60px;">Format</th>
+                            <th>Nama Dokumen &amp; Keterangan</th>
+                            <th style="width: 220px;">Kategori / Pokja</th>
+                            <th style="width: 170px;">Pengunggah (PIC)</th>
+                            <th style="width: 130px;">Tanggal</th>
+                            <th class="text-end pe-4" style="width: 130px;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if(empty($downloads)): ?>
+                            <tr id="emptyRow">
+                                <td colspan="7" class="text-center py-5 text-muted">
+                                    <i class="bi bi-file-earmark-arrow-down fs-1 text-secondary mb-2 d-block opacity-50"></i>
+                                    Belum ada berkas unduhan atau eviden yang tersimpan.
+                                </td>
+                            </tr>
+                        <?php else: ?>
+                            <?php $no = 1; foreach($downloads as $d): ?>
+                                <?php 
+                                $is_drive = (!empty($d->link_drive) || ($d->file_path ?? '') === 'drive_link');
+                                $ext = strtolower(pathinfo($d->file_path ?? '', PATHINFO_EXTENSION)); 
+                                
+                                if($is_drive){
+                                    $iconBoxBg = '#ecfdf5';
+                                    $iconBoxColor = '#059669';
+                                    $iconClass = 'bi-google';
+                                    $extLabel = 'DRIVE';
+                                    $file_url = $d->link_drive;
+                                } else {
+                                    $iconBoxBg = '#f1f5f9';
+                                    $iconBoxColor = '#475569';
+                                    $iconClass = 'bi-file-earmark-fill';
+                                    $extLabel = strtoupper($ext ?: 'FILE');
+
+                                    if($ext == 'pdf') {
+                                        $iconBoxBg = '#fef2f2';
+                                        $iconBoxColor = '#dc2626';
+                                        $iconClass = 'bi-file-earmark-pdf-fill';
+                                    } elseif(in_array($ext, ['doc','docx'])) {
+                                        $iconBoxBg = '#eff6ff';
+                                        $iconBoxColor = '#2563eb';
+                                        $iconClass = 'bi-file-earmark-word-fill';
+                                    } elseif(in_array($ext, ['xls','xlsx'])) {
+                                        $iconBoxBg = '#f0fdf4';
+                                        $iconBoxColor = '#16a34a';
+                                        $iconClass = 'bi-file-earmark-excel-fill';
+                                    } elseif(in_array($ext, ['ppt','pptx'])) {
+                                        $iconBoxBg = '#fffbeb';
+                                        $iconBoxColor = '#d97706';
+                                        $iconClass = 'bi-file-earmark-ppt-fill';
+                                    } elseif(in_array($ext, ['zip','rar'])) {
+                                        $iconBoxBg = '#faf5ff';
+                                        $iconBoxColor = '#9333ea';
+                                        $iconClass = 'bi-file-earmark-zip-fill';
+                                    }
+                                    
+                                    $file_url = base_url('assets/downloads/'.$d->file_path);
+                                }
+
+                                $kategori = strtolower($d->kategori_pilar ?? 'umum');
+                                $area = strtolower($d->area_zi ?? '');
+                                ?>
+                                <tr class="admin-doc-row"
+                                    data-pilar="<?= $kategori ?>"
+                                    data-pokja="<?= $area ?>"
+                                    data-title="<?= htmlspecialchars(strtolower($d->judul ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+                                    data-keterangan="<?= htmlspecialchars(strtolower($d->keterangan ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+                                    data-pengunggah="<?= htmlspecialchars(strtolower($d->pengunggah ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+                                    
+                                    <td class="ps-4 text-center text-muted fw-semibold row-number">
+                                        <?= $no++ ?>
+                                    </td>
+
+                                    <!-- Format Icon -->
+                                    <td>
+                                        <div class="rounded-3 d-flex align-items-center justify-content-center" 
+                                             style="width: 38px; height: 38px; background: <?= $iconBoxBg ?>; color: <?= $iconBoxColor ?>; font-size: 18px;" 
+                                             title="<?= $extLabel ?>">
+                                            <i class="bi <?= $iconClass ?>"></i>
+                                        </div>
+                                    </td>
+
+                                    <!-- Nama Dokumen & Catatan -->
+                                    <td>
+                                        <div>
+                                            <a href="<?= $file_url ?>" target="_blank" class="fw-bold text-dark text-decoration-none hover-primary" style="font-size: 14px;">
+                                                <?= htmlspecialchars($d->judul ?? '-', ENT_QUOTES, 'UTF-8') ?>
+                                            </a>
+                                        </div>
+
+                                        <?php if(!empty($d->keterangan)): ?>
+                                            <div class="small text-muted mt-1 text-truncate" style="max-width: 460px; font-size: 12px;">
+                                                <?= htmlspecialchars($d->keterangan, ENT_QUOTES, 'UTF-8') ?>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <?php if($is_drive): ?>
+                                            <div class="small text-success mt-1" style="font-size: 11px;">
+                                                <i class="bi bi-link-45deg"></i> Google Drive Cloud Link
+                                            </div>
+                                        <?php else: ?>
+                                            <div class="small text-muted mt-1 font-monospace" style="font-size: 10.5px;">
+                                                <i class="bi bi-hdd-fill me-1"></i><?= htmlspecialchars($d->file_path ?? '', ENT_QUOTES, 'UTF-8') ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </td>
+
+                                    <!-- Kategori / Pokja -->
+                                    <td>
+                                        <?php if($kategori === 'zi' && !empty($area)): ?>
+                                            <span class="badge bg-success-subtle text-success rounded-pill fw-bold px-2.5 py-1">
+                                                <i class="bi bi-shield-check me-1"></i> <?= str_replace('AREA', 'POKJA ', strtoupper($area)) ?>
+                                            </span>
+                                            <div class="small text-muted mt-1" style="font-size: 11px;">
+                                                <?= $area_names[$area] ?? 'Zona Integritas' ?>
+                                            </div>
+                                        <?php elseif(!empty($area) && isset($area_names[$area])): ?>
+                                            <span class="badge bg-secondary-subtle text-secondary rounded-pill fw-bold px-2.5 py-1">
+                                                <?= strtoupper($kategori) ?>
+                                            </span>
+                                            <div class="small text-dark fw-semibold mt-1" style="font-size: 11px;">
+                                                <?= htmlspecialchars($area_names[$area], ENT_QUOTES, 'UTF-8') ?>
+                                            </div>
+                                        <?php else: ?>
+                                            <span class="badge bg-secondary-subtle text-secondary rounded-pill fw-bold px-2.5 py-1">
+                                                <?= strtoupper($kategori) ?>
+                                            </span>
+                                        <?php endif; ?>
+                                    </td>
+
+                                    <!-- Pengunggah (PIC) -->
+                                    <td>
+                                        <div class="fw-semibold text-dark small">
+                                            <i class="bi bi-person-fill text-muted me-1"></i><?= htmlspecialchars($d->pengunggah ?: 'Admin', ENT_QUOTES, 'UTF-8') ?>
+                                        </div>
+                                        <?php if(!empty($d->lini_unit)): ?>
+                                            <div class="small text-muted" style="font-size: 11px;"><?= htmlspecialchars($d->lini_unit, ENT_QUOTES, 'UTF-8') ?></div>
+                                        <?php endif; ?>
+                                    </td>
+
+                                    <!-- Tanggal -->
+                                    <td>
+                                        <div class="small text-dark fw-medium">
+                                            <i class="bi bi-calendar3 me-1 text-muted"></i><?= !empty($d->tanggal) ? date('d M Y', strtotime($d->tanggal)) : (!empty($d->created_at) ? date('d M Y', strtotime($d->created_at)) : '-') ?>
+                                        </div>
+                                    </td>
+
+                                    <!-- Aksi Rounded-Pill -->
+                                    <td class="text-end pe-4">
+                                        <div class="d-inline-flex gap-1">
+                                            <?php if($is_drive): ?>
+                                                <a href="<?= $file_url ?>" target="_blank" class="btn btn-outline-success btn-sm rounded-pill px-3 py-1 fw-bold" title="Buka Link Google Drive">
+                                                    <i class="bi bi-box-arrow-up-right me-1"></i> Buka
+                                                </a>
+                                            <?php else: ?>
+                                                <a href="<?= $file_url ?>" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 fw-bold" download title="Unduh Berkas">
+                                                    <i class="bi bi-download me-1"></i> Unduh
+                                                </a>
+                                            <?php endif; ?>
+
+                                            <a href="<?= base_url('admin_website/delete_download/'.$d->id) ?>" 
+                                               class="btn btn-outline-danger btn-sm rounded-pill px-2.5 py-1"
+                                               onclick="return confirm('Apakah Anda yakin ingin menghapus berkas dokumen ini?')"
+                                               title="Hapus Berkas">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+
         </div>
 
     </div>
 </div>
 
-<!-- MODAL UBAH PIN AKSES ZONA INTEGRITAS -->
+<!-- ═══ 5. MODAL UNGGAH / TAMBAH DOKUMEN (Clean Modern Dialog) ═══ -->
+<div class="modal fade" id="modalTambahDokumen" tabindex="-1" aria-labelledby="modalTambahDokumenLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            
+            <div class="modal-header border-0 bg-success text-white px-4 py-3" style="background: linear-gradient(135deg, #064e3b 0%, #059669 100%);">
+                <div>
+                    <h5 class="modal-title fw-bold" id="modalTambahDokumenLabel">
+                        <i class="bi bi-cloud-arrow-up-fill me-1 text-warning"></i> Unggah / Tambah Dokumen &amp; Eviden
+                    </h5>
+                    <p class="small text-white-50 mb-0">Tambahkan berkas digital madrasah atau eviden 6 Pokja Zona Integritas.</p>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form method="post" action="<?= base_url('admin_website/save_download') ?>" enctype="multipart/form-data">
+                <div class="modal-body p-4">
+
+                    <!-- Kategori Pilar & Pokja -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">Kategori Dokumen / Pilar <span class="text-danger">*</span></label>
+                            <select name="kategori_pilar" id="adminKategoriPilar" class="form-select rounded-3" required onchange="handleAdminKategoriChange(this.value)">
+                                <option value="zi" selected>⭐ Zona Integritas (WBK / WBBM)</option>
+                                <option value="akademik">📚 Kurikulum &amp; Modul Ajar</option>
+                                <option value="kepegawaian">🗄️ Kepegawaian &amp; Tata Usaha</option>
+                                <option value="kesiswaan">🏆 Kesiswaan &amp; Ekstrakurikuler</option>
+                                <option value="sarpras">🔬 Sarpras &amp; Laboratorium</option>
+                                <option value="umum">📄 Formulir Publik &amp; Brosur</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6" id="adminWrapperAreaZi">
+                            <label class="form-label fw-bold small text-muted" id="adminLabelSubKategori">Pokja Perubahan ZI <span class="text-danger">*</span></label>
+                            <select name="area_zi" id="adminAreaZi" class="form-select rounded-3 text-success fw-bold" required>
+                                <option value="area1">Pokja I: Manajemen Perubahan</option>
+                                <option value="area2">Pokja II: Penataan Tatalaksana</option>
+                                <option value="area3">Pokja III: Penataan Manajemen SDM</option>
+                                <option value="area4">Pokja IV: Penguatan Akuntabilitas</option>
+                                <option value="area5">Pokja V: Penguatan Pengawasan</option>
+                                <option value="area6">Pokja VI: Kualitas Pelayanan Publik</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Judul Dokumen -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Nama / Judul Dokumen <span class="text-danger">*</span></label>
+                        <input type="text" name="judul" class="form-control rounded-3" placeholder="Contoh: SK Tim Pokja Pembangunan ZI WBK 2026" required>
+                    </div>
+
+                    <!-- Tanggal & Unit Kerja -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">Tanggal Dokumen</label>
+                            <input type="date" name="tanggal" class="form-control rounded-3" value="<?= date('Y-m-d') ?>">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">Lini / Unit Kerja</label>
+                            <input type="text" name="lini_unit" class="form-control rounded-3" placeholder="Contoh: Tim Pokja I / Bagian Kurikulum">
+                        </div>
+                    </div>
+
+                    <!-- Pengunggah (PIC) & Keterangan -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-5">
+                            <label class="form-label fw-bold small text-muted">Nama Pengunggah (PIC)</label>
+                            <input type="text" name="pengunggah" class="form-control rounded-3" value="<?= htmlspecialchars($this->session->userdata('username') ?? 'Admin') ?>" placeholder="Nama staf / PIC">
+                        </div>
+                        <div class="col-md-7">
+                            <label class="form-label fw-bold small text-muted">Keterangan / Nomor Dokumen (Opsional)</label>
+                            <input type="text" name="keterangan" class="form-control rounded-3" placeholder="Nomor surat atau peruntukan berkas...">
+                        </div>
+                    </div>
+
+                    <!-- Jenis Sumber Dokumen -->
+                    <div class="mb-2 p-3 rounded-4 bg-light">
+                        <label class="form-label fw-bold small text-muted d-block mb-2">Jenis Sumber Dokumen <span class="text-danger">*</span></label>
+                        <div class="d-flex gap-4 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tipe_sumber" id="sumberFileRadio" value="file" checked onchange="toggleAdminSumber('file')">
+                                <label class="form-check-label small fw-semibold" for="sumberFileRadio">
+                                    <i class="bi bi-file-earmark-arrow-up text-primary me-1"></i> Upload File Fisik
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tipe_sumber" id="sumberDriveRadio" value="drive_link" onchange="toggleAdminSumber('drive_link')">
+                                <label class="form-check-label small fw-semibold" for="sumberDriveRadio">
+                                    <i class="bi bi-google text-success me-1"></i> Tautan Google Drive
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="adminFilePane">
+                            <input type="file" name="file_download" id="adminFileInput" class="form-control rounded-3" required>
+                            <div class="form-text small mt-1">Mendukung file: PDF, DOCX, XLSX, PPTX, ZIP (Maks 20MB).</div>
+                        </div>
+
+                        <div id="adminDrivePane" style="display: none;">
+                            <input type="url" name="link_drive" id="adminDriveInput" class="form-control rounded-3" placeholder="https://drive.google.com/drive/folders/...">
+                            <div class="form-text small mt-1">Tempel link folder atau file Google Drive yang sudah diset akses publik.</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer border-0 bg-light p-3 rounded-bottom-4">
+                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-success btn-sm rounded-pill px-4 fw-bold shadow-sm">
+                        <i class="bi bi-cloud-arrow-up-fill me-1"></i> Simpan Dokumen
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- ═══ 6. MODAL UBAH PIN AKSES ZONA INTEGRITAS ═══ -->
 <div class="modal fade" id="modalUbahPinZi" tabindex="-1" aria-labelledby="modalUbahPinZiLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content rounded-4 border-0 shadow-lg">
             <div class="modal-header border-0 bg-success text-white py-3 px-4" style="background: linear-gradient(135deg, #064e3b 0%, #059669 100%);">
                 <h6 class="modal-title fw-bold" id="modalUbahPinZiLabel">
-                    <i class="bi bi-shield-lock-fill text-warning me-1"></i> Ubah PIN Eviden ZI
+                    <i class="bi bi-shield-lock-fill text-warning me-1"></i> PIN Eviden ZI
                 </h6>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="<?= base_url('admin_website/update_pin_zi') ?>" method="POST">
                 <div class="modal-body p-4 text-center">
                     <p class="small text-muted mb-3">
-                        PIN ini digunakan oleh Tim Pokja dan Tim Penilai (TPI/TPN) untuk membuka dokumen eviden ZI di portal website.
+                        PIN ini digunakan oleh Tim Pokja &amp; Tim Penilai (TPI/TPN) untuk membuka dokumen eviden ZI di portal website.
                     </p>
                     <div class="mb-3">
-                        <label class="form-label small fw-bold text-muted text-uppercase">PIN Baru</label>
-                        <input type="text" name="pin_zi" class="form-control text-center fw-bold fs-4 rounded-3 text-success" value="<?= htmlspecialchars($pin_zi ?? '123456') ?>" required maxlength="20" autocomplete="off">
+                        <label class="form-label small fw-bold text-muted text-uppercase">PIN Aktif Saat Ini</label>
+                        <input type="text" name="pin_zi" class="form-control text-center fw-bold fs-4 rounded-3 text-success font-monospace" value="<?= htmlspecialchars($pin_zi ?? '123456') ?>" required maxlength="20" autocomplete="off">
                     </div>
                 </div>
                 <div class="modal-footer border-0 bg-light p-3 rounded-bottom-4">
@@ -513,6 +697,67 @@ function toggleAdminSumber(type) {
         inputFile.removeAttribute('required');
         inputDrive.setAttribute('required', 'required');
     }
+}
+
+// Client-side Instant Filter & Search
+function filterAdminTable() {
+    const searchVal = (document.getElementById('adminTableSearch')?.value || '').toLowerCase().trim();
+    const pilarVal = document.getElementById('filterPilar')?.value || 'all';
+    const pokjaVal = document.getElementById('filterPokja')?.value || 'all';
+
+    const rows = document.querySelectorAll('.admin-doc-row');
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+        const rowPilar = (row.getAttribute('data-pilar') || '').toLowerCase().trim();
+        const rowPokja = (row.getAttribute('data-pokja') || '').toLowerCase().trim();
+        const rowTitle = row.getAttribute('data-title') || '';
+        const rowKeterangan = row.getAttribute('data-keterangan') || '';
+        const rowPengunggah = row.getAttribute('data-pengunggah') || '';
+
+        // Match Pilar
+        let matchPilar = (pilarVal === 'all') || (rowPilar === pilarVal);
+
+        // Match Pokja (if ZI or pokja filter is active)
+        let matchPokja = (pokjaVal === 'all') || (rowPokja === pokjaVal);
+
+        // Match Search Query
+        let matchSearch = true;
+        if (searchVal !== '') {
+            matchSearch = rowTitle.includes(searchVal) || rowKeterangan.includes(searchVal) || rowPengunggah.includes(searchVal);
+        }
+
+        if (matchPilar && matchPokja && matchSearch) {
+            row.style.display = '';
+            visibleCount++;
+            const numEl = row.querySelector('.row-number');
+            if (numEl) numEl.textContent = visibleCount;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    const countEl = document.getElementById('visibleCount');
+    if (countEl) countEl.textContent = visibleCount;
+
+    const emptyRow = document.getElementById('emptyRow');
+    if (emptyRow) {
+        emptyRow.style.display = (visibleCount === 0) ? '' : 'none';
+    }
+}
+
+document.getElementById('adminTableSearch')?.addEventListener('input', filterAdminTable);
+
+function resetAdminFilter() {
+    const searchInput = document.getElementById('adminTableSearch');
+    const pilarSelect = document.getElementById('filterPilar');
+    const pokjaSelect = document.getElementById('filterPokja');
+
+    if (searchInput) searchInput.value = '';
+    if (pilarSelect) pilarSelect.value = 'all';
+    if (pokjaSelect) pokjaSelect.value = 'all';
+
+    filterAdminTable();
 }
 </script>
 
