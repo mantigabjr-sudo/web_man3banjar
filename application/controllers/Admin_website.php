@@ -582,48 +582,176 @@ public function delete_galeri($id){
     $this->session->set_flashdata('success', 'Galeri berhasil dihapus.');
     redirect('admin_website/galeri');
 }
+    private function ensureDownloadDriveColumns() {
+        // Pastikan kolom pin_zi ada di tabel settings
+        if($this->db->table_exists('settings')){
+            if(!$this->db->field_exists('pin_zi', 'settings')){
+                $this->db->query("ALTER TABLE `settings` ADD COLUMN `pin_zi` varchar(20) DEFAULT '123456'");
+            }
+        }
+
+        if(!$this->db->table_exists('website_download')){
+            $this->db->query("CREATE TABLE IF NOT EXISTS `website_download` (
+                `id` int(11) NOT NULL AUTO_INCREMENT,
+                `judul` varchar(255) NOT NULL,
+                `file_path` varchar(255) DEFAULT NULL,
+                `keterangan` text DEFAULT NULL,
+                `tanggal` date NOT NULL,
+                `kategori_pilar` varchar(50) DEFAULT 'zi',
+                `area_zi` varchar(20) DEFAULT NULL,
+                `pengunggah` varchar(150) DEFAULT NULL,
+                `lini_unit` varchar(100) DEFAULT NULL,
+                `link_drive` text DEFAULT NULL,
+                `tipe_sumber` varchar(20) DEFAULT 'file',
+                `is_public` tinyint(1) DEFAULT 1,
+                `status_verifikasi` varchar(30) DEFAULT 'Sesuai',
+                `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+            return;
+        }
+
+        $fields = $this->db->list_fields('website_download');
+        if(!in_array('kategori_pilar', $fields)){
+            $this->db->query("ALTER TABLE `website_download` ADD COLUMN `kategori_pilar` varchar(50) DEFAULT 'zi' AFTER `tanggal`");
+        }
+        if(!in_array('area_zi', $fields)){
+            $this->db->query("ALTER TABLE `website_download` ADD COLUMN `area_zi` varchar(20) DEFAULT NULL AFTER `kategori_pilar`");
+        }
+        if(!in_array('pengunggah', $fields)){
+            $this->db->query("ALTER TABLE `website_download` ADD COLUMN `pengunggah` varchar(150) DEFAULT NULL AFTER `area_zi`");
+        }
+        if(!in_array('lini_unit', $fields)){
+            $this->db->query("ALTER TABLE `website_download` ADD COLUMN `lini_unit` varchar(100) DEFAULT NULL AFTER `pengunggah`");
+        }
+        if(!in_array('link_drive', $fields)){
+            $this->db->query("ALTER TABLE `website_download` ADD COLUMN `link_drive` text DEFAULT NULL AFTER `lini_unit`");
+        }
+        if(!in_array('tipe_sumber', $fields)){
+            $this->db->query("ALTER TABLE `website_download` ADD COLUMN `tipe_sumber` varchar(20) DEFAULT 'file' AFTER `link_drive`");
+        }
+        if(!in_array('is_public', $fields)){
+            $this->db->query("ALTER TABLE `website_download` ADD COLUMN `is_public` tinyint(1) DEFAULT 1 AFTER `tipe_sumber`");
+        }
+        if(!in_array('status_verifikasi', $fields)){
+            $this->db->query("ALTER TABLE `website_download` ADD COLUMN `status_verifikasi` varchar(30) DEFAULT 'Sesuai' AFTER `is_public`");
+        }
+    }
+
     public function download(){
+        $this->ensureDownloadDriveColumns();
+
         $data['downloads'] = $this->db
             ->order_by('tanggal', 'DESC')
+            ->order_by('id', 'DESC')
             ->get('website_download')
             ->result();
+
+        // Calculate statistics
+        $stats = [
+            'total' => count($data['downloads']),
+            'zi_total' => 0,
+            'akademik' => 0,
+            'kepegawaian' => 0,
+            'kesiswaan' => 0,
+            'sarpras' => 0,
+            'umum' => 0
+        ];
+        foreach($data['downloads'] as $row){
+            $pilar = strtolower($row->kategori_pilar ?? 'umum');
+            if($pilar === 'zi') $stats['zi_total']++;
+            elseif(isset($stats[$pilar])) $stats[$pilar]++;
+            else $stats['umum']++;
+        }
+        // Ambil data PIN ZI dari settings
+        $setting = $this->db->get('settings')->row();
+        $data['pin_zi'] = !empty($setting->pin_zi) ? $setting->pin_zi : '123456';
 
         $this->load->view('admin_website/download', $data);
     }
 
-    public function save_download(){
-        $judul = $this->input->post('judul');
-        $keterangan = $this->input->post('keterangan');
-        $tanggal = $this->input->post('tanggal');
-
-        $config['upload_path']   = FCPATH.'assets/downloads/';
-        $config['allowed_types'] = 'pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar';
-        $config['max_size']      = 10240; // 10MB
-        $config['file_name']     = time().'_'.url_title($judul, 'dash', true);
-
-        if(!is_dir($config['upload_path'])){
-            mkdir($config['upload_path'], 0777, true);
-        }
-
-        $this->load->library('upload', $config);
-
-        if($this->upload->do_upload('file_download')){
-            $uploadData = $this->upload->data();
-            $file_path = $uploadData['file_name'];
-
-            $this->db->insert('website_download', [
-                'judul'      => $judul,
-                'keterangan' => $keterangan,
-                'file_path'  => $file_path,
-                'tanggal'    => $tanggal
-            ]);
-
-            $this->session->set_flashdata('success', 'File berhasil diunggah.');
+    public function update_pin_zi(){
+        $this->ensureDownloadDriveColumns();
+        $pin_baru = trim((string)$this->input->post('pin_zi', TRUE));
+        if(!empty($pin_baru)){
+            $this->db->update('settings', ['pin_zi' => $pin_baru]);
+            $this->session->set_flashdata('success', 'PIN Akses Zona Integritas berhasil diperbarui menjadi: "'.htmlspecialchars($pin_baru).'"');
         } else {
-            $error = $this->upload->display_errors('','');
-            $this->session->set_flashdata('error', 'Gagal mengunggah file: '.$error);
+            $this->session->set_flashdata('error', 'PIN Akses tidak boleh kosong.');
+        }
+        redirect('admin_website/download');
+    }
+
+    public function save_download(){
+        $this->ensureDownloadDriveColumns();
+
+        $judul = trim((string)$this->input->post('judul', TRUE));
+        $keterangan = trim((string)$this->input->post('keterangan', TRUE));
+        $tanggal = $this->input->post('tanggal', TRUE) ? $this->input->post('tanggal', TRUE) : date('Y-m-d');
+        $kategori_pilar = $this->input->post('kategori_pilar', TRUE) ? trim($this->input->post('kategori_pilar', TRUE)) : 'zi';
+        $area_zi = $this->input->post('area_zi', TRUE) ? trim($this->input->post('area_zi', TRUE)) : NULL;
+        $pengunggah = trim((string)$this->input->post('pengunggah', TRUE));
+        $lini_unit = trim((string)$this->input->post('lini_unit', TRUE));
+        $tipe_sumber = $this->input->post('tipe_sumber', TRUE) ? trim($this->input->post('tipe_sumber', TRUE)) : 'file';
+        $link_drive = trim((string)$this->input->post('link_drive', TRUE));
+
+        if(empty($judul)){
+            $this->session->set_flashdata('error', 'Nama / Judul dokumen wajib diisi.');
+            redirect('admin_website/download');
+            return;
         }
 
+        // Preserve area_zi / sub_kategori for all categories if provided
+        $file_path = NULL;
+
+        if($tipe_sumber === 'drive_link'){
+            if(empty($link_drive) || !filter_var($link_drive, FILTER_VALIDATE_URL)){
+                $this->session->set_flashdata('error', 'Tautan Google Drive / Cloud URL tidak valid.');
+                redirect('admin_website/download');
+                return;
+            }
+            $file_path = 'drive_link';
+        } else {
+            $upload_dir = FCPATH.'assets/downloads/';
+            if(!is_dir($upload_dir)){
+                mkdir($upload_dir, 0777, true);
+            }
+
+            $config['upload_path']   = $upload_dir;
+            $config['allowed_types'] = 'pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar';
+            $config['max_size']      = 20480; // 20MB
+            $safe_title = url_title(substr($judul, 0, 45), 'dash', true);
+            $config['file_name']     = time().'_'.(!empty($safe_title) ? $safe_title : 'dokumen');
+
+            $this->load->library('upload', $config);
+
+            if($this->upload->do_upload('file_download')){
+                $uploadData = $this->upload->data();
+                $file_path = $uploadData['file_name'];
+            } else {
+                $error = $this->upload->display_errors('','');
+                $this->session->set_flashdata('error', 'Gagal mengunggah file: '.$error);
+                redirect('admin_website/download');
+                return;
+            }
+        }
+
+        $this->db->insert('website_download', [
+            'judul'             => $judul,
+            'keterangan'        => $keterangan,
+            'file_path'         => $file_path,
+            'tanggal'           => $tanggal,
+            'kategori_pilar'    => $kategori_pilar,
+            'area_zi'           => $area_zi,
+            'pengunggah'        => !empty($pengunggah) ? $pengunggah : ($this->session->userdata('username') ?? 'Admin'),
+            'lini_unit'         => !empty($lini_unit) ? $lini_unit : 'Pimpinan / Admin',
+            'link_drive'        => $link_drive,
+            'tipe_sumber'       => $tipe_sumber,
+            'is_public'         => 1,
+            'status_verifikasi' => 'Sesuai'
+        ]);
+
+        $this->session->set_flashdata('success', 'Dokumen / Eviden berhasil disimpan.');
         redirect('admin_website/download');
     }
 
@@ -634,7 +762,7 @@ public function delete_galeri($id){
             show_404();
         }
 
-        if(!empty($download->file_path)){
+        if(!empty($download->file_path) && $download->file_path !== 'drive_link'){
             $file = FCPATH.'assets/downloads/'.$download->file_path;
             if(file_exists($file)){
                 unlink($file);

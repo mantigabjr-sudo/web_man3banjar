@@ -659,7 +659,8 @@ $rdm_url = (strpos($rdm_raw, 'http://') === 0 || strpos($rdm_raw, 'https://') ==
                         <li><a class="dropdown-item py-2" href="<?= base_url('website/data_siswa') ?>">Data Siswa (Keadaan)</a></li>
                         <li><a class="dropdown-item py-2" href="<?= base_url('website/pamflet') ?>">Pengumuman / Pamflet</a></li>
                         <li><a class="dropdown-item py-2" href="<?= base_url('website/galeri') ?>">Galeri Kegiatan</a></li>
-                        <li><a class="dropdown-item py-2" href="<?= base_url('website/download') ?>">Download File</a></li>
+                        <li><a class="dropdown-item py-2" href="<?= base_url('website/download') ?>"><i class="bi bi-folder-fill text-success me-2"></i> Download File (Publik)</a></li>
+                        <li><a class="dropdown-item py-2 fw-semibold text-success" href="<?= base_url('website/zona_integritas') ?>"><i class="bi bi-shield-lock-fill text-warning me-2"></i> Eviden Zona Integritas (WBK)</a></li>
                         <li><hr class="dropdown-divider my-1"></li>
                         <li><a class="dropdown-item py-2" href="#media">Video Profil</a></li>
                     </ul>

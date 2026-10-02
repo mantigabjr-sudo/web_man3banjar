@@ -809,14 +809,313 @@ class Website extends CI_Controller {
         $this->load->view('public/tentang', $data);
     }
 
-    public function download() {
-        $data = $this->base_data('Download File');
+    public function drive() {
+        $this->download();
+    }
+
+    public function zi() {
+        $this->zona_integritas();
+    }
+
+    public function zona_integritas() {
+        $this->ensureDownloadDriveColumns();
+
+        // Izinkan uji ulang PIN kapan saja melalui query parameter (?lock=1 atau ?test_pin=1)
+        if ($this->input->get('lock') == '1' || $this->input->get('test_pin') == '1') {
+            $this->session->unset_userdata('zi_unlocked');
+        }
+
+        // 1. Cek Gerbang Keamanan PIN (Wajib PIN jika sesi belum di-unlock)
+        $is_unlocked = (bool)$this->session->userdata('zi_unlocked');
+
+        // Jika belum memasukkan PIN di sesi browser ini, tampilkan Gerbang PIN
+        if (!$is_unlocked) {
+            $data = $this->base_data('Gerbang Akses Eviden Zona Integritas');
+            $setting = $this->db->get('settings')->row();
+            $data['nama_madrasah'] = $setting->kop_nama_madrasah ?? 'MAN 3 Banjar';
+            $data['logo_madrasah'] = $setting->kop_logo ?? '';
+            $data['is_logged_in'] = (bool)$this->session->userdata('logged_in');
+            $this->load->view('public/zi_gate', $data);
+            return;
+        }
+
+        // 2. Jika lolos verifikasi, tampilkan Portal Khusus Eviden ZI
+        $data = $this->base_data('Portal Eviden Zona Integritas (WBK/WBBM)');
+        $data['is_logged_in'] = (bool)$this->session->userdata('logged_in');
+        $data['is_unlocked'] = true;
+
+        // Ambil khusus berkas Zona Integritas
         $data['downloads'] = $this->db
+            ->where('kategori_pilar', 'zi')
             ->order_by('tanggal', 'DESC')
+            ->order_by('id', 'DESC')
             ->get('website_download')
             ->result();
-            
+
+        // Hitung statistik khusus 6 Area ZI
+        $stats = [
+            'total' => count($data['downloads']),
+            'area1' => 0,
+            'area2' => 0,
+            'area3' => 0,
+            'area4' => 0,
+            'area5' => 0,
+            'area6' => 0
+        ];
+
+        foreach($data['downloads'] as $row){
+            $area = strtolower($row->area_zi ?? '');
+            if(isset($stats[$area])){
+                $stats[$area]++;
+            }
+        }
+        $data['zi_stats'] = $stats;
+
+        // PTK list untuk modal unggah
+        $data['ptk_list'] = [];
+        if($this->db->table_exists('ptk')){
+            $this->db->select('id, nama_lengkap, nip, jenis_ptk, tugas_tambahan');
+            if($this->db->field_exists('status_aktif', 'ptk')){
+                $this->db->where('status_aktif', 'Aktif');
+            }
+            $data['ptk_list'] = $this->db->order_by('nama_lengkap', 'ASC')->get('ptk')->result();
+        }
+
+        $data['active_area'] = $this->input->get('area', TRUE) ? trim($this->input->get('area', TRUE)) : 'all';
+        $data['active_view'] = $this->input->get('view', TRUE) ? trim($this->input->get('view', TRUE)) : 'grid';
+
+        $this->load->view('public/zona_integritas', $data);
+    }
+
+    public function unlock_zi() {
+        $this->ensureDownloadDriveColumns();
+
+        $pin_input = trim((string)$this->input->post('pin_zi', TRUE));
+        $valid_pin = '123456';
+
+        $setting = $this->db->get('settings')->row();
+        if($setting && !empty($setting->pin_zi)){
+            $valid_pin = trim($setting->pin_zi);
+        }
+
+        if(!empty($pin_input) && $pin_input === $valid_pin){
+            $this->session->set_userdata('zi_unlocked', true);
+            $this->session->set_flashdata('success', 'Akses Eviden Zona Integritas berhasil dibuka. Selamat bekerja Tim Pokja ZI.');
+        } else {
+            $this->session->set_flashdata('error', 'PIN Akses tidak sesuai. Silakan hubungi Tim Pokja ZI MAN 3 Banjar.');
+        }
+
+        redirect('website/zona_integritas');
+    }
+
+    public function lock_zi() {
+        $this->session->unset_userdata('zi_unlocked');
+        $this->session->set_flashdata('info', 'Sesi akses Eviden Zona Integritas telah dikunci kembali.');
+        redirect('website/zona_integritas');
+    }
+
+    public function bypass_zi() {
+        redirect('website/zona_integritas?lock=1');
+    }
+
+    private function ensureDownloadDriveColumns() {
+        // Pastikan kolom pin_zi ada di tabel settings
+        if($this->db->table_exists('settings')){
+            if(!$this->db->field_exists('pin_zi', 'settings')){
+                $this->db->query("ALTER TABLE `settings` ADD COLUMN `pin_zi` varchar(20) DEFAULT '123456'");
+            }
+        }
+
+        if(!$this->db->table_exists('website_download')){
+            $this->db->query("CREATE TABLE IF NOT EXISTS `website_download` (
+                `id` int(11) NOT NULL AUTO_INCREMENT,
+                `judul` varchar(255) NOT NULL,
+                `file_path` varchar(255) DEFAULT NULL,
+                `keterangan` text DEFAULT NULL,
+                `tanggal` date NOT NULL,
+                `kategori_pilar` varchar(50) DEFAULT 'zi',
+                `area_zi` varchar(20) DEFAULT NULL,
+                `pengunggah` varchar(150) DEFAULT NULL,
+                `lini_unit` varchar(100) DEFAULT NULL,
+                `link_drive` text DEFAULT NULL,
+                `tipe_sumber` varchar(20) DEFAULT 'file',
+                `is_public` tinyint(1) DEFAULT 1,
+                `status_verifikasi` varchar(30) DEFAULT 'Sesuai',
+                `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+            return;
+        }
+
+        $fields = $this->db->list_fields('website_download');
+        if(!in_array('kategori_pilar', $fields)){
+            $this->db->query("ALTER TABLE `website_download` ADD COLUMN `kategori_pilar` varchar(50) DEFAULT 'zi' AFTER `tanggal`");
+        }
+        if(!in_array('area_zi', $fields)){
+            $this->db->query("ALTER TABLE `website_download` ADD COLUMN `area_zi` varchar(20) DEFAULT NULL AFTER `kategori_pilar`");
+        }
+        if(!in_array('pengunggah', $fields)){
+            $this->db->query("ALTER TABLE `website_download` ADD COLUMN `pengunggah` varchar(150) DEFAULT NULL AFTER `area_zi`");
+        }
+        if(!in_array('lini_unit', $fields)){
+            $this->db->query("ALTER TABLE `website_download` ADD COLUMN `lini_unit` varchar(100) DEFAULT NULL AFTER `pengunggah`");
+        }
+        if(!in_array('link_drive', $fields)){
+            $this->db->query("ALTER TABLE `website_download` ADD COLUMN `link_drive` text DEFAULT NULL AFTER `lini_unit`");
+        }
+        if(!in_array('tipe_sumber', $fields)){
+            $this->db->query("ALTER TABLE `website_download` ADD COLUMN `tipe_sumber` varchar(20) DEFAULT 'file' AFTER `link_drive`");
+        }
+        if(!in_array('is_public', $fields)){
+            $this->db->query("ALTER TABLE `website_download` ADD COLUMN `is_public` tinyint(1) DEFAULT 1 AFTER `tipe_sumber`");
+        }
+        if(!in_array('status_verifikasi', $fields)){
+            $this->db->query("ALTER TABLE `website_download` ADD COLUMN `status_verifikasi` varchar(30) DEFAULT 'Sesuai' AFTER `is_public`");
+        }
+    }
+
+    public function download() {
+        $this->ensureDownloadDriveColumns();
+
+        $data = $this->base_data('Pusat Unduhan & Dokumen Resmi Madrasah');
+        
+        // Fetch all PUBLIC downloads (selain ZI internal)
+        $data['downloads'] = $this->db
+            ->where('kategori_pilar !=', 'zi')
+            ->order_by('tanggal', 'DESC')
+            ->order_by('id', 'DESC')
+            ->get('website_download')
+            ->result();
+
+        // Calculate statistics per category publik
+        $stats = [
+            'total' => count($data['downloads']),
+            'akademik' => 0,
+            'kepegawaian' => 0,
+            'kesiswaan' => 0,
+            'sarpras' => 0,
+            'umum' => 0
+        ];
+
+        foreach($data['downloads'] as $row){
+            $pilar = strtolower($row->kategori_pilar ?? 'umum');
+            if(isset($stats[$pilar])){
+                $stats[$pilar]++;
+            } else {
+                $stats['umum']++;
+            }
+        }
+        $data['drive_stats'] = $stats;
+
+        // Fetch PTK list for uploader selection
+        $data['ptk_list'] = [];
+        if($this->db->table_exists('ptk')){
+            $this->db->select('id, nama_lengkap, nip, jenis_ptk, tugas_tambahan');
+            if($this->db->field_exists('status_aktif', 'ptk')){
+                $this->db->where('status_aktif', 'Aktif');
+            }
+            $data['ptk_list'] = $this->db->order_by('nama_lengkap', 'ASC')->get('ptk')->result();
+        }
+
+        // Active filter from GET
+        $data['active_filter'] = $this->input->get('filter', TRUE) ? trim($this->input->get('filter', TRUE)) : 'all';
+        $data['active_view'] = $this->input->get('view', TRUE) ? trim($this->input->get('view', TRUE)) : 'grid';
+
         $this->load->view('public/download', $data);
+    }
+
+    public function upload_drive() {
+        $this->ensureDownloadDriveColumns();
+
+        $judul = trim((string)$this->input->post('judul', TRUE));
+        $tanggal = $this->input->post('tanggal', TRUE) ? $this->input->post('tanggal', TRUE) : date('Y-m-d');
+        $kategori_pilar = $this->input->post('kategori_pilar', TRUE) ? trim($this->input->post('kategori_pilar', TRUE)) : 'zi';
+        $area_zi = $this->input->post('area_zi', TRUE) ? trim($this->input->post('area_zi', TRUE)) : NULL;
+        $pengunggah = trim((string)$this->input->post('pengunggah', TRUE));
+        $lini_unit = trim((string)$this->input->post('lini_unit', TRUE));
+        $keterangan = trim((string)$this->input->post('keterangan', TRUE));
+        $tipe_sumber = $this->input->post('tipe_sumber', TRUE) ? trim($this->input->post('tipe_sumber', TRUE)) : 'file';
+        $link_drive = trim((string)$this->input->post('link_drive', TRUE));
+        $pin_input = trim((string)$this->input->post('pin_keamanan', TRUE));
+
+        if(empty($judul)){
+            $this->session->set_flashdata('error', 'Nama / Judul dokumen wajib diisi.');
+            redirect('website/download');
+            return;
+        }
+
+        // Security verification: allow if already logged in as PTK/Admin, or verify PIN
+        $is_logged_in = (bool)$this->session->userdata('logged_in');
+        $valid_pin = '123456'; // Default PIN publik madrasah untuk PTK
+        
+        // Cek jika ada custom PIN di settings
+        $setting = $this->db->get('settings')->row();
+        if($setting && !empty($setting->pin_drive)){
+            $valid_pin = $setting->pin_drive;
+        }
+
+        if(!$is_logged_in && !empty($valid_pin) && $pin_input !== $valid_pin){
+            $this->session->set_flashdata('error', 'Kode Keamanan / PIN Pengunggah tidak sesuai. Gunakan PIN resmi madrasah ('.$valid_pin.') atau login ke akun LabSys.');
+            redirect('website/download');
+            return;
+        }
+
+        // Preserve area_zi / sub_kategori for all categories if provided
+        $file_path = NULL;
+
+        if($tipe_sumber === 'drive_link'){
+            if(empty($link_drive) || !filter_var($link_drive, FILTER_VALIDATE_URL)){
+                $this->session->set_flashdata('error', 'Tautan Google Drive / Cloud URL tidak valid.');
+                redirect('website/download');
+                return;
+            }
+            $file_path = 'drive_link';
+        } else {
+            // Upload file fisik
+            $upload_dir = FCPATH . 'assets/downloads/';
+            if(!is_dir($upload_dir)){
+                mkdir($upload_dir, 0777, true);
+            }
+
+            $config['upload_path']   = $upload_dir;
+            $config['allowed_types'] = 'pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar';
+            $config['max_size']      = 20480; // 20MB
+            
+            $raw_ext = pathinfo($_FILES['file_download']['name'] ?? '', PATHINFO_EXTENSION);
+            $safe_title = url_title(substr($judul, 0, 45), 'dash', true);
+            $config['file_name'] = time() . '_' . (!empty($safe_title) ? $safe_title : 'dokumen');
+
+            $this->load->library('upload', $config);
+
+            if(!$this->upload->do_upload('file_download')){
+                $err = $this->upload->display_errors('', '');
+                $this->session->set_flashdata('error', 'Gagal mengunggah file: ' . $err);
+                redirect('website/download');
+                return;
+            }
+
+            $uploadData = $this->upload->data();
+            $file_path = $uploadData['file_name'];
+        }
+
+        // Insert ke database
+        $this->db->insert('website_download', [
+            'judul'             => $judul,
+            'file_path'         => $file_path,
+            'keterangan'        => $keterangan,
+            'tanggal'           => $tanggal,
+            'kategori_pilar'    => $kategori_pilar,
+            'area_zi'           => $area_zi,
+            'pengunggah'        => !empty($pengunggah) ? $pengunggah : ($this->session->userdata('username') ?? 'PTK Madrasah'),
+            'lini_unit'         => !empty($lini_unit) ? $lini_unit : 'Unit Kerja',
+            'link_drive'        => $link_drive,
+            'tipe_sumber'       => $tipe_sumber,
+            'is_public'         => 1,
+            'status_verifikasi' => 'Sesuai'
+        ]);
+
+        $this->session->set_flashdata('success', 'Dokumen / Eviden "'.htmlspecialchars($judul).'" berhasil diunggah ke Drive Madrasah!');
+        redirect('website/download' . ($kategori_pilar === 'zi' && !empty($area_zi) ? '?filter='.$area_zi : ''));
     }
 
     public function data_siswa() {

@@ -118,7 +118,8 @@ if(!function_exists('web_clean')){
                         <li><a class="dropdown-item" href="<?= base_url('website/data_siswa') ?>">Data Siswa (Keadaan)</a></li>
                         <li><a class="dropdown-item" href="<?= base_url('website/pamflet') ?>">Pengumuman / Pamflet</a></li>
                         <li><a class="dropdown-item" href="<?= base_url('website/galeri') ?>">Galeri Kegiatan</a></li>
-                        <li><a class="dropdown-item" href="<?= base_url('website/download') ?>">Download File</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('website/download') ?>"><i class="bi bi-folder-fill text-success me-1"></i> Download File (Publik)</a></li>
+                        <li><a class="dropdown-item fw-semibold text-success" href="<?= base_url('website/zona_integritas') ?>"><i class="bi bi-shield-lock-fill text-warning me-1"></i> Eviden Zona Integritas (WBK)</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="<?= base_url() ?>#media">Media & Video</a></li>
                     </ul>
