@@ -378,27 +378,27 @@ $logged_user_name = $this->session->userdata('username') ?? '';
         </a>
         <a href="<?= base_url('website/zona_integritas?area=area1') ?>" data-area="area1" onclick="selectZiArea('area1'); return false;" class="zi-kpi-item <?= $active_area === 'area1' ? 'active' : '' ?>">
             <div class="zi-kpi-num text-success"><?= $zi_stats['area1'] ?? 0 ?></div>
-            <div class="zi-kpi-label">Area I</div>
+            <div class="zi-kpi-label">Pokja I</div>
         </a>
         <a href="<?= base_url('website/zona_integritas?area=area2') ?>" data-area="area2" onclick="selectZiArea('area2'); return false;" class="zi-kpi-item <?= $active_area === 'area2' ? 'active' : '' ?>">
             <div class="zi-kpi-num text-success"><?= $zi_stats['area2'] ?? 0 ?></div>
-            <div class="zi-kpi-label">Area II</div>
+            <div class="zi-kpi-label">Pokja II</div>
         </a>
         <a href="<?= base_url('website/zona_integritas?area=area3') ?>" data-area="area3" onclick="selectZiArea('area3'); return false;" class="zi-kpi-item <?= $active_area === 'area3' ? 'active' : '' ?>">
             <div class="zi-kpi-num text-success"><?= $zi_stats['area3'] ?? 0 ?></div>
-            <div class="zi-kpi-label">Area III</div>
+            <div class="zi-kpi-label">Pokja III</div>
         </a>
         <a href="<?= base_url('website/zona_integritas?area=area4') ?>" data-area="area4" onclick="selectZiArea('area4'); return false;" class="zi-kpi-item <?= $active_area === 'area4' ? 'active' : '' ?>">
             <div class="zi-kpi-num text-success"><?= $zi_stats['area4'] ?? 0 ?></div>
-            <div class="zi-kpi-label">Area IV</div>
+            <div class="zi-kpi-label">Pokja IV</div>
         </a>
         <a href="<?= base_url('website/zona_integritas?area=area5') ?>" data-area="area5" onclick="selectZiArea('area5'); return false;" class="zi-kpi-item <?= $active_area === 'area5' ? 'active' : '' ?>">
             <div class="zi-kpi-num text-success"><?= $zi_stats['area5'] ?? 0 ?></div>
-            <div class="zi-kpi-label">Area V</div>
+            <div class="zi-kpi-label">Pokja V</div>
         </a>
         <a href="<?= base_url('website/zona_integritas?area=area6') ?>" data-area="area6" onclick="selectZiArea('area6'); return false;" class="zi-kpi-item <?= $active_area === 'area6' ? 'active' : '' ?>">
             <div class="zi-kpi-num text-success"><?= $zi_stats['area6'] ?? 0 ?></div>
-            <div class="zi-kpi-label">Area VI</div>
+            <div class="zi-kpi-label">Pokja VI</div>
         </a>
     </div>
 </div>
@@ -422,19 +422,19 @@ $logged_user_name = $this->session->userdata('username') ?? '';
         </div>
     <?php endif; ?>
 
-    <!-- 6 Area Navigasi Grid (Zero Horizontal Scroll) -->
+    <!-- 6 Pokja Navigasi Grid (Zero Horizontal Scroll) -->
     <div class="mb-3">
         <div class="d-flex align-items-center justify-content-between mb-2">
-            <label class="form-label fw-bold text-muted small text-uppercase mb-0" style="letter-spacing: 0.5px;">Pilih Area Perubahan ZI:</label>
+            <label class="form-label fw-bold text-muted small text-uppercase mb-0" style="letter-spacing: 0.5px;">Pilih Pokja Perubahan ZI:</label>
             <button type="button" class="btn btn-sm btn-link text-success fw-bold p-0 text-decoration-none" onclick="selectZiArea('all')">
-                <i class="bi bi-grid me-1"></i> Tampilkan Semua Area
+                <i class="bi bi-grid me-1"></i> Tampilkan Semua Pokja
             </button>
         </div>
         <div class="zi-area-grid">
             <a href="<?= base_url('website/zona_integritas?area=area1') ?>" data-area="area1" onclick="selectZiArea('area1'); return false;" class="zi-area-card <?= $active_area === 'area1' ? 'active' : '' ?>">
                 <i class="bi bi-signpost-split-fill text-success"></i>
                 <div class="text-truncate">
-                    <strong class="d-block text-truncate" style="font-size: 13.5px;">Area I: Manajemen Perubahan</strong>
+                    <strong class="d-block text-truncate" style="font-size: 13.5px;">Pokja I: Manajemen Perubahan</strong>
                     <span class="small opacity-75" style="font-size: 11px;">Budaya kerja & komitmen</span>
                 </div>
                 <span class="badge-count"><?= $zi_stats['area1'] ?? 0 ?></span>
@@ -442,7 +442,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
             <a href="<?= base_url('website/zona_integritas?area=area2') ?>" data-area="area2" onclick="selectZiArea('area2'); return false;" class="zi-area-card <?= $active_area === 'area2' ? 'active' : '' ?>">
                 <i class="bi bi-diagram-3-fill text-primary"></i>
                 <div class="text-truncate">
-                    <strong class="d-block text-truncate" style="font-size: 13.5px;">Area II: Penataan Tatalaksana</strong>
+                    <strong class="d-block text-truncate" style="font-size: 13.5px;">Pokja II: Penataan Tatalaksana</strong>
                     <span class="small opacity-75" style="font-size: 11px;">SOP & digitalisasi e-office</span>
                 </div>
                 <span class="badge-count"><?= $zi_stats['area2'] ?? 0 ?></span>
@@ -450,7 +450,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
             <a href="<?= base_url('website/zona_integritas?area=area3') ?>" data-area="area3" onclick="selectZiArea('area3'); return false;" class="zi-area-card <?= $active_area === 'area3' ? 'active' : '' ?>">
                 <i class="bi bi-people-fill text-info"></i>
                 <div class="text-truncate">
-                    <strong class="d-block text-truncate" style="font-size: 13.5px;">Area III: Manajemen SDM</strong>
+                    <strong class="d-block text-truncate" style="font-size: 13.5px;">Pokja III: Penataan Manajemen SDM</strong>
                     <span class="small opacity-75" style="font-size: 11px;">Disiplin & kompetensi guru/staf</span>
                 </div>
                 <span class="badge-count"><?= $zi_stats['area3'] ?? 0 ?></span>
@@ -458,7 +458,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
             <a href="<?= base_url('website/zona_integritas?area=area4') ?>" data-area="area4" onclick="selectZiArea('area4'); return false;" class="zi-area-card <?= $active_area === 'area4' ? 'active' : '' ?>">
                 <i class="bi bi-clipboard-data-fill text-warning"></i>
                 <div class="text-truncate">
-                    <strong class="d-block text-truncate" style="font-size: 13.5px;">Area IV: Penguatan Akuntabilitas</strong>
+                    <strong class="d-block text-truncate" style="font-size: 13.5px;">Pokja IV: Penguatan Akuntabilitas</strong>
                     <span class="small opacity-75" style="font-size: 11px;">LAKIP & capaian kinerja</span>
                 </div>
                 <span class="badge-count"><?= $zi_stats['area4'] ?? 0 ?></span>
@@ -466,7 +466,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
             <a href="<?= base_url('website/zona_integritas?area=area5') ?>" data-area="area5" onclick="selectZiArea('area5'); return false;" class="zi-area-card <?= $active_area === 'area5' ? 'active' : '' ?>">
                 <i class="bi bi-shield-lock-fill text-danger"></i>
                 <div class="text-truncate">
-                    <strong class="d-block text-truncate" style="font-size: 13.5px;">Area V: Penguatan Pengawasan</strong>
+                    <strong class="d-block text-truncate" style="font-size: 13.5px;">Pokja V: Penguatan Pengawasan</strong>
                     <span class="small opacity-75" style="font-size: 11px;">Gratifikasi, WBS & benturan</span>
                 </div>
                 <span class="badge-count"><?= $zi_stats['area5'] ?? 0 ?></span>
@@ -474,7 +474,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
             <a href="<?= base_url('website/zona_integritas?area=area6') ?>" data-area="area6" onclick="selectZiArea('area6'); return false;" class="zi-area-card <?= $active_area === 'area6' ? 'active' : '' ?>">
                 <i class="bi bi-stars text-success"></i>
                 <div class="text-truncate">
-                    <strong class="d-block text-truncate" style="font-size: 13.5px;">Area VI: Kualitas Pelayanan</strong>
+                    <strong class="d-block text-truncate" style="font-size: 13.5px;">Pokja VI: Kualitas Pelayanan</strong>
                     <span class="small opacity-75" style="font-size: 11px;">Inovasi layanan & survei IKM</span>
                 </div>
                 <span class="badge-count"><?= $zi_stats['area6'] ?? 0 ?></span>

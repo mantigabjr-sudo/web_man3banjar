@@ -799,20 +799,42 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
                     </a>
                 </div>
 
-                <!-- Media & Unduhan -->
-                <button class="menu-toggle <?= is_toggle_active(['admin_website/galeri','admin_website/video','admin_website/download'], $current) ?>"
+                <!-- Zona Integritas (WBK) -->
+                <button class="menu-toggle <?= is_toggle_active(['admin_website/download'], $current) ?>"
                         type="button"
                         data-bs-toggle="collapse"
-                        data-bs-target="#menuWebMedia"
-                        aria-expanded="<?= is_open_menu(['admin_website/galeri','admin_website/video','admin_website/download'], $current) ? 'true' : 'false' ?>">
+                        data-bs-target="#menuWebZI"
+                        aria-expanded="<?= is_open_menu(['admin_website/download'], $current) ? 'true' : 'false' ?>">
                     <span class="menu-toggle-main">
-                        <span class="menu-ico"><i class="bi bi-collection-play-fill"></i></span>
-                        <span>Media &amp; Unduhan</span>
+                        <span class="menu-ico"><i class="bi bi-shield-check"></i></span>
+                        <span>Zona Integritas (ZI)</span>
                     </span>
                     <i class="bi bi-chevron-down chev"></i>
                 </button>
 
-                <div class="collapse submenu <?= is_open_menu(['admin_website/galeri','admin_website/video','admin_website/download'], $current) ?>" id="menuWebMedia">
+                <div class="collapse submenu <?= is_open_menu(['admin_website/download'], $current) ?>" id="menuWebZI">
+                    <a class="<?= is_active_menu('admin_website/download',$current) ?>" href="<?= base_url('admin_website/download') ?>">
+                        <span class="sub-dot"></span> Kelola Dokumen 6 Pokja
+                    </a>
+                    <a href="<?= base_url('website/zona_integritas') ?>" target="_blank">
+                        <span class="sub-dot"></span> Portal Eviden Publik <i class="bi bi-box-arrow-up-right ms-1 text-muted" style="font-size: 10px;"></i>
+                    </a>
+                </div>
+
+                <!-- Media & Galeri -->
+                <button class="menu-toggle <?= is_toggle_active(['admin_website/galeri','admin_website/video'], $current) ?>"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#menuWebMedia"
+                        aria-expanded="<?= is_open_menu(['admin_website/galeri','admin_website/video'], $current) ? 'true' : 'false' ?>">
+                    <span class="menu-toggle-main">
+                        <span class="menu-ico"><i class="bi bi-collection-play-fill"></i></span>
+                        <span>Media &amp; Galeri</span>
+                    </span>
+                    <i class="bi bi-chevron-down chev"></i>
+                </button>
+
+                <div class="collapse submenu <?= is_open_menu(['admin_website/galeri','admin_website/video'], $current) ?>" id="menuWebMedia">
                     <a class="<?= is_active_menu('admin_website/galeri',$current) ?>" href="<?= base_url('admin_website/galeri') ?>">
                         <span class="sub-dot"></span> Galeri Foto
                     </a>
@@ -820,7 +842,7 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
                         <span class="sub-dot"></span> Video Profil
                     </a>
                     <a class="<?= is_active_menu('admin_website/download',$current) ?>" href="<?= base_url('admin_website/download') ?>">
-                        <span class="sub-dot"></span> Data Download
+                        <span class="sub-dot"></span> Unduhan Dokumen
                     </a>
                 </div>
 
@@ -913,20 +935,42 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
                     </a>
                 </div>
 
-                <!-- 3. Media & Unduhan -->
-                <button class="menu-toggle <?= is_toggle_active(['admin_website/galeri','admin_website/video','admin_website/download'], $current) ?>"
+                <!-- 3. Zona Integritas (WBK) -->
+                <button class="menu-toggle <?= is_toggle_active(['admin_website/download'], $current) ?>"
                         type="button"
                         data-bs-toggle="collapse"
-                        data-bs-target="#menuMedia"
-                        aria-expanded="<?= is_open_menu(['admin_website/galeri','admin_website/video','admin_website/download'], $current) ? 'true' : 'false' ?>">
+                        data-bs-target="#menuZI"
+                        aria-expanded="<?= is_open_menu(['admin_website/download'], $current) ? 'true' : 'false' ?>">
                     <span class="menu-toggle-main">
-                        <span class="menu-ico"><i class="bi bi-collection-play-fill"></i></span>
-                        <span>Media &amp; Unduhan</span>
+                        <span class="menu-ico"><i class="bi bi-shield-check"></i></span>
+                        <span>Zona Integritas (ZI)</span>
                     </span>
                     <i class="bi bi-chevron-down chev"></i>
                 </button>
 
-                <div class="collapse submenu <?= is_open_menu(['admin_website/galeri','admin_website/video','admin_website/download'], $current) ?>" id="menuMedia">
+                <div class="collapse submenu <?= is_open_menu(['admin_website/download'], $current) ?>" id="menuZI">
+                    <a class="<?= is_active_menu('admin_website/download',$current) ?>" href="<?= base_url('admin_website/download') ?>">
+                        <span class="sub-dot"></span> Kelola Dokumen 6 Pokja
+                    </a>
+                    <a href="<?= base_url('website/zona_integritas') ?>" target="_blank">
+                        <span class="sub-dot"></span> Portal Eviden Publik <i class="bi bi-box-arrow-up-right ms-1 text-muted" style="font-size: 10px;"></i>
+                    </a>
+                </div>
+
+                <!-- 4. Media & Galeri -->
+                <button class="menu-toggle <?= is_toggle_active(['admin_website/galeri','admin_website/video'], $current) ?>"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#menuMedia"
+                        aria-expanded="<?= is_open_menu(['admin_website/galeri','admin_website/video'], $current) ? 'true' : 'false' ?>">
+                    <span class="menu-toggle-main">
+                        <span class="menu-ico"><i class="bi bi-collection-play-fill"></i></span>
+                        <span>Media &amp; Galeri</span>
+                    </span>
+                    <i class="bi bi-chevron-down chev"></i>
+                </button>
+
+                <div class="collapse submenu <?= is_open_menu(['admin_website/galeri','admin_website/video'], $current) ?>" id="menuMedia">
                     <a class="<?= is_active_menu('admin_website/galeri',$current) ?>" href="<?= base_url('admin_website/galeri') ?>">
                         <span class="sub-dot"></span> Galeri Foto
                     </a>
@@ -934,7 +978,7 @@ $userInitial = !empty($username) ? strtoupper(substr($username,0,1)) : 'A';
                         <span class="sub-dot"></span> Video Profil
                     </a>
                     <a class="<?= is_active_menu('admin_website/download',$current) ?>" href="<?= base_url('admin_website/download') ?>">
-                        <span class="sub-dot"></span> Data Download
+                        <span class="sub-dot"></span> Unduhan Dokumen
                     </a>
                 </div>
 

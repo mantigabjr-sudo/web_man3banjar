@@ -706,7 +706,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                     <strong id="activeFolderLabel" class="text-dark">
                         <?php 
                         if($active_filter === 'all') echo 'Semua Berkas';
-                        elseif($active_filter === 'zi') echo 'Zona Integritas (Semua Area)';
+                        elseif($active_filter === 'zi') echo 'Zona Integritas (Semua Pokja)';
                         elseif(isset($area_zi_names[$active_filter])) echo $area_zi_names[$active_filter];
                         else echo ucfirst($active_filter);
                         ?>
@@ -747,7 +747,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                                     <div class="text-end">
                                         <?php if($kategori === 'zi' && !empty($area)): ?>
                                             <span class="file-badge-pill bg-success-subtle text-success border border-success-subtle">
-                                                <i class="bi bi-shield-check"></i> <?= strtoupper($area) ?>
+                                                <i class="bi bi-shield-check"></i> <?= str_replace('AREA', 'POKJA ', strtoupper($area)) ?>
                                             </span>
                                         <?php elseif(!empty($area) && isset($sub_kategori_names[$area])): ?>
                                             <span class="file-badge-pill <?= $file_meta['badge_class'] ?>">
@@ -861,7 +861,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                                     <td>
                                         <?php if($kategori === 'zi' && !empty($area)): ?>
                                             <span class="file-badge-pill bg-success-subtle text-success border border-success-subtle">
-                                                <i class="bi bi-shield-check"></i> <?= strtoupper($area) ?>
+                                                <i class="bi bi-shield-check"></i> <?= str_replace('AREA', 'POKJA ', strtoupper($area)) ?>
                                             </span>
                                             <div class="small text-muted mt-1" style="font-size: 11px;">
                                                 <?= $sub_kategori_names[$area] ?? 'Zona Integritas' ?>

@@ -3,13 +3,13 @@
 
 <?php
 $area_names = [
-    // Area Zona Integritas (WBK / WBBM)
-    'area1' => 'Area I: Manajemen Perubahan',
-    'area2' => 'Area II: Penataan Tatalaksana',
-    'area3' => 'Area III: Manajemen SDM',
-    'area4' => 'Area IV: Akuntabilitas',
-    'area5' => 'Area V: Pengawasan',
-    'area6' => 'Area VI: Pelayanan Publik',
+    // Pokja Zona Integritas (WBK / WBBM)
+    'area1' => 'Pokja I: Manajemen Perubahan',
+    'area2' => 'Pokja II: Penataan Tatalaksana',
+    'area3' => 'Pokja III: Penataan Manajemen SDM',
+    'area4' => 'Pokja IV: Penguatan Akuntabilitas',
+    'area5' => 'Pokja V: Penguatan Pengawasan',
+    'area6' => 'Pokja VI: Kualitas Pelayanan Publik',
 
     // Kurikulum & Modul Ajar (Akademik)
     'modul_ajar' => 'Modul Ajar & RPP',
@@ -83,7 +83,7 @@ $area_names = [
                         </span>
                         <h2 class="fw-bold mb-2 text-white">Kelola Cloud Drive &amp; Unduhan Berkas</h2>
                         <p class="mb-3 text-white-50" style="font-size: 14px; max-width: 620px;">
-                            Pusat tata kelola dokumen madrasah: eviden penilaian Zona Integritas (WBK/WBBM Area I s.d. VI), modul kurikulum, administrasi kepegawaian/TU, dan formulir publik.
+                            Pusat tata kelola dokumen madrasah: eviden penilaian Zona Integritas (WBK/WBBM Pokja I s.d. VI), modul kurikulum, administrasi kepegawaian/TU, dan formulir publik.
                         </p>
                         <div class="d-flex flex-wrap gap-2 pt-1">
                             <a href="<?= base_url('website/download') ?>" target="_blank" class="btn btn-light text-dark fw-bold rounded-pill px-3 shadow-sm d-inline-flex align-items-center gap-1">
@@ -145,14 +145,14 @@ $area_names = [
                             </div>
 
                             <div class="mb-3" id="adminWrapperAreaZi">
-                                <label class="form-label fw-bold small text-muted" id="adminLabelSubKategori">Area Perubahan ZI <span class="text-danger">*</span></label>
+                                <label class="form-label fw-bold small text-muted" id="adminLabelSubKategori">Pokja Perubahan ZI <span class="text-danger">*</span></label>
                                 <select name="area_zi" id="adminAreaZi" class="form-select rounded-3 text-success fw-bold" required>
-                                    <option value="area1">Area I: Manajemen Perubahan</option>
-                                    <option value="area2">Area II: Penataan Tatalaksana</option>
-                                    <option value="area3">Area III: Manajemen SDM</option>
-                                    <option value="area4">Area IV: Akuntabilitas Kinerja</option>
-                                    <option value="area5">Area V: Penguatan Pengawasan</option>
-                                    <option value="area6">Area VI: Kualitas Pelayanan Publik</option>
+                                    <option value="area1">Pokja I: Manajemen Perubahan</option>
+                                    <option value="area2">Pokja II: Penataan Tatalaksana</option>
+                                    <option value="area3">Pokja III: Penataan Manajemen SDM</option>
+                                    <option value="area4">Pokja IV: Penguatan Akuntabilitas</option>
+                                    <option value="area5">Pokja V: Penguatan Pengawasan</option>
+                                    <option value="area6">Pokja VI: Kualitas Pelayanan Publik</option>
                                 </select>
                             </div>
 
@@ -291,7 +291,7 @@ $area_names = [
                                                 <td>
                                                     <?php if($kategori === 'zi' && !empty($area)): ?>
                                                         <span class="badge bg-success-subtle text-success rounded-pill fw-bold">
-                                                            <i class="bi bi-shield-check"></i> <?= strtoupper($area) ?>
+                                                            <i class="bi bi-shield-check"></i> <?= str_replace('AREA', 'POKJA ', strtoupper($area)) ?>
                                                         </span>
                                                         <div class="small text-muted" style="font-size:10px;"><?= $area_names[$area] ?? 'Zona Integritas' ?></div>
                                                     <?php elseif(!empty($area) && isset($area_names[$area])): ?>
@@ -384,15 +384,15 @@ $area_names = [
 // Admin Dynamic Sub-Categories Configuration
 const adminSubKategoriConfig = {
     zi: {
-        label: 'Area Perubahan ZI <span class="text-danger">*</span>',
+        label: 'Pokja Perubahan ZI <span class="text-danger">*</span>',
         cssClass: 'text-success fw-bold',
         options: [
-            { value: 'area1', label: 'Area I: Manajemen Perubahan' },
-            { value: 'area2', label: 'Area II: Penataan Tatalaksana' },
-            { value: 'area3', label: 'Area III: Manajemen SDM' },
-            { value: 'area4', label: 'Area IV: Akuntabilitas Kinerja' },
-            { value: 'area5', label: 'Area V: Penguatan Pengawasan' },
-            { value: 'area6', label: 'Area VI: Kualitas Pelayanan Publik' }
+            { value: 'area1', label: 'Pokja I: Manajemen Perubahan' },
+            { value: 'area2', label: 'Pokja II: Penataan Tatalaksana' },
+            { value: 'area3', label: 'Pokja III: Penataan Manajemen SDM' },
+            { value: 'area4', label: 'Pokja IV: Penguatan Akuntabilitas' },
+            { value: 'area5', label: 'Pokja V: Penguatan Pengawasan' },
+            { value: 'area6', label: 'Pokja VI: Kualitas Pelayanan Publik' }
         ]
     },
     akademik: {
