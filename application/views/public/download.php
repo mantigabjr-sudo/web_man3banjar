@@ -549,10 +549,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                     Akses dan unduh formulir PPDB, silabus &amp; modul ajar kurikulum, pengumuman resmi, dan dokumen administrasi publik <?= htmlspecialchars($nama_madrasah ?? 'MAN 3 Banjar', ENT_QUOTES, 'UTF-8') ?>.
                 </p>
                 <div class="d-flex flex-wrap align-items-center gap-2 pt-1">
-                    <button type="button" class="btn btn-light text-dark fw-bold rounded-pill px-4 py-2 shadow-sm d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalUploadDrive">
-                        <i class="bi bi-cloud-arrow-up-fill text-success fs-5"></i> + Unggah Dokumen Publik
-                    </button>
-                    <a href="<?= base_url('website/zona_integritas') ?>" class="btn btn-warning rounded-pill px-3 py-2 fw-bold text-dark d-inline-flex align-items-center gap-1 shadow-sm">
+                    <a href="<?= base_url('website/zona_integritas') ?>" class="btn btn-warning rounded-pill px-4 py-2 fw-bold text-dark d-inline-flex align-items-center gap-2 shadow-sm">
                         <i class="bi bi-shield-lock-fill"></i> Portal Eviden ZI (Terproteksi PIN)
                     </a>
                 </div>
@@ -691,11 +688,6 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                             <i class="bi bi-list-ul me-1"></i> Tabel
                         </button>
                     </div>
-
-                    <!-- Tombol Unggah Cepat -->
-                    <button type="button" class="btn-upload-drive" data-bs-toggle="modal" data-bs-target="#modalUploadDrive">
-                        <i class="bi bi-cloud-arrow-up-fill fs-6"></i> + Unggah Dokumen
-                    </button>
                 </div>
             </div>
 
@@ -723,7 +715,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                     <div class="col-12 text-center py-5 text-muted">
                         <i class="bi bi-folder-x fs-1 text-secondary opacity-50 mb-2 d-block"></i>
                         <h6 class="fw-bold text-dark">Belum Ada Dokumen di Folder Ini</h6>
-                        <p class="small text-muted mb-3">Klik tombol <strong>+ Unggah Dokumen</strong> untuk menambahkan eviden atau berkas baru.</p>
+                        <p class="small text-muted mb-3">Silakan pilih kategori berkas di atas atau gunakan kotak pencarian untuk melihat dokumen lainnya.</p>
                     </div>
                 <?php else: ?>
                     <?php foreach($downloads as $d): ?>
@@ -935,169 +927,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
     </div>
 </section>
 
-<!-- ═══ 3. MODAL UNGGAH CEPAT (GOOGLE DRIVE DROPZONE STYLE) ═══ -->
-<div class="modal fade" id="modalUploadDrive" tabindex="-1" aria-labelledby="modalUploadDriveLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content modal-drive-content">
-            <div class="modal-drive-header">
-                <div class="d-flex align-items-center justify-content-between">
-                    <h5 class="modal-title fw-bold text-white mb-0" id="modalUploadDriveLabel">
-                        <i class="bi bi-cloud-arrow-up-fill me-2"></i> Unggah Dokumen Publik Madrasah
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <small class="text-white-50 mt-1 d-block">
-                    Setorkan silabus/modul kurikulum, SOP, formulir, atau dokumen resmi madrasah secara online. Untuk Eviden ZI silakan gunakan Portal Eviden ZI.
-                </small>
-            </div>
-
-            <form action="<?= base_url('website/upload_drive') ?>" method="POST" enctype="multipart/form-data" id="formUploadDrive">
-                <div class="modal-body p-4">
-                    
-                    <!-- 1. Kategori Pilar & Sub-Kategori -->
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold small text-muted">Kategori Dokumen / Pilar <span class="text-danger">*</span></label>
-                            <select name="kategori_pilar" id="uploadKategoriPilar" class="form-select rounded-3" required onchange="handleKategoriChange(this.value)">
-                                <option value="akademik" selected>📚 Kurikulum &amp; Modul Ajar</option>
-                                <option value="kepegawaian">🗄️ Kepegawaian &amp; Tata Usaha</option>
-                                <option value="kesiswaan">🏆 Kesiswaan &amp; Ekstrakurikuler</option>
-                                <option value="sarpras">🔬 Sarana Prasarana &amp; Laboratorium</option>
-                                <option value="umum">📄 Formulir Publik &amp; Brosur</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6" id="wrapperAreaZi">
-                            <label class="form-label fw-bold small text-muted" id="labelUploadSubKategori">Sub-Kategori Kurikulum &amp; Modul <span class="text-danger">*</span></label>
-                            <select name="area_zi" id="uploadAreaZi" class="form-select rounded-3 text-primary fw-bold" required>
-                                <option value="modul_ajar">Modul Ajar &amp; RPP</option>
-                                <option value="silabus">Silabus &amp; ATP (Alur Tujuan Belajar)</option>
-                                <option value="kosp">KOSP &amp; Dokumen Kurikulum</option>
-                                <option value="jadwal">Jadwal Pelajaran &amp; Kalender</option>
-                                <option value="bank_soal">Bank Soal, Kisi-Kisi &amp; Asesmen</option>
-                                <option value="prota_promes">Program Tahunan &amp; Semester (Prota/Promes)</option>
-                                <option value="bahan_ajar">Bahan Ajar, PPT &amp; Buku Digital</option>
-                                <option value="lainnya">Dokumen Akademik Lainnya</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- 2. Nama Dokumen & Tanggal -->
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-8">
-                            <label class="form-label fw-bold small text-muted">Nama / Judul Dokumen <span class="text-danger">*</span></label>
-                            <input type="text" name="judul" class="form-control rounded-3" placeholder="Contoh: SK Tim Pokja Pembangunan ZI WBK 2026" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold small text-muted">Tanggal Dokumen</label>
-                            <input type="date" name="tanggal" class="form-control rounded-3" value="<?= date('Y-m-d') ?>">
-                        </div>
-                    </div>
-
-                    <!-- 3. Keterangan Singkat -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold small text-muted">Keterangan / Deskripsi Singkat (Opsional)</label>
-                        <textarea name="keterangan" class="form-control rounded-3" rows="2" placeholder="Catatan atau nomor dokumen peruntukan berkas..."></textarea>
-                    </div>
-
-                    <!-- 4. Identitas Pengunggah & Lini -->
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold small text-muted">Nama Pengunggah (PTK / Staf) <span class="text-danger">*</span></label>
-                            <?php if(!empty($ptk_list)): ?>
-                                <input class="form-control rounded-3" list="ptkSuggestions" name="pengunggah" id="inputPengunggah" placeholder="Ketik atau pilih nama PTK..." required value="<?= $is_user_logged_in ? htmlspecialchars($logged_user_name) : '' ?>">
-                                <datalist id="ptkSuggestions">
-                                    <?php foreach($ptk_list as $p): ?>
-                                        <option value="<?= htmlspecialchars($p->nama_lengkap ?? '', ENT_QUOTES, 'UTF-8') ?>">
-                                            <?= htmlspecialchars(($p->nip ? 'NIP: '.$p->nip.' - ' : '').($p->jenis_ptk ?? 'Guru'), ENT_QUOTES, 'UTF-8') ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </datalist>
-                            <?php else: ?>
-                                <input type="text" name="pengunggah" class="form-control rounded-3" placeholder="Nama Guru / Staf Pengunggah" required value="<?= $is_user_logged_in ? htmlspecialchars($logged_user_name) : '' ?>">
-                            <?php endif; ?>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold small text-muted">Lini / Unit Kerja <span class="text-danger">*</span></label>
-                            <select name="lini_unit" class="form-select rounded-3">
-                                <option value="Tim Pokja ZI">Tim Pokja ZI</option>
-                                <option value="Tata Usaha & Kepegawaian">Tata Usaha &amp; Kepegawaian</option>
-                                <option value="Kurikulum & Akademik">Kurikulum &amp; Akademik</option>
-                                <option value="Kesiswaan & BK">Kesiswaan &amp; BK</option>
-                                <option value="Sarpras & Laboratorium">Sarpras &amp; Laboratorium</option>
-                                <option value="Humas & Komite">Humas &amp; Komite</option>
-                                <option value="Guru Mata Pelajaran">Guru Mata Pelajaran</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- 5. Pilihan Sumber Berkas: Upload File vs Google Drive -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold small text-muted d-block">Pilihan Sumber Berkas <span class="text-danger">*</span></label>
-                        <div class="nav nav-pills nav-pills-sumber gap-2 mb-3" role="tablist">
-                            <button type="button" class="nav-link active" onclick="switchSumberType('file')">
-                                <i class="bi bi-file-earmark-arrow-up me-1"></i> Unggah File Langsung (Maks 20MB)
-                            </button>
-                            <button type="button" class="nav-link" onclick="switchSumberType('drive_link')">
-                                <i class="bi bi-google me-1"></i> Tempel Link Google Drive / Cloud
-                            </button>
-                        </div>
-                        <input type="hidden" name="tipe_sumber" id="inputTipeSumber" value="file">
-
-                        <!-- Tab Konten: File Fisik -->
-                        <div id="paneSumberFile" class="p-3 border rounded-3 bg-light">
-                            <input type="file" name="file_download" id="inputFileDownload" class="form-control rounded-3" required>
-                            <div class="form-text small mt-2">
-                                <i class="bi bi-info-circle me-1"></i> Format yang didukung: <strong>PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, ZIP, RAR</strong> (Maksimal 20MB).
-                            </div>
-                        </div>
-
-                        <!-- Tab Konten: Link Google Drive -->
-                        <div id="paneSumberDrive" class="p-3 border rounded-3 bg-light" style="display: none;">
-                            <div class="input-group">
-                                <span class="input-group-text bg-white"><i class="bi bi-link-45deg fs-5 text-success"></i></span>
-                                <input type="url" name="link_drive" id="inputLinkDrive" class="form-control rounded-3" placeholder="https://drive.google.com/drive/folders/... atau link file cloud">
-                            </div>
-                            <div class="form-text small mt-2 text-muted">
-                                Sangat cocok untuk kumpulan puluhan foto dokumentasi, rekaman video kegiatan, atau folder Google Drive bersama. Pastikan akses link diatur ke <em>"Siapa saja yang memiliki link"</em>.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 6. Kode Keamanan PTK (Jika belum login) -->
-                    <?php if(!$is_user_logged_in): ?>
-                        <div class="p-3 rounded-3 border bg-light mb-2">
-                            <div class="d-flex align-items-center justify-content-between mb-1">
-                                <label class="form-label fw-bold small text-dark mb-0">
-                                    <i class="bi bi-shield-lock-fill text-success me-1"></i> Kode PIN Pengunggah Madrasah <span class="text-danger">*</span>
-                                </label>
-                                <span class="badge bg-secondary-subtle text-secondary rounded-pill font-monospace" style="font-size: 11px;">Otorisasi PTK</span>
-                            </div>
-                            <input type="password" name="pin_keamanan" class="form-control rounded-3 mt-1" placeholder="Masukkan PIN resmi madrasah..." required autocomplete="off">
-                            <small class="text-muted d-block mt-1" style="font-size: 11px;">
-                                Pengamanan terhadap spam bot internet. Anda juga bisa langsung login ke akun LabSys untuk bebas PIN.
-                            </small>
-                        </div>
-                    <?php else: ?>
-                        <div class="p-2 px-3 rounded-3 bg-success-subtle text-success small fw-semibold d-flex align-items-center gap-2 mb-2">
-                            <i class="bi bi-check-circle-fill fs-5"></i>
-                            <div>Terverifikasi otomatis sebagai akun resmi LabSys: <strong><?= htmlspecialchars($logged_user_name) ?></strong></div>
-                        </div>
-                    <?php endif; ?>
-
-                </div>
-
-                <div class="modal-footer bg-light px-4 py-3 border-top">
-                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-success fw-bold rounded-pill px-4 shadow-sm" id="btnSubmitUpload">
-                        <i class="bi bi-cloud-arrow-up-fill me-1"></i> Simpan ke Drive Madrasah
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- ═══ 4. MODAL PRATINJAU PDF ═══ -->
+<!-- ═══ 3. MODAL PRATINJAU PDF ═══ -->
 <div class="modal fade" id="modalPreviewPdf" tabindex="-1" aria-labelledby="modalPreviewPdfLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden" style="height: 88vh;">
@@ -1361,149 +1191,7 @@ document.addEventListener('DOMContentLoaded', function() {
     applyAllFilters();
 });
 
-// Modal Upload Handlers & Dynamic Sub-Categories
-const subKategoriConfig = {
-    zi: {
-        label: 'Pokja Perubahan ZI <span class="text-danger">*</span>',
-        cssClass: 'text-success fw-bold',
-        options: [
-            { value: 'area1', label: 'Pokja I: Manajemen Perubahan' },
-            { value: 'area2', label: 'Pokja II: Penataan Tatalaksana' },
-            { value: 'area3', label: 'Pokja III: Penataan Manajemen SDM' },
-            { value: 'area4', label: 'Pokja IV: Penguatan Akuntabilitas' },
-            { value: 'area5', label: 'Pokja V: Penguatan Pengawasan' },
-            { value: 'area6', label: 'Pokja VI: Peningkatan Kualitas Pelayanan' }
-        ]
-    },
-    akademik: {
-        label: 'Sub-Kategori Kurikulum & Modul <span class="text-danger">*</span>',
-        cssClass: 'text-primary fw-bold',
-        options: [
-            { value: 'modul_ajar', label: 'Modul Ajar & RPP' },
-            { value: 'silabus', label: 'Silabus & ATP (Alur Tujuan Belajar)' },
-            { value: 'kosp', label: 'KOSP & Dokumen Kurikulum' },
-            { value: 'jadwal', label: 'Jadwal Pelajaran & Kalender' },
-            { value: 'bank_soal', label: 'Bank Soal, Kisi-Kisi & Asesmen' },
-            { value: 'prota_promes', label: 'Program Tahunan & Semester (Prota/Promes)' },
-            { value: 'bahan_ajar', label: 'Bahan Ajar, PPT & Buku Digital' },
-            { value: 'lainnya', label: 'Dokumen Akademik Lainnya' }
-        ]
-    },
-    kepegawaian: {
-        label: 'Sub-Kategori Kepegawaian & TU <span class="text-danger">*</span>',
-        cssClass: 'text-secondary fw-bold',
-        options: [
-            { value: 'sk_tugas', label: 'SK Kepala Madrasah & Surat Tugas' },
-            { value: 'surat_edaran', label: 'Surat Edaran & Instruksi Dinas' },
-            { value: 'sop_tu', label: 'Standar Operasional Prosedur (SOP)' },
-            { value: 'blanko_pegawai', label: 'Blanko Kepegawaian & Form Cuti' },
-            { value: 'laporan_kinerja', label: 'Laporan Kinerja, SKP & Eviden' },
-            { value: 'notula_rapat', label: 'Notula & Presensi Rapat Dinas' },
-            { value: 'lainnya', label: 'Administrasi TU Lainnya' }
-        ]
-    },
-    kesiswaan: {
-        label: 'Sub-Kategori Kesiswaan & Ekskul <span class="text-danger">*</span>',
-        cssClass: 'text-warning fw-bold',
-        options: [
-            { value: 'tatib_siswa', label: 'Tata Tertib Siswa & Buku Saku' },
-            { value: 'osim_mpk', label: 'Dokumen OSIM & MPK' },
-            { value: 'ekskul', label: 'Program & Laporan Ekstrakurikuler' },
-            { value: 'prestasi', label: 'Piagam & Rekap Prestasi Siswa' },
-            { value: 'bk_konseling', label: 'Program BP/BK & Konseling' },
-            { value: 'beasiswa_pip', label: 'Data Beasiswa & Bantuan Siswa (PIP)' },
-            { value: 'lainnya', label: 'Dokumen Kesiswaan Lainnya' }
-        ]
-    },
-    sarpras: {
-        label: 'Sub-Kategori Sarpras & Lab <span class="text-danger">*</span>',
-        cssClass: 'text-info fw-bold',
-        options: [
-            { value: 'inventaris', label: 'Daftar Inventaris & Aset BMN' },
-            { value: 'sop_lab', label: 'SOP Tata Tertib Lab / Workshop' },
-            { value: 'jadwal_lab', label: 'Jadwal Pemakaian Ruang Lab' },
-            { value: 'berita_acara', label: 'Berita Acara Kerusakan / Penghapusan' },
-            { value: 'pemeliharaan', label: 'Jadwal Perawatan & Riwayat Aset' },
-            { value: 'lainnya', label: 'Dokumen Sarpras & Lab Lainnya' }
-        ]
-    },
-    umum: {
-        label: 'Sub-Kategori Formulir & Publikasi <span class="text-danger">*</span>',
-        cssClass: 'text-dark fw-bold',
-        options: [
-            { value: 'ppdb', label: 'Brosur & Formulir Pendaftaran PPDB' },
-            { value: 'brosur', label: 'Brosur Profil Madrasah & Pengumuman' },
-            { value: 'blanko_surat', label: 'Blanko Surat Permohonan Siswa' },
-            { value: 'kalender', label: 'Kalender Madrasah & Agenda Resmi' },
-            { value: 'majalah_buletin', label: 'Majalah & Buletin Madrasah' },
-            { value: 'lainnya', label: 'Dokumen Publik Lainnya' }
-        ]
-    }
-};
-
-function handleKategoriChange(val, selectedVal = null) {
-    const labelEl = document.getElementById('labelUploadSubKategori');
-    const selectArea = document.getElementById('uploadAreaZi');
-    if (!selectArea) return;
-
-    const config = subKategoriConfig[val] || subKategoriConfig['zi'];
-    if (labelEl) {
-        labelEl.innerHTML = config.label;
-    }
-
-    // Set class styling
-    selectArea.className = 'form-select rounded-3 ' + (config.cssClass || 'text-dark fw-bold');
-
-    // Populate options
-    selectArea.innerHTML = '';
-    config.options.forEach((opt, idx) => {
-        const optionEl = document.createElement('option');
-        optionEl.value = opt.value;
-        optionEl.textContent = opt.label;
-        if (selectedVal && selectedVal === opt.value) {
-            optionEl.selected = true;
-        } else if (!selectedVal && idx === 0) {
-            optionEl.selected = true;
-        }
-        selectArea.appendChild(optionEl);
-    });
-
-    selectArea.setAttribute('required', 'required');
-}
-
-// Inisialisasi default saat halaman siap
-document.addEventListener('DOMContentLoaded', function() {
-    const pilarSelect = document.getElementById('uploadKategoriPilar');
-    if (pilarSelect) {
-        handleKategoriChange(pilarSelect.value);
-    }
-});
-
-function switchSumberType(type) {
-    const inputSumber = document.getElementById('inputTipeSumber');
-    const paneFile = document.getElementById('paneSumberFile');
-    const paneDrive = document.getElementById('paneSumberDrive');
-    const inputFile = document.getElementById('inputFileDownload');
-    const inputDrive = document.getElementById('inputLinkDrive');
-
-    inputSumber.value = type;
-
-    // Toggle active tabs
-    document.querySelectorAll('.nav-pills-sumber .nav-link').forEach(btn => btn.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-
-    if (type === 'file') {
-        paneFile.style.display = 'block';
-        paneDrive.style.display = 'none';
-        inputFile.setAttribute('required', 'required');
-        inputDrive.removeAttribute('required');
-    } else {
-        paneFile.style.display = 'none';
-        paneDrive.style.display = 'block';
-        inputFile.removeAttribute('required');
-        inputDrive.setAttribute('required', 'required');
-    }
-}
+// PDF Preview Function
 
 // PDF Preview Function
 function previewPdf(pdfUrl, title) {
