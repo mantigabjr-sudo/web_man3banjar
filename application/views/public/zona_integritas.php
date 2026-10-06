@@ -264,6 +264,14 @@ $logged_user_name = $this->session->userdata('username') ?? '';
     gap: 18px;
 }
 
+.zi-empty-state {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    text-align: center;
+    padding: 3.5rem 1rem;
+    margin: 0 auto;
+}
+
 .zi-file-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -516,10 +524,12 @@ $logged_user_name = $this->session->userdata('username') ?? '';
     <!-- Tampilan Grid Dokumen Eviden ZI -->
     <div id="ziContainerGrid" class="zi-file-grid" style="<?= $active_view === 'grid' ? '' : 'display:none;' ?>">
         <?php if(empty($downloads)): ?>
-            <div class="text-center py-5 text-muted w-100 col-span-3">
-                <i class="bi bi-folder-x fs-1 text-secondary opacity-50 mb-2 d-block"></i>
-                <h6 class="fw-bold text-dark">Belum Ada Dokumen Eviden ZI di Folder Ini</h6>
-                <p class="small text-muted mb-3">Klik tombol <strong>+ Unggah Eviden ZI</strong> untuk menambahkan berkas baru.</p>
+            <div class="zi-empty-state text-center py-5 text-muted w-100" style="grid-column: 1 / -1;">
+                <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3 shadow-xs" style="width: 76px; height: 76px;">
+                    <i class="bi bi-folder-x fs-1 text-secondary opacity-75"></i>
+                </div>
+                <h6 class="fw-bold text-dark fs-5 mb-2">Belum Ada Dokumen Eviden ZI di Folder Ini</h6>
+                <p class="small text-muted mb-3 mx-auto" style="max-width: 480px;">Klik tombol <strong>+ Unggah Eviden ZI</strong> untuk menambahkan berkas baru.</p>
             </div>
         <?php else: ?>
             <?php foreach($downloads as $d): ?>
@@ -962,9 +972,9 @@ function applyFilters() {
             if (!emptyGrid) {
                 emptyGrid = document.createElement('div');
                 emptyGrid.id = 'ziEmptyFilterMsg';
-                emptyGrid.className = 'w-100 text-center py-5 text-muted';
+                emptyGrid.className = 'zi-empty-state w-100 text-center py-5 text-muted';
                 emptyGrid.style.gridColumn = '1 / -1';
-                emptyGrid.innerHTML = '<i class="bi bi-search fs-1 text-secondary opacity-50 mb-2 d-block"></i><h6 class="fw-bold text-dark">Tidak Ada Eviden yang Cocok</h6><p class="small text-muted mb-0">Belum ada eviden yang diunggah untuk Pokja ini atau kata kunci pencarian Anda.</p>';
+                emptyGrid.innerHTML = '<div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3 shadow-xs" style="width: 76px; height: 76px;"><i class="bi bi-search fs-1 text-secondary opacity-75"></i></div><h6 class="fw-bold text-dark fs-5 mb-2">Tidak Ada Eviden yang Cocok</h6><p class="small text-muted mb-0 mx-auto" style="max-width: 480px;">Belum ada eviden yang diunggah untuk Pokja ini atau kata kunci pencarian Anda.</p>';
                 gridContainer.appendChild(emptyGrid);
             }
             emptyGrid.style.display = 'block';

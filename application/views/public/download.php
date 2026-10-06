@@ -712,10 +712,12 @@ $logged_user_name = $this->session->userdata('username') ?? '';
             <!-- D. TAMPILAN BERKAS (GRID VIEW) -->
             <div id="driveGridView" class="drive-grid-container" style="<?= ($active_view === 'grid') ? '' : 'display:none;' ?>">
                 <?php if(empty($downloads)): ?>
-                    <div class="col-12 text-center py-5 text-muted">
-                        <i class="bi bi-folder-x fs-1 text-secondary opacity-50 mb-2 d-block"></i>
-                        <h6 class="fw-bold text-dark">Belum Ada Dokumen di Folder Ini</h6>
-                        <p class="small text-muted mb-3">Silakan pilih kategori berkas di atas atau gunakan kotak pencarian untuk melihat dokumen lainnya.</p>
+                    <div class="w-100 text-center py-5 text-muted" style="grid-column: 1 / -1;">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3 shadow-xs" style="width: 76px; height: 76px;">
+                            <i class="bi bi-folder-x fs-1 text-secondary opacity-75"></i>
+                        </div>
+                        <h6 class="fw-bold text-dark fs-5 mb-2">Belum Ada Dokumen di Folder Ini</h6>
+                        <p class="small text-muted mb-3 mx-auto" style="max-width: 480px;">Silakan pilih kategori berkas di atas atau gunakan kotak pencarian untuk melihat dokumen lainnya.</p>
                     </div>
                 <?php else: ?>
                     <?php foreach($downloads as $d): ?>
