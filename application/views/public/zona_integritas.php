@@ -744,6 +744,8 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                                             <a href="<?= $file_meta['url'] ?>" target="_blank" download class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 fw-bold">
                                                 <i class="bi bi-download me-1"></i> Unduh
                                             </a>
+                                        <?php endif; ?>
+
                                         <!-- Tombol Salin ke Pokja (Selalu Aktif) -->
                                         <button type="button" class="btn btn-sm <?= ($area === 'shared') ? 'btn-primary text-white fw-bold px-3' : 'btn-outline-primary' ?> rounded-pill px-2.5 py-1" title="Salin Dokumen ini ke Pokja" onclick="openCopyModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
                                             <i class="bi bi-copy <?= ($area === 'shared') ? 'me-1' : '' ?>"></i><?= ($area === 'shared') ? 'Salin ke Pokja' : '' ?>
