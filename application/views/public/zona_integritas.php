@@ -625,10 +625,12 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                                 </a>
                             <?php endif; ?>
 
+                            <!-- Tombol Salin ke Pokja (Selalu Aktif) -->
+                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-1" title="Salin / Duplikasi Dokumen ke Pokja" onclick="openCopyModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                <i class="bi bi-copy"></i>
+                            </button>
+
                             <?php if(!empty($zi_unlocked)): ?>
-                                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-1" title="Salin / Duplikasi Dokumen ke Pokja" onclick="openCopyModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
-                                    <i class="bi bi-copy"></i>
-                                </button>
                                 <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-2.5 py-1 text-dark" title="Edit Eviden ZI" onclick="openEditModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
@@ -638,9 +640,10 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                             <?php endif; ?>
                         </div>
 
-                        <?php if(!empty($zi_unlocked) && $area === 'shared'): ?>
-                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill w-100 mt-2 fw-bold" onclick="openCopyModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
-                                <i class="bi bi-copy me-1"></i> Salin ke Pokja Saya
+                        <?php if($area === 'shared'): ?>
+                            <button type="button" class="btn btn-sm btn-primary rounded-pill w-100 mt-2 fw-bold shadow-xs d-flex align-items-center justify-content-center gap-1.5" onclick="openCopyModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                <i class="bi bi-copy"></i>
+                                <span>Salin ke Pokja Saya</span>
                             </button>
                         <?php endif; ?>
                     </div>
@@ -741,12 +744,12 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                                             <a href="<?= $file_meta['url'] ?>" target="_blank" download class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 fw-bold">
                                                 <i class="bi bi-download me-1"></i> Unduh
                                             </a>
-                                        <?php endif; ?>
+                                        <!-- Tombol Salin ke Pokja (Selalu Aktif) -->
+                                        <button type="button" class="btn btn-sm <?= ($area === 'shared') ? 'btn-primary text-white fw-bold px-3' : 'btn-outline-primary' ?> rounded-pill px-2.5 py-1" title="Salin Dokumen ini ke Pokja" onclick="openCopyModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                            <i class="bi bi-copy <?= ($area === 'shared') ? 'me-1' : '' ?>"></i><?= ($area === 'shared') ? 'Salin ke Pokja' : '' ?>
+                                        </button>
 
                                         <?php if(!empty($zi_unlocked)): ?>
-                                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-1 text-primary" title="Salin Dokumen ini ke Pokja" onclick="openCopyModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
-                                                <i class="bi bi-copy"></i>
-                                            </button>
                                             <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-2.5 py-1 text-dark" title="Edit Eviden ZI" onclick="openEditModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
@@ -1356,6 +1359,18 @@ function openCopyModalZi(doc) {
                         <label class="form-label fw-bold small text-muted">Catatan Pokja (Opsional)</label>
                         <textarea name="keterangan" id="copyZiKeterangan" class="form-control rounded-3" rows="2" placeholder="Contoh: Bukti dukung indikator Fungsionalisasi SOP Pokja II"></textarea>
                     </div>
+
+                    <?php if(empty($zi_unlocked) && empty($is_user_logged_in)): ?>
+                    <div class="mb-3 p-3 bg-primary-subtle border border-primary-subtle rounded-3">
+                        <label class="form-label fw-bold small text-primary mb-1">
+                            <i class="bi bi-shield-lock-fill me-1"></i> PIN Akses Tim ZI <span class="text-danger">*</span>
+                        </label>
+                        <input type="password" name="pin" class="form-control rounded-3" placeholder="Masukkan 6-digit PIN Tim ZI" required autocomplete="off">
+                        <div class="form-text small text-muted" style="font-size: 11px;">
+                            Masukkan PIN untuk memverifikasi hak akses duplikasi berkas ke Pokja Anda.
+                        </div>
+                    </div>
+                    <?php endif; ?>
 
                     <div class="alert alert-info border-0 rounded-3 p-2 small mb-0 d-flex align-items-center gap-2">
                         <i class="bi bi-info-circle-fill text-primary fs-5"></i>

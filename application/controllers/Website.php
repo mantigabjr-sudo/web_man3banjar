@@ -1077,9 +1077,21 @@ class Website extends CI_Controller {
         $is_logged_in = (bool)$this->session->userdata('logged_in');
 
         if(!$is_unlocked && !$is_logged_in){
-            $this->session->set_flashdata('error', 'Sesi akses eviden ZI telah berakhir. Silakan masukkan PIN kembali.');
-            redirect('website/zona_integritas');
-            return;
+            $pin_input = trim((string)$this->input->post('pin', TRUE));
+            $valid_pin = '123456';
+            $setting = $this->db->get('settings')->row();
+            if($setting && !empty($setting->pin_zi)){
+                $valid_pin = trim($setting->pin_zi);
+            }
+
+            if(!empty($pin_input) && $pin_input === $valid_pin){
+                $this->session->set_userdata('zi_unlocked', true);
+                $is_unlocked = true;
+            } else {
+                $this->session->set_flashdata('error', 'PIN Tim ZI tidak sesuai atau sesi belum dibuka. Silakan masukkan PIN yang benar.');
+                redirect('website/zona_integritas');
+                return;
+            }
         }
 
         $source_id = (int)$this->input->post('source_id', TRUE);
