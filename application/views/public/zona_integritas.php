@@ -80,12 +80,13 @@ if(!function_exists('get_zi_file_meta')){
 }
 
 $area_names = [
-    'area1' => 'Pokja I: Manajemen Perubahan',
-    'area2' => 'Pokja II: Penataan Tatalaksana',
-    'area3' => 'Pokja III: Penataan Manajemen SDM',
-    'area4' => 'Pokja IV: Penguatan Akuntabilitas',
-    'area5' => 'Pokja V: Penguatan Pengawasan',
-    'area6' => 'Pokja VI: Peningkatan Kualitas Pelayanan Publik'
+    'shared' => 'Dokumen Bersama / Induk ZI',
+    'area1'  => 'Pokja I: Manajemen Perubahan',
+    'area2'  => 'Pokja II: Penataan Tatalaksana',
+    'area3'  => 'Pokja III: Penataan Manajemen SDM',
+    'area4'  => 'Pokja IV: Penguatan Akuntabilitas',
+    'area5'  => 'Pokja V: Penguatan Pengawasan',
+    'area6'  => 'Pokja VI: Peningkatan Kualitas Pelayanan Publik'
 ];
 
 $active_area = isset($active_area) ? $active_area : 'all';
@@ -384,6 +385,10 @@ $logged_user_name = $this->session->userdata('username') ?? '';
             <div class="zi-kpi-num"><?= $zi_stats['total'] ?? 0 ?></div>
             <div class="zi-kpi-label">Semua Eviden</div>
         </a>
+        <a href="<?= base_url('website/zona_integritas?area=shared') ?>" data-area="shared" onclick="selectZiArea('shared'); return false;" class="zi-kpi-item <?= $active_area === 'shared' ? 'active' : '' ?>">
+            <div class="zi-kpi-num text-primary"><?= $zi_stats['shared'] ?? 0 ?></div>
+            <div class="zi-kpi-label">Dokumen Bersama</div>
+        </a>
         <a href="<?= base_url('website/zona_integritas?area=area1') ?>" data-area="area1" onclick="selectZiArea('area1'); return false;" class="zi-kpi-item <?= $active_area === 'area1' ? 'active' : '' ?>">
             <div class="zi-kpi-num text-success"><?= $zi_stats['area1'] ?? 0 ?></div>
             <div class="zi-kpi-label">Pokja I</div>
@@ -430,10 +435,27 @@ $logged_user_name = $this->session->userdata('username') ?? '';
         </div>
     <?php endif; ?>
 
-    <!-- 6 Pokja Navigasi Grid (Zero Horizontal Scroll) -->
-    <div class="mb-3">
+    <!-- Navigasi Pokja & Bank Dokumen Bersama -->
+    <div class="mb-4">
+        <!-- 1. KARTU KHUSUS BANK DOKUMEN BERSAMA / INDUK ZI -->
+        <div class="mb-3">
+            <a href="<?= base_url('website/zona_integritas?area=shared') ?>" data-area="shared" onclick="selectZiArea('shared'); return false;" class="zi-area-card <?= $active_area === 'shared' ? 'active' : '' ?> p-3 shadow-xs" style="border-left: 5px solid #2563eb; background: <?= $active_area === 'shared' ? 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)' : '#ffffff' ?>;">
+                <div class="d-flex align-items-center justify-content-center rounded-3 flex-shrink-0" style="width: 44px; height: 44px; font-size: 20px; background: <?= $active_area === 'shared' ? 'rgba(255,255,255,0.2)' : '#eff6ff' ?>; color: <?= $active_area === 'shared' ? '#ffffff' : '#2563eb' ?>;">
+                    <i class="bi bi-collection-fill"></i>
+                </div>
+                <div class="text-truncate flex-grow-1 ms-1">
+                    <div class="d-flex align-items-center gap-2">
+                        <strong class="d-block text-truncate" style="font-size: 14.5px;">Dokumen Bersama / Induk ZI (Bank Berkas Lintas Pokja)</strong>
+                        <span class="badge <?= $active_area === 'shared' ? 'bg-white text-primary' : 'bg-primary-subtle text-primary' ?> rounded-pill" style="font-size: 11px;">Bisa Disalin ke Pokja I–VI</span>
+                    </div>
+                    <span class="small <?= $active_area === 'shared' ? 'text-white-50' : 'text-muted' ?>" style="font-size: 11.5px;">SK Tim Pokja, Renstra, Komitmen Bersama, Notulen Pleno yang dapat disalin langsung ke folder pokja kerja Anda.</span>
+                </div>
+                <span class="badge-count <?= $active_area === 'shared' ? 'bg-white text-primary' : 'bg-primary text-white' ?> px-2.5 py-1 fw-bold"><?= $zi_stats['shared'] ?? 0 ?> Berkas</span>
+            </a>
+        </div>
+
         <div class="d-flex align-items-center justify-content-between mb-2">
-            <label class="form-label fw-bold text-muted small text-uppercase mb-0" style="letter-spacing: 0.5px;">Pilih Pokja Perubahan ZI:</label>
+            <label class="form-label fw-bold text-muted small text-uppercase mb-0" style="letter-spacing: 0.5px;">Pilih 6 Pokja Pembangunan ZI:</label>
             <button type="button" class="btn btn-sm btn-link text-success fw-bold p-0 text-decoration-none" onclick="selectZiArea('all')">
                 <i class="bi bi-grid me-1"></i> Tampilkan Semua Pokja
             </button>
@@ -548,9 +570,15 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                             <div class="file-type-iconbox" style="background: <?= $file_meta['bg'] ?>; color: <?= $file_meta['color'] ?>;">
                                 <i class="bi <?= $file_meta['icon'] ?>"></i>
                             </div>
-                            <span class="file-badge-pill bg-success-subtle text-success border border-success-subtle">
-                                <i class="bi bi-shield-check"></i> <?= str_replace('AREA', 'POKJA ', strtoupper($area)) ?>
-                            </span>
+                            <?php if($area === 'shared'): ?>
+                                <span class="file-badge-pill bg-primary-subtle text-primary border border-primary-subtle">
+                                    <i class="bi bi-collection-fill"></i> DOKUMEN BERSAMA
+                                </span>
+                            <?php else: ?>
+                                <span class="file-badge-pill bg-success-subtle text-success border border-success-subtle">
+                                    <i class="bi bi-shield-check"></i> <?= str_replace('AREA', 'POKJA ', strtoupper($area)) ?>
+                                </span>
+                            <?php endif; ?>
                         </div>
 
                         <a href="<?= $file_meta['url'] ?>" target="_blank" class="file-title-link" title="<?= htmlspecialchars($d->judul ?? '', ENT_QUOTES, 'UTF-8') ?>">
@@ -579,30 +607,41 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                         </div>
                     </div>
 
-                    <div class="d-flex gap-2 mt-3 pt-2 border-top align-items-center">
-                        <?php if($file_meta['is_pdf']): ?>
-                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill flex-grow-1 fw-bold" onclick="previewPdf('<?= $file_meta['url'] ?>', '<?= htmlspecialchars($d->judul, ENT_QUOTES, 'UTF-8') ?>')">
-                                <i class="bi bi-eye-fill me-1"></i> Pratinjau
-                            </button>
-                        <?php endif; ?>
+                    <div>
+                        <div class="d-flex gap-2 mt-3 pt-2 border-top align-items-center">
+                            <?php if($file_meta['is_pdf']): ?>
+                                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill flex-grow-1 fw-bold" onclick="previewPdf('<?= $file_meta['url'] ?>', '<?= htmlspecialchars($d->judul, ENT_QUOTES, 'UTF-8') ?>')">
+                                    <i class="bi bi-eye-fill me-1"></i> Pratinjau
+                                </button>
+                            <?php endif; ?>
 
-                        <?php if($file_meta['is_link']): ?>
-                            <a href="<?= $file_meta['url'] ?>" target="_blank" class="btn btn-sm btn-success rounded-pill flex-grow-1 fw-bold">
-                                <i class="bi bi-box-arrow-up-right me-1"></i> Buka Drive
-                            </a>
-                        <?php else: ?>
-                            <a href="<?= $file_meta['url'] ?>" target="_blank" download class="btn btn-sm btn-outline-success rounded-pill flex-grow-1 fw-bold">
-                                <i class="bi bi-download me-1"></i> Unduh
-                            </a>
-                        <?php endif; ?>
+                            <?php if($file_meta['is_link']): ?>
+                                <a href="<?= $file_meta['url'] ?>" target="_blank" class="btn btn-sm btn-success rounded-pill flex-grow-1 fw-bold">
+                                    <i class="bi bi-box-arrow-up-right me-1"></i> Buka Drive
+                                </a>
+                            <?php else: ?>
+                                <a href="<?= $file_meta['url'] ?>" target="_blank" download class="btn btn-sm btn-outline-success rounded-pill flex-grow-1 fw-bold">
+                                    <i class="bi bi-download me-1"></i> Unduh
+                                </a>
+                            <?php endif; ?>
 
-                        <?php if(!empty($zi_unlocked)): ?>
-                            <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-2.5 py-1 text-dark" title="Edit Eviden ZI" onclick="openEditModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
-                                <i class="bi bi-pencil-square"></i>
+                            <?php if(!empty($zi_unlocked)): ?>
+                                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-1" title="Salin / Duplikasi Dokumen ke Pokja" onclick="openCopyModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                    <i class="bi bi-copy"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-2.5 py-1 text-dark" title="Edit Eviden ZI" onclick="openEditModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                <a href="<?= base_url('website/delete_zi/'.$d->id) ?>" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1" title="Hapus Eviden" onclick="return confirm('Apakah Anda yakin ingin menghapus eviden \'<?= htmlspecialchars(addslashes($d->judul), ENT_QUOTES, 'UTF-8') ?>\'?')">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                            <?php endif; ?>
+                        </div>
+
+                        <?php if(!empty($zi_unlocked) && $area === 'shared'): ?>
+                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill w-100 mt-2 fw-bold" onclick="openCopyModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                <i class="bi bi-copy me-1"></i> Salin ke Pokja Saya
                             </button>
-                            <a href="<?= base_url('website/delete_zi/'.$d->id) ?>" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1" title="Hapus Eviden" onclick="return confirm('Apakah Anda yakin ingin menghapus eviden \'<?= htmlspecialchars(addslashes($d->judul), ENT_QUOTES, 'UTF-8') ?>\'?')">
-                                <i class="bi bi-trash-fill"></i>
-                            </a>
                         <?php endif; ?>
                     </div>
 
@@ -657,9 +696,15 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <span class="file-badge-pill bg-success-subtle text-success border border-success-subtle">
-                                        <i class="bi bi-shield-check"></i> <?= str_replace('AREA', 'POKJA ', strtoupper($area)) ?>
-                                    </span>
+                                    <?php if($area === 'shared'): ?>
+                                        <span class="file-badge-pill bg-primary-subtle text-primary border border-primary-subtle">
+                                            <i class="bi bi-collection-fill"></i> DOKUMEN BERSAMA
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="file-badge-pill bg-success-subtle text-success border border-success-subtle">
+                                            <i class="bi bi-shield-check"></i> <?= str_replace('AREA', 'POKJA ', strtoupper($area)) ?>
+                                        </span>
+                                    <?php endif; ?>
                                     <div class="small text-muted mt-1" style="font-size: 11px;">
                                         <?= $area_names[$area] ?? 'Zona Integritas' ?>
                                     </div>
@@ -699,6 +744,9 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                                         <?php endif; ?>
 
                                         <?php if(!empty($zi_unlocked)): ?>
+                                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-1 text-primary" title="Salin Dokumen ini ke Pokja" onclick="openCopyModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                                <i class="bi bi-copy"></i>
+                                            </button>
                                             <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-2.5 py-1 text-dark" title="Edit Eviden ZI" onclick="openEditModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
@@ -744,6 +792,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                         <div class="col-md-12">
                             <label class="form-label fw-bold small text-muted">Pokja Perubahan ZI <span class="text-danger">*</span></label>
                             <select name="area_zi" class="form-select rounded-3 text-success fw-bold" required>
+                                <option value="shared" <?= $active_area === 'shared' ? 'selected' : '' ?>>🏛️ Dokumen Bersama / Induk ZI (Dapat disalin ke Pokja I–VI)</option>
                                 <option value="area1" <?= $active_area === 'area1' ? 'selected' : '' ?>>Pokja I: Manajemen Perubahan (Budaya Kerja &amp; Komitmen)</option>
                                 <option value="area2" <?= $active_area === 'area2' ? 'selected' : '' ?>>Pokja II: Penataan Tatalaksana (SOP &amp; Digitalisasi e-Office)</option>
                                 <option value="area3" <?= $active_area === 'area3' ? 'selected' : '' ?>>Pokja III: Penataan Manajemen SDM (Disiplin &amp; Kinerja GTK)</option>
@@ -1083,6 +1132,55 @@ function toggleEditZiSumber(type) {
         if (inputDrive) inputDrive.setAttribute('required', 'required');
     }
 }
+
+function openCopyModalZi(doc) {
+    if (!doc) return;
+
+    document.getElementById('copyZiSourceId').value = doc.id || '';
+    document.getElementById('copyZiSourceJudul').textContent = doc.judul || '-';
+    document.getElementById('copyZiJudul').value = doc.judul || '';
+    
+    const sourceArea = (doc.area_zi || 'area1').toLowerCase();
+    const areaMap = {
+        'shared': 'Dokumen Bersama / Induk ZI',
+        'area1': 'Pokja I: Manajemen Perubahan',
+        'area2': 'Pokja II: Penataan Tatalaksana',
+        'area3': 'Pokja III: Penataan Manajemen SDM',
+        'area4': 'Pokja IV: Penguatan Akuntabilitas',
+        'area5': 'Pokja V: Penguatan Pengawasan',
+        'area6': 'Pokja VI: Kualitas Pelayanan'
+    };
+    
+    const areaBadge = document.getElementById('copyZiSourceArea');
+    if (areaBadge) {
+        areaBadge.textContent = areaMap[sourceArea] || 'Pokja ZI';
+        if (sourceArea === 'shared') {
+            areaBadge.className = 'badge bg-primary text-white';
+        } else {
+            areaBadge.className = 'badge bg-secondary-subtle text-secondary';
+        }
+    }
+    
+    const pengunggahText = document.getElementById('copyZiSourcePengunggah');
+    if (pengunggahText) {
+        pengunggahText.textContent = 'Oleh: ' + (doc.pengunggah || 'Tim ZI');
+    }
+
+    // Default target Pokja
+    const targetSelect = document.getElementById('copyZiTargetPokja');
+    if (targetSelect) {
+        if (currentArea !== 'all' && currentArea !== 'shared' && currentArea !== sourceArea) {
+            targetSelect.value = currentArea;
+        } else if (sourceArea === 'shared') {
+            targetSelect.value = 'area1';
+        } else {
+            targetSelect.value = (sourceArea === 'area1') ? 'area2' : 'area1';
+        }
+    }
+
+    const copyModal = new bootstrap.Modal(document.getElementById('modalCopyZi'));
+    copyModal.show();
+}
 </script>
 
 <!-- ═══ MODAL EDIT EVIDEN ZI ═══ -->
@@ -1110,6 +1208,7 @@ function toggleEditZiSumber(type) {
                         <div class="col-md-12">
                             <label class="form-label fw-bold small text-muted">Pokja Perubahan ZI <span class="text-danger">*</span></label>
                             <select name="area_zi" id="editZiArea" class="form-select rounded-3 text-success fw-bold" required>
+                                <option value="shared">🏛️ Dokumen Bersama / Induk ZI (Dapat disalin ke Pokja I–VI)</option>
                                 <option value="area1">Pokja I: Manajemen Perubahan (Budaya Kerja &amp; Komitmen)</option>
                                 <option value="area2">Pokja II: Penataan Tatalaksana (SOP &amp; Digitalisasi e-Office)</option>
                                 <option value="area3">Pokja III: Penataan Manajemen SDM (Disiplin &amp; Kinerja GTK)</option>
@@ -1183,6 +1282,91 @@ function toggleEditZiSumber(type) {
                     <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-success btn-sm rounded-pill px-4 fw-bold shadow-sm">
                         <i class="bi bi-check-lg me-1"></i> Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- ═══ MODAL SALIN DOKUMEN KE POKJA ═══ -->
+<div class="modal fade" id="modalCopyZi" tabindex="-1" aria-labelledby="modalCopyZiLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            
+            <div class="modal-header border-0 text-white px-4 py-3" style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);">
+                <div>
+                    <h5 class="modal-title fw-bold" id="modalCopyZiLabel">
+                        <i class="bi bi-copy me-1 text-warning"></i> Salin Dokumen ke Pokja Anda
+                    </h5>
+                    <p class="small text-white-50 mb-0">Duplikasi berkas eviden ini langsung ke folder Pokja kerja Anda.</p>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form action="<?= base_url('website/copy_zi') ?>" method="POST">
+                <input type="hidden" name="source_id" id="copyZiSourceId">
+
+                <div class="modal-body p-4">
+                    <!-- Info Dokumen Asal -->
+                    <div class="p-3 bg-light rounded-3 mb-3 border">
+                        <span class="small text-muted d-block mb-1">Dokumen Sumber:</span>
+                        <h6 class="fw-bold text-dark mb-1" id="copyZiSourceJudul">-</h6>
+                        <div class="d-flex align-items-center gap-2 small text-muted">
+                            <span id="copyZiSourceArea" class="badge bg-secondary-subtle text-secondary">-</span>
+                            <span id="copyZiSourcePengunggah">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Pilih Pokja Tujuan -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Salin ke Pokja Tujuan <span class="text-danger">*</span></label>
+                        <select name="target_pokja" id="copyZiTargetPokja" class="form-select rounded-3 text-primary fw-bold" required>
+                            <option value="area1">Pokja I: Manajemen Perubahan (Budaya Kerja &amp; Komitmen)</option>
+                            <option value="area2">Pokja II: Penataan Tatalaksana (SOP &amp; e-Office)</option>
+                            <option value="area3">Pokja III: Penataan Manajemen SDM (Disiplin &amp; Kinerja)</option>
+                            <option value="area4">Pokja IV: Penguatan Akuntabilitas (LAKIP &amp; Sasaran)</option>
+                            <option value="area5">Pokja V: Penguatan Pengawasan (Gratifikasi &amp; WBS)</option>
+                            <option value="area6">Pokja VI: Kualitas Pelayanan (Inovasi &amp; IKM)</option>
+                            <option value="shared">Dokumen Bersama / Induk ZI</option>
+                        </select>
+                    </div>
+
+                    <!-- Nama Dokumen Baru -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Nama Dokumen di Pokja Baru <span class="text-danger">*</span></label>
+                        <input type="text" name="judul" id="copyZiJudul" class="form-control rounded-3" required>
+                        <div class="form-text small text-muted">Dapat disesuaikan dengan kode indikator atau nama eviden Pokja Anda.</div>
+                    </div>
+
+                    <!-- PIC / Pengunggah Pokja -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-7">
+                            <label class="form-label fw-bold small text-muted">Nama PIC Pokja Pengambil <span class="text-danger">*</span></label>
+                            <input type="text" name="pengunggah" id="copyZiPengunggah" class="form-control rounded-3" required value="<?= $is_user_logged_in ? htmlspecialchars($logged_user_name) : '' ?>">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label fw-bold small text-muted">Tanggal Salin</label>
+                            <input type="date" name="tanggal" id="copyZiTanggal" class="form-control rounded-3" value="<?= date('Y-m-d') ?>">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Catatan Pokja (Opsional)</label>
+                        <textarea name="keterangan" id="copyZiKeterangan" class="form-control rounded-3" rows="2" placeholder="Contoh: Bukti dukung indikator Fungsionalisasi SOP Pokja II"></textarea>
+                    </div>
+
+                    <div class="alert alert-info border-0 rounded-3 p-2 small mb-0 d-flex align-items-center gap-2">
+                        <i class="bi bi-info-circle-fill text-primary fs-5"></i>
+                        <span>Berkas fisik/tautan Drive otomatis terhubung tanpa mengunggah ulang (sangat hemat penyimpanan server).</span>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 bg-light p-3 rounded-bottom-4">
+                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm rounded-pill px-4 fw-bold shadow-sm">
+                        <i class="bi bi-copy me-1"></i> Konfirmasi Salin ke Pokja
                     </button>
                 </div>
             </form>

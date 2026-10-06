@@ -4,12 +4,13 @@
 <?php
 $area_names = [
     // Pokja Zona Integritas (WBK / WBBM)
-    'area1' => 'Pokja I: Manajemen Perubahan',
-    'area2' => 'Pokja II: Penataan Tatalaksana',
-    'area3' => 'Pokja III: Penataan Manajemen SDM',
-    'area4' => 'Pokja IV: Penguatan Akuntabilitas',
-    'area5' => 'Pokja V: Penguatan Pengawasan',
-    'area6' => 'Pokja VI: Kualitas Pelayanan Publik',
+    'shared' => 'Dokumen Bersama / Induk ZI',
+    'area1'  => 'Pokja I: Manajemen Perubahan',
+    'area2'  => 'Pokja II: Penataan Tatalaksana',
+    'area3'  => 'Pokja III: Penataan Manajemen SDM',
+    'area4'  => 'Pokja IV: Penguatan Akuntabilitas',
+    'area5'  => 'Pokja V: Penguatan Pengawasan',
+    'area6'  => 'Pokja VI: Kualitas Pelayanan Publik',
 
     // Kurikulum & Modul Ajar (Akademik)
     'modul_ajar' => 'Modul Ajar & RPP',
@@ -347,9 +348,15 @@ $area_names = [
                                     <!-- Kategori / Pokja -->
                                     <td>
                                         <?php if($kategori === 'zi' && !empty($area)): ?>
-                                            <span class="badge bg-success-subtle text-success rounded-pill fw-bold px-2.5 py-1">
-                                                <i class="bi bi-shield-check me-1"></i> <?= str_replace('AREA', 'POKJA ', strtoupper($area)) ?>
-                                            </span>
+                                            <?php if($area === 'shared'): ?>
+                                                <span class="badge bg-primary-subtle text-primary rounded-pill fw-bold px-2.5 py-1">
+                                                    <i class="bi bi-collection-fill me-1"></i> DOKUMEN BERSAMA
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="badge bg-success-subtle text-success rounded-pill fw-bold px-2.5 py-1">
+                                                    <i class="bi bi-shield-check me-1"></i> <?= str_replace('AREA', 'POKJA ', strtoupper($area)) ?>
+                                                </span>
+                                            <?php endif; ?>
                                             <div class="small text-muted mt-1" style="font-size: 11px;">
                                                 <?= $area_names[$area] ?? 'Zona Integritas' ?>
                                             </div>
@@ -456,6 +463,7 @@ $area_names = [
                         <div class="col-md-6" id="adminWrapperAreaZi">
                             <label class="form-label fw-bold small text-muted" id="adminLabelSubKategori">Pokja Perubahan ZI <span class="text-danger">*</span></label>
                             <select name="area_zi" id="adminAreaZi" class="form-select rounded-3 text-success fw-bold" required>
+                                <option value="shared">🏛️ Dokumen Bersama / Induk ZI (Lintas Pokja)</option>
                                 <option value="area1">Pokja I: Manajemen Perubahan</option>
                                 <option value="area2">Pokja II: Penataan Tatalaksana</option>
                                 <option value="area3">Pokja III: Penataan Manajemen SDM</option>
@@ -575,6 +583,7 @@ const adminSubKategoriConfig = {
         label: 'Pokja Perubahan ZI <span class="text-danger">*</span>',
         cssClass: 'text-success fw-bold',
         options: [
+            { value: 'shared', label: '🏛️ Dokumen Bersama / Induk ZI (Lintas Pokja)' },
             { value: 'area1', label: 'Pokja I: Manajemen Perubahan' },
             { value: 'area2', label: 'Pokja II: Penataan Tatalaksana' },
             { value: 'area3', label: 'Pokja III: Penataan Manajemen SDM' },
@@ -881,6 +890,7 @@ function toggleAdminEditSumber(type) {
                         <div class="col-md-6" id="editAdminWrapperAreaZi">
                             <label class="form-label fw-bold small text-muted" id="editAdminLabelSubKategori">Pokja Perubahan ZI <span class="text-danger">*</span></label>
                             <select name="area_zi" id="editAdminAreaZi" class="form-select rounded-3 text-success fw-bold" required>
+                                <option value="shared">🏛️ Dokumen Bersama / Induk ZI (Lintas Pokja)</option>
                                 <option value="area1">Pokja I: Manajemen Perubahan</option>
                                 <option value="area2">Pokja II: Penataan Tatalaksana</option>
                                 <option value="area3">Pokja III: Penataan Manajemen SDM</option>

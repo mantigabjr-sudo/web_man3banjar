@@ -852,15 +852,16 @@ class Website extends CI_Controller {
             ->get('website_download')
             ->result();
 
-        // Hitung statistik khusus 6 Area ZI
+        // Hitung statistik khusus 6 Area ZI + Dokumen Bersama
         $stats = [
-            'total' => count($data['downloads']),
-            'area1' => 0,
-            'area2' => 0,
-            'area3' => 0,
-            'area4' => 0,
-            'area5' => 0,
-            'area6' => 0
+            'total'  => count($data['downloads']),
+            'shared' => 0,
+            'area1'  => 0,
+            'area2'  => 0,
+            'area3'  => 0,
+            'area4'  => 0,
+            'area5'  => 0,
+            'area6'  => 0
         ];
 
         foreach($data['downloads'] as $row){
@@ -1033,15 +1034,88 @@ class Website extends CI_Controller {
         $judul = $download->judul ?? 'Dokumen';
 
         if(!empty($download->file_path) && $download->file_path !== 'drive_link'){
-            $file = FCPATH . 'assets/downloads/' . $download->file_path;
-            if(file_exists($file)){
-                @unlink($file);
+            // Cek apakah berkas fisik masih digunakan oleh entri dokumen/pokja lain
+            $other_count = $this->db->where('file_path', $download->file_path)->where('id !=', $id)->count_all_results('website_download');
+            if($other_count == 0){
+                $file = FCPATH . 'assets/downloads/' . $download->file_path;
+                if(file_exists($file)){
+                    @unlink($file);
+                }
             }
         }
 
         $this->db->where('id', $id)->delete('website_download');
         $this->session->set_flashdata('success', 'Dokumen Eviden "' . htmlspecialchars($judul) . '" berhasil dihapus.');
         redirect('website/zona_integritas?area='.$area);
+    }
+
+    public function copy_zi() {
+        $this->ensureDownloadDriveColumns();
+
+        $is_unlocked = (bool)$this->session->userdata('zi_unlocked');
+        $is_logged_in = (bool)$this->session->userdata('logged_in');
+
+        if(!$is_unlocked && !$is_logged_in){
+            $this->session->set_flashdata('error', 'Sesi akses eviden ZI telah berakhir. Silakan masukkan PIN kembali.');
+            redirect('website/zona_integritas');
+            return;
+        }
+
+        $source_id = (int)$this->input->post('source_id', TRUE);
+        $source = $this->db->where('id', $source_id)->get('website_download')->row();
+        if(!$source){
+            $this->session->set_flashdata('error', 'Dokumen sumber tidak ditemukan.');
+            redirect('website/zona_integritas');
+            return;
+        }
+
+        $target_pokja = trim((string)$this->input->post('target_pokja', TRUE));
+        $allowed_pokja = ['area1', 'area2', 'area3', 'area4', 'area5', 'area6', 'shared'];
+        if(!in_array($target_pokja, $allowed_pokja)){
+            $target_pokja = 'area1';
+        }
+
+        $judul = trim((string)$this->input->post('judul', TRUE));
+        if(empty($judul)){
+            $judul = $source->judul;
+        }
+
+        $pengunggah = trim((string)$this->input->post('pengunggah', TRUE));
+        if(empty($pengunggah)){
+            $pengunggah = $this->session->userdata('username') ?: ($source->pengunggah ?: 'Tim Pokja ZI');
+        }
+
+        $lini_unit = trim((string)$this->input->post('lini_unit', TRUE));
+        if(empty($lini_unit)){
+            $lini_unit = ($target_pokja === 'shared') ? 'Sekretariat ZI' : 'Tim ' . strtoupper(str_replace('area', 'Pokja ', $target_pokja));
+        }
+
+        $keterangan = trim((string)$this->input->post('keterangan', TRUE));
+        if(empty($keterangan)){
+            $keterangan = !empty($source->keterangan) ? $source->keterangan : 'Disalin dari Dokumen Bersama ZI';
+        }
+
+        $tanggal = $this->input->post('tanggal', TRUE) ? $this->input->post('tanggal', TRUE) : date('Y-m-d');
+
+        // Duplikasi ke tabel website_download (menunjuk ke file atau link Drive yang sama persis)
+        $this->db->insert('website_download', [
+            'judul'             => $judul,
+            'file_path'         => $source->file_path,
+            'keterangan'        => $keterangan,
+            'tanggal'           => $tanggal,
+            'kategori_pilar'    => 'zi',
+            'area_zi'           => $target_pokja,
+            'pengunggah'        => $pengunggah,
+            'lini_unit'         => $lini_unit,
+            'link_drive'        => $source->link_drive,
+            'tipe_sumber'       => $source->tipe_sumber,
+            'is_public'         => 1,
+            'status_verifikasi' => 'Sesuai'
+        ]);
+
+        $pokja_label = ($target_pokja === 'shared') ? 'Dokumen Bersama ZI' : strtoupper(str_replace('area', 'Pokja ', $target_pokja));
+        $this->session->set_flashdata('success', 'Berhasil menyalin dokumen "' . htmlspecialchars($judul) . '" ke ' . $pokja_label . '!');
+        redirect('website/zona_integritas?area=' . $target_pokja);
     }
 
     private function ensureDownloadDriveColumns() {
@@ -1170,8 +1244,10 @@ class Website extends CI_Controller {
             return;
         }
 
-        // Security verification: allow if already logged in as PTK/Admin, or verify PIN
+        // Security verification: allow if already logged in as PTK/Admin, or already unlocked ZI, or verify PIN
         $is_logged_in = (bool)$this->session->userdata('logged_in');
+        $is_zi_unlocked = (bool)$this->session->userdata('zi_unlocked');
+        $redirect_to = $this->input->post('redirect_to', TRUE);
         $valid_pin = '123456'; // Default PIN publik madrasah untuk PTK
         
         // Cek jika ada custom PIN di settings
@@ -1180,7 +1256,9 @@ class Website extends CI_Controller {
             $valid_pin = $setting->pin_drive;
         }
 
-        if(!$is_logged_in && !empty($valid_pin) && $pin_input !== $valid_pin){
+        $is_from_zi = ($redirect_to === 'zona_integritas' && $is_zi_unlocked);
+
+        if(!$is_logged_in && !$is_from_zi && !empty($valid_pin) && $pin_input !== $valid_pin){
             $this->session->set_flashdata('error', 'Kode Keamanan / PIN Pengunggah tidak sesuai. Gunakan PIN resmi madrasah ('.$valid_pin.') atau login ke akun LabSys.');
             redirect('website/download');
             return;
