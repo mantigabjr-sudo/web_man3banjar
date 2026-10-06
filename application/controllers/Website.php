@@ -1004,9 +1004,10 @@ class Website extends CI_Controller {
 
                 $config['upload_path']   = $upload_dir;
                 $config['allowed_types'] = '*';
+                $config['detect_mime']   = FALSE;
                 $config['max_size']      = 20480;
                 $safe_title = url_title(substr($judul, 0, 45), 'dash', true);
-                $config['file_name']     = time() . '_' . (!empty($safe_title) ? $safe_title : 'dokumen');
+                $config['file_name']     = time() . '_' . (!empty($safe_title) ? $safe_title : 'dokumen') . '.' . $raw_ext;
 
                 $this->load->library('upload');
                 $this->upload->initialize($config, true);
@@ -1321,10 +1322,11 @@ class Website extends CI_Controller {
 
             $config['upload_path']   = $upload_dir;
             $config['allowed_types'] = '*';
+            $config['detect_mime']   = FALSE;
             $config['max_size']      = 20480; // 20MB
             
             $safe_title = url_title(substr($judul, 0, 45), 'dash', true);
-            $config['file_name'] = time() . '_' . (!empty($safe_title) ? $safe_title : 'dokumen');
+            $config['file_name'] = time() . '_' . (!empty($safe_title) ? $safe_title : 'dokumen') . '.' . $raw_ext;
 
             $this->load->library('upload');
             $this->upload->initialize($config, true);
