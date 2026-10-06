@@ -717,10 +717,13 @@ public function delete_galeri($id){
                 @mkdir($upload_dir, 0777, true);
             }
             if(!is_dir($upload_dir) && defined('FCPATH')){
-                $upload_dir = FCPATH.'assets/downloads/';
+                $upload_dir = rtrim(FCPATH, '/\\') . '/assets/downloads/';
                 if(!is_dir($upload_dir)){
                     @mkdir($upload_dir, 0777, true);
                 }
+            }
+            if(realpath($upload_dir) !== false){
+                $upload_dir = realpath($upload_dir);
             }
 
             $config['upload_path']   = $upload_dir;
@@ -819,10 +822,13 @@ public function delete_galeri($id){
                     @mkdir($upload_dir, 0777, true);
                 }
                 if(!is_dir($upload_dir) && defined('FCPATH')){
-                    $upload_dir = FCPATH.'assets/downloads/';
+                    $upload_dir = rtrim(FCPATH, '/\\') . '/assets/downloads/';
                     if(!is_dir($upload_dir)){
                         @mkdir($upload_dir, 0777, true);
                     }
+                }
+                if(realpath($upload_dir) !== false){
+                    $upload_dir = realpath($upload_dir);
                 }
 
                 $config['upload_path']   = $upload_dir;

@@ -985,10 +985,13 @@ class Website extends CI_Controller {
                     @mkdir($upload_dir, 0777, true);
                 }
                 if(!is_dir($upload_dir) && defined('FCPATH')){
-                    $upload_dir = FCPATH . 'assets/downloads/';
+                    $upload_dir = rtrim(FCPATH, '/\\') . '/assets/downloads/';
                     if(!is_dir($upload_dir)){
                         @mkdir($upload_dir, 0777, true);
                     }
+                }
+                if(realpath($upload_dir) !== false){
+                    $upload_dir = realpath($upload_dir);
                 }
 
                 $config['upload_path']   = $upload_dir;
@@ -1246,17 +1249,18 @@ class Website extends CI_Controller {
         $tipe_sumber = $this->input->post('tipe_sumber', TRUE) ? trim($this->input->post('tipe_sumber', TRUE)) : 'file';
         $link_drive = trim((string)$this->input->post('link_drive', TRUE));
         $pin_input = trim((string)$this->input->post('pin_keamanan', TRUE));
+        $redirect_to = $this->input->post('redirect_to', TRUE);
+        $redirect_target = ($redirect_to === 'zona_integritas') ? ('website/zona_integritas' . (!empty($area_zi) ? '?area=' . $area_zi : '')) : 'website/download';
 
         if(empty($judul)){
             $this->session->set_flashdata('error', 'Nama / Judul dokumen wajib diisi.');
-            redirect('website/download');
+            redirect($redirect_target);
             return;
         }
 
         // Security verification: allow if already logged in as PTK/Admin, or already unlocked ZI, or verify PIN
         $is_logged_in = (bool)$this->session->userdata('logged_in');
         $is_zi_unlocked = (bool)$this->session->userdata('zi_unlocked');
-        $redirect_to = $this->input->post('redirect_to', TRUE);
         $valid_pin = '123456'; // Default PIN publik madrasah untuk PTK
         
         // Cek jika ada custom PIN di settings
@@ -1269,7 +1273,7 @@ class Website extends CI_Controller {
 
         if(!$is_logged_in && !$is_from_zi && !empty($valid_pin) && $pin_input !== $valid_pin){
             $this->session->set_flashdata('error', 'Kode Keamanan / PIN Pengunggah tidak sesuai. Gunakan PIN resmi madrasah ('.$valid_pin.') atau login ke akun LabSys.');
-            redirect('website/download');
+            redirect($redirect_target);
             return;
         }
 
@@ -1279,7 +1283,7 @@ class Website extends CI_Controller {
         if($tipe_sumber === 'drive_link'){
             if(empty($link_drive) || !filter_var($link_drive, FILTER_VALIDATE_URL)){
                 $this->session->set_flashdata('error', 'Tautan Google Drive / Cloud URL tidak valid.');
-                redirect('website/download');
+                redirect($redirect_target);
                 return;
             }
             $file_path = 'drive_link';
@@ -1290,10 +1294,13 @@ class Website extends CI_Controller {
                 @mkdir($upload_dir, 0777, true);
             }
             if(!is_dir($upload_dir) && defined('FCPATH')){
-                $upload_dir = FCPATH . 'assets/downloads/';
+                $upload_dir = rtrim(FCPATH, '/\\') . '/assets/downloads/';
                 if(!is_dir($upload_dir)){
                     @mkdir($upload_dir, 0777, true);
                 }
+            }
+            if(realpath($upload_dir) !== false){
+                $upload_dir = realpath($upload_dir);
             }
 
             $config['upload_path']   = $upload_dir;
@@ -1310,7 +1317,7 @@ class Website extends CI_Controller {
             if(!$this->upload->do_upload('file_download')){
                 $err = $this->upload->display_errors('', '');
                 $this->session->set_flashdata('error', 'Gagal mengunggah file: ' . $err);
-                redirect('website/download');
+                redirect($redirect_target);
                 return;
             }
 
