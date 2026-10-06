@@ -755,6 +755,89 @@ public function delete_galeri($id){
         redirect('admin_website/download');
     }
 
+    public function update_download(){
+        $this->ensureDownloadDriveColumns();
+
+        $id = (int)$this->input->post('id', TRUE);
+        $download = $this->db->where('id', $id)->get('website_download')->row();
+        if(!$download){
+            $this->session->set_flashdata('error', 'Dokumen tidak ditemukan.');
+            redirect('admin_website/download');
+            return;
+        }
+
+        $judul = trim((string)$this->input->post('judul', TRUE));
+        $keterangan = trim((string)$this->input->post('keterangan', TRUE));
+        $tanggal = $this->input->post('tanggal', TRUE) ? $this->input->post('tanggal', TRUE) : date('Y-m-d');
+        $kategori_pilar = $this->input->post('kategori_pilar', TRUE) ? trim($this->input->post('kategori_pilar', TRUE)) : 'zi';
+        $area_zi = $this->input->post('area_zi', TRUE) ? trim($this->input->post('area_zi', TRUE)) : NULL;
+        $pengunggah = trim((string)$this->input->post('pengunggah', TRUE));
+        $lini_unit = trim((string)$this->input->post('lini_unit', TRUE));
+        $tipe_sumber = $this->input->post('tipe_sumber', TRUE) ? trim($this->input->post('tipe_sumber', TRUE)) : 'file';
+        $link_drive = trim((string)$this->input->post('link_drive', TRUE));
+
+        if(empty($judul)){
+            $this->session->set_flashdata('error', 'Nama / Judul dokumen wajib diisi.');
+            redirect('admin_website/download');
+            return;
+        }
+
+        $update_data = [
+            'judul'             => $judul,
+            'keterangan'        => $keterangan,
+            'tanggal'           => $tanggal,
+            'kategori_pilar'    => $kategori_pilar,
+            'area_zi'           => $area_zi,
+            'pengunggah'        => !empty($pengunggah) ? $pengunggah : $download->pengunggah,
+            'lini_unit'         => !empty($lini_unit) ? $lini_unit : $download->lini_unit,
+            'tipe_sumber'       => $tipe_sumber,
+            'link_drive'        => $link_drive,
+        ];
+
+        if($tipe_sumber === 'drive_link'){
+            if(empty($link_drive) || !filter_var($link_drive, FILTER_VALIDATE_URL)){
+                $this->session->set_flashdata('error', 'Tautan Google Drive / Cloud URL tidak valid.');
+                redirect('admin_website/download');
+                return;
+            }
+            if(!empty($download->file_path) && $download->file_path !== 'drive_link'){
+                $old_file = FCPATH.'assets/downloads/'.$download->file_path;
+                if(file_exists($old_file)) @unlink($old_file);
+            }
+            $update_data['file_path'] = 'drive_link';
+        } else {
+            if(!empty($_FILES['file_download']['name'])){
+                $upload_dir = FCPATH.'assets/downloads/';
+                if(!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+
+                $config['upload_path']   = $upload_dir;
+                $config['allowed_types'] = 'pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar';
+                $config['max_size']      = 20480; // 20MB
+                $safe_title = url_title(substr($judul, 0, 45), 'dash', true);
+                $config['file_name']     = time().'_'.(!empty($safe_title) ? $safe_title : 'dokumen');
+
+                $this->load->library('upload', $config);
+                if($this->upload->do_upload('file_download')){
+                    $uploadData = $this->upload->data();
+                    if(!empty($download->file_path) && $download->file_path !== 'drive_link'){
+                        $old_file = FCPATH.'assets/downloads/'.$download->file_path;
+                        if(file_exists($old_file)) @unlink($old_file);
+                    }
+                    $update_data['file_path'] = $uploadData['file_name'];
+                } else {
+                    $error = $this->upload->display_errors('','');
+                    $this->session->set_flashdata('error', 'Gagal mengunggah file baru: '.$error);
+                    redirect('admin_website/download');
+                    return;
+                }
+            }
+        }
+
+        $this->db->where('id', $id)->update('website_download', $update_data);
+        $this->session->set_flashdata('success', 'Dokumen / Eviden "'.htmlspecialchars($judul).'" berhasil diperbarui.');
+        redirect('admin_website/download');
+    }
+
     public function delete_download($id){
         $download = $this->db->where('id', $id)->get('website_download')->row();
 

@@ -918,6 +918,132 @@ class Website extends CI_Controller {
         redirect('website/zona_integritas?lock=1');
     }
 
+    public function update_zi() {
+        $this->ensureDownloadDriveColumns();
+
+        // Check permission: either zi_unlocked is true, or logged in
+        $is_unlocked = (bool)$this->session->userdata('zi_unlocked');
+        $is_logged_in = (bool)$this->session->userdata('logged_in');
+
+        if(!$is_unlocked && !$is_logged_in){
+            $this->session->set_flashdata('error', 'Sesi akses eviden ZI telah berakhir. Silakan masukkan PIN kembali.');
+            redirect('website/zona_integritas');
+            return;
+        }
+
+        $id = (int)$this->input->post('id', TRUE);
+        $download = $this->db->where('id', $id)->get('website_download')->row();
+        if(!$download){
+            $this->session->set_flashdata('error', 'Dokumen eviden tidak ditemukan.');
+            redirect('website/zona_integritas');
+            return;
+        }
+
+        $judul = trim((string)$this->input->post('judul', TRUE));
+        if(empty($judul)){
+            $this->session->set_flashdata('error', 'Judul dokumen wajib diisi.');
+            redirect('website/zona_integritas');
+            return;
+        }
+
+        $tanggal = $this->input->post('tanggal', TRUE) ? $this->input->post('tanggal', TRUE) : date('Y-m-d');
+        $area_zi = $this->input->post('area_zi', TRUE) ? trim($this->input->post('area_zi', TRUE)) : 'area1';
+        $pengunggah = trim((string)$this->input->post('pengunggah', TRUE));
+        $lini_unit = trim((string)$this->input->post('lini_unit', TRUE));
+        $keterangan = trim((string)$this->input->post('keterangan', TRUE));
+        $tipe_sumber = $this->input->post('tipe_sumber', TRUE) ? trim($this->input->post('tipe_sumber', TRUE)) : 'file';
+        $link_drive = trim((string)$this->input->post('link_drive', TRUE));
+
+        $update_data = [
+            'judul'             => $judul,
+            'tanggal'           => $tanggal,
+            'kategori_pilar'    => 'zi',
+            'area_zi'           => $area_zi,
+            'pengunggah'        => !empty($pengunggah) ? $pengunggah : $download->pengunggah,
+            'lini_unit'         => !empty($lini_unit) ? $lini_unit : $download->lini_unit,
+            'keterangan'        => $keterangan,
+            'tipe_sumber'       => $tipe_sumber,
+            'link_drive'        => $link_drive,
+        ];
+
+        if($tipe_sumber === 'drive_link'){
+            if(empty($link_drive) || !filter_var($link_drive, FILTER_VALIDATE_URL)){
+                $this->session->set_flashdata('error', 'Tautan Google Drive / Cloud URL tidak valid.');
+                redirect('website/zona_integritas?area='.$area_zi);
+                return;
+            }
+            if(!empty($download->file_path) && $download->file_path !== 'drive_link'){
+                $old_file = FCPATH . 'assets/downloads/' . $download->file_path;
+                if(file_exists($old_file)) @unlink($old_file);
+            }
+            $update_data['file_path'] = 'drive_link';
+        } else {
+            if(!empty($_FILES['file_download']['name'])){
+                $upload_dir = FCPATH . 'assets/downloads/';
+                if(!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+
+                $config['upload_path']   = $upload_dir;
+                $config['allowed_types'] = 'pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar';
+                $config['max_size']      = 20480;
+                $safe_title = url_title(substr($judul, 0, 45), 'dash', true);
+                $config['file_name']     = time() . '_' . (!empty($safe_title) ? $safe_title : 'dokumen');
+
+                $this->load->library('upload', $config);
+                if(!$this->upload->do_upload('file_download')){
+                    $err = $this->upload->display_errors('', '');
+                    $this->session->set_flashdata('error', 'Gagal mengunggah file baru: ' . $err);
+                    redirect('website/zona_integritas?area='.$area_zi);
+                    return;
+                }
+                $uploadData = $this->upload->data();
+                if(!empty($download->file_path) && $download->file_path !== 'drive_link'){
+                    $old_file = FCPATH . 'assets/downloads/' . $download->file_path;
+                    if(file_exists($old_file)) @unlink($old_file);
+                }
+                $update_data['file_path'] = $uploadData['file_name'];
+            }
+        }
+
+        $this->db->where('id', $id)->update('website_download', $update_data);
+        $this->session->set_flashdata('success', 'Dokumen Eviden ZI "' . htmlspecialchars($judul) . '" berhasil diperbarui!');
+        redirect('website/zona_integritas?area='.$area_zi);
+    }
+
+    public function delete_zi($id) {
+        $this->ensureDownloadDriveColumns();
+
+        $is_unlocked = (bool)$this->session->userdata('zi_unlocked');
+        $is_logged_in = (bool)$this->session->userdata('logged_in');
+
+        if(!$is_unlocked && !$is_logged_in){
+            $this->session->set_flashdata('error', 'Sesi akses eviden ZI telah berakhir. Silakan masukkan PIN kembali.');
+            redirect('website/zona_integritas');
+            return;
+        }
+
+        $id = (int)$id;
+        $download = $this->db->where('id', $id)->get('website_download')->row();
+        if(!$download){
+            $this->session->set_flashdata('error', 'Dokumen eviden tidak ditemukan.');
+            redirect('website/zona_integritas');
+            return;
+        }
+
+        $area = $download->area_zi ?? 'area1';
+        $judul = $download->judul ?? 'Dokumen';
+
+        if(!empty($download->file_path) && $download->file_path !== 'drive_link'){
+            $file = FCPATH . 'assets/downloads/' . $download->file_path;
+            if(file_exists($file)){
+                @unlink($file);
+            }
+        }
+
+        $this->db->where('id', $id)->delete('website_download');
+        $this->session->set_flashdata('success', 'Dokumen Eviden "' . htmlspecialchars($judul) . '" berhasil dihapus.');
+        redirect('website/zona_integritas?area='.$area);
+    }
+
     private function ensureDownloadDriveColumns() {
         // Pastikan kolom pin_zi ada di tabel settings
         if($this->db->table_exists('settings')){
@@ -1115,6 +1241,11 @@ class Website extends CI_Controller {
         ]);
 
         $this->session->set_flashdata('success', 'Dokumen / Eviden "'.htmlspecialchars($judul).'" berhasil diunggah ke Drive Madrasah!');
+        $redirect_to = $this->input->post('redirect_to', TRUE);
+        if($redirect_to === 'zona_integritas'){
+            redirect('website/zona_integritas' . (!empty($area_zi) ? '?area='.$area_zi : ''));
+            return;
+        }
         redirect('website/download' . ($kategori_pilar === 'zi' && !empty($area_zi) ? '?filter='.$area_zi : ''));
     }
 

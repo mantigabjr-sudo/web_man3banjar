@@ -569,7 +569,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                         </div>
                     </div>
 
-                    <div class="d-flex gap-2 mt-3 pt-2 border-top">
+                    <div class="d-flex gap-2 mt-3 pt-2 border-top align-items-center">
                         <?php if($file_meta['is_pdf']): ?>
                             <button type="button" class="btn btn-sm btn-outline-danger rounded-pill flex-grow-1 fw-bold" onclick="previewPdf('<?= $file_meta['url'] ?>', '<?= htmlspecialchars($d->judul, ENT_QUOTES, 'UTF-8') ?>')">
                                 <i class="bi bi-eye-fill me-1"></i> Pratinjau
@@ -583,6 +583,15 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                         <?php else: ?>
                             <a href="<?= $file_meta['url'] ?>" target="_blank" download class="btn btn-sm btn-outline-success rounded-pill flex-grow-1 fw-bold">
                                 <i class="bi bi-download me-1"></i> Unduh
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if(!empty($zi_unlocked)): ?>
+                            <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-2.5 py-1 text-dark" title="Edit Eviden ZI" onclick="openEditModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <a href="<?= base_url('website/delete_zi/'.$d->id) ?>" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1" title="Hapus Eviden" onclick="return confirm('Apakah Anda yakin ingin menghapus eviden \'<?= htmlspecialchars(addslashes($d->judul), ENT_QUOTES, 'UTF-8') ?>\'?')">
+                                <i class="bi bi-trash-fill"></i>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -678,6 +687,15 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                                                 <i class="bi bi-download me-1"></i> Unduh
                                             </a>
                                         <?php endif; ?>
+
+                                        <?php if(!empty($zi_unlocked)): ?>
+                                            <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-2.5 py-1 text-dark" title="Edit Eviden ZI" onclick="openEditModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
+                                            <a href="<?= base_url('website/delete_zi/'.$d->id) ?>" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1" title="Hapus Eviden" onclick="return confirm('Apakah Anda yakin ingin menghapus eviden \'<?= htmlspecialchars(addslashes($d->judul), ENT_QUOTES, 'UTF-8') ?>\'?')">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </a>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>
@@ -707,6 +725,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
 
             <form action="<?= base_url('website/upload_drive') ?>" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="kategori_pilar" value="zi">
+                <input type="hidden" name="redirect_to" value="zona_integritas">
 
                 <div class="modal-body p-4">
                     
@@ -1009,6 +1028,157 @@ function previewPdf(pdfUrl, title) {
     const bsModal = new bootstrap.Modal(modalEl);
     bsModal.show();
 }
+
+function openEditModalZi(doc) {
+    if (!doc) return;
+
+    document.getElementById('editZiId').value = doc.id || '';
+    document.getElementById('editZiJudul').value = doc.judul || '';
+    document.getElementById('editZiTanggal').value = doc.tanggal || '<?= date('Y-m-d') ?>';
+    document.getElementById('editZiArea').value = (doc.area_zi || 'area1').toLowerCase();
+    document.getElementById('editZiPengunggah').value = doc.pengunggah || '';
+    document.getElementById('editZiLiniUnit').value = doc.lini_unit || '';
+    document.getElementById('editZiKeterangan').value = doc.keterangan || '';
+
+    const isDrive = (doc.tipe_sumber === 'drive_link') || (!doc.file_path && doc.link_drive) || (doc.file_path === 'drive_link');
+    if (isDrive) {
+        document.getElementById('editZiRadioDrive').checked = true;
+        document.getElementById('editZiLinkDrive').value = doc.link_drive || '';
+        toggleEditZiSumber('drive_link');
+    } else {
+        document.getElementById('editZiRadioFile').checked = true;
+        toggleEditZiSumber('file');
+        const note = document.getElementById('editZiFileNote');
+        if (note) {
+            note.textContent = doc.file_path ? 'File saat ini: ' + doc.file_path + '. Biarkan kosong jika tidak ingin mengganti.' : 'Biarkan kosong jika tidak ingin mengganti.';
+        }
+    }
+
+    const editModal = new bootstrap.Modal(document.getElementById('modalEditZi'));
+    editModal.show();
+}
+
+function toggleEditZiSumber(type) {
+    const paneFile = document.getElementById('editZiFilePane');
+    const paneDrive = document.getElementById('editZiDrivePane');
+    const inputDrive = document.getElementById('editZiLinkDrive');
+
+    if (type === 'file') {
+        paneFile.style.display = 'block';
+        paneDrive.style.display = 'none';
+        if (inputDrive) inputDrive.removeAttribute('required');
+    } else {
+        paneFile.style.display = 'none';
+        paneDrive.style.display = 'block';
+        if (inputDrive) inputDrive.setAttribute('required', 'required');
+    }
+}
 </script>
+
+<!-- ═══ MODAL EDIT EVIDEN ZI ═══ -->
+<div class="modal fade" id="modalEditZi" tabindex="-1" aria-labelledby="modalEditZiLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            
+            <div class="modal-header border-0 bg-warning-subtle text-dark px-4 py-3 border-bottom">
+                <div>
+                    <h5 class="modal-title fw-bold" id="modalEditZiLabel">
+                        <i class="bi bi-pencil-square me-1 text-warning"></i> Edit / Revisi Eviden ZI
+                    </h5>
+                    <p class="small text-muted mb-0">Perbaiki nama dokumen, pindah Pokja, atau perbarui file/link Drive.</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form action="<?= base_url('website/update_zi') ?>" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="id" id="editZiId">
+
+                <div class="modal-body p-4">
+                    
+                    <!-- 1. Pokja ZI -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold small text-muted">Pokja Perubahan ZI <span class="text-danger">*</span></label>
+                            <select name="area_zi" id="editZiArea" class="form-select rounded-3 text-success fw-bold" required>
+                                <option value="area1">Pokja I: Manajemen Perubahan (Budaya Kerja &amp; Komitmen)</option>
+                                <option value="area2">Pokja II: Penataan Tatalaksana (SOP &amp; Digitalisasi e-Office)</option>
+                                <option value="area3">Pokja III: Penataan Manajemen SDM (Disiplin &amp; Kinerja GTK)</option>
+                                <option value="area4">Pokja IV: Penguatan Akuntabilitas (LAKIP &amp; Capaian Sasaran)</option>
+                                <option value="area5">Pokja V: Penguatan Pengawasan (Gratifikasi, WBS, SPI)</option>
+                                <option value="area6">Pokja VI: Peningkatan Kualitas Pelayanan Publik (IKM &amp; Layanan)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 2. Nama Dokumen & Tanggal -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold small text-muted">Nama / Judul Dokumen Eviden <span class="text-danger">*</span></label>
+                            <input type="text" name="judul" id="editZiJudul" class="form-control rounded-3" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-muted">Tanggal Dokumen</label>
+                            <input type="date" name="tanggal" id="editZiTanggal" class="form-control rounded-3">
+                        </div>
+                    </div>
+
+                    <!-- 3. Keterangan Singkat -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Keterangan / Nomor Dokumen (Opsional)</label>
+                        <textarea name="keterangan" id="editZiKeterangan" class="form-control rounded-3" rows="2" placeholder="Catatan peruntukan eviden atau nomor surat..."></textarea>
+                    </div>
+
+                    <!-- 4. Pengunggah & Tim Pokja -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">Nama Pengunggah (PIC) <span class="text-danger">*</span></label>
+                            <input type="text" name="pengunggah" id="editZiPengunggah" class="form-control rounded-3" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">Lini / Tim Pokja Kerja</label>
+                            <input type="text" name="lini_unit" id="editZiLiniUnit" class="form-control rounded-3" placeholder="Contoh: Tim Pokja I">
+                        </div>
+                    </div>
+
+                    <!-- 5. Sumber Dokumen -->
+                    <div class="p-3 rounded-4 bg-light">
+                        <label class="form-label fw-bold small text-muted d-block mb-2">Sumber Dokumen</label>
+                        <div class="d-flex gap-4 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tipe_sumber" id="editZiRadioFile" value="file" onchange="toggleEditZiSumber('file')">
+                                <label class="form-check-label small fw-semibold" for="editZiRadioFile">File Fisik</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tipe_sumber" id="editZiRadioDrive" value="drive_link" onchange="toggleEditZiSumber('drive_link')">
+                                <label class="form-check-label small fw-semibold" for="editZiRadioDrive">Tautan Google Drive</label>
+                            </div>
+                        </div>
+
+                        <div id="editZiFilePane">
+                            <input type="file" name="file_download" id="editZiFileInput" class="form-control rounded-3">
+                            <div class="form-text small mt-1 text-muted" id="editZiFileNote">
+                                Biarkan kosong jika tidak ingin mengganti file lama.
+                            </div>
+                        </div>
+
+                        <div id="editZiDrivePane" style="display: none;">
+                            <input type="url" name="link_drive" id="editZiLinkDrive" class="form-control rounded-3" placeholder="https://drive.google.com/file/d/...">
+                            <div class="form-text small mt-1">Tempel tautan Google Drive / Cloud URL yang baru.</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer border-0 bg-light p-3 rounded-bottom-4">
+                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-success btn-sm rounded-pill px-4 fw-bold shadow-sm">
+                        <i class="bi bi-check-lg me-1"></i> Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
 
 <?php $this->load->view('public/partials/archive_footer'); ?>

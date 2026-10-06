@@ -397,6 +397,10 @@ $area_names = [
                                                 </a>
                                             <?php endif; ?>
 
+                                            <button type="button" class="btn btn-outline-warning btn-sm rounded-pill px-2.5 py-1 text-dark" title="Edit Dokumen" onclick="openAdminEditModal(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
+
                                             <a href="<?= base_url('admin_website/delete_download/'.$d->id) ?>" 
                                                class="btn btn-outline-danger btn-sm rounded-pill px-2.5 py-1"
                                                onclick="return confirm('Apakah Anda yakin ingin menghapus berkas dokumen ini?')"
@@ -759,6 +763,205 @@ function resetAdminFilter() {
 
     filterAdminTable();
 }
+
+function openAdminEditModal(doc) {
+    if (!doc) return;
+
+    document.getElementById('editAdminId').value = doc.id || '';
+    document.getElementById('editAdminJudul').value = doc.judul || '';
+    document.getElementById('editAdminTanggal').value = doc.tanggal || '<?= date('Y-m-d') ?>';
+    document.getElementById('editAdminPengunggah').value = doc.pengunggah || '';
+    document.getElementById('editAdminLiniUnit').value = doc.lini_unit || '';
+    document.getElementById('editAdminKeterangan').value = doc.keterangan || '';
+
+    const pilar = (doc.kategori_pilar || 'zi').toLowerCase();
+    const pilarSelect = document.getElementById('editAdminKategoriPilar');
+    if (pilarSelect) {
+        pilarSelect.value = pilar;
+    }
+
+    handleAdminEditKategoriChange(pilar, (doc.area_zi || '').toLowerCase());
+
+    const isDrive = (doc.tipe_sumber === 'drive_link') || (!doc.file_path && doc.link_drive) || (doc.file_path === 'drive_link');
+    if (isDrive) {
+        document.getElementById('editAdminRadioDrive').checked = true;
+        document.getElementById('editAdminLinkDrive').value = doc.link_drive || '';
+        toggleAdminEditSumber('drive_link');
+    } else {
+        document.getElementById('editAdminRadioFile').checked = true;
+        toggleAdminEditSumber('file');
+        const note = document.getElementById('editAdminFileNote');
+        if (note) {
+            note.textContent = doc.file_path ? 'File saat ini: ' + doc.file_path + '. Biarkan kosong jika tidak ingin mengganti file.' : 'Biarkan kosong jika tidak ingin mengganti.';
+        }
+    }
+
+    const editModal = new bootstrap.Modal(document.getElementById('modalEditDokumenAdmin'));
+    editModal.show();
+}
+
+function handleAdminEditKategoriChange(val, selectedVal = null) {
+    const labelEl = document.getElementById('editAdminLabelSubKategori');
+    const select = document.getElementById('editAdminAreaZi');
+    if (!select) return;
+
+    const config = adminSubKategoriConfig[val] || adminSubKategoriConfig['zi'];
+    if (labelEl) {
+        labelEl.innerHTML = config.label;
+    }
+
+    select.className = 'form-select rounded-3 ' + (config.cssClass || 'text-dark fw-bold');
+    select.innerHTML = '';
+
+    config.options.forEach((opt, idx) => {
+        const optionEl = document.createElement('option');
+        optionEl.value = opt.value;
+        optionEl.textContent = opt.label;
+        if (selectedVal && selectedVal === opt.value) {
+            optionEl.selected = true;
+        } else if (!selectedVal && idx === 0) {
+            optionEl.selected = true;
+        }
+        select.appendChild(optionEl);
+    });
+
+    select.setAttribute('required', 'required');
+}
+
+function toggleAdminEditSumber(type) {
+    const paneFile = document.getElementById('editAdminFilePane');
+    const paneDrive = document.getElementById('editAdminDrivePane');
+    const inputDrive = document.getElementById('editAdminLinkDrive');
+
+    if(type === 'file'){
+        paneFile.style.display = 'block';
+        paneDrive.style.display = 'none';
+        if (inputDrive) inputDrive.removeAttribute('required');
+    } else {
+        paneFile.style.display = 'none';
+        paneDrive.style.display = 'block';
+        if (inputDrive) inputDrive.setAttribute('required', 'required');
+    }
+}
 </script>
+
+<!-- ═══ MODAL EDIT DOKUMEN (ADMIN) ═══ -->
+<div class="modal fade" id="modalEditDokumenAdmin" tabindex="-1" aria-labelledby="modalEditDokumenAdminLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            
+            <div class="modal-header border-0 bg-warning-subtle text-dark px-4 py-3 border-bottom">
+                <div>
+                    <h5 class="modal-title fw-bold" id="modalEditDokumenAdminLabel">
+                        <i class="bi bi-pencil-square me-1 text-warning"></i> Edit / Revisi Dokumen
+                    </h5>
+                    <p class="small text-muted mb-0">Perbarui data informasi berkas, kategori, atau file dokumen.</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form method="post" action="<?= base_url('admin_website/update_download') ?>" enctype="multipart/form-data">
+                <input type="hidden" name="id" id="editAdminId">
+
+                <div class="modal-body p-4">
+
+                    <!-- Kategori Pilar & Pokja -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">Kategori Dokumen / Pilar <span class="text-danger">*</span></label>
+                            <select name="kategori_pilar" id="editAdminKategoriPilar" class="form-select rounded-3" required onchange="handleAdminEditKategoriChange(this.value)">
+                                <option value="zi">⭐ Zona Integritas (WBK / WBBM)</option>
+                                <option value="akademik">📚 Kurikulum &amp; Modul Ajar</option>
+                                <option value="kepegawaian">🗄️ Kepegawaian &amp; Tata Usaha</option>
+                                <option value="kesiswaan">🏆 Kesiswaan &amp; Ekstrakurikuler</option>
+                                <option value="sarpras">🔬 Sarpras &amp; Laboratorium</option>
+                                <option value="umum">📄 Formulir Publik &amp; Brosur</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6" id="editAdminWrapperAreaZi">
+                            <label class="form-label fw-bold small text-muted" id="editAdminLabelSubKategori">Pokja Perubahan ZI <span class="text-danger">*</span></label>
+                            <select name="area_zi" id="editAdminAreaZi" class="form-select rounded-3 text-success fw-bold" required>
+                                <option value="area1">Pokja I: Manajemen Perubahan</option>
+                                <option value="area2">Pokja II: Penataan Tatalaksana</option>
+                                <option value="area3">Pokja III: Penataan Manajemen SDM</option>
+                                <option value="area4">Pokja IV: Penguatan Akuntabilitas</option>
+                                <option value="area5">Pokja V: Penguatan Pengawasan</option>
+                                <option value="area6">Pokja VI: Kualitas Pelayanan Publik</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Judul Dokumen -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Nama / Judul Dokumen <span class="text-danger">*</span></label>
+                        <input type="text" name="judul" id="editAdminJudul" class="form-control rounded-3" required>
+                    </div>
+
+                    <!-- Tanggal & Unit Kerja -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">Tanggal Dokumen</label>
+                            <input type="date" name="tanggal" id="editAdminTanggal" class="form-control rounded-3">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">Lini / Unit Kerja</label>
+                            <input type="text" name="lini_unit" id="editAdminLiniUnit" class="form-control rounded-3" placeholder="Contoh: Tim Pokja I / Bagian Kurikulum">
+                        </div>
+                    </div>
+
+                    <!-- Pengunggah (PIC) & Keterangan -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-5">
+                            <label class="form-label fw-bold small text-muted">Nama Pengunggah (PIC)</label>
+                            <input type="text" name="pengunggah" id="editAdminPengunggah" class="form-control rounded-3">
+                        </div>
+                        <div class="col-md-7">
+                            <label class="form-label fw-bold small text-muted">Keterangan / Nomor Dokumen (Opsional)</label>
+                            <input type="text" name="keterangan" id="editAdminKeterangan" class="form-control rounded-3">
+                        </div>
+                    </div>
+
+                    <!-- Jenis Sumber Dokumen -->
+                    <div class="mb-2 p-3 rounded-4 bg-light">
+                        <label class="form-label fw-bold small text-muted d-block mb-2">Jenis Sumber Dokumen <span class="text-danger">*</span></label>
+                        <div class="d-flex gap-4 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tipe_sumber" id="editAdminRadioFile" value="file" onchange="toggleAdminEditSumber('file')">
+                                <label class="form-check-label small fw-semibold" for="editAdminRadioFile">
+                                    <i class="bi bi-file-earmark-arrow-up text-primary me-1"></i> Upload File Fisik
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tipe_sumber" id="editAdminRadioDrive" value="drive_link" onchange="toggleAdminEditSumber('drive_link')">
+                                <label class="form-check-label small fw-semibold" for="editAdminRadioDrive">
+                                    <i class="bi bi-google text-success me-1"></i> Tautan Google Drive
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="editAdminFilePane">
+                            <input type="file" name="file_download" id="editAdminFileInput" class="form-control rounded-3">
+                            <div class="form-text small mt-1 text-muted" id="editAdminFileNote">Biarkan kosong jika tidak ingin mengganti file.</div>
+                        </div>
+
+                        <div id="editAdminDrivePane" style="display: none;">
+                            <input type="url" name="link_drive" id="editAdminLinkDrive" class="form-control rounded-3" placeholder="https://drive.google.com/drive/folders/...">
+                            <div class="form-text small mt-1">Tempel link folder atau file Google Drive yang baru.</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer border-0 bg-light p-3 rounded-bottom-4">
+                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-success btn-sm rounded-pill px-4 fw-bold shadow-sm">
+                        <i class="bi bi-check-lg me-1"></i> Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
 
 <?php $this->load->view('templates/footer'); ?>
