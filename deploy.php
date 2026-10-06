@@ -51,7 +51,9 @@ $commands = [
     "cd {$repo_dir} 2>&1",
     "git fetch origin main 2>&1",
     "git reset --hard origin/main 2>&1",
-    "git pull origin main 2>&1"
+    "git pull origin main 2>&1",
+    "mkdir -p assets/downloads 2>&1",
+    "chmod -R 0777 assets/downloads 2>&1"
 ];
 
 $cmd = implode(" && ", $commands);

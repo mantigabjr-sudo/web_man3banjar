@@ -980,8 +980,16 @@ class Website extends CI_Controller {
             $update_data['file_path'] = 'drive_link';
         } else {
             if(!empty($_FILES['file_download']['name'])){
-                $upload_dir = FCPATH . 'assets/downloads/';
-                if(!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+                $upload_dir = './assets/downloads/';
+                if(!is_dir($upload_dir)){
+                    @mkdir($upload_dir, 0777, true);
+                }
+                if(!is_dir($upload_dir) && defined('FCPATH')){
+                    $upload_dir = FCPATH . 'assets/downloads/';
+                    if(!is_dir($upload_dir)){
+                        @mkdir($upload_dir, 0777, true);
+                    }
+                }
 
                 $config['upload_path']   = $upload_dir;
                 $config['allowed_types'] = 'pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar';
@@ -989,7 +997,8 @@ class Website extends CI_Controller {
                 $safe_title = url_title(substr($judul, 0, 45), 'dash', true);
                 $config['file_name']     = time() . '_' . (!empty($safe_title) ? $safe_title : 'dokumen');
 
-                $this->load->library('upload', $config);
+                $this->load->library('upload');
+                $this->upload->initialize($config, true);
                 if(!$this->upload->do_upload('file_download')){
                     $err = $this->upload->display_errors('', '');
                     $this->session->set_flashdata('error', 'Gagal mengunggah file baru: ' . $err);
@@ -1276,9 +1285,15 @@ class Website extends CI_Controller {
             $file_path = 'drive_link';
         } else {
             // Upload file fisik
-            $upload_dir = FCPATH . 'assets/downloads/';
+            $upload_dir = './assets/downloads/';
             if(!is_dir($upload_dir)){
-                mkdir($upload_dir, 0777, true);
+                @mkdir($upload_dir, 0777, true);
+            }
+            if(!is_dir($upload_dir) && defined('FCPATH')){
+                $upload_dir = FCPATH . 'assets/downloads/';
+                if(!is_dir($upload_dir)){
+                    @mkdir($upload_dir, 0777, true);
+                }
             }
 
             $config['upload_path']   = $upload_dir;
@@ -1289,7 +1304,8 @@ class Website extends CI_Controller {
             $safe_title = url_title(substr($judul, 0, 45), 'dash', true);
             $config['file_name'] = time() . '_' . (!empty($safe_title) ? $safe_title : 'dokumen');
 
-            $this->load->library('upload', $config);
+            $this->load->library('upload');
+            $this->upload->initialize($config, true);
 
             if(!$this->upload->do_upload('file_download')){
                 $err = $this->upload->display_errors('', '');
