@@ -994,8 +994,16 @@ class Website extends CI_Controller {
                     $upload_dir = realpath($upload_dir);
                 }
 
+                $raw_ext = strtolower(pathinfo($_FILES['file_download']['name'] ?? '', PATHINFO_EXTENSION));
+                $allowed_exts = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', 'csv', 'txt'];
+                if(!in_array($raw_ext, $allowed_exts)){
+                    $this->session->set_flashdata('error', 'Format berkas (.'.$raw_ext.') tidak diizinkan. Gunakan format PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, atau ZIP.');
+                    redirect('website/zona_integritas?area='.$area_zi);
+                    return;
+                }
+
                 $config['upload_path']   = $upload_dir;
-                $config['allowed_types'] = 'pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar';
+                $config['allowed_types'] = '*';
                 $config['max_size']      = 20480;
                 $safe_title = url_title(substr($judul, 0, 45), 'dash', true);
                 $config['file_name']     = time() . '_' . (!empty($safe_title) ? $safe_title : 'dokumen');
@@ -1303,11 +1311,18 @@ class Website extends CI_Controller {
                 $upload_dir = realpath($upload_dir);
             }
 
+            $raw_ext = strtolower(pathinfo($_FILES['file_download']['name'] ?? '', PATHINFO_EXTENSION));
+            $allowed_exts = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', 'csv', 'txt'];
+            if(!in_array($raw_ext, $allowed_exts)){
+                $this->session->set_flashdata('error', 'Format berkas (.'.$raw_ext.') tidak diizinkan. Gunakan format PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, atau ZIP.');
+                redirect($redirect_target);
+                return;
+            }
+
             $config['upload_path']   = $upload_dir;
-            $config['allowed_types'] = 'pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar';
+            $config['allowed_types'] = '*';
             $config['max_size']      = 20480; // 20MB
             
-            $raw_ext = pathinfo($_FILES['file_download']['name'] ?? '', PATHINFO_EXTENSION);
             $safe_title = url_title(substr($judul, 0, 45), 'dash', true);
             $config['file_name'] = time() . '_' . (!empty($safe_title) ? $safe_title : 'dokumen');
 

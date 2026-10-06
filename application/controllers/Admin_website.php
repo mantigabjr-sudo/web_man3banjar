@@ -726,8 +726,16 @@ public function delete_galeri($id){
                 $upload_dir = realpath($upload_dir);
             }
 
+            $raw_ext = strtolower(pathinfo($_FILES['file_download']['name'] ?? '', PATHINFO_EXTENSION));
+            $allowed_exts = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', 'csv', 'txt'];
+            if(!in_array($raw_ext, $allowed_exts)){
+                $this->session->set_flashdata('error', 'Format berkas (.'.$raw_ext.') tidak diizinkan. Gunakan format PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, atau ZIP.');
+                redirect('admin_website/download');
+                return;
+            }
+
             $config['upload_path']   = $upload_dir;
-            $config['allowed_types'] = 'pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar';
+            $config['allowed_types'] = '*';
             $config['max_size']      = 20480; // 20MB
             $safe_title = url_title(substr($judul, 0, 45), 'dash', true);
             $config['file_name']     = time().'_'.(!empty($safe_title) ? $safe_title : 'dokumen');
@@ -831,8 +839,16 @@ public function delete_galeri($id){
                     $upload_dir = realpath($upload_dir);
                 }
 
+                $raw_ext = strtolower(pathinfo($_FILES['file_download']['name'] ?? '', PATHINFO_EXTENSION));
+                $allowed_exts = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', 'csv', 'txt'];
+                if(!in_array($raw_ext, $allowed_exts)){
+                    $this->session->set_flashdata('error', 'Format berkas (.'.$raw_ext.') tidak diizinkan. Gunakan format PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, atau ZIP.');
+                    redirect('admin_website/download');
+                    return;
+                }
+
                 $config['upload_path']   = $upload_dir;
-                $config['allowed_types'] = 'pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar';
+                $config['allowed_types'] = '*';
                 $config['max_size']      = 20480; // 20MB
                 $safe_title = url_title(substr($judul, 0, 45), 'dash', true);
                 $config['file_name']     = time().'_'.(!empty($safe_title) ? $safe_title : 'dokumen');
