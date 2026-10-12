@@ -54,6 +54,69 @@ $area_names = [
 ];
 ?>
 
+<style>
+/* ═══ DRAG & DROP UPLOAD ZONE (ADMIN) ═══ */
+.admin-dropzone {
+    border: 2px dashed #93c5fd;
+    border-radius: 16px;
+    background: #f8fafc;
+    padding: 24px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    user-select: none;
+}
+
+.admin-dropzone:hover {
+    border-color: #059669;
+    background: #f0fdf4;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.08);
+}
+
+.admin-dropzone.is-dragover {
+    border-color: #059669 !important;
+    background: #ecfdf5 !important;
+    border-style: solid !important;
+    transform: scale(1.01);
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2), 0 8px 24px rgba(5, 150, 105, 0.15) !important;
+}
+
+.admin-dropzone-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: #e0f2fe;
+    color: #0284c7;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin-bottom: 10px;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.admin-dropzone:hover .admin-dropzone-icon,
+.admin-dropzone.is-dragover .admin-dropzone-icon {
+    transform: translateY(-3px) scale(1.08);
+}
+
+.admin-dropzone.is-dragover .admin-dropzone-icon {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.admin-dropzone-file-selected {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+</style>
+
 <div class="content">
     <div class="container-fluid py-4">
 
@@ -394,6 +457,12 @@ $area_names = [
                                     <!-- Aksi Rounded-Pill -->
                                     <td class="text-end pe-4">
                                         <div class="d-inline-flex gap-1">
+                                            <?php if(!$is_drive && in_array(strtolower($ext), ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'jpg', 'jpeg', 'png', 'webp'])): ?>
+                                                <button type="button" class="btn btn-outline-danger btn-sm rounded-pill px-2.5 py-1 fw-bold" title="Pratinjau Dokumen Online" onclick="previewDoc('<?= $file_url ?>', '<?= htmlspecialchars(addslashes($d->judul), ENT_QUOTES, 'UTF-8') ?>', '<?= strtolower($ext) ?>')">
+                                                    <i class="bi bi-eye-fill"></i>
+                                                </button>
+                                            <?php endif; ?>
+
                                             <?php if($is_drive): ?>
                                                 <a href="<?= $file_url ?>" target="_blank" class="btn btn-outline-success btn-sm rounded-pill px-3 py-1 fw-bold" title="Buka Link Google Drive">
                                                     <i class="bi bi-box-arrow-up-right me-1"></i> Buka
@@ -522,9 +591,43 @@ $area_names = [
                             </div>
                         </div>
 
+                        <!-- Pane File dengan Drag and Drop Zone -->
                         <div id="adminFilePane">
-                            <input type="file" name="file_download" id="adminFileInput" class="form-control rounded-3" required>
-                            <div class="form-text small mt-1">Mendukung file: PDF, DOCX, XLSX, PPTX, ZIP (Maks 20MB).</div>
+                            <div class="admin-dropzone" id="adminUploadDropzone" onclick="document.getElementById('adminFileInput').click()">
+                                <input type="file" name="file_download" id="adminFileInput" style="display:none;" required accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.jpg,.jpeg,.png,.webp" onchange="handleAdminFileSelected(this, 'adminUploadDropzone')">
+                                
+                                <div class="admin-dropzone-prompt" id="adminUploadDropzonePrompt">
+                                    <div class="admin-dropzone-icon">
+                                        <i class="bi bi-cloud-arrow-up-fill"></i>
+                                    </div>
+                                    <div class="fw-bold text-dark mb-1" style="font-size: 14.5px;">
+                                        Tarik &amp; Lepas (Drag &amp; Drop) Berkas ke Sini
+                                    </div>
+                                    <div class="small text-muted mb-2">
+                                        atau <span class="text-success text-decoration-underline fw-bold">Klik untuk Memilih Berkas</span> dari komputer
+                                    </div>
+                                    <div class="badge bg-light text-secondary border px-2.5 py-1 font-monospace" style="font-size: 11px;">
+                                        PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, ZIP (Maks. 20MB)
+                                    </div>
+                                </div>
+
+                                <div class="admin-dropzone-file-selected" id="adminUploadDropzoneSelected" style="display:none;">
+                                    <div class="d-flex align-items-center justify-content-between gap-2">
+                                        <div class="d-flex align-items-center gap-2.5 overflow-hidden">
+                                            <div id="adminUploadFileIcon" style="width: 42px; height: 42px; font-size: 20px; border-radius: 12px; flex-shrink: 0; background: #ecfdf5; color: #059669; display: flex; align-items: center; justify-content: center;">
+                                                <i class="bi bi-file-earmark-check-fill"></i>
+                                            </div>
+                                            <div class="text-truncate">
+                                                <strong class="d-block text-dark text-truncate" id="adminUploadFileName" style="font-size: 13.5px;">nama-file.pdf</strong>
+                                                <span class="small text-muted" id="adminUploadFileSize" style="font-size: 11.5px;">1.2 MB</span>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1 flex-shrink-0 fw-semibold" title="Batalkan & Ganti Berkas" onclick="event.stopPropagation(); resetAdminFileDropzone('adminFileInput', 'adminUploadDropzone');">
+                                            <i class="bi bi-x-lg me-1"></i> Ganti
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div id="adminDrivePane" style="display: none;">
@@ -852,6 +955,239 @@ function toggleAdminEditSumber(type) {
         if (inputDrive) inputDrive.setAttribute('required', 'required');
     }
 }
+
+// ═══ DRAG & DROP HANDLER (ADMIN) ═══
+function setupAdminDropzones() {
+    ['adminUploadDropzone', 'adminEditDropzone'].forEach(function(dropzoneId) {
+        const dropzone = document.getElementById(dropzoneId);
+        if (!dropzone) return;
+
+        ['dragenter', 'dragover'].forEach(function(eventName) {
+            dropzone.addEventListener(eventName, function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.add('is-dragover');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(function(eventName) {
+            dropzone.addEventListener(eventName, function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.remove('is-dragover');
+            }, false);
+        });
+
+        dropzone.addEventListener('drop', function(e) {
+            const dt = e.dataTransfer;
+            if (dt && dt.files && dt.files.length > 0) {
+                const input = dropzone.querySelector('input[type="file"]');
+                if (input) {
+                    input.files = dt.files;
+                    handleAdminFileSelected(input, dropzoneId);
+                }
+            }
+        }, false);
+    });
+
+    const addModal = document.getElementById('modalTambahDokumen');
+    if (addModal) {
+        addModal.addEventListener('hidden.bs.modal', function() {
+            resetAdminFileDropzone('adminFileInput', 'adminUploadDropzone');
+        });
+    }
+}
+
+function handleAdminFileSelected(input, dropzoneId) {
+    if (!input || !input.files || input.files.length === 0) return;
+    const file = input.files[0];
+    const isUpload = (dropzoneId === 'adminUploadDropzone');
+
+    const promptEl = document.getElementById(isUpload ? 'adminUploadDropzonePrompt' : 'adminEditDropzonePrompt');
+    const selectedEl = document.getElementById(isUpload ? 'adminUploadDropzoneSelected' : 'adminEditDropzoneSelected');
+    const nameEl = document.getElementById(isUpload ? 'adminUploadFileName' : 'adminEditFileName');
+    const sizeEl = document.getElementById(isUpload ? 'adminUploadFileSize' : 'adminEditFileSize');
+    const iconEl = document.getElementById(isUpload ? 'adminUploadFileIcon' : 'adminEditFileIcon');
+
+    if (nameEl) nameEl.textContent = file.name;
+    if (sizeEl) {
+        let sizeStr = '';
+        if (file.size >= 1048576) {
+            sizeStr = (file.size / 1048576).toFixed(2) + ' MB';
+        } else if (file.size >= 1024) {
+            sizeStr = (file.size / 1024).toFixed(1) + ' KB';
+        } else {
+            sizeStr = file.size + ' B';
+        }
+        sizeEl.textContent = sizeStr;
+    }
+
+    // Icon & Color
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (iconEl) {
+        if (ext === 'pdf') {
+            iconEl.style.background = '#fef2f2';
+            iconEl.style.color = '#dc2626';
+            iconEl.innerHTML = '<i class="bi bi-file-earmark-pdf-fill"></i>';
+        } else if (['doc', 'docx'].includes(ext)) {
+            iconEl.style.background = '#eff6ff';
+            iconEl.style.color = '#2563eb';
+            iconEl.innerHTML = '<i class="bi bi-file-earmark-word-fill"></i>';
+        } else if (['xls', 'xlsx'].includes(ext)) {
+            iconEl.style.background = '#ecfdf5';
+            iconEl.style.color = '#059669';
+            iconEl.innerHTML = '<i class="bi bi-file-earmark-excel-fill"></i>';
+        } else if (['ppt', 'pptx'].includes(ext)) {
+            iconEl.style.background = '#fff7ed';
+            iconEl.style.color = '#ea580c';
+            iconEl.innerHTML = '<i class="bi bi-file-earmark-ppt-fill"></i>';
+        } else if (['zip', 'rar'].includes(ext)) {
+            iconEl.style.background = '#f5f3ff';
+            iconEl.style.color = '#7c3aed';
+            iconEl.innerHTML = '<i class="bi bi-file-earmark-zip-fill"></i>';
+        } else {
+            iconEl.style.background = '#f1f5f9';
+            iconEl.style.color = '#475569';
+            iconEl.innerHTML = '<i class="bi bi-file-earmark-fill"></i>';
+        }
+    }
+
+    if (promptEl) promptEl.style.display = 'none';
+    if (selectedEl) selectedEl.style.display = 'block';
+
+    // Auto-fill Judul jika kosong pada Modal Tambah
+    if (isUpload) {
+        const inputJudul = document.querySelector('#modalTambahDokumen input[name="judul"]');
+        if (inputJudul && !inputJudul.value.trim()) {
+            const cleanName = file.name.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ').trim();
+            inputJudul.value = cleanName;
+        }
+    }
+}
+
+function resetAdminFileDropzone(inputId, dropzoneId) {
+    const input = document.getElementById(inputId);
+    if (input) input.value = '';
+
+    const isUpload = (dropzoneId === 'adminUploadDropzone');
+    const promptEl = document.getElementById(isUpload ? 'adminUploadDropzonePrompt' : 'adminEditDropzonePrompt');
+    const selectedEl = document.getElementById(isUpload ? 'adminUploadDropzoneSelected' : 'adminEditDropzoneSelected');
+
+    if (promptEl) promptEl.style.display = 'block';
+    if (selectedEl) selectedEl.style.display = 'none';
+}
+
+// ═══ MULTI-FORMAT DOCUMENT VIEWER (ADMIN) ═══
+let currentAdminPreviewUrl = '';
+let currentAdminPreviewExt = '';
+
+function previewDoc(fileUrl, title, ext) {
+    ext = (ext || 'pdf').toLowerCase().trim();
+    currentAdminPreviewUrl = fileUrl;
+    currentAdminPreviewExt = ext;
+
+    const modalEl = document.getElementById('modalPreviewDocAdmin');
+    const labelEl = document.getElementById('modalPreviewDocAdminLabel');
+    const badgeEl = document.getElementById('adminPreviewDocBadge');
+    const iframeEl = document.getElementById('iframeDocViewerAdmin');
+    const imgViewer = document.getElementById('adminPreviewImageViewer');
+    const imgTag = document.getElementById('adminPreviewImageTag');
+    const btnDownload = document.getElementById('btnAdminDownloadDirect');
+    const btnDownloadLabel = document.getElementById('btnAdminDownloadLabel');
+    const btnOpenTab = document.getElementById('btnAdminPreviewOpenTab');
+    const btnGroupSwitch = document.getElementById('btnAdminViewerSwitch');
+    const spinner = document.getElementById('adminPreviewLoadingSpinner');
+
+    if (labelEl) labelEl.textContent = title || 'Pratinjau Dokumen';
+    if (btnDownload) btnDownload.href = fileUrl;
+    if (btnOpenTab) btnOpenTab.href = fileUrl;
+    if (btnDownloadLabel) btnDownloadLabel.textContent = 'Unduh ' + ext.toUpperCase();
+
+    if (badgeEl) {
+        badgeEl.textContent = ext.toUpperCase();
+        if (ext === 'pdf') {
+            badgeEl.className = 'badge bg-danger-subtle text-danger px-2.5 py-1 font-monospace';
+        } else if (['doc', 'docx'].includes(ext)) {
+            badgeEl.className = 'badge bg-primary-subtle text-primary px-2.5 py-1 font-monospace';
+        } else if (['xls', 'xlsx'].includes(ext)) {
+            badgeEl.className = 'badge bg-success-subtle text-success px-2.5 py-1 font-monospace';
+        } else if (['ppt', 'pptx'].includes(ext)) {
+            badgeEl.className = 'badge bg-warning-subtle text-warning px-2.5 py-1 font-monospace';
+        } else {
+            badgeEl.className = 'badge bg-info-subtle text-info px-2.5 py-1 font-monospace';
+        }
+    }
+
+    if (['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext)) {
+        if (iframeEl) iframeEl.style.display = 'none';
+        if (imgViewer) imgViewer.style.display = 'flex';
+        if (imgTag) imgTag.src = fileUrl;
+        if (btnGroupSwitch) btnGroupSwitch.style.display = 'none';
+        if (spinner) spinner.style.display = 'none';
+    } else {
+        if (imgViewer) imgViewer.style.display = 'none';
+        if (iframeEl) iframeEl.style.display = 'block';
+
+        if (ext === 'pdf') {
+            if (btnGroupSwitch) btnGroupSwitch.style.display = 'none';
+            if (spinner) spinner.style.display = 'none';
+            iframeEl.src = fileUrl;
+        } else if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext)) {
+            if (btnGroupSwitch) btnGroupSwitch.style.display = 'inline-flex';
+            switchAdminViewerEngine('office');
+        } else {
+            if (btnGroupSwitch) btnGroupSwitch.style.display = 'none';
+            iframeEl.src = fileUrl;
+        }
+    }
+
+    const bsModal = new bootstrap.Modal(modalEl);
+    bsModal.show();
+}
+
+function switchAdminViewerEngine(engine) {
+    const iframeEl = document.getElementById('iframeDocViewerAdmin');
+    const spinner = document.getElementById('adminPreviewLoadingSpinner');
+    const loadingText = document.getElementById('adminPreviewLoadingText');
+    const btnOffice = document.getElementById('btnAdminViewerOffice');
+    const btnGoogle = document.getElementById('btnAdminViewerGoogle');
+
+    if (!iframeEl || !currentAdminPreviewUrl) return;
+
+    if (spinner) {
+        spinner.style.display = 'block';
+        if (loadingText) {
+            loadingText.textContent = 'Menghubungkan ke ' + (engine === 'office' ? 'Microsoft Office Online' : 'Google Docs') + ' Viewer...';
+        }
+    }
+
+    let fullUrl = currentAdminPreviewUrl;
+    if (fullUrl.startsWith('/') || !fullUrl.startsWith('http')) {
+        fullUrl = window.location.origin + (fullUrl.startsWith('/') ? '' : '/') + fullUrl;
+    }
+
+    if (engine === 'office') {
+        if (btnOffice) btnOffice.classList.add('active');
+        if (btnGoogle) btnGoogle.classList.remove('active');
+        iframeEl.src = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(fullUrl);
+    } else {
+        if (btnGoogle) btnGoogle.classList.add('active');
+        if (btnOffice) btnOffice.classList.remove('active');
+        iframeEl.src = 'https://docs.google.com/viewer?url=' + encodeURIComponent(fullUrl) + '&embedded=true';
+    }
+
+    iframeEl.onload = function() {
+        if (spinner) spinner.style.display = 'none';
+    };
+}
+
+function previewPdf(pdfUrl, title) {
+    previewDoc(pdfUrl, title, 'pdf');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    setupAdminDropzones();
+});
 </script>
 
 <!-- ═══ MODAL EDIT DOKUMEN (ADMIN) ═══ -->
@@ -950,8 +1286,38 @@ function toggleAdminEditSumber(type) {
                         </div>
 
                         <div id="editAdminFilePane">
-                            <input type="file" name="file_download" id="editAdminFileInput" class="form-control rounded-3">
-                            <div class="form-text small mt-1 text-muted" id="editAdminFileNote">Biarkan kosong jika tidak ingin mengganti file.</div>
+                            <div class="admin-dropzone py-3" id="adminEditDropzone" onclick="document.getElementById('editAdminFileInput').click()">
+                                <input type="file" name="file_download" id="editAdminFileInput" style="display:none;" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.jpg,.jpeg,.png,.webp" onchange="handleAdminFileSelected(this, 'adminEditDropzone')">
+                                
+                                <div class="admin-dropzone-prompt" id="adminEditDropzonePrompt">
+                                    <div class="admin-dropzone-icon" style="width:42px; height:42px; font-size:20px; margin-bottom:6px;">
+                                        <i class="bi bi-arrow-repeat"></i>
+                                    </div>
+                                    <div class="fw-bold text-dark mb-1" style="font-size: 13.5px;">
+                                        Tarik Berkas Pengganti ke Sini atau <span class="text-primary text-decoration-underline fw-semibold">Pilih File Baru</span>
+                                    </div>
+                                    <div class="small text-muted" id="editAdminFileNote" style="font-size: 11.5px;">
+                                        Biarkan kosong jika tidak ingin mengganti file lama.
+                                    </div>
+                                </div>
+
+                                <div class="admin-dropzone-file-selected" id="adminEditDropzoneSelected" style="display:none;">
+                                    <div class="d-flex align-items-center justify-content-between gap-2">
+                                        <div class="d-flex align-items-center gap-2.5 overflow-hidden">
+                                            <div id="adminEditFileIcon" style="width: 38px; height: 38px; font-size: 18px; border-radius: 10px; flex-shrink: 0; background: #ecfdf5; color: #059669; display: flex; align-items: center; justify-content: center;">
+                                                <i class="bi bi-file-earmark-check-fill"></i>
+                                            </div>
+                                            <div class="text-truncate">
+                                                <strong class="d-block text-dark text-truncate" id="adminEditFileName" style="font-size: 13.5px;">file-baru.pdf</strong>
+                                                <span class="small text-muted" id="adminEditFileSize" style="font-size: 11.5px;">1.2 MB</span>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1 flex-shrink-0" title="Batal Ganti" onclick="event.stopPropagation(); resetAdminFileDropzone('editAdminFileInput', 'adminEditDropzone');">
+                                            <i class="bi bi-x-lg me-1"></i> Batal
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div id="editAdminDrivePane" style="display: none;">
@@ -970,6 +1336,50 @@ function toggleAdminEditSumber(type) {
                 </div>
             </form>
 
+        </div>
+    </div>
+</div>
+
+<!-- ═══ MODAL PRATINJAU DOKUMEN (ADMIN) ═══ -->
+<div class="modal fade" id="modalPreviewDocAdmin" tabindex="-1" aria-labelledby="modalPreviewDocAdminLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen-md-down modal-xl modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden" style="height: 90vh;">
+            <div class="modal-header border-0 bg-dark text-white py-2.5 px-4 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2 overflow-hidden me-2">
+                    <span id="adminPreviewDocBadge" class="badge bg-danger-subtle text-danger px-2.5 py-1 font-monospace" style="font-size: 11px;">PDF</span>
+                    <h6 class="modal-title fw-semibold text-truncate mb-0" id="modalPreviewDocAdminLabel" style="font-size: 14.5px;">Pratinjau Dokumen</h6>
+                </div>
+                <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                    <div class="btn-group btn-group-sm" id="btnAdminViewerSwitch" style="display:none;">
+                        <button type="button" class="btn btn-outline-light active py-1 px-2.5" id="btnAdminViewerOffice" onclick="switchAdminViewerEngine('office')">
+                            <i class="bi bi-microsoft me-1"></i> Office
+                        </button>
+                        <button type="button" class="btn btn-outline-light py-1 px-2.5" id="btnAdminViewerGoogle" onclick="switchAdminViewerEngine('google')">
+                            <i class="bi bi-google me-1"></i> Google Docs
+                        </button>
+                    </div>
+                    <a href="#" id="btnAdminDownloadDirect" download class="btn btn-sm btn-success rounded-pill px-3 fw-bold">
+                        <i class="bi bi-download me-1"></i> <span id="btnAdminDownloadLabel">Unduh</span>
+                    </a>
+                    <a href="#" id="btnAdminPreviewOpenTab" target="_blank" class="btn btn-sm btn-outline-light rounded-pill px-2.5" title="Buka di Tab Baru">
+                        <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="modal-body p-0 position-relative" style="height: calc(100% - 56px); background: #0f172a;">
+                <div id="adminPreviewLoadingSpinner" class="position-absolute top-50 start-50 translate-middle text-center p-4 bg-white rounded-4 shadow-sm" style="display:none; z-index: 5; max-width: 340px;">
+                    <div class="spinner-border text-primary mb-2" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div class="small text-dark fw-bold" id="adminPreviewLoadingText">Menghubungkan ke Viewer Dokumen...</div>
+                    <div class="small text-muted mt-1" style="font-size: 11px;">Memuat pratinjau online tanpa mengunduh berkas.</div>
+                </div>
+                <iframe id="iframeDocViewerAdmin" src="" style="width:100%; height:100%; border:none; position:relative; z-index:2; background:#ffffff;"></iframe>
+                <div id="adminPreviewImageViewer" style="display:none; width:100%; height:100%; overflow:auto; text-align:center; padding:20px; align-items:center; justify-content:center; background:#0f172a;">
+                    <img id="adminPreviewImageTag" src="" alt="Pratinjau Dokumen" style="max-width:100%; max-height:100%; object-fit:contain; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+                </div>
+            </div>
         </div>
     </div>
 </div>

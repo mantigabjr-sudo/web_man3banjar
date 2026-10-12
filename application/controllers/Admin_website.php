@@ -727,9 +727,9 @@ public function delete_galeri($id){
             }
 
             $raw_ext = strtolower(pathinfo($_FILES['file_download']['name'] ?? '', PATHINFO_EXTENSION));
-            $allowed_exts = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', 'csv', 'txt'];
+            $allowed_exts = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', 'csv', 'txt', 'jpg', 'jpeg', 'png', 'webp'];
             if(!in_array($raw_ext, $allowed_exts)){
-                $this->session->set_flashdata('error', 'Format berkas (.'.$raw_ext.') tidak diizinkan. Gunakan format PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, atau ZIP.');
+                $this->session->set_flashdata('error', 'Format berkas (.'.$raw_ext.') tidak diizinkan. Gunakan format PDF, Word, Excel, PPT, ZIP, atau Gambar (JPG/PNG).');
                 redirect('admin_website/download');
                 return;
             }
@@ -841,9 +841,9 @@ public function delete_galeri($id){
                 }
 
                 $raw_ext = strtolower(pathinfo($_FILES['file_download']['name'] ?? '', PATHINFO_EXTENSION));
-                $allowed_exts = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', 'csv', 'txt'];
+                $allowed_exts = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', 'csv', 'txt', 'jpg', 'jpeg', 'png', 'webp'];
                 if(!in_array($raw_ext, $allowed_exts)){
-                    $this->session->set_flashdata('error', 'Format berkas (.'.$raw_ext.') tidak diizinkan. Gunakan format PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, atau ZIP.');
+                    $this->session->set_flashdata('error', 'Format berkas (.'.$raw_ext.') tidak diizinkan. Gunakan format PDF, Word, Excel, PPT, ZIP, atau Gambar (JPG/PNG).');
                     redirect('admin_website/download');
                     return;
                 }
