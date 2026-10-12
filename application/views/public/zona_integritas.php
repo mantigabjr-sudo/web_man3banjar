@@ -78,7 +78,14 @@ if(!function_exists('get_zi_file_meta')){
                 $info['color']       = '#7c3aed';
                 $info['bg']          = '#f5f3ff';
                 $info['badge_class'] = 'bg-purple-subtle text-purple';
+            } elseif(in_array($ext, ['jpg','jpeg','png','webp'])){
+                $info['icon']        = 'bi-file-earmark-image-fill';
+                $info['color']       = '#0284c7';
+                $info['bg']          = '#e0f2fe';
+                $info['badge_class'] = 'bg-info-subtle text-info';
             }
+
+            $info['can_preview'] = in_array($ext, ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'jpg', 'jpeg', 'png', 'webp']);
         }
 
         return $info;
@@ -676,8 +683,8 @@ $logged_user_name = $this->session->userdata('username') ?? '';
 
                     <div>
                         <div class="d-flex gap-2 mt-3 pt-2 border-top align-items-center">
-                            <?php if($file_meta['is_pdf']): ?>
-                                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill flex-grow-1 fw-bold" onclick="previewPdf('<?= $file_meta['url'] ?>', '<?= htmlspecialchars($d->judul, ENT_QUOTES, 'UTF-8') ?>')">
+                            <?php if(!empty($file_meta['can_preview'])): ?>
+                                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill flex-grow-1 fw-bold" onclick="previewDoc('<?= $file_meta['url'] ?>', '<?= htmlspecialchars(addslashes($d->judul), ENT_QUOTES, 'UTF-8') ?>', '<?= $file_meta['ext'] ?>')">
                                     <i class="bi bi-eye-fill me-1"></i> Pratinjau
                                 </button>
                             <?php endif; ?>
@@ -797,8 +804,8 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="d-inline-flex gap-1">
-                                        <?php if($file_meta['is_pdf']): ?>
-                                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1 fw-bold" onclick="previewPdf('<?= $file_meta['url'] ?>', '<?= htmlspecialchars($d->judul, ENT_QUOTES, 'UTF-8') ?>')">
+                                        <?php if(!empty($file_meta['can_preview'])): ?>
+                                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1 fw-bold" onclick="previewDoc('<?= $file_meta['url'] ?>', '<?= htmlspecialchars(addslashes($d->judul), ENT_QUOTES, 'UTF-8') ?>', '<?= $file_meta['ext'] ?>')">
                                                 <i class="bi bi-eye"></i>
                                             </button>
                                         <?php endif; ?>
@@ -1000,21 +1007,50 @@ $logged_user_name = $this->session->userdata('username') ?? '';
     </div>
 </div>
 
-<!-- ═══ 5. MODAL PRATINJAU PDF ═══ -->
+<!-- ═══ 5. MODAL PRATINJAU DOKUMEN (PDF, WORD, EXCEL, PPT, FOTO) ═══ -->
 <div class="modal fade" id="modalPreviewPdfZi" tabindex="-1" aria-labelledby="modalPreviewPdfZiLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen-md-down modal-xl modal-dialog-centered">
-        <div class="modal-content rounded-4 border-0 shadow-lg" style="height: 90vh;">
-            <div class="modal-header border-0 bg-dark text-white py-2 px-4">
-                <h6 class="modal-title fw-semibold text-truncate me-2" id="modalPreviewPdfZiLabel">Pratinjau Eviden PDF</h6>
-                <div class="d-flex align-items-center gap-2">
+        <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden" style="height: 90vh;">
+            <div class="modal-header border-0 bg-dark text-white py-2.5 px-4 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2 overflow-hidden me-2">
+                    <span id="previewDocBadge" class="badge bg-danger-subtle text-danger px-2.5 py-1 font-monospace" style="font-size: 11px;">PDF</span>
+                    <h6 class="modal-title fw-semibold text-truncate mb-0" id="modalPreviewPdfZiLabel" style="font-size: 14.5px;">Pratinjau Eviden</h6>
+                </div>
+                <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                    <div class="btn-group btn-group-sm" id="btnGroupViewerSwitch" style="display:none;">
+                        <button type="button" class="btn btn-outline-light active py-1 px-2.5" id="btnViewerOffice" onclick="switchViewerEngine('office')">
+                            <i class="bi bi-microsoft me-1"></i> Office
+                        </button>
+                        <button type="button" class="btn btn-outline-light py-1 px-2.5" id="btnViewerGoogle" onclick="switchViewerEngine('google')">
+                            <i class="bi bi-google me-1"></i> Google Docs
+                        </button>
+                    </div>
                     <a href="#" id="btnPdfDownloadDirectZi" download class="btn btn-sm btn-success rounded-pill px-3 fw-bold">
-                        <i class="bi bi-download me-1"></i> Unduh PDF
+                        <i class="bi bi-download me-1"></i> <span id="btnPdfDownloadLabel">Unduh</span>
+                    </a>
+                    <a href="#" id="btnPreviewOpenTab" target="_blank" class="btn btn-sm btn-outline-light rounded-pill px-2.5" title="Buka di Tab Baru">
+                        <i class="bi bi-box-arrow-up-right"></i>
                     </a>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
             </div>
-            <div class="modal-body p-0" style="height: calc(100% - 56px);">
-                <iframe id="iframePdfViewerZi" src="" style="width:100%; height:100%; border:none;"></iframe>
+            <div class="modal-body p-0 position-relative" style="height: calc(100% - 56px); background: #0f172a;">
+                <!-- Loading spinner saat render Office/Google viewer -->
+                <div id="previewLoadingSpinner" class="position-absolute top-50 start-50 translate-middle text-center p-4 bg-white rounded-4 shadow-sm" style="display:none; z-index: 5; max-width: 340px;">
+                    <div class="spinner-border text-primary mb-2" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div class="small text-dark fw-bold" id="previewLoadingText">Menghubungkan ke Viewer Dokumen...</div>
+                    <div class="small text-muted mt-1" style="font-size: 11px;">Memuat pratinjau online tanpa mengunduh berkas.</div>
+                </div>
+
+                <!-- Iframe Viewer untuk PDF & Office Embed -->
+                <iframe id="iframePdfViewerZi" src="" style="width:100%; height:100%; border:none; position:relative; z-index:2; background:#ffffff;"></iframe>
+
+                <!-- Image Viewer untuk foto eviden -->
+                <div id="previewImageViewer" style="display:none; width:100%; height:100%; overflow:auto; text-align:center; padding:20px; align-items:center; justify-content:center; background:#0f172a;">
+                    <img id="previewImageTag" src="" alt="Pratinjau Eviden" style="max-width:100%; max-height:100%; object-fit:contain; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+                </div>
             </div>
         </div>
     </div>
@@ -1294,18 +1330,114 @@ function resetZiFileDropzone(inputId, dropzoneId) {
     if (selectedEl) selectedEl.style.display = 'none';
 }
 
-function previewPdf(pdfUrl, title) {
+let currentPreviewUrl = '';
+let currentPreviewExt = '';
+
+function previewDoc(fileUrl, title, ext) {
+    ext = (ext || 'pdf').toLowerCase().trim();
+    currentPreviewUrl = fileUrl;
+    currentPreviewExt = ext;
+
     const modalEl = document.getElementById('modalPreviewPdfZi');
     const labelEl = document.getElementById('modalPreviewPdfZiLabel');
+    const badgeEl = document.getElementById('previewDocBadge');
     const iframeEl = document.getElementById('iframePdfViewerZi');
+    const imgViewer = document.getElementById('previewImageViewer');
+    const imgTag = document.getElementById('previewImageTag');
     const btnDownload = document.getElementById('btnPdfDownloadDirectZi');
+    const btnDownloadLabel = document.getElementById('btnPdfDownloadLabel');
+    const btnOpenTab = document.getElementById('btnPreviewOpenTab');
+    const btnGroupSwitch = document.getElementById('btnGroupViewerSwitch');
+    const spinner = document.getElementById('previewLoadingSpinner');
 
-    labelEl.textContent = title;
-    iframeEl.src = pdfUrl;
-    btnDownload.href = pdfUrl;
+    if (labelEl) labelEl.textContent = title || 'Pratinjau Eviden';
+    if (btnDownload) btnDownload.href = fileUrl;
+    if (btnOpenTab) btnOpenTab.href = fileUrl;
+    if (btnDownloadLabel) btnDownloadLabel.textContent = 'Unduh ' + ext.toUpperCase();
+
+    // Sesuaikan badge format berkas
+    if (badgeEl) {
+        badgeEl.textContent = ext.toUpperCase();
+        if (ext === 'pdf') {
+            badgeEl.className = 'badge bg-danger-subtle text-danger px-2.5 py-1 font-monospace';
+        } else if (['doc', 'docx'].includes(ext)) {
+            badgeEl.className = 'badge bg-primary-subtle text-primary px-2.5 py-1 font-monospace';
+        } else if (['xls', 'xlsx'].includes(ext)) {
+            badgeEl.className = 'badge bg-success-subtle text-success px-2.5 py-1 font-monospace';
+        } else if (['ppt', 'pptx'].includes(ext)) {
+            badgeEl.className = 'badge bg-warning-subtle text-warning px-2.5 py-1 font-monospace';
+        } else {
+            badgeEl.className = 'badge bg-info-subtle text-info px-2.5 py-1 font-monospace';
+        }
+    }
+
+    // Tampilkan sesuai tipe berkas
+    if (['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext)) {
+        if (iframeEl) iframeEl.style.display = 'none';
+        if (imgViewer) imgViewer.style.display = 'flex';
+        if (imgTag) imgTag.src = fileUrl;
+        if (btnGroupSwitch) btnGroupSwitch.style.display = 'none';
+        if (spinner) spinner.style.display = 'none';
+    } else {
+        if (imgViewer) imgViewer.style.display = 'none';
+        if (iframeEl) iframeEl.style.display = 'block';
+
+        if (ext === 'pdf') {
+            if (btnGroupSwitch) btnGroupSwitch.style.display = 'none';
+            if (spinner) spinner.style.display = 'none';
+            iframeEl.src = fileUrl;
+        } else if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext)) {
+            if (btnGroupSwitch) btnGroupSwitch.style.display = 'inline-flex';
+            switchViewerEngine('office');
+        } else {
+            if (btnGroupSwitch) btnGroupSwitch.style.display = 'none';
+            iframeEl.src = fileUrl;
+        }
+    }
 
     const bsModal = new bootstrap.Modal(modalEl);
     bsModal.show();
+}
+
+function switchViewerEngine(engine) {
+    const iframeEl = document.getElementById('iframePdfViewerZi');
+    const spinner = document.getElementById('previewLoadingSpinner');
+    const loadingText = document.getElementById('previewLoadingText');
+    const btnOffice = document.getElementById('btnViewerOffice');
+    const btnGoogle = document.getElementById('btnViewerGoogle');
+
+    if (!iframeEl || !currentPreviewUrl) return;
+
+    if (spinner) {
+        spinner.style.display = 'block';
+        if (loadingText) {
+            loadingText.textContent = 'Menghubungkan ke ' + (engine === 'office' ? 'Microsoft Office Online' : 'Google Docs') + ' Viewer...';
+        }
+    }
+
+    // Pastikan URL absolut lengkap untuk viewer pihak ketiga
+    let fullUrl = currentPreviewUrl;
+    if (fullUrl.startsWith('/') || !fullUrl.startsWith('http')) {
+        fullUrl = window.location.origin + (fullUrl.startsWith('/') ? '' : '/') + fullUrl;
+    }
+
+    if (engine === 'office') {
+        if (btnOffice) btnOffice.classList.add('active');
+        if (btnGoogle) btnGoogle.classList.remove('active');
+        iframeEl.src = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(fullUrl);
+    } else {
+        if (btnGoogle) btnGoogle.classList.add('active');
+        if (btnOffice) btnOffice.classList.remove('active');
+        iframeEl.src = 'https://docs.google.com/viewer?url=' + encodeURIComponent(fullUrl) + '&embedded=true';
+    }
+
+    iframeEl.onload = function() {
+        if (spinner) spinner.style.display = 'none';
+    };
+}
+
+function previewPdf(pdfUrl, title) {
+    previewDoc(pdfUrl, title, 'pdf');
 }
 
 function openEditModalZi(doc) {
