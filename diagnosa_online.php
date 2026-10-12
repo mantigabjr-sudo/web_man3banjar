@@ -10,6 +10,7 @@ header('Content-Type: text/plain; charset=utf-8');
 echo "=== DIAGNOSA SERVER ONLINE ===\n";
 
 // 1. Cek koneksi DB lokal server
+define('BASEPATH', true);
 require_once __DIR__ . '/application/config/database.php';
 $db_conf = $db['default'];
 $m = new mysqli($db_conf['hostname'], $db_conf['username'], $db_conf['password'], $db_conf['database']);
