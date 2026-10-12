@@ -632,8 +632,10 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                 <?php 
                 $file_meta = get_zi_file_meta($d);
                 $area = strtolower($d->area_zi ?? 'area1');
+                $init_hide = ($active_area === 'all' && $area === 'shared');
                 ?>
                 <div class="zi-file-card zi-item-row"
+                     <?= $init_hide ? 'style="display: none;"' : '' ?>
                      data-area="<?= $area ?>"
                      data-ext="<?= strtolower($file_meta['ext']) ?>"
                      data-title="<?= htmlspecialchars(strtolower($d->judul ?? ''), ENT_QUOTES, 'UTF-8') ?>"
@@ -751,8 +753,10 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                             <?php 
                             $file_meta = get_zi_file_meta($d);
                             $area = strtolower($d->area_zi ?? 'area1');
+                            $init_hide = ($active_area === 'all' && $area === 'shared');
                             ?>
                             <tr class="zi-item-row"
+                                <?= $init_hide ? 'style="display: none;"' : '' ?>
                                 data-area="<?= $area ?>"
                                 data-ext="<?= strtolower($file_meta['ext']) ?>"
                                 data-title="<?= htmlspecialchars(strtolower($d->judul ?? ''), ENT_QUOTES, 'UTF-8') ?>"
@@ -1131,7 +1135,13 @@ function applyFilters() {
         const title = (row.getAttribute('data-title') || '').toLowerCase().trim();
         const pengunggah = (row.getAttribute('data-pengunggah') || '').toLowerCase().trim();
 
-        let matchArea = (currentArea === 'all' || area === currentArea);
+        // Dokumen Bersama (shared) dipisahkan dari Semua Eviden Pokja I - VI agar tidak dobel saat disalin ke Pokja
+        let matchArea = false;
+        if (currentArea === 'all') {
+            matchArea = (area !== 'shared'); // Tab 'Semua Eviden' murni menampilkan eviden definitif Pokja I s/d Pokja VI
+        } else {
+            matchArea = (area === currentArea); // Tab spesifik (misal 'shared', 'area1', dst)
+        }
         let matchSearch = (!currentSearch || title.includes(currentSearch) || pengunggah.includes(currentSearch));
         let matchType = (currentType === 'all' || 
                         (currentType === 'pdf' && ext === 'pdf') ||

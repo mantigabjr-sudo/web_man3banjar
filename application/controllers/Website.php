@@ -852,10 +852,10 @@ class Website extends CI_Controller {
             ->get('website_download')
             ->result();
 
-        // Hitung statistik khusus 6 Area ZI + Dokumen Bersama
+        // Hitung statistik khusus 6 Area ZI + Dokumen Bersama (Dokumen Bersama dipisahkan dari total eviden 6 Pokja)
         $stats = [
-            'total'  => count($data['downloads']),
-            'shared' => 0,
+            'total'  => 0, // Hanya menghitung eviden definitif Pokja I s/d Pokja VI
+            'shared' => 0, // Bank Dokumen Bersama / Induk ZI terpisah
             'area1'  => 0,
             'area2'  => 0,
             'area3'  => 0,
@@ -868,6 +868,9 @@ class Website extends CI_Controller {
             $area = strtolower($row->area_zi ?? '');
             if(isset($stats[$area])){
                 $stats[$area]++;
+                if($area !== 'shared'){
+                    $stats['total']++;
+                }
             }
         }
         $data['zi_stats'] = $stats;
