@@ -346,6 +346,67 @@ $logged_user_name = $this->session->userdata('username') ?? '';
     align-items: center;
     padding: 2px 0;
 }
+
+/* ═══ DRAG & DROP UPLOAD ZONE ═══ */
+.zi-dropzone {
+    border: 2px dashed #93c5fd;
+    border-radius: 16px;
+    background: #f8fafc;
+    padding: 24px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    user-select: none;
+}
+
+.zi-dropzone:hover {
+    border-color: #059669;
+    background: #f0fdf4;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.08);
+}
+
+.zi-dropzone.is-dragover {
+    border-color: #059669 !important;
+    background: #ecfdf5 !important;
+    border-style: solid !important;
+    transform: scale(1.01);
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2), 0 8px 24px rgba(5, 150, 105, 0.15) !important;
+}
+
+.zi-dropzone-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: #e0f2fe;
+    color: #0284c7;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin-bottom: 10px;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.zi-dropzone:hover .zi-dropzone-icon,
+.zi-dropzone.is-dragover .zi-dropzone-icon {
+    transform: translateY(-3px) scale(1.08);
+}
+
+.zi-dropzone.is-dragover .zi-dropzone-icon {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.zi-dropzone-file-selected {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
 </style>
 
 <!-- ═══ 1. HERO HEADER ZONA INTEGRITAS ═══ -->
@@ -877,11 +938,42 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                             </button>
                         </div>
 
-                        <!-- Pane File -->
+                        <!-- Pane File dengan Drag and Drop Zone -->
                         <div id="paneZiFile">
-                            <input type="file" name="file_download" id="inputZiFile" class="form-control rounded-3" required accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar">
-                            <div class="form-text small text-muted mt-1">
-                                <i class="bi bi-info-circle me-1"></i> Format: <strong>PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, ZIP, RAR</strong> (Maksimal 20MB).
+                            <div class="zi-dropzone" id="ziUploadDropzone" onclick="document.getElementById('inputZiFile').click()">
+                                <input type="file" name="file_download" id="inputZiFile" style="display:none;" required accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar" onchange="handleZiFileSelected(this, 'ziUploadDropzone')">
+                                
+                                <div class="zi-dropzone-prompt" id="ziUploadDropzonePrompt">
+                                    <div class="zi-dropzone-icon">
+                                        <i class="bi bi-cloud-arrow-up-fill"></i>
+                                    </div>
+                                    <div class="fw-bold text-dark mb-1" style="font-size: 14.5px;">
+                                        Tarik &amp; Lepas (Drag &amp; Drop) Berkas ke Sini
+                                    </div>
+                                    <div class="small text-muted mb-2">
+                                        atau <span class="text-success text-decoration-underline fw-bold">Klik untuk Memilih Berkas</span> dari komputer
+                                    </div>
+                                    <div class="badge bg-light text-secondary border px-2.5 py-1 font-monospace" style="font-size: 11px;">
+                                        PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, ZIP, RAR (Maks. 20MB)
+                                    </div>
+                                </div>
+
+                                <div class="zi-dropzone-file-selected" id="ziUploadDropzoneSelected" style="display:none;">
+                                    <div class="d-flex align-items-center justify-content-between gap-2">
+                                        <div class="d-flex align-items-center gap-2.5 overflow-hidden">
+                                            <div id="ziUploadFileIcon" class="file-type-iconbox" style="width: 42px; height: 42px; font-size: 20px; border-radius: 12px; flex-shrink: 0; background: #ecfdf5; color: #059669;">
+                                                <i class="bi bi-file-earmark-check-fill"></i>
+                                            </div>
+                                            <div class="text-truncate">
+                                                <strong class="d-block text-dark text-truncate" id="ziUploadFileName" style="font-size: 13.5px;">nama-file.pdf</strong>
+                                                <span class="small text-muted" id="ziUploadFileSize" style="font-size: 11.5px;">1.2 MB</span>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1 flex-shrink-0 fw-semibold" title="Batalkan & Ganti Berkas" onclick="event.stopPropagation(); resetZiFileDropzone('inputZiFile', 'ziUploadDropzone');">
+                                            <i class="bi bi-x-lg me-1"></i> Ganti
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -1081,9 +1173,126 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Inisialisasi Drag and Drop Dropzone
+    setupZiDropzones();
+
     // Jalankan filter awal sesuai URL atau default
     applyFilters();
 });
+
+// ═══ LOGIKA DRAG & DROP UPLOAD EVIDEN ZI ═══
+function setupZiDropzones() {
+    ['ziUploadDropzone', 'ziEditDropzone'].forEach(function(dropzoneId) {
+        const dropzone = document.getElementById(dropzoneId);
+        if (!dropzone) return;
+
+        ['dragenter', 'dragover'].forEach(function(eventName) {
+            dropzone.addEventListener(eventName, function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.add('is-dragover');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(function(eventName) {
+            dropzone.addEventListener(eventName, function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.remove('is-dragover');
+            }, false);
+        });
+
+        dropzone.addEventListener('drop', function(e) {
+            const dt = e.dataTransfer;
+            if (dt && dt.files && dt.files.length > 0) {
+                const input = dropzone.querySelector('input[type="file"]');
+                if (input) {
+                    input.files = dt.files;
+                    handleZiFileSelected(input, dropzoneId);
+                }
+            }
+        }, false);
+    });
+}
+
+function handleZiFileSelected(input, dropzoneId) {
+    if (!input || !input.files || input.files.length === 0) return;
+    const file = input.files[0];
+    const isUpload = (dropzoneId === 'ziUploadDropzone');
+    
+    const promptEl = document.getElementById(isUpload ? 'ziUploadDropzonePrompt' : 'ziEditDropzonePrompt');
+    const selectedEl = document.getElementById(isUpload ? 'ziUploadDropzoneSelected' : 'ziEditDropzoneSelected');
+    const nameEl = document.getElementById(isUpload ? 'ziUploadFileName' : 'ziEditFileName');
+    const sizeEl = document.getElementById(isUpload ? 'ziUploadFileSize' : 'ziEditFileSize');
+    const iconEl = document.getElementById(isUpload ? 'ziUploadFileIcon' : 'ziEditFileIcon');
+
+    if (nameEl) nameEl.textContent = file.name;
+    if (sizeEl) {
+        let sizeStr = '';
+        if (file.size >= 1048576) {
+            sizeStr = (file.size / 1048576).toFixed(2) + ' MB';
+        } else if (file.size >= 1024) {
+            sizeStr = (file.size / 1024).toFixed(1) + ' KB';
+        } else {
+            sizeStr = file.size + ' B';
+        }
+        sizeEl.textContent = sizeStr;
+    }
+
+    // Penyesuaian ikon format berkas
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (iconEl) {
+        if (ext === 'pdf') {
+            iconEl.style.background = '#fef2f2';
+            iconEl.style.color = '#dc2626';
+            iconEl.innerHTML = '<i class="bi bi-file-earmark-pdf-fill"></i>';
+        } else if (['doc', 'docx'].includes(ext)) {
+            iconEl.style.background = '#eff6ff';
+            iconEl.style.color = '#2563eb';
+            iconEl.innerHTML = '<i class="bi bi-file-earmark-word-fill"></i>';
+        } else if (['xls', 'xlsx'].includes(ext)) {
+            iconEl.style.background = '#ecfdf5';
+            iconEl.style.color = '#059669';
+            iconEl.innerHTML = '<i class="bi bi-file-earmark-excel-fill"></i>';
+        } else if (['ppt', 'pptx'].includes(ext)) {
+            iconEl.style.background = '#fff7ed';
+            iconEl.style.color = '#ea580c';
+            iconEl.innerHTML = '<i class="bi bi-file-earmark-ppt-fill"></i>';
+        } else if (['zip', 'rar'].includes(ext)) {
+            iconEl.style.background = '#f5f3ff';
+            iconEl.style.color = '#7c3aed';
+            iconEl.innerHTML = '<i class="bi bi-file-earmark-zip-fill"></i>';
+        } else {
+            iconEl.style.background = '#f1f5f9';
+            iconEl.style.color = '#475569';
+            iconEl.innerHTML = '<i class="bi bi-file-earmark-fill"></i>';
+        }
+    }
+
+    if (promptEl) promptEl.style.display = 'none';
+    if (selectedEl) selectedEl.style.display = 'block';
+
+    // Auto-fill nama eviden jika input judul masih kosong pada modal Unggah
+    if (isUpload) {
+        const inputJudul = document.querySelector('#modalUploadZi input[name="judul"]');
+        if (inputJudul && !inputJudul.value.trim()) {
+            const cleanName = file.name.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ').trim();
+            inputJudul.value = cleanName;
+        }
+    }
+}
+
+function resetZiFileDropzone(inputId, dropzoneId) {
+    const input = document.getElementById(inputId);
+    if (input) input.value = '';
+
+    const isUpload = (dropzoneId === 'ziUploadDropzone');
+    const promptEl = document.getElementById(isUpload ? 'ziUploadDropzonePrompt' : 'ziEditDropzonePrompt');
+    const selectedEl = document.getElementById(isUpload ? 'ziUploadDropzoneSelected' : 'ziEditDropzoneSelected');
+
+    if (promptEl) promptEl.style.display = 'block';
+    if (selectedEl) selectedEl.style.display = 'none';
+}
 
 function previewPdf(pdfUrl, title) {
     const modalEl = document.getElementById('modalPreviewPdfZi');
@@ -1101,6 +1310,8 @@ function previewPdf(pdfUrl, title) {
 
 function openEditModalZi(doc) {
     if (!doc) return;
+
+    resetZiFileDropzone('editZiFileInput', 'ziEditDropzone');
 
     document.getElementById('editZiId').value = doc.id || '';
     document.getElementById('editZiJudul').value = doc.judul || '';
@@ -1275,9 +1486,37 @@ function openCopyModalZi(doc) {
                         </div>
 
                         <div id="editZiFilePane">
-                            <input type="file" name="file_download" id="editZiFileInput" class="form-control rounded-3">
-                            <div class="form-text small mt-1 text-muted" id="editZiFileNote">
-                                Biarkan kosong jika tidak ingin mengganti file lama.
+                            <div class="zi-dropzone py-3" id="ziEditDropzone" onclick="document.getElementById('editZiFileInput').click()">
+                                <input type="file" name="file_download" id="editZiFileInput" style="display:none;" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar" onchange="handleZiFileSelected(this, 'ziEditDropzone')">
+                                
+                                <div class="zi-dropzone-prompt" id="ziEditDropzonePrompt">
+                                    <div class="zi-dropzone-icon" style="width:42px; height:42px; font-size:20px; margin-bottom:6px;">
+                                        <i class="bi bi-arrow-repeat"></i>
+                                    </div>
+                                    <div class="fw-bold text-dark mb-1" style="font-size: 13.5px;">
+                                        Tarik Berkas Pengganti ke Sini atau <span class="text-primary text-decoration-underline fw-semibold">Pilih File Baru</span>
+                                    </div>
+                                    <div class="small text-muted" id="editZiFileNote" style="font-size: 11.5px;">
+                                        Biarkan kosong jika tidak ingin mengganti file lama.
+                                    </div>
+                                </div>
+
+                                <div class="zi-dropzone-file-selected" id="ziEditDropzoneSelected" style="display:none;">
+                                    <div class="d-flex align-items-center justify-content-between gap-2">
+                                        <div class="d-flex align-items-center gap-2.5 overflow-hidden">
+                                            <div id="ziEditFileIcon" class="file-type-iconbox" style="width: 38px; height: 38px; font-size: 18px; border-radius: 10px; flex-shrink: 0; background: #ecfdf5; color: #059669;">
+                                                <i class="bi bi-file-earmark-check-fill"></i>
+                                            </div>
+                                            <div class="text-truncate">
+                                                <strong class="d-block text-dark text-truncate" id="ziEditFileName" style="font-size: 13.5px;">file-baru.pdf</strong>
+                                                <span class="small text-muted" id="ziEditFileSize" style="font-size: 11.5px;">1.2 MB</span>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1 flex-shrink-0" title="Batal Ganti" onclick="event.stopPropagation(); resetZiFileDropzone('editZiFileInput', 'ziEditDropzone');">
+                                            <i class="bi bi-x-lg me-1"></i> Batal
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
