@@ -736,12 +736,12 @@ $logged_user_name = $this->session->userdata('username') ?? '';
             <table class="table table-hover align-middle mb-0" style="font-size: 13.5px;">
                 <thead class="bg-light text-muted small text-uppercase">
                     <tr>
-                        <th class="ps-4" style="width: 50px;">Format</th>
+                        <th class="ps-4 text-center" style="width: 60px;">Format</th>
                         <th>Nama Dokumen / Eviden ZI</th>
-                        <th>Pokja ZI</th>
-                        <th>Pengunggah (Pokja)</th>
-                        <th>Tanggal</th>
-                        <th class="text-end pe-4" style="width: 140px;">Aksi</th>
+                        <th style="white-space: nowrap;">Pokja ZI</th>
+                        <th style="white-space: nowrap;">Pengunggah (Pokja)</th>
+                        <th style="white-space: nowrap;">Tanggal</th>
+                        <th class="text-end pe-4" style="width: 220px; white-space: nowrap;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -762,83 +762,100 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                                 data-ext="<?= strtolower($file_meta['ext']) ?>"
                                 data-title="<?= htmlspecialchars(strtolower($d->judul ?? ''), ENT_QUOTES, 'UTF-8') ?>"
                                 data-pengunggah="<?= htmlspecialchars(strtolower($d->pengunggah ?? ''), ENT_QUOTES, 'UTF-8') ?>">
-                                <td class="ps-4">
-                                    <div class="file-type-iconbox" style="width: 36px; height: 36px; font-size: 18px; background: <?= $file_meta['bg'] ?>; color: <?= $file_meta['color'] ?>;">
+                                <td class="ps-4 text-center">
+                                    <div class="file-type-iconbox mx-auto" style="width: 36px; height: 36px; font-size: 18px; background: <?= $file_meta['bg'] ?>; color: <?= $file_meta['color'] ?>;">
                                         <i class="bi <?= $file_meta['icon'] ?>"></i>
                                     </div>
                                 </td>
                                 <td>
-                                    <a href="<?= $file_meta['url'] ?>" target="_blank" class="fw-bold text-dark text-decoration-none">
+                                    <a href="<?= $file_meta['url'] ?>" target="_blank" class="fw-bold text-dark text-decoration-none hover-primary">
                                         <?= htmlspecialchars($d->judul ?? '-', ENT_QUOTES, 'UTF-8') ?>
                                     </a>
                                     <?php if(!empty($d->keterangan)): ?>
-                                        <div class="small text-muted text-truncate" style="max-width: 380px;">
+                                        <div class="small text-muted text-truncate" style="max-width: 380px; font-size: 12px;">
                                             <?= htmlspecialchars($d->keterangan, ENT_QUOTES, 'UTF-8') ?>
                                         </div>
                                     <?php endif; ?>
                                 </td>
-                                <td>
+                                <td style="white-space: nowrap;">
                                     <?php if($area === 'shared'): ?>
-                                        <span class="file-badge-pill bg-primary-subtle text-primary border border-primary-subtle">
-                                            <i class="bi bi-collection-fill"></i> DOKUMEN BERSAMA
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2.5 py-1 fw-bold" style="font-size: 11px;">
+                                            <i class="bi bi-collection-fill me-1"></i> DOKUMEN BERSAMA
                                         </span>
                                     <?php else: ?>
-                                        <span class="file-badge-pill bg-success-subtle text-success border border-success-subtle">
-                                            <i class="bi bi-shield-check"></i> <?= str_replace('AREA', 'POKJA ', strtoupper($area)) ?>
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1 fw-bold" style="font-size: 11px;">
+                                            <i class="bi bi-shield-check me-1"></i> <?= str_replace('AREA', 'POKJA ', strtoupper($area)) ?>
                                         </span>
                                     <?php endif; ?>
-                                    <div class="small text-muted mt-1" style="font-size: 11px;">
+                                    <div class="text-muted mt-0.5" style="font-size: 11px;">
                                         <?= $area_names[$area] ?? 'Zona Integritas' ?>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="fw-semibold text-dark small">
+                                    <div class="fw-semibold text-dark small" style="white-space: nowrap;">
                                         <i class="bi bi-person-fill text-muted me-1"></i><?= htmlspecialchars($d->pengunggah ?: 'Tim Pokja ZI', ENT_QUOTES, 'UTF-8') ?>
                                     </div>
                                     <?php if(!empty($d->lini_unit)): ?>
-                                        <div class="small text-muted" style="font-size: 11px;"><?= htmlspecialchars($d->lini_unit, ENT_QUOTES, 'UTF-8') ?></div>
+                                        <div class="text-muted text-truncate" style="font-size: 11px; max-width: 200px;"><?= htmlspecialchars($d->lini_unit, ENT_QUOTES, 'UTF-8') ?></div>
                                     <?php endif; ?>
                                 </td>
-                                <td>
-                                    <div class="small text-dark fw-medium">
+                                <td style="white-space: nowrap;">
+                                    <div class="text-dark fw-semibold" style="font-size: 12.5px;">
                                         <?= !empty($d->tanggal) ? date('d M Y', strtotime($d->tanggal)) : '-' ?>
                                     </div>
-                                    <div class="small text-secondary" style="font-size: 11px;">
+                                    <div class="text-secondary" style="font-size: 11px;">
                                         <?= $file_meta['size'] ?>
                                     </div>
                                 </td>
-                                <td class="text-end pe-4">
-                                    <div class="d-inline-flex gap-1">
+                                <td class="text-end pe-4" style="white-space: nowrap;">
+                                    <div class="d-inline-flex align-items-center gap-1.5">
                                         <?php if(!empty($file_meta['can_preview'])): ?>
-                                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1 fw-bold" onclick="previewDoc('<?= $file_meta['url'] ?>', '<?= htmlspecialchars(addslashes($d->judul), ENT_QUOTES, 'UTF-8') ?>', '<?= $file_meta['ext'] ?>')">
-                                                <i class="bi bi-eye"></i>
+                                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1 d-inline-flex align-items-center gap-1" onclick="previewDoc('<?= $file_meta['url'] ?>', '<?= htmlspecialchars(addslashes($d->judul), ENT_QUOTES, 'UTF-8') ?>', '<?= $file_meta['ext'] ?>')" title="Pratinjau Berkas">
+                                                <i class="bi bi-eye-fill"></i>
+                                                <span class="d-none d-lg-inline" style="font-size: 12px;">Lihat</span>
                                             </button>
                                         <?php endif; ?>
 
                                         <?php if($file_meta['is_link']): ?>
-                                            <a href="<?= $file_meta['url'] ?>" target="_blank" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 fw-bold">
-                                                <i class="bi bi-box-arrow-up-right me-1"></i> Drive
+                                            <a href="<?= $file_meta['url'] ?>" target="_blank" class="btn btn-sm btn-outline-success rounded-pill px-2.5 py-1 d-inline-flex align-items-center gap-1" title="Buka Google Drive">
+                                                <i class="bi bi-box-arrow-up-right"></i>
+                                                <span style="font-size: 12px;">Drive</span>
                                             </a>
                                         <?php else: ?>
-                                            <a href="<?= $file_meta['url'] ?>" target="_blank" download class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 fw-bold">
-                                                <i class="bi bi-download me-1"></i> Unduh
+                                            <a href="<?= $file_meta['url'] ?>" target="_blank" download class="btn btn-sm btn-outline-success rounded-pill px-2.5 py-1 d-inline-flex align-items-center gap-1" title="Unduh Berkas">
+                                                <i class="bi bi-download"></i>
+                                                <span style="font-size: 12px;">Unduh</span>
                                             </a>
                                         <?php endif; ?>
 
-                                        <!-- Tombol Salin ke Pokja (Selalu Aktif) -->
-                                        <button type="button" class="btn btn-sm <?= ($area === 'shared') ? 'btn-primary text-white fw-bold px-3' : 'btn-outline-primary' ?> rounded-pill px-2.5 py-1" title="Salin Dokumen ini ke Pokja" onclick="openCopyModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
-                                            <i class="bi bi-copy <?= ($area === 'shared') ? 'me-1' : '' ?>"></i><?= ($area === 'shared') ? 'Salin ke Pokja' : '' ?>
+                                        <!-- Tombol Salin ke Pokja -->
+                                        <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-1 d-inline-flex align-items-center gap-1" title="Salin Dokumen ke Pokja" onclick="openCopyModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                            <i class="bi bi-copy"></i>
+                                            <span class="d-none d-xl-inline" style="font-size: 12px;">Salin</span>
                                         </button>
 
-                                        <!-- Tombol Edit / Revisi Eviden ZI -->
-                                        <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-2.5 py-1 text-dark" title="Edit / Revisi Eviden ZI (Nama PIC, Pokja, atau File)" onclick="openEditModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </button>
-
-                                        <!-- Tombol Hapus Eviden ZI -->
-                                        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1" title="Hapus Berkas Eviden ZI" onclick="openDeleteModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </button>
+                                        <!-- Dropdown Menu Opsi Lanjutan (Edit & Hapus) -->
+                                        <div class="dropdown d-inline-block">
+                                            <button type="button" class="btn btn-sm btn-light border rounded-pill px-2 py-1 shadow-xs" data-bs-toggle="dropdown" aria-expanded="false" title="Menu Opsi Lainnya">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3 p-1.5" style="font-size: 12.5px; min-width: 175px;">
+                                                <li><h6 class="dropdown-header text-uppercase text-muted fw-bold py-1" style="font-size: 10px;">Kelola Eviden</h6></li>
+                                                <li>
+                                                    <button type="button" class="dropdown-item rounded-2 py-1.5 d-flex align-items-center gap-2" onclick="openEditModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                                        <i class="bi bi-pencil-square text-warning"></i>
+                                                        <span>Edit / Revisi</span>
+                                                    </button>
+                                                </li>
+                                                <li><hr class="dropdown-divider my-1"></li>
+                                                <li>
+                                                    <button type="button" class="dropdown-item rounded-2 py-1.5 text-danger d-flex align-items-center gap-2" onclick="openDeleteModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                                        <i class="bi bi-trash-fill text-danger"></i>
+                                                        <span>Hapus Berkas</span>
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
