@@ -53,7 +53,8 @@ $commands = [
     "git reset --hard origin/main 2>&1",
     "git pull origin main 2>&1",
     "mkdir -p assets/downloads 2>&1",
-    "chmod -R 0777 assets/downloads 2>&1"
+    "chmod -R 0777 assets/downloads 2>&1",
+    "php -f migrate_live.php 2>&1"
 ];
 
 $cmd = implode(" && ", $commands);
