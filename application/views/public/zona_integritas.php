@@ -706,14 +706,15 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                                 <i class="bi bi-copy"></i>
                             </button>
 
-                            <?php if(!empty($zi_unlocked)): ?>
-                                <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-2.5 py-1 text-dark" title="Edit Eviden ZI" onclick="openEditModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                                <a href="<?= base_url('website/delete_zi/'.$d->id) ?>" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1" title="Hapus Eviden" onclick="return confirm('Apakah Anda yakin ingin menghapus eviden \'<?= htmlspecialchars(addslashes($d->judul), ENT_QUOTES, 'UTF-8') ?>\'?')">
-                                    <i class="bi bi-trash-fill"></i>
-                                </a>
-                            <?php endif; ?>
+                            <!-- Tombol Edit / Revisi Eviden ZI -->
+                            <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-2.5 py-1 text-dark" title="Edit / Revisi Eviden ZI (Nama PIC, Pokja, atau File)" onclick="openEditModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+
+                            <!-- Tombol Hapus Eviden ZI -->
+                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1" title="Hapus Berkas Eviden ZI" onclick="openDeleteModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
                         </div>
 
                         <?php if($area === 'shared'): ?>
@@ -829,14 +830,15 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                                             <i class="bi bi-copy <?= ($area === 'shared') ? 'me-1' : '' ?>"></i><?= ($area === 'shared') ? 'Salin ke Pokja' : '' ?>
                                         </button>
 
-                                        <?php if(!empty($zi_unlocked)): ?>
-                                            <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-2.5 py-1 text-dark" title="Edit Eviden ZI" onclick="openEditModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                            <a href="<?= base_url('website/delete_zi/'.$d->id) ?>" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1" title="Hapus Eviden" onclick="return confirm('Apakah Anda yakin ingin menghapus eviden \'<?= htmlspecialchars(addslashes($d->judul), ENT_QUOTES, 'UTF-8') ?>\'?')">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </a>
-                                        <?php endif; ?>
+                                        <!-- Tombol Edit / Revisi Eviden ZI -->
+                                        <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-2.5 py-1 text-dark" title="Edit / Revisi Eviden ZI (Nama PIC, Pokja, atau File)" onclick="openEditModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+
+                                        <!-- Tombol Hapus Eviden ZI -->
+                                        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1" title="Hapus Berkas Eviden ZI" onclick="openDeleteModalZi(<?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -1545,6 +1547,37 @@ function openCopyModalZi(doc) {
     const copyModal = new bootstrap.Modal(document.getElementById('modalCopyZi'));
     copyModal.show();
 }
+
+function openDeleteModalZi(doc) {
+    if (!doc) return;
+
+    document.getElementById('deleteZiId').value = doc.id || '';
+    document.getElementById('deleteZiJudul').textContent = doc.judul || '-';
+    
+    const sourceArea = (doc.area_zi || 'area1').toLowerCase();
+    const areaMap = {
+        'shared': 'Dokumen Bersama / Induk ZI',
+        'area1': 'Pokja I: Manajemen Perubahan',
+        'area2': 'Pokja II: Penataan Tatalaksana',
+        'area3': 'Pokja III: Penataan Manajemen SDM',
+        'area4': 'Pokja IV: Penguatan Akuntabilitas',
+        'area5': 'Pokja V: Penguatan Pengawasan',
+        'area6': 'Pokja VI: Kualitas Pelayanan'
+    };
+    
+    const areaBadge = document.getElementById('deleteZiArea');
+    if (areaBadge) {
+        areaBadge.textContent = areaMap[sourceArea] || 'Pokja ZI';
+    }
+    
+    const pengunggahText = document.getElementById('deleteZiPengunggah');
+    if (pengunggahText) {
+        pengunggahText.textContent = 'Pengunggah: ' + (doc.pengunggah || 'Tim ZI');
+    }
+
+    const deleteModal = new bootstrap.Modal(document.getElementById('modalDeleteZi'));
+    deleteModal.show();
+}
 </script>
 
 <!-- ═══ MODAL EDIT EVIDEN ZI ═══ -->
@@ -1557,7 +1590,7 @@ function openCopyModalZi(doc) {
                     <h5 class="modal-title fw-bold" id="modalEditZiLabel">
                         <i class="bi bi-pencil-square me-1 text-warning"></i> Edit / Revisi Eviden ZI
                     </h5>
-                    <p class="small text-muted mb-0">Perbaiki nama dokumen, pindah Pokja, atau perbarui file/link Drive.</p>
+                    <p class="small text-muted mb-0">Perbaiki nama dokumen, nama pengunggah, pindah Pokja, atau perbarui file/link Drive.</p>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -1604,8 +1637,8 @@ function openCopyModalZi(doc) {
                     <!-- 4. Pengunggah & Tim Pokja -->
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold small text-muted">Nama Pengunggah (PIC) <span class="text-danger">*</span></label>
-                            <input type="text" name="pengunggah" id="editZiPengunggah" class="form-control rounded-3" required>
+                            <label class="form-label fw-bold small text-muted">Nama Pengunggah (PTK / Tim Pokja) <span class="text-danger">*</span></label>
+                            <input type="text" name="pengunggah" id="editZiPengunggah" list="ptkSuggestionsZi" class="form-control rounded-3" placeholder="Ketik atau pilih nama staf / guru..." required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold small text-muted">Lini / Tim Pokja Kerja</label>
@@ -1668,12 +1701,83 @@ function openCopyModalZi(doc) {
                         </div>
                     </div>
 
+                    <?php if(empty($zi_unlocked) && empty($is_user_logged_in)): ?>
+                    <div class="mt-3 p-3 bg-warning-subtle border border-warning-subtle rounded-3">
+                        <label class="form-label fw-bold small text-dark mb-1">
+                            <i class="bi bi-shield-lock-fill me-1 text-warning"></i> PIN Akses Tim ZI <span class="text-danger">*</span>
+                        </label>
+                        <input type="password" name="pin" class="form-control rounded-3" placeholder="Masukkan 6-digit PIN Tim ZI" required autocomplete="off">
+                        <div class="form-text small text-muted" style="font-size: 11px;">
+                            Masukkan PIN untuk memverifikasi hak perubahan / revisi berkas ini.
+                        </div>
+                    </div>
+                    <?php endif; ?>
+
                 </div>
 
                 <div class="modal-footer border-0 bg-light p-3 rounded-bottom-4">
                     <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-success btn-sm rounded-pill px-4 fw-bold shadow-sm">
                         <i class="bi bi-check-lg me-1"></i> Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- ═══ MODAL HAPUS EVIDEN ZI ═══ -->
+<div class="modal fade" id="modalDeleteZi" tabindex="-1" aria-labelledby="modalDeleteZiLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            
+            <div class="modal-header border-0 bg-danger text-white px-4 py-3" style="background: linear-gradient(135deg, #991b1b 0%, #ef4444 100%);">
+                <div>
+                    <h5 class="modal-title fw-bold" id="modalDeleteZiLabel">
+                        <i class="bi bi-trash3-fill me-1 text-warning"></i> Hapus Berkas Eviden ZI
+                    </h5>
+                    <p class="small text-white-50 mb-0">Hapus berkas yang salah diunggah dari portal Pokja ZI.</p>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form action="<?= base_url('website/delete_zi') ?>" method="POST">
+                <input type="hidden" name="id" id="deleteZiId">
+
+                <div class="modal-body p-4">
+                    <!-- Info Dokumen yang akan dihapus -->
+                    <div class="p-3 bg-light rounded-3 mb-3 border border-danger-subtle">
+                        <span class="small text-danger fw-bold d-block mb-1">Dokumen yang akan dihapus:</span>
+                        <h6 class="fw-bold text-dark mb-1" id="deleteZiJudul">-</h6>
+                        <div class="d-flex align-items-center gap-2 small text-muted mt-2">
+                            <span id="deleteZiArea" class="badge bg-secondary-subtle text-secondary">-</span>
+                            <span id="deleteZiPengunggah">-</span>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning border-0 rounded-3 p-2.5 small mb-3 d-flex align-items-start gap-2">
+                        <i class="bi bi-exclamation-triangle-fill text-warning fs-5 flex-shrink-0 mt-0.5"></i>
+                        <span>Pastikan berkas ini memang salah unggah. Dokumen yang dihapus tidak akan tampil lagi di portal eviden Pokja.</span>
+                    </div>
+
+                    <?php if(empty($zi_unlocked) && empty($is_user_logged_in)): ?>
+                    <div class="mb-3 p-3 bg-danger-subtle border border-danger-subtle rounded-3">
+                        <label class="form-label fw-bold small text-danger mb-1">
+                            <i class="bi bi-shield-lock-fill me-1"></i> Masukkan PIN Tim ZI <span class="text-danger">*</span>
+                        </label>
+                        <input type="password" name="pin" class="form-control rounded-3" placeholder="Masukkan 6-digit PIN Tim ZI" required autocomplete="off">
+                        <div class="form-text small text-muted" style="font-size: 11px;">
+                            Masukkan PIN untuk memverifikasi hak penghapusan berkas ini.
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                </div>
+
+                <div class="modal-footer border-0 bg-light p-3 rounded-bottom-4">
+                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger btn-sm rounded-pill px-4 fw-bold shadow-sm">
+                        <i class="bi bi-trash-fill me-1"></i> Ya, Hapus Berkas Ini
                     </button>
                 </div>
             </form>
@@ -1736,7 +1840,7 @@ function openCopyModalZi(doc) {
                     <div class="row g-2 mb-3">
                         <div class="col-md-7">
                             <label class="form-label fw-bold small text-muted">Nama PIC Pokja Pengambil <span class="text-danger">*</span></label>
-                            <input type="text" name="pengunggah" id="copyZiPengunggah" class="form-control rounded-3" required value="<?= $is_user_logged_in ? htmlspecialchars($logged_user_name) : '' ?>">
+                            <input type="text" name="pengunggah" id="copyZiPengunggah" list="ptkSuggestionsZi" class="form-control rounded-3" placeholder="Ketik atau pilih nama staf / guru..." required value="<?= $is_user_logged_in ? htmlspecialchars($logged_user_name) : '' ?>">
                         </div>
                         <div class="col-md-5">
                             <label class="form-label fw-bold small text-muted">Tanggal Salin</label>

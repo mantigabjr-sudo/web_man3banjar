@@ -925,14 +925,26 @@ class Website extends CI_Controller {
     public function update_zi() {
         $this->ensureDownloadDriveColumns();
 
-        // Check permission: either zi_unlocked is true, or logged in
+        // Check permission: either zi_unlocked is true, or logged in, or correct PIN provided
         $is_unlocked = (bool)$this->session->userdata('zi_unlocked');
         $is_logged_in = (bool)$this->session->userdata('logged_in');
 
         if(!$is_unlocked && !$is_logged_in){
-            $this->session->set_flashdata('error', 'Sesi akses eviden ZI telah berakhir. Silakan masukkan PIN kembali.');
-            redirect('website/zona_integritas');
-            return;
+            $pin_input = trim((string)$this->input->post('pin', TRUE));
+            $valid_pin = '123456';
+            $setting = $this->db->get('settings')->row();
+            if($setting && !empty($setting->pin_zi)){
+                $valid_pin = trim($setting->pin_zi);
+            }
+
+            if(!empty($pin_input) && $pin_input === $valid_pin){
+                $this->session->set_userdata('zi_unlocked', true);
+                $is_unlocked = true;
+            } else {
+                $this->session->set_flashdata('error', 'PIN Tim ZI tidak sesuai atau sesi belum dibuka. Silakan masukkan PIN yang benar untuk mengedit berkas.');
+                redirect('website/zona_integritas');
+                return;
+            }
         }
 
         $id = (int)$this->input->post('id', TRUE);
@@ -1034,19 +1046,32 @@ class Website extends CI_Controller {
         redirect('website/zona_integritas?area='.$area_zi);
     }
 
-    public function delete_zi($id) {
+    public function delete_zi($id = null) {
         $this->ensureDownloadDriveColumns();
+
+        $id = $id ? (int)$id : (int)$this->input->post('id', TRUE);
 
         $is_unlocked = (bool)$this->session->userdata('zi_unlocked');
         $is_logged_in = (bool)$this->session->userdata('logged_in');
 
         if(!$is_unlocked && !$is_logged_in){
-            $this->session->set_flashdata('error', 'Sesi akses eviden ZI telah berakhir. Silakan masukkan PIN kembali.');
-            redirect('website/zona_integritas');
-            return;
+            $pin_input = trim((string)$this->input->post('pin', TRUE));
+            $valid_pin = '123456';
+            $setting = $this->db->get('settings')->row();
+            if($setting && !empty($setting->pin_zi)){
+                $valid_pin = trim($setting->pin_zi);
+            }
+
+            if(!empty($pin_input) && $pin_input === $valid_pin){
+                $this->session->set_userdata('zi_unlocked', true);
+                $is_unlocked = true;
+            } else {
+                $this->session->set_flashdata('error', 'PIN Tim ZI tidak sesuai atau sesi belum dibuka. Silakan masukkan PIN yang benar untuk menghapus berkas.');
+                redirect('website/zona_integritas');
+                return;
+            }
         }
 
-        $id = (int)$id;
         $download = $this->db->where('id', $id)->get('website_download')->row();
         if(!$download){
             $this->session->set_flashdata('error', 'Dokumen eviden tidak ditemukan.');
