@@ -32,11 +32,17 @@ if(!function_exists('get_zi_file_meta')){
         if(!empty($d->file_path)){
             $ext = strtolower(pathinfo($d->file_path, PATHINFO_EXTENSION));
             $info['ext'] = $ext;
-            $info['url'] = base_url('uploads/download/'.$d->file_path);
+            // Prioritaskan direktori assets/downloads/ tempat penyimpanan berkas resmi
+            $rel_path = 'assets/downloads/' . $d->file_path;
+            if(!file_exists(FCPATH . $rel_path) && file_exists(FCPATH . 'uploads/download/' . $d->file_path)){
+                $rel_path = 'uploads/download/' . $d->file_path;
+            }
 
-            $abs = FCPATH.'uploads/download/'.$d->file_path;
+            $info['url'] = base_url($rel_path);
+
+            $abs = FCPATH . $rel_path;
             if(file_exists($abs)){
-                $bytes = filesize($abs);
+                $bytes = @filesize($abs);
                 if($bytes >= 1048576){
                     $info['size'] = round($bytes / 1048576, 2) . ' MB';
                 } elseif($bytes >= 1024){
