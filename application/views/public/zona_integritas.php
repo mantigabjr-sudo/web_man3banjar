@@ -103,7 +103,7 @@ $area_names = [
 ];
 
 $active_area = isset($active_area) ? $active_area : 'all';
-$active_view = isset($active_view) ? $active_view : 'grid';
+$active_view = isset($active_view) ? $active_view : 'list';
 $is_user_logged_in = (bool)$this->session->userdata('logged_in');
 $logged_user_name = $this->session->userdata('username') ?? '';
 ?>

@@ -886,7 +886,7 @@ class Website extends CI_Controller {
         }
 
         $data['active_area'] = $this->input->get('area', TRUE) ? trim($this->input->get('area', TRUE)) : 'all';
-        $data['active_view'] = $this->input->get('view', TRUE) ? trim($this->input->get('view', TRUE)) : 'grid';
+        $data['active_view'] = $this->input->get('view', TRUE) ? trim($this->input->get('view', TRUE)) : 'list';
 
         $this->load->view('public/zona_integritas', $data);
     }
