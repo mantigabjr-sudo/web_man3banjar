@@ -887,6 +887,11 @@ class Website extends CI_Controller {
 
         $data['active_area'] = $this->input->get('area', TRUE) ? trim($this->input->get('area', TRUE)) : 'all';
         $data['active_view'] = $this->input->get('view', TRUE) ? trim($this->input->get('view', TRUE)) : 'list';
+        $data['main_tab']    = $this->input->get('tab', TRUE) ? trim($this->input->get('tab', TRUE)) : 'monitoring';
+
+        // Matriks instrumen monitoring LKE PMPZI Kemenag RI (Permenpan 90/2021)
+        $this->load->helper('pmpzi');
+        $data['pmpzi_matrix'] = get_pmpzi_lke_summary($stats);
 
         $this->load->view('public/zona_integritas', $data);
     }

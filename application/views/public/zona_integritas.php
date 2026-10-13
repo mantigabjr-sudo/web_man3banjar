@@ -414,6 +414,139 @@ $logged_user_name = $this->session->userdata('username') ?? '';
     text-align: left;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
+
+/* ═══ MONITORING PMPZI KEMENAG STYLES ═══ */
+.pmpzi-matrix-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px -5px rgba(0,0,0,0.06);
+    overflow: hidden;
+}
+.pmpzi-header-banner {
+    background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #059669 100%);
+    color: #ffffff;
+    padding: 24px 28px;
+    position: relative;
+}
+.pmpzi-table {
+    margin-bottom: 0;
+    font-size: 13.5px;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.pmpzi-table thead th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 14px 18px;
+    border-bottom: 2px solid #cbd5e1;
+}
+.pmpzi-table tbody td {
+    padding: 13px 18px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f5f9;
+}
+.pmpzi-section-title-row {
+    background: #f1f5f9 !important;
+    font-weight: 800;
+    color: #1e293b;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+}
+.pmpzi-subtotal-row {
+    background: #e2e8f0 !important;
+    font-weight: 800;
+    color: #0f172a;
+    font-size: 13.5px;
+}
+.pmpzi-total-row {
+    background: #cbd5e1 !important;
+    font-weight: 900;
+    color: #0f172a;
+    font-size: 14.5px;
+}
+.pmpzi-btn-ev {
+    background: #f59e0b;
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 6px;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+.pmpzi-btn-ev:hover {
+    background: #d97706;
+    color: #ffffff;
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+}
+.pmpzi-btn-pokja {
+    background: #0284c7;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.pmpzi-btn-pokja:hover {
+    background: #0369a1;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+.pmpzi-score-val {
+    font-family: monospace;
+    font-weight: 700;
+    font-size: 14px;
+    color: #0f172a;
+}
+.pmpzi-progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.pmpzi-progress-bar-bg {
+    width: 90px;
+    height: 8px;
+    background-color: #e2e8f0;
+    border-radius: 999px;
+    overflow: hidden;
+}
+.pmpzi-progress-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+}
+.pmpzi-badge-pct {
+    font-family: monospace;
+    font-size: 12.5px;
+    font-weight: 700;
+}
+.pmpzi-kpi-card {
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    padding: 18px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    transition: transform 0.2s;
+}
+.pmpzi-kpi-card:hover {
+    transform: translateY(-2px);
+}
 </style>
 
 <!-- ═══ 1. HERO HEADER ZONA INTEGRITAS ═══ -->
@@ -451,6 +584,328 @@ $logged_user_name = $this->session->userdata('username') ?? '';
         </div>
     </div>
 </section>
+
+<!-- ═══ SUB-NAV TAMPILAN: MONITORING PMPZI VS ARSIP BERKAS ═══ -->
+<div class="container my-4">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 p-3 bg-white rounded-4 shadow-sm border border-slate-200">
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold" style="font-size: 12.5px;">
+                <i class="bi bi-shield-fill-check me-1"></i> Instrumen PMPZI Kemenag RI 2026
+            </span>
+            <span class="text-muted small d-none d-lg-inline">
+                Satuan Kerja: <strong>MAN 3 Banjar</strong> (Kode Satker: <code>309442</code>)
+            </span>
+        </div>
+        <div class="nav nav-pills bg-light p-1.5 rounded-pill shadow-xs" role="tablist">
+            <button type="button" class="nav-link <?= ($main_tab ?? 'monitoring') === 'monitoring' ? 'active bg-success text-white' : 'text-dark' ?> rounded-pill fw-bold px-3.5 py-2 d-inline-flex align-items-center gap-2 transition" id="ziTabMonitoringBtn" onclick="switchZiMainView('monitoring')">
+                <i class="bi bi-speedometer2 text-warning fs-5"></i>
+                <span>Monitoring LKE PMPZI</span>
+                <span class="badge <?= ($main_tab ?? 'monitoring') === 'monitoring' ? 'bg-white text-success' : 'bg-success text-white' ?> rounded-pill font-monospace" style="font-size: 11px;">68.67</span>
+            </button>
+            <button type="button" class="nav-link <?= ($main_tab ?? 'monitoring') === 'berkas' ? 'active bg-primary text-white' : 'text-dark' ?> rounded-pill fw-bold px-3.5 py-2 d-inline-flex align-items-center gap-2 transition" id="ziTabBerkasBtn" onclick="switchZiMainView('berkas')">
+                <i class="bi bi-folder2-open text-primary fs-5"></i>
+                <span>Arsip & Berkas Eviden</span>
+                <span class="badge <?= ($main_tab ?? 'monitoring') === 'berkas' ? 'bg-white text-primary' : 'bg-primary text-white' ?> rounded-pill font-monospace" style="font-size: 11px;"><?= $zi_stats['total'] ?? 0 ?> Berkas</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ 2. SECTION MONITORING PMPZI KEMENAG (SESUAI PERMENPAN 90/2021) ═══ -->
+<div id="ziSectionMonitoring" style="display: <?= ($main_tab ?? 'monitoring') === 'monitoring' ? 'block' : 'none' ?>;">
+    <div class="container pb-5">
+        
+        <!-- KPI Strip Ringkasan Capaian -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-lg-3">
+                <div class="pmpzi-kpi-card text-center">
+                    <span class="small text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 11px; letter-spacing: 0.5px;">Indeks PMPZI Satker</span>
+                    <div class="fs-2 fw-bold text-success font-monospace mb-1"><?= $pmpzi_matrix['indeks_satker'] ?? '68.67' ?></div>
+                    <span class="badge bg-success-subtle text-success rounded-pill" style="font-size: 11px;">Memenuhi Syarat WBK</span>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="pmpzi-kpi-card text-center">
+                    <span class="small text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 11px; letter-spacing: 0.5px;">Komponen Pengungkit (60)</span>
+                    <div class="fs-2 fw-bold text-primary font-monospace mb-1"><?= $pmpzi_matrix['pengungkit']['nilai'] ?? '38.67' ?></div>
+                    <span class="badge bg-primary-subtle text-primary rounded-pill font-monospace" style="font-size: 11px;"><?= $pmpzi_matrix['pengungkit']['persen'] ?? '64.45' ?>% Capaian</span>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="pmpzi-kpi-card text-center">
+                    <span class="small text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 11px; letter-spacing: 0.5px;">Komponen Hasil (40)</span>
+                    <div class="fs-2 fw-bold text-info font-monospace mb-1"><?= $pmpzi_matrix['hasil']['nilai'] ?? '30.00' ?></div>
+                    <span class="badge bg-info-subtle text-info rounded-pill font-monospace" style="font-size: 11px;"><?= $pmpzi_matrix['hasil']['persen'] ?? '75.00' ?>% Capaian</span>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="pmpzi-kpi-card text-center">
+                    <span class="small text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 11px; letter-spacing: 0.5px;">Eviden Terunggah LabSys</span>
+                    <div class="fs-2 fw-bold text-warning font-monospace mb-1"><?= $zi_stats['total'] ?? 0 ?></div>
+                    <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill" style="font-size: 11px;">+<?= $zi_stats['shared'] ?? 0 ?> Dok. Bersama</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Matriks Tabel Monitoring PMPZI -->
+        <div class="pmpzi-matrix-card">
+            
+            <!-- Banner Header PMPZI -->
+            <div class="pmpzi-header-banner d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div>
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="badge bg-warning text-dark fw-bold rounded-pill px-2.5 py-1" style="font-size: 11px;">
+                            <i class="bi bi-patch-check-fill me-1"></i> Resmi Kemenag RI
+                        </span>
+                        <span class="badge bg-danger text-white fw-bold rounded-pill px-2.5 py-1" style="font-size: 11px;">
+                            Sesuai Permenpan 90 Tahun 2021
+                        </span>
+                    </div>
+                    <h4 class="fw-bold mb-1 text-white">Penilaian Mandiri Pembangunan Zona Integritas Tahun 2026</h4>
+                    <p class="small text-white-50 mb-0">Satuan Kerja: <strong><?= $pmpzi_matrix['satker'] ?? 'MADRASAH ALIYAH NEGERI 3 BANJAR' ?></strong> (Kode: <?= $pmpzi_matrix['kode_satker'] ?? '309442' ?>)</p>
+                </div>
+                <div class="text-end">
+                    <button type="button" class="btn btn-light text-success fw-bold rounded-pill px-3 py-2 btn-sm shadow-xs" data-bs-toggle="modal" data-bs-target="#modalUploadZi">
+                        <i class="bi bi-cloud-arrow-up-fill me-1"></i> Unggah Eviden Pokja
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabel 1: Komponen Pengungkit (60) -->
+            <div class="table-responsive">
+                <table class="table pmpzi-table align-middle">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 60px;">No.</th>
+                            <th>Komponen Pengungkit (Bobot 60)</th>
+                            <th class="text-center" style="width: 120px;">Nilai</th>
+                            <th class="text-center" style="width: 200px;">Capaian (%)</th>
+                            <th class="text-center" style="width: 140px;">Berkas LabSys</th>
+                            <th class="text-end" style="width: 150px;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <!-- ═══ HEADER ROW: ASPEK PEMENUHAN ═══ -->
+                        <tr class="pmpzi-section-title-row">
+                            <td colspan="6" class="py-2.5 px-3">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span><i class="bi bi-bookmark-check-fill text-success me-2"></i>ASPEK PEMENUHAN (BOBOT 30)</span>
+                                    <span class="badge bg-white text-dark border font-monospace">Subtotal Target: 30.00</span>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <?php if(!empty($pmpzi_matrix['pengungkit']['pemenuhan']['items'])): ?>
+                            <?php foreach($pmpzi_matrix['pengungkit']['pemenuhan']['items'] as $it): 
+                                $pct = (float)$it['persen'];
+                                $bar_color = ($pct >= 80) ? 'bg-success' : (($pct >= 60) ? 'bg-primary' : (($pct >= 40) ? 'bg-warning' : 'bg-danger'));
+                                $badge_color = ($pct >= 80) ? 'text-success bg-success-subtle' : (($pct >= 60) ? 'text-primary bg-primary-subtle' : (($pct >= 40) ? 'text-warning bg-warning-subtle' : 'text-danger bg-danger-subtle'));
+                            ?>
+                                <tr>
+                                    <td class="text-center fw-bold text-muted"><?= $it['no'] ?></td>
+                                    <td>
+                                        <div class="d-flex align-items-center flex-wrap gap-2">
+                                            <a href="#" onclick="openPmpziDetailModal('<?= $it['kode_ev'] ?>', '<?= htmlspecialchars($it['nama'], ENT_QUOTES) ?>', 'Pemenuhan', '<?= $it['nilai'] ?>', '<?= $it['persen'] ?>'); return false;" class="pmpzi-btn-pokja">
+                                                <span><?= htmlspecialchars($it['nama']) ?> (<?= $it['bobot'] ?>)</span>
+                                            </a>
+                                            <button type="button" class="pmpzi-btn-ev" title="Lihat detail instrumen eviden PMPZI" onclick="openPmpziDetailModal('<?= $it['kode_ev'] ?>', '<?= htmlspecialchars($it['nama'], ENT_QUOTES) ?>', 'Pemenuhan', '<?= $it['nilai'] ?>', '<?= $it['persen'] ?>')">
+                                                Ev
+                                            </button>
+                                        </div>
+                                        <small class="text-muted d-block mt-1" style="font-size: 11.5px;"><?= htmlspecialchars($it['keterangan'] ?? '') ?></small>
+                                    </td>
+                                    <td class="text-center font-monospace fw-bold fs-6 text-dark"><?= number_format($it['nilai'], 2) ?></td>
+                                    <td class="text-center">
+                                        <div class="d-inline-flex flex-column align-items-center">
+                                            <div class="pmpzi-progress-wrap mb-1">
+                                                <div class="pmpzi-progress-bar-bg">
+                                                    <div class="pmpzi-progress-bar-fill <?= $bar_color ?>" style="width: <?= min(100, $pct) ?>%;"></div>
+                                                </div>
+                                                <span class="badge <?= $badge_color ?> rounded-pill pmpzi-badge-pct"><?= number_format($pct, 2) ?>%</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-light text-dark border rounded-pill px-2.5 py-1.5 font-monospace fw-bold" style="font-size: 12px;">
+                                            <i class="bi bi-file-earmark-check text-success me-1"></i><?= $it['berkas_count'] ?> Berkas
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 fw-bold" onclick="openPmpziDetailModal('<?= $it['kode_ev'] ?>', '<?= htmlspecialchars($it['nama'], ENT_QUOTES) ?>', 'Pemenuhan', '<?= $it['nilai'] ?>', '<?= $it['persen'] ?>')">
+                                            <i class="bi bi-list-check me-1"></i> Rincian Butir
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+
+                        <!-- SUBTOTAL PEMENUHAN ROW -->
+                        <tr class="pmpzi-subtotal-row">
+                            <td colspan="2" class="text-uppercase ps-4">
+                                <i class="bi bi-calculator me-1"></i> TOTAL ASPEK PEMENUHAN (30)
+                            </td>
+                            <td class="text-center font-monospace fs-6"><?= number_format($pmpzi_matrix['pengungkit']['pemenuhan']['nilai'] ?? 21.59, 2) ?></td>
+                            <td class="text-center font-monospace fs-6 text-primary"><?= number_format($pmpzi_matrix['pengungkit']['pemenuhan']['persen'] ?? 71.97, 2) ?>%</td>
+                            <td colspan="2" class="text-end pe-4 text-muted small">Target 30 Poin Pemenuhan</td>
+                        </tr>
+
+                        <!-- ═══ HEADER ROW: ASPEK REFORM ═══ -->
+                        <tr class="pmpzi-section-title-row">
+                            <td colspan="6" class="py-2.5 px-3">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span><i class="bi bi-arrow-repeat text-primary me-2"></i>ASPEK REFORM (BOBOT 30)</span>
+                                    <span class="badge bg-white text-dark border font-monospace">Subtotal Target: 30.00</span>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <?php if(!empty($pmpzi_matrix['pengungkit']['reform']['items'])): ?>
+                            <?php foreach($pmpzi_matrix['pengungkit']['reform']['items'] as $it): 
+                                $pct = (float)$it['persen'];
+                                $bar_color = ($pct >= 80) ? 'bg-success' : (($pct >= 60) ? 'bg-primary' : (($pct >= 40) ? 'bg-warning' : 'bg-danger'));
+                                $badge_color = ($pct >= 80) ? 'text-success bg-success-subtle' : (($pct >= 60) ? 'text-primary bg-primary-subtle' : (($pct >= 40) ? 'text-warning bg-warning-subtle' : 'text-danger bg-danger-subtle'));
+                            ?>
+                                <tr>
+                                    <td class="text-center fw-bold text-muted"><?= $it['no'] ?></td>
+                                    <td>
+                                        <div class="d-flex align-items-center flex-wrap gap-2">
+                                            <a href="#" onclick="openPmpziDetailModal('<?= $it['kode_ev'] ?>', '<?= htmlspecialchars($it['nama'], ENT_QUOTES) ?>', 'Reform', '<?= $it['nilai'] ?>', '<?= $it['persen'] ?>'); return false;" class="pmpzi-btn-pokja">
+                                                <span><?= htmlspecialchars($it['nama']) ?> (<?= $it['bobot'] ?>)</span>
+                                            </a>
+                                            <button type="button" class="pmpzi-btn-ev" title="Lihat detail instrumen eviden PMPZI" onclick="openPmpziDetailModal('<?= $it['kode_ev'] ?>', '<?= htmlspecialchars($it['nama'], ENT_QUOTES) ?>', 'Reform', '<?= $it['nilai'] ?>', '<?= $it['persen'] ?>')">
+                                                Ev
+                                            </button>
+                                        </div>
+                                        <small class="text-muted d-block mt-1" style="font-size: 11.5px;"><?= htmlspecialchars($it['keterangan'] ?? '') ?></small>
+                                    </td>
+                                    <td class="text-center font-monospace fw-bold fs-6 text-dark"><?= number_format($it['nilai'], 2) ?></td>
+                                    <td class="text-center">
+                                        <div class="d-inline-flex flex-column align-items-center">
+                                            <div class="pmpzi-progress-wrap mb-1">
+                                                <div class="pmpzi-progress-bar-bg">
+                                                    <div class="pmpzi-progress-bar-fill <?= $bar_color ?>" style="width: <?= min(100, $pct) ?>%;"></div>
+                                                </div>
+                                                <span class="badge <?= $badge_color ?> rounded-pill pmpzi-badge-pct"><?= number_format($pct, 2) ?>%</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-light text-dark border rounded-pill px-2.5 py-1.5 font-monospace fw-bold" style="font-size: 12px;">
+                                            <i class="bi bi-file-earmark-check text-success me-1"></i><?= $it['berkas_count'] ?> Berkas
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 fw-bold" onclick="openPmpziDetailModal('<?= $it['kode_ev'] ?>', '<?= htmlspecialchars($it['nama'], ENT_QUOTES) ?>', 'Reform', '<?= $it['nilai'] ?>', '<?= $it['persen'] ?>')">
+                                            <i class="bi bi-list-check me-1"></i> Rincian Butir
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+
+                        <!-- SUBTOTAL REFORM ROW -->
+                        <tr class="pmpzi-subtotal-row">
+                            <td colspan="2" class="text-uppercase ps-4">
+                                <i class="bi bi-calculator me-1"></i> TOTAL ASPEK REFORM (30)
+                            </td>
+                            <td class="text-center font-monospace fs-6"><?= number_format($pmpzi_matrix['pengungkit']['reform']['nilai'] ?? 17.08, 2) ?></td>
+                            <td class="text-center font-monospace fs-6 text-primary"><?= number_format($pmpzi_matrix['pengungkit']['reform']['persen'] ?? 56.93, 2) ?>%</td>
+                            <td colspan="2" class="text-end pe-4 text-muted small">Target 30 Poin Reform</td>
+                        </tr>
+
+                        <!-- TOTAL KOMPONEN PENGUNGKIT -->
+                        <tr class="pmpzi-total-row">
+                            <td colspan="2" class="text-uppercase ps-4 text-success">
+                                <i class="bi bi-award-fill me-1"></i> TOTAL KOMPONEN PENGUNGKIT (60)
+                            </td>
+                            <td class="text-center font-monospace fs-5 text-dark"><?= number_format($pmpzi_matrix['pengungkit']['nilai'] ?? 38.67, 2) ?></td>
+                            <td class="text-center font-monospace fs-5 text-success"><?= number_format($pmpzi_matrix['pengungkit']['persen'] ?? 64.45, 2) ?>%</td>
+                            <td colspan="2" class="text-end pe-4 fw-bold text-success">Bobot Pengungkit: 60.00</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Tabel 2: Komponen Hasil (40) -->
+            <div class="table-responsive border-top">
+                <table class="table pmpzi-table align-middle">
+                    <thead>
+                        <tr class="bg-light">
+                            <th class="text-center" style="width: 60px;">No.</th>
+                            <th>Komponen Hasil (Bobot 40)</th>
+                            <th class="text-center" style="width: 120px;">Nilai</th>
+                            <th class="text-center" style="width: 200px;">Capaian (%)</th>
+                            <th class="text-end" colspan="2" style="width: 290px;">Keterangan Hasil</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if(!empty($pmpzi_matrix['hasil']['items'])): ?>
+                            <?php foreach($pmpzi_matrix['hasil']['items'] as $h): ?>
+                                <tr>
+                                    <td class="text-center fw-bold text-muted"><?= $h['no'] ?></td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge bg-success text-white px-3 py-2 rounded-3 fs-6 fw-bold">
+                                                <?= htmlspecialchars($h['nama']) ?> (<?= $h['bobot'] ?>)
+                                            </span>
+                                            <span class="pmpzi-btn-ev">Ev</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center font-monospace fw-bold fs-6 text-dark"><?= number_format($h['nilai'], 2) ?></td>
+                                    <td class="text-center">
+                                        <div class="d-inline-flex align-items-center gap-2">
+                                            <div class="pmpzi-progress-bar-bg" style="width: 100px;">
+                                                <div class="pmpzi-progress-bar-fill bg-success" style="width: <?= min(100, $h['persen']) ?>%;"></div>
+                                            </div>
+                                            <span class="badge bg-success-subtle text-success rounded-pill pmpzi-badge-pct"><?= number_format($h['persen'], 2) ?>%</span>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" class="text-end pe-4 text-muted small">
+                                        <?= htmlspecialchars($h['keterangan'] ?? '') ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+
+                        <!-- TOTAL KOMPONEN HASIL -->
+                        <tr class="pmpzi-total-row">
+                            <td colspan="2" class="text-uppercase ps-4 text-info">
+                                <i class="bi bi-graph-up-arrow me-1"></i> TOTAL KOMPONEN HASIL (40)
+                            </td>
+                            <td class="text-center font-monospace fs-5 text-dark"><?= number_format($pmpzi_matrix['hasil']['nilai'] ?? 30.00, 2) ?></td>
+                            <td class="text-center font-monospace fs-5 text-info"><?= number_format($pmpzi_matrix['hasil']['persen'] ?? 75.00, 2) ?>%</td>
+                            <td colspan="2" class="text-end pe-4 fw-bold text-info">Bobot Hasil: 40.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Box Indeks PMPZI Satuan Kerja Highlight -->
+            <div class="text-center py-4 bg-light rounded-bottom-4 border-top">
+                <div class="text-muted small text-uppercase fw-bold mb-1" style="letter-spacing: 1px;">Indeks PMPZI Satuan Kerja MAN 3 Banjar</div>
+                <div class="display-5 fw-bold text-primary font-monospace mb-1"><?= $pmpzi_matrix['indeks_satker'] ?? '68.67' ?></div>
+                <div class="badge bg-success-subtle text-success px-3.5 py-2 rounded-pill fw-bold fs-6 mb-3">
+                    <i class="bi bi-award-fill me-1"></i> Memenuhi Ambang Batas Pengusulan WBK Kemenag (≥ 60.00)
+                </div>
+                <div class="d-flex flex-wrap justify-content-center gap-2">
+                    <button type="button" class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2.5 shadow-sm" onclick="switchZiMainView('berkas')">
+                        <i class="bi bi-folder-check me-1"></i> Buka Bank & Arsip Berkas Eviden Pokja
+                    </button>
+                    <button type="button" class="btn btn-outline-success fw-bold rounded-pill px-4 py-2.5" data-bs-toggle="modal" data-bs-target="#modalUploadZi">
+                        <i class="bi bi-cloud-arrow-up-fill me-1"></i> + Unggah Eviden Baru
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- ═══ 3. SECTION DAFTAR & BANK BERKAS EVIDEN POKJA ═══ -->
+<div id="ziSectionBerkas" style="display: <?= ($main_tab ?? 'monitoring') === 'berkas' ? 'block' : 'none' ?>;">
 
 <!-- ═══ 2. KPI STRIP 6 AREA ZI ═══ -->
 <div class="container">
@@ -867,6 +1322,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
     </div>
 
 </div>
+</div> <!-- ═══ End #ziSectionBerkas ═══ -->
 
 <!-- ═══ 4. MODAL UNGGAH EVIDEN ZI ═══ -->
 <div class="modal fade" id="modalUploadZi" tabindex="-1" aria-labelledby="modalUploadZiLabel" aria-hidden="true">
@@ -1948,5 +2404,323 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </div>
+
+<!-- ═══ MODAL DETAIL EVIDEN & INSTRUMEN PMPZI ═══ -->
+<div class="modal fade" id="modalPmpziEvidenceDetail" tabindex="-1" aria-labelledby="modalPmpziEvidenceDetailLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            
+            <div class="modal-header border-0 bg-success text-white px-4 py-3" style="background: linear-gradient(135deg, #064e3b 0%, #059669 100%);">
+                <div>
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="badge bg-warning text-dark fw-bold rounded-pill" style="font-size: 11px;">
+                            <i class="bi bi-shield-check me-1"></i> PMPZI Kemenag RI 2026
+                        </span>
+                        <span class="badge bg-white text-dark fw-bold rounded-pill" style="font-size: 11px;" id="modalPmpziBadgeKode">
+                            KODE: -
+                        </span>
+                    </div>
+                    <h5 class="modal-title fw-bold text-white mb-0" id="modalPmpziEvidenceDetailLabel">
+                        Rincian Instrumen Eviden PMPZI
+                    </h5>
+                    <p class="small text-white-50 mb-0" id="modalPmpziSubLabel">
+                        Area &amp; Aspek Penilaian
+                    </p>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-0">
+                <!-- Strip Capaian Area -->
+                <div class="bg-light p-3 border-bottom d-flex flex-wrap align-items-center justify-content-between gap-3 px-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <div>
+                            <span class="small text-muted d-block" style="font-size: 11px;">Nilai Capaian:</span>
+                            <span class="fw-bold font-monospace fs-5 text-dark" id="modalPmpziNilai">-</span>
+                        </div>
+                        <div class="vr"></div>
+                        <div>
+                            <span class="small text-muted d-block" style="font-size: 11px;">Persentase Capaian:</span>
+                            <span class="badge bg-success-subtle text-success fs-6 font-monospace fw-bold" id="modalPmpziPersen">- %</span>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3 fw-bold" id="btnModalUploadForThisPokja">
+                            <i class="bi bi-cloud-arrow-up-fill me-1"></i> + Unggah Eviden untuk Pokja Ini
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold shadow-xs" id="btnModalViewAllInArchive">
+                            <i class="bi bi-folder2-open me-1"></i> Buka di Bank Berkas
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Container Tabel Butir Pertanyaan -->
+                <div class="p-4">
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-top mb-0" style="font-size: 13px;" id="tablePmpziDetailItems">
+                            <thead class="table-light">
+                                <tr class="text-uppercase" style="font-size: 11.5px; letter-spacing: 0.5px;">
+                                    <th class="text-center" style="width: 50px;">NO</th>
+                                    <th style="min-width: 320px;">PENILAIAN (KRITERIA &amp; PERTANYAAN RESMI)</th>
+                                    <th class="text-center" style="width: 80px;">JAWABAN</th>
+                                    <th style="min-width: 250px;">NAMA / PERSYARATAN DOKUMEN PENDUKUNG</th>
+                                    <th style="min-width: 240px;">EVIDEN TERUNGGAH DI LABSYS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyPmpziDetailItems">
+                                <!-- Rendered dynamically via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer border-0 bg-light p-3 rounded-bottom-4 justify-content-between">
+                <span class="text-muted small" style="font-size: 12px;">
+                    <i class="bi bi-info-circle me-1"></i>Instrumen penilaian diekstrak langsung dari formulir resmi PMPZI Kemenag RI Permenpan RB 90/2021.
+                </span>
+                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+const pmpziMatrixMaster = <?= json_encode($pmpzi_matrix ?? []) ?>;
+const allDownloadDocs = <?= json_encode(array_map(function($d){
+    return [
+        'id'          => $d->id,
+        'judul'       => $d->judul,
+        'area_zi'     => strtolower($d->area_zi ?? ''),
+        'tipe_sumber' => $d->tipe_sumber,
+        'file_path'   => $d->file_path,
+        'file_ext'    => $d->file_ext ?? '',
+        'link_drive'  => $d->link_drive,
+        'pengunggah'  => $d->pengunggah,
+        'tanggal'     => $d->tanggal
+    ];
+}, $downloads)) ?>;
+
+function switchZiMainView(mode) {
+    const secMonitoring = document.getElementById('ziSectionMonitoring');
+    const secBerkas = document.getElementById('ziSectionBerkas');
+    const btnMonitoring = document.getElementById('ziTabMonitoringBtn');
+    const btnBerkas = document.getElementById('ziTabBerkasBtn');
+
+    if (mode === 'monitoring') {
+        if (secMonitoring) secMonitoring.style.display = 'block';
+        if (secBerkas) secBerkas.style.display = 'none';
+
+        if (btnMonitoring) {
+            btnMonitoring.classList.add('active', 'bg-success', 'text-white');
+            btnMonitoring.classList.remove('text-dark');
+            const b = btnMonitoring.querySelector('.badge');
+            if (b) b.className = 'badge bg-white text-success rounded-pill font-monospace';
+        }
+        if (btnBerkas) {
+            btnBerkas.classList.remove('active', 'bg-primary', 'text-white');
+            btnBerkas.classList.add('text-dark');
+            const b = btnBerkas.querySelector('.badge');
+            if (b) b.className = 'badge bg-primary text-white rounded-pill font-monospace';
+        }
+        const url = new URL(window.location);
+        url.searchParams.set('tab', 'monitoring');
+        window.history.replaceState({}, '', url);
+    } else {
+        if (secMonitoring) secMonitoring.style.display = 'none';
+        if (secBerkas) secBerkas.style.display = 'block';
+
+        if (btnBerkas) {
+            btnBerkas.classList.add('active', 'bg-primary', 'text-white');
+            btnBerkas.classList.remove('text-dark');
+            const b = btnBerkas.querySelector('.badge');
+            if (b) b.className = 'badge bg-white text-primary rounded-pill font-monospace';
+        }
+        if (btnMonitoring) {
+            btnMonitoring.classList.remove('active', 'bg-success', 'text-white');
+            btnMonitoring.classList.add('text-dark');
+            const b = btnMonitoring.querySelector('.badge');
+            if (b) b.className = 'badge bg-success text-white rounded-pill font-monospace';
+        }
+        const url = new URL(window.location);
+        url.searchParams.set('tab', 'berkas');
+        window.history.replaceState({}, '', url);
+    }
+}
+
+function openPmpziDetailModal(kodeEv, namaArea, aspek, nilai, persen) {
+    const modalEl = document.getElementById('modalPmpziEvidenceDetail');
+    if (!modalEl) return;
+
+    // Mapping kode_ev ke area_key
+    const codeAreaMap = {
+        'A.1.1': 'area1', 'A.2.1': 'area1',
+        'A.1.2': 'area2', 'A.2.2': 'area2',
+        'A.1.3': 'area3', 'A.2.3': 'area3',
+        'A.1.4': 'area4', 'A.2.4': 'area4',
+        'A.1.5': 'area5', 'A.2.5': 'area5',
+        'A.1.6': 'area6', 'A.2.6': 'area6',
+        'B.1': 'area4', 'B.2': 'area6'
+    };
+    const targetAreaKey = codeAreaMap[kodeEv] || 'area1';
+
+    // Set Labels
+    document.getElementById('modalPmpziBadgeKode').textContent = 'KODE: ' + kodeEv;
+    document.getElementById('modalPmpziEvidenceDetailLabel').textContent = 'EVIDENCE ' + namaArea.toUpperCase() + ' - ASPEK ' + aspek.toUpperCase();
+    document.getElementById('modalPmpziSubLabel').textContent = 'Instrumen Penilaian PMPZI Tahun 2026 (Sesuai Permenpan 90/2021)';
+    document.getElementById('modalPmpziNilai').textContent = parseFloat(nilai).toFixed(2);
+    document.getElementById('modalPmpziPersen').textContent = parseFloat(persen).toFixed(2) + '%';
+
+    // Setup Action Buttons
+    const btnUpload = document.getElementById('btnModalUploadForThisPokja');
+    if (btnUpload) {
+        btnUpload.onclick = function() {
+            const bsDetail = bootstrap.Modal.getInstance(modalEl);
+            if (bsDetail) bsDetail.hide();
+            
+            const modalUpload = new bootstrap.Modal(document.getElementById('modalUploadZi'));
+            const selectArea = document.getElementById('uploadZiArea');
+            if (selectArea) {
+                selectArea.value = targetAreaKey;
+                selectArea.dispatchEvent(new Event('change'));
+            }
+            modalUpload.show();
+        };
+    }
+
+    const btnViewArchive = document.getElementById('btnModalViewAllInArchive');
+    if (btnViewArchive) {
+        btnViewArchive.onclick = function() {
+            const bsDetail = bootstrap.Modal.getInstance(modalEl);
+            if (bsDetail) bsDetail.hide();
+            switchZiMainView('berkas');
+            selectZiArea(targetAreaKey);
+        };
+    }
+
+    // Ambil berkas LabSys yang relevan
+    const relevantDocs = allDownloadDocs.filter(d => d.area_zi === targetAreaKey);
+
+    // Cari detail butir dari master JSON
+    let subKomponenList = [];
+    const pokjaList = pmpziMatrixMaster.detail_lke && pmpziMatrixMaster.detail_lke.pokja ? pmpziMatrixMaster.detail_lke.pokja : [];
+    
+    for (const p of pokjaList) {
+        if (p.aspek) {
+            for (const asp of p.aspek) {
+                if (asp.kode_evidence === kodeEv && asp.sub_komponen) {
+                    subKomponenList = asp.sub_komponen;
+                    break;
+                }
+            }
+        }
+        if (subKomponenList.length > 0) break;
+    }
+
+    const tbody = document.getElementById('tbodyPmpziDetailItems');
+    tbody.innerHTML = '';
+
+    if (subKomponenList.length === 0) {
+        let fallbackDocsHtml = '';
+        if (relevantDocs.length > 0) {
+            fallbackDocsHtml = relevantDocs.map(d => `
+                <div class="p-2 mb-1 bg-light rounded border small d-flex align-items-center justify-content-between">
+                    <span class="text-truncate me-2" style="max-width: 170px;"><i class="bi bi-file-earmark-check text-success me-1"></i>${d.judul}</span>
+                    <button class="btn btn-xs btn-outline-primary rounded-pill py-0 px-2" style="font-size: 11px;" onclick="previewDoc('${d.file_path || d.link_drive}', '${d.judul.replace(/'/g, "\\'")}', '${d.file_ext || 'pdf'}')">Buka</button>
+                </div>
+            `).join('');
+        } else {
+            fallbackDocsHtml = '<span class="text-muted small"><i class="bi bi-exclamation-circle text-warning me-1"></i>Belum ada berkas</span>';
+        }
+
+        tbody.innerHTML = `
+            <tr>
+                <td class="text-center fw-bold">1</td>
+                <td>
+                    <strong class="text-primary d-block mb-1">${namaArea}</strong>
+                    <span class="text-muted small">Kriteria pemenuhan eviden reformasi birokrasi dan capaian kinerja satuan kerja madrasah.</span>
+                </td>
+                <td class="text-center"><span class="badge bg-success-subtle text-success">Y / A</span></td>
+                <td>
+                    <span class="small text-dark fw-semibold">Dokumen Bukti Fisik / Digital:</span>
+                    <p class="small text-muted mb-0">Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital.</p>
+                </td>
+                <td>
+                    ${fallbackDocsHtml}
+                    <button type="button" class="btn btn-outline-success btn-sm rounded-pill mt-2 py-0.5 px-2 w-100" style="font-size: 11px;" onclick="document.getElementById('btnModalUploadForThisPokja').click()">
+                        <i class="bi bi-plus me-1"></i>Unggah Eviden
+                    </button>
+                </td>
+            </tr>
+        `;
+    } else {
+        let globalItemIndex = 1;
+        subKomponenList.forEach(sub => {
+            const trSub = document.createElement('tr');
+            trSub.className = 'table-light fw-bold';
+            trSub.innerHTML = `
+                <td class="text-center bg-light text-muted fw-bold">${sub.kode || ''}</td>
+                <td colspan="4" class="text-success fw-bold py-2">
+                    <i class="bi bi-folder2 me-1"></i> ${sub.judul}
+                </td>
+            `;
+            tbody.appendChild(trSub);
+
+            if (sub.indikator && sub.indikator.length > 0) {
+                sub.indikator.forEach(ind => {
+                    const tr = document.createElement('tr');
+                    
+                    let docsHtml = '';
+                    if (relevantDocs.length > 0) {
+                        docsHtml = relevantDocs.slice(0, 2).map(d => `
+                            <div class="p-1.5 mb-1 bg-light rounded border small d-flex align-items-center justify-content-between" style="font-size: 11.5px;">
+                                <span class="text-truncate me-1" style="max-width: 150px;"><i class="bi bi-file-earmark-check text-success me-1"></i>${d.judul}</span>
+                                <button class="btn btn-outline-primary rounded-pill py-0 px-2" style="font-size: 10px;" onclick="previewDoc('${d.file_path || d.link_drive}', '${d.judul.replace(/'/g, "\\'")}', '${d.file_ext || 'pdf'}')">Buka</button>
+                            </div>
+                        `).join('');
+                        if (relevantDocs.length > 2) {
+                            docsHtml += `<small class="text-muted d-block mt-1">+${relevantDocs.length - 2} berkas lainnya di LabSys</small>`;
+                        }
+                    } else {
+                        docsHtml = '<span class="text-muted small" style="font-size: 11.5px;"><i class="bi bi-exclamation-circle text-warning me-1"></i>Belum ada berkas</span>';
+                    }
+
+                    tr.innerHTML = `
+                        <td class="text-center fw-bold text-muted">${globalItemIndex++}</td>
+                        <td>
+                            <strong class="text-primary d-block mb-1" style="font-size: 13px;">${ind.pertanyaan}</strong>
+                            <div class="small text-muted" style="font-size: 11.5px; line-height: 1.4;">
+                                <strong>Kriteria:</strong> ${ind.keterangan ? ind.keterangan.replace(/\\n/g, '<br>') : '-'}
+                            </div>
+                        </td>
+                        <td class="text-center align-middle">
+                            <span class="badge bg-success-subtle text-success border border-success-subtle font-monospace fw-bold" style="font-size: 12px;">Y / A</span>
+                        </td>
+                        <td>
+                            <div class="small text-dark fw-semibold mb-1" style="font-size: 12px;">
+                                <i class="bi bi-file-earmark-text text-secondary me-1"></i>Dokumen Wajib:
+                            </div>
+                            <div class="small text-muted" style="font-size: 11.5px; line-height: 1.4;">
+                                ${ind.eviden_wajib || 'SK Tim, Laporan, Dokumentasi rapat / notula, foto kegiatan, atau link aplikasi.'}
+                            </div>
+                        </td>
+                        <td>
+                            ${docsHtml}
+                            <button type="button" class="btn btn-outline-success btn-sm rounded-pill mt-1 py-0.5 px-2 w-100" style="font-size: 11px;" onclick="document.getElementById('btnModalUploadForThisPokja').click()">
+                                <i class="bi bi-plus me-1"></i>Unggah Eviden
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        });
+    }
+
+    const bsModal = new bootstrap.Modal(modalEl);
+    bsModal.show();
+}
+</script>
 
 <?php $this->load->view('public/partials/archive_footer'); ?>
