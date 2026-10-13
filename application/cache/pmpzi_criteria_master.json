@@ -1,0 +1,1584 @@
+{
+    "A.1.1": {
+        "kode_evidence": "A.1.1",
+        "pokja": "Manajemen Perubahan",
+        "aspek": "Pemenuhan",
+        "area_key": "area1",
+        "sub_komponen": [
+            {
+                "kode": "2",
+                "judul": "Penyusunan Tim Kerja (0.5)",
+                "indikator": [
+                    {
+                        "no": "3",
+                        "kode_item": "A.1.1.1.a",
+                        "pertanyaan": "Unit kerja telah membentuk tim untuk melakukan pembangunan Zona Integritas",
+                        "keterangan": "Ya, jika Tim telah dibentuk di dalam unit kerja.",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "4",
+                        "kode_item": "A.1.1.1.b",
+                        "pertanyaan": "Penentuan anggota Tim dipilih melalui prosedur\/mekanisme yang jelas",
+                        "keterangan": "a. Jika dengan prosedur\/mekanisme yang jelas dan mewakili seluruh unsur dalam unit kerja\nb. Jika sebagian menggunakan prosedur yang mewakili sebagian besar unsur dalam unit kerja\nc. Jika tidak di seleksi.",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "5",
+                "judul": "Rencana Pembangunan Zona Integritas (1)",
+                "indikator": [
+                    {
+                        "no": "6",
+                        "kode_item": "A.1.1.2.a",
+                        "pertanyaan": "Terdapat dokumen rencana kerja pembangunan Zona Integritas menuju WBK\/WBBM",
+                        "keterangan": "Ya, jika memiliki  rencana kerja pembangunan Zona Integritas.",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "7",
+                        "kode_item": "A.1.1.2.b",
+                        "pertanyaan": "Dalam dokumen pembangunan terdapat target-target prioritas yang relevan dengan tujuan pembangunan WBK\/WBBM",
+                        "keterangan": "a. Jika semua target-target prioritas relevan dengan tujuanpembangunan WBK\/WBBM\nb. Jika sebagian target-target prioritas relevan dengan tujuan pembangunan WBK\/WBBM\nc. Jika tidak ada target-target prioritas yang relevan dengan tujuan pembangunan WBK\/WBBM",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "8",
+                        "kode_item": "A.1.1.2.c",
+                        "pertanyaan": "Terdapat mekanisme atau media untuk mensosialisasikan pembangunan WBK\/WBBM",
+                        "keterangan": "a. Jika telah dilakukan pengelolaan media\/aktivitas interaktif yang efektif untuk menginformasikan pembangunan ZI kepada internal dan stakeholder secara berkala\nb. Jika pengelolaan media\/aktivitas interaktif dilakukan secara terbatas dan tidak secara berkala\nc. Jika pengelolaan media\/aktivitas interaktif belum dilakukan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "9",
+                "judul": "Pemantauan dan Evaluasi Pembangunan WBK\/WBBM (1)",
+                "indikator": [
+                    {
+                        "no": "10",
+                        "kode_item": "A.1.1.3.a",
+                        "pertanyaan": "Seluruh kegiatan pembangunan sudah dilaksanakan sesuai dengan rencana",
+                        "keterangan": "a. Jika semua kegiatan pembangunan telah dilaksanakan sesuai dengan rencana\nb. Jika sebagian besar kegiatan pembangunan telah dilaksanakan sesuai dengan rencana\nc. Jika sebagian kecil kegiatan pembangunan telah dilaksanakan sesuai dengan rencana\nd. Jika belum ada kegiatan pembangunan yang dilakukan sesuai dengan rencana",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "11",
+                        "kode_item": "A.1.1.3.b",
+                        "pertanyaan": "Terdapat monitoring dan evaluasi terhadap pembangunan Zona Integritas",
+                        "keterangan": "a. Jika monitoring dan evaluasi melibatkan pimpinan dan dilakukan secara berkala\nb. Jika monitoring dan evaluasi melibatkan pimpinan tetapi tidak secara berkala\nc. Jika monitoring dan evaluasi tidak melibatkan pimpinan dan tidak secara berkala\nd. Jika tidak terdapat monitoring dan evaluasi terhadap pembangunan zona integritas",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "12",
+                        "kode_item": "A.1.1.3.c",
+                        "pertanyaan": "Hasil Monitoring dan Evaluasi telah ditindaklanjuti",
+                        "keterangan": "a. Jika semua catatan\/rekomendasi hasil  monitoring dan evaluasi tim internal atas persiapan dan pelaksanaan kegiatan Unit WBK\/WBBM telah ditindaklanjuti\nb. Jika sebagian besar catatan\/rekomendasi hasil monitoring danevaluasi tim internal atas persiapan dan pelaksanaan kegiatanUnit WBK\/WBBM telah ditindaklanjuti\nc. Jika sebagian kecil catatan\/rekomendasi hasil monitoring dan evaluasi tim internal atas persiapan dan pelaksanaan kegiatan Unit WBK\/WBBM telah ditindaklanjuti\nd. Jika catatan\/rekomendasi hasil monitoring dan evaluasi tim internal atas persiapan dan pelaksanaan kegiatan Unit WBK\/WBBM belum ditindaklanjuti",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "13",
+                "judul": "Perubahan pola pikir dan budaya kerja (1.5)",
+                "indikator": [
+                    {
+                        "no": "14",
+                        "kode_item": "A.1.1.4.a",
+                        "pertanyaan": "Pimpinan berperan sebagai role model dalam pelaksanaan Pembangunan WBK\/WBBM",
+                        "keterangan": "ya, jika pimpinan menjadi contoh pelaksanaan nilai-nilai organisasi.",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "15",
+                        "kode_item": "A.1.1.4.b",
+                        "pertanyaan": "Sudah ditetapkan agen perubahan",
+                        "keterangan": "a. Jika agen perubahan telah ditetapkan dan  berkontribusi terhadap perubahan pada unit kerjanya\nb. Jika agen perubahan telah ditetapkan namun belum berkontribusi terhadap perubahan pada unit kerjanya\nc. Jika belum terdapat agen perubahan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "16",
+                        "kode_item": "A.1.1.4.c",
+                        "pertanyaan": "Telah dibangun budaya kerja dan pola pikir di lingkungan organisasi",
+                        "keterangan": "a. Jika telah dilakukan upaya pembangunan budaya kerja dan pola pikir dan mampu mengurangi resistensi atas perubahan\nb. Jika telah dilakukan upaya pembangunan budaya kerja dan pola pikir tapi masih terdapat resistensi atas perubahan\nc. Jika belum terdapat upaya pembangunan budaya kerja dan pola pikir",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "17",
+                        "kode_item": "A.1.1.4.d",
+                        "pertanyaan": "Anggota organisasi terlibat dalam pembangunan Zona Integritas menuju WBK\/WBBM",
+                        "keterangan": "a. Jika semua anggota terlibat dalam pembangunan Zona Integritas menuju WBK\/WBBM dan usulan-usulan dari anggota diakomodasikan dalam keputusan\nb. Jika sebagian besar anggota terlibat dalam pembangunan Zona Integritas menuju WBK\/WBBM\nc. Jika sebagian kecil anggota terlibat dalam pembangunan Zona Integritas menuju WBK\/WBBM\nd. Jika belum ada anggota terlibat dalam pembangunan Zona Integritas menuju WBK\/WBBM",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            }
+        ]
+    },
+    "A.1.2": {
+        "kode_evidence": "A.1.2",
+        "pokja": "Penataan Tatalaksana",
+        "aspek": "Pemenuhan",
+        "area_key": "area2",
+        "sub_komponen": [
+            {
+                "kode": "2",
+                "judul": "Prosedur Operasional Tetap (SOP) Kegiatan Utama (1)",
+                "indikator": [
+                    {
+                        "no": "3",
+                        "kode_item": "A.1.2.1.a",
+                        "pertanyaan": "SOP mengacu pada peta proses bisnis instansi",
+                        "keterangan": "a. Jika semua SOP unit telah mengacu peta proses bisnis dan juga melakukan inovasi yang selaras\nb. Jika semua SOP unit telah mengacu peta proses bisnis\nc. Jika sebagian SOP unit telah mengacu peta proses bisnis\nd. Jika belum terdapat SOP unit yang mengacu peta proses bisnis",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "4",
+                        "kode_item": "A.1.2.1.b",
+                        "pertanyaan": "Prosedur operasional tetap (SOP) telah diterapkan",
+                        "keterangan": "a. Jika unit telah menerapkan seluruh SOP yang ditetapkan organisasi dan juga melakukan inovasi pada SOP yang diterapkan\nb. Jika unit telah menerapkan seluruh SOP yang ditetapkan organisasi\nc. Jika unit telah menerapkan sebagian besar SOP yang ditetapkan organisasi\nd. Jika unit telah menerapkan sebagian kecil SOP yang ditetapkan organisasi\ne. Jika unit belum menerapkan SOP yang telah ditetapkan organisasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "5",
+                        "kode_item": "A.1.2.1.c",
+                        "pertanyaan": "Prosedur operasional tetap (SOP) telah dievaluasi",
+                        "keterangan": "a. Jika seluruh SOP utama telah dievaluasi dan telah ditindaklanjuti berupa perbaikan SOP atau usulan perbaikan SOP\nb. Jika sebagian besar SOP utama telah dievaluasi dan telah ditindaklanjuti berupa perbaikan SOP atau usulan perbaikan SOP\nc. Jika sebagian besar SOP utama telah dievaluasi tetapi belum ditindaklanjuti\nd. Jika sebagian kecil SOP utama telah dievaluasi\ne. Jika SOP belum pernah dievaluasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "6",
+                "judul": "Sistem Pemerintahan Berbasis Elektronik (SPBE) (2)",
+                "indikator": [
+                    {
+                        "no": "7",
+                        "kode_item": "A.1.2.2.a",
+                        "pertanyaan": "Sistem pengukuran kinerja unit sudah menggunakan teknologi informasi",
+                        "keterangan": "a. Jika unit memiliki sistem pengukuran kinerja (e-performance\/e-sakip) yang menggunakan teknologi informasi dan juga melakukan inovasi\nb. Jika unit memiliki sistem pengukuran kinerja (e-performance\/e-sakip) yang menggunakan teknologi informasi\nc. Jika belum memiliki sistem pengukuran kinerja (e-performance\/e-sakip) yang menggunakan teknologi informasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "8",
+                        "kode_item": "A.1.2.2.b",
+                        "pertanyaan": "Operasionalisasi manajemen SDM sudah menggunakan teknologi informasi",
+                        "keterangan": "a. Jika unit memiliki operasionalisasi manajemen SDM yang menggunakan teknologi informasi dan juga melakukan inovasi\nb. Jika unit memiliki operasionalisasi manajemen SDM yang menggunakan teknologi informasi secara terpusat\nc. Jika belum menggunakan teknologi informasi dalam operasionalisasi manajemen SDM",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "9",
+                        "kode_item": "A.1.2.2.c",
+                        "pertanyaan": "Pemberian pelayanan kepada publik sudah menggunakan teknologi informasi",
+                        "keterangan": "a. Jika unit memberikan pelayanan kepada publik dengan menggunakan teknologi informasi terpusat\/unit sendiri dan terdapat inovasi\nb. Jika unit memberikan pelayanan kepada publik dengan menggunakan teknologi informasi secara terpusat\nc. Jika belum memberikan pelayanan kepada publik dengan menggunakan teknologi informasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "10",
+                        "kode_item": "A.1.2.2.d",
+                        "pertanyaan": "Telah dilakukan monitoring dan dan evaluasi terhadap pemanfaatan teknologi informasi dalam pengukuran kinerja unit, operasionalisasi SDM, dan pemberian layanan kepada publik",
+                        "keterangan": "a. Jika laporan monitoring dan evaluasi terhadap pemanfaatan teknologi informasi dalam pengukuran kinerja unit, operasionalisasi SDM, dan pemberian layanan kepada publik sudah dilakukan secara berkala\nb. Jika laporan monitoring dan evaluasi terhadap pemanfaatan teknologi informasi dalam pengukuran kinerja unit, operasionalisasi SDM, dan pemberian layanan kepada publik sudah dilakukan tetapi tidak secara berkala\nc. Jika tidak terdapat monitoring dan evaluasi terhadap pemanfaatan teknologi informasi dalam pengukuran kinerja unit, operasionalisasi SDM, dan pemberian layanan kepada publik",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "11",
+                "judul": "Keterbukaan Informasi Publik (0.5)",
+                "indikator": [
+                    {
+                        "no": "12",
+                        "kode_item": "A.1.2.3.a",
+                        "pertanyaan": "Kebijakan tentang  keterbukaan informasi publik telah diterapkan",
+                        "keterangan": "a. Jika sudah terdapat Pejabat Pengelola Informasi Publik (PPID) yang menyebarkan seluruh informasi yang dapat diakses secara mutakhir dan lengkap\nb. Jika sudah terdapat PPID yang menyebarkan sebagian informasi yang dapat diakses secara mutakhir dan lengkap\nc. Jika belum ada PPID dan belum melakukan penyebaran informasi publik",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "13",
+                        "kode_item": "A.1.2.3.b",
+                        "pertanyaan": "Telah dilakukan monitoring dan evaluasi pelaksanaan kebijakan keterbukaan informasi publik",
+                        "keterangan": "a. Jika dilakukan monitoring dan evaluasi pelaksanaan kebijakan keterbukaan informasi publik dan telah ditindaklanjuti\nb. Jika monitoring dan evaluasi pelaksanaan kebijakan keterbukaan informasi publik telah dilakukan tetapi belum ditindaklanjuti\nc. Jika monitoring dan evaluasi pelaksanaan kebijakan keterbukaan informasi publik belum dilakukan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            }
+        ]
+    },
+    "A.1.3": {
+        "kode_evidence": "A.1.3",
+        "pokja": "Penataan Sistem Manajemen SDM Aparatur",
+        "aspek": "Pemenuhan",
+        "area_key": "area3",
+        "sub_komponen": [
+            {
+                "kode": "2",
+                "judul": "Perencanaan Kebutuhan Pegawai sesuai dengan Kebutuhan Organisasi (0.25)",
+                "indikator": [
+                    {
+                        "no": "3",
+                        "kode_item": "A.1.3.1.a",
+                        "pertanyaan": "Kebutuhan pegawai yang disusun oleh unit kerja mengacu kepada peta jabatan dan hasil analisis beban kerja untuk masing-masing jabatan",
+                        "keterangan": "Ya, jika kebutuhan pegawai yang disusun oleh unit kerja mengacu kepada peta jabatan dan hasil analisis beban kerja untuk masing-masing jabatan.",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "4",
+                        "kode_item": "A.1.3.1.b",
+                        "pertanyaan": "Penempatan pegawai hasil rekrutmen murni mengacu kepada kebutuhan pegawai yang telah disusun per jabatan",
+                        "keterangan": "a. Jika semua penempatan pegawai hasil rekrutmen murni mengacu kepada kebutuhan pegawai yang telah disusun per jabatan\nb. Jika sebagian besar penempatan pegawai hasil rekrutmen murni mengacu kepada kebutuhan pegawai yang telah disusun per jabatan\nc. Jika sebagian kecil penempatan pegawai hasil rekrutmen murni mengacu kepada kebutuhan pegawai yang telah disusun per jabatan\nd. Jika penempatan pegawai hasil rekrutmen murni tidak mengacu kepada kebutuhan pegawai yang telah disusun per jabatan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "5",
+                        "kode_item": "A.1.3.1.c",
+                        "pertanyaan": "Telah dilakukan monitoring dan dan evaluasi terhadap penempatan pegawai rekrutmen untuk memenuhi kebutuhan jabatan dalam organisasi telah memberikan perbaikan terhadap kinerja unit kerja",
+                        "keterangan": "Ya, jika sudah dilakukan monitoring dan evaluasi terhadap penempatan pegawai hasil rekrutmen untuk memenuhi kebutuhan jabatan dalam organisasi telah memberikan perbaikan terhadap kinerja unit kerja.",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "6",
+                "judul": "Pola Mutasi Internal (0.5)",
+                "indikator": [
+                    {
+                        "no": "7",
+                        "kode_item": "A.1.3.2.a",
+                        "pertanyaan": "Dalam melakukan pengembangan karier pegawai, telah dilakukan mutasi pegawai antar jabatan",
+                        "keterangan": "Ya, jika dilakukan mutasi pegawai antar jabatan sebagai wujud dari pengembangan karier pegawai.",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "8",
+                        "kode_item": "A.1.3.2.b",
+                        "pertanyaan": "Dalam melakukan mutasi pegawai antar jabatan telah memperhatikan kompetensi jabatan dan mengikuti pola mutasi yang telah ditetapkan",
+                        "keterangan": "a. Jika semua mutasi pegawai antar jabatan telah memperhatikan kompetensi jabatan dan mengikuti pola mutasi yang telah ditetapkan organisasi dan juga unit kerja memberikan pertimbangan terkait hal ini\nb. Jika semua mutasi pegawai antar jabatan telah memperhatikan kompetensi jabatan dan mengikuti pola mutasi yang telah ditetapkan organisasi\nc. Jika sebagian besar mutasi pegawai antar jabatan telah memperhatikan kompetensi jabatan dan mengikuti pola mutasi yang telah ditetapkan organisasi\nd. Jika sebagian kecil semua mutasi pegawai antar jabatan telah memperhatikan kompetensi jabatan dan mengikuti pola mutasi yang telah ditetapkan organisasi\ne. Jika mutasi pegawai antar jabatan belum memperhatikan kompetensi jabatan dan mengikuti pola mutasi yang telah ditetapkan organisasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "9",
+                        "kode_item": "A.1.3.2.c",
+                        "pertanyaan": "Telah dilakukan monitoring dan evaluasi terhadap kegiatan mutasi yang telah dilakukan dalam kaitannya dengan perbaikan kinerja",
+                        "keterangan": "Ya, jika sudah dilakukan monitoring dan evaluasi terhadap kegiatan mutasi yang telah dilakukan dalam kaitannya dengan perbaikan kinerja.",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "10",
+                "judul": "Pengembangan Pegawai Berbasis Kompetensi (1.25)",
+                "indikator": [
+                    {
+                        "no": "11",
+                        "kode_item": "A.1.3.3.a",
+                        "pertanyaan": "Unit Kerja melakukan Training Need Analysis Untuk pengembangan kompetensi",
+                        "keterangan": "Ya, jika sudah dilakukan Training Need Analysis Untuk pengembangan kompetensi.",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "12",
+                        "kode_item": "A.1.3.3.b",
+                        "pertanyaan": "Dalam menyusun rencana pengembangan kompetensi pegawai, telah mempertimbangkan hasil pengelolaan kinerja pegawai",
+                        "keterangan": "a. Jika semua rencana pengembangan kompetensi pegawai mempertimbangkan hasil pengelolaan kinerja pegawai\nb. Jika sebagian besar rencana pengembangan kompetensi pegawai mempertimbangkan hasil pengelolaan kinerja pegawai\nc. Jika sebagian kecil rencana pengembangan kompetensi pegawai mempertimbangkan hasil pengelolaan kinerja pegawai\nd. Jika belum ada rencana pengembangan kompetensi pegawai yang mempertimbangkan hasil pengelolaan kinerja pegawai",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "13",
+                        "kode_item": "A.1.3.3.c",
+                        "pertanyaan": "Tingkat kesenjangan kompetensi pegawai yang ada dengan standar kompetensi yang ditetapkan untuk masing-masing jabatan",
+                        "keterangan": "a. Jika persentase kesenjangan kompetensi pegawai dengan standar kompetensi yang ditetapkan sebesar \nb. Jika persentase kesenjangan kompetensi pegawai dengan standar kompetensi yang ditetapkan sebesar >25%-50%\nc. Jika  sebagian besar kompetensi pegawai dengan standar kompetensi yang ditetapkan untuk masing-masing jabatan >50% -75%\nd. Jika persentase kesenjangan kompetensi pegawai dengan standar kompetensi yang ditetapkan sebesar >75%-100%",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "14",
+                        "kode_item": "A.1.3.3.d",
+                        "pertanyaan": "Pegawai di Unit Kerja telah memperoleh kesempatan\/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya",
+                        "keterangan": "a. Jika seluruh pegawai di Unit Kerja telah memperoleh kesempatan\/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya\nb. Jika sebagian besar pegawai di Unit Kerja telah memperoleh kesempatan\/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya\nc. Jika sebagian kecil pegawai di Unit Kerja telah memperoleh kesempatan\/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya\nd. Jika belum ada pegawai di Unit Kerja telah memperoleh kesempatan\/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "15",
+                        "kode_item": "A.1.3.3.e",
+                        "pertanyaan": "Dalam pelaksanaan pengembangan kompetensi, unit kerja melakukan upaya pengembangan kompetensi kepada pegawai (seperti pengikutsertaan pada lembaga pelatihan, in-house training, coaching, atau mentoring)",
+                        "keterangan": "a. Jika unit kerja melakukan upaya pengembangan kompetensi kepada seluruh pegawai\nb. Jika unit kerja melakukan upaya pengembangan kompetensi kepada sebagian besar pegawai\nc. Jika unit kerja melakukan upaya pengembangan kompetensi kepada sebagian kecil pegawai\nd. Jika unit kerja belum melakukan upaya pengembangan kompetensi kepada pegawai",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "16",
+                        "kode_item": "A.1.3.3.f",
+                        "pertanyaan": "Telah dilakukan monitoring dan evaluasi terhadap hasil pengembangan kompetensi dalam kaitannya dengan perbaikan kinerja",
+                        "keterangan": "a. Jika monitoring dan evaluasi terhadap hasil pengembangan kompetensi dalam kaitannya dengan perbaikan kinerja telah dilakukan secara berkala\nb. Jika monitoring dan evaluasi terhadap hasil pengembangan kompetensi dalam kaitannya dengan perbaikan kinerja telah dilakukan namun tidak secara berkala\nc. Jika monitoring dan evaluasi terhadap hasil pengembangan kompetensi dalam kaitannya dengan perbaikan kinerja belum dilakukan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "17",
+                "judul": "Penetapan Kinerja Individu (2)",
+                "indikator": [
+                    {
+                        "no": "18",
+                        "kode_item": "A.1.3.4.a",
+                        "pertanyaan": "Terdapat penetapan kinerja individu yang terkait dengan perjanjian kinerja organisasi",
+                        "keterangan": "a. Jika seluruh penetapan kinerja individu terkait dengan kinerja organisasi serta perjanjian kinerja selaras dengan sasaran kinerja pegawai (SKP)\nb. Jika sebagian besar penetapan kinerja individu terkait dengan kinerja organisasi\nc. Jika sebagian kecil penetapan kinerja individu terkait dengan kinerja organisasi\nd. Jika belum ada penetapan kinerja individu terkait dengan kinerja organisasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "19",
+                        "kode_item": "A.1.3.4.b",
+                        "pertanyaan": "Ukuran kinerja individu telah memiliki kesesuaian dengan indikator kinerja individu level diatasnya",
+                        "keterangan": "a. Jika seluruh ukuran kinerja individu telah memiliki kesesuaian dengan indikator kinerja individu level diatasnya serta menggambarkan logic model\nb. Jika sebagian besar ukuran kinerja individu telah memiliki kesesuaian dengan indikator kinerja individu level diatasnya\nc. Jika sebagian kecil ukuran kinerja individu telah memiliki kesesuaian dengan indikator kinerja individu level diatasnya\nd. Jika ukuran kinerja individu belum memiliki kesesuaian dengan indikator kinerja individu level diatasnya",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "20",
+                        "kode_item": "A.1.3.4.c",
+                        "pertanyaan": "Pengukuran kinerja individu dilakukan secara periodik",
+                        "keterangan": "a. Jika pengukuran kinerja individu dilakukan secara bulanan\nb. Jika pengukuran kinerja individu dilakukan secara triwulanan\nc. Jika pengukuran kinerja individu dilakukan secara semesteran\nd. Jika pengukuran kinerja individu dilakukan secara tahunan\ne. Jika pengukuran kinerja individu belum dilakukan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "21",
+                        "kode_item": "A.1.3.4.d",
+                        "pertanyaan": "Hasil penilaian kinerja individu telah dijadikan dasar untuk pemberian reward",
+                        "keterangan": "Ya, jika hasil hasil penilaian kinerja individu telah dijadikan dasar untuk pemberian reward (Seperti: pengembangan karir individu, atau penghargaan)",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "22",
+                "judul": "Penegakan Aturan Disiplin\/Kode Etik\/Kode Perilaku Pegawai (0.75)",
+                "indikator": [
+                    {
+                        "no": "23",
+                        "kode_item": "A.1.3.5.a",
+                        "pertanyaan": "Aturan disiplin\/kode etik\/kode perilaku telah dilaksanakan\/diimplementasikan",
+                        "keterangan": "a. Jika unit kerja telah mengimplementasikan seluruh aturan disiplin\/kode etik\/kode perilaku yang ditetapkan organisasi dan juga membuat inovasi terkait aturan disiplin\/kode etik\/kode perilaku yang sesuai dengan karakteristik unit kerja\nb. Jika unit kerja telah mengimplementasikan seluruh aturan disiplin\/kode etik\/kode perilaku yang ditetapkan organisasi\nc. Jika unit kerja telah mengimplementasikan sebagian aturan disiplin\/kode etik\/kode perilaku yang ditetapkan organisasi\nd. Jika unit kerja belum mengimplementasikan aturan disiplin\/kode etik\/kode perilaku yang ditetapkan organisasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "24",
+                "judul": "Sistem Informasi Kepegawaian (0.25)",
+                "indikator": [
+                    {
+                        "no": "25",
+                        "kode_item": "A.1.3.6.a",
+                        "pertanyaan": "Data informasi kepegawaian unit kerja telah dimutakhirkan secara berkala",
+                        "keterangan": "a. Jika data informasi kepegawaian unit kerja dapat diakses oleh pegawai dan dimutakhirkan setiap ada perubahan data pegawai\nb. Jika data informasi kepegawaian unit kerja dapat diakses oleh pegawai dan  dimutakhirkan namun secara berkala\nc. Jika data informasi kepegawaian unit kerja belum dimutakhirkan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            }
+        ]
+    },
+    "A.1.4": {
+        "kode_evidence": "A.1.4",
+        "pokja": "Penguatan Akuntabilitas",
+        "aspek": "Pemenuhan",
+        "area_key": "area4",
+        "sub_komponen": [
+            {
+                "kode": "2",
+                "judul": "Keterlibatan Pimpinan (2.5)",
+                "indikator": [
+                    {
+                        "no": "3",
+                        "kode_item": "A.1.4.1.a",
+                        "pertanyaan": "Unit kerja telah melibatkan pimpinan secara langsung pada saat penyusunan perencanaan",
+                        "keterangan": "a. Jika pimpinan selalu terlibat dalam seluruh tahapan penyusunan perencanaan\nb. Jika pimpinan ikut terlibat dalam sebagian tahapan penyusunan perencanaan\nc. Jika tidak ada keterlibatan pimpinan dalam penyusunan perencanaan (hanya menandatangani)",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "4",
+                        "kode_item": "A.1.4.1.b",
+                        "pertanyaan": "Unit kerja telah melibatkan secara langsung pimpinan saat penyusunan penetapan kinerja",
+                        "keterangan": "a. Jika pimpinan selalu terlibat dalam seluruh tahapan penyusunan perjanjian kinerja\nb. Jika pimpinan terlibat dalam sebagian tahapan penyusunan perjanjian kinerja\nc. Jika tidak ada keterlibatan pimpinan dalam penyusunan perjanjian kinerja",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "5",
+                        "kode_item": "A.1.4.1.c",
+                        "pertanyaan": "Pimpinan memantau pencapaian kinerja secara berkala",
+                        "keterangan": "a. Jika pimpinan selalu terlibat dalam seluruh pemantauan pencapaian kinerja dan menindaklanjuti hasil pemantauan\nb. Jika pimpinan unit kerja terlibat dalam seluruh pemantauan pencapaian kinerja tetapi tidak ada tindak lanjut hasil pemantauan\nc. Jika pimpinan unit kerja terlibat dalam sebagian pemantauan pencapaian kinerja\nd. Jika tidak ada keterlibatan pimpinan dalam pemantauan pencapaian kinerja",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "6",
+                "judul": "Pengelolaan Akuntabilitas Kinerja (2.5)",
+                "indikator": [
+                    {
+                        "no": "7",
+                        "kode_item": "A.1.4.2.a",
+                        "pertanyaan": "Dokumen perencanaan kinerja sudah ada",
+                        "keterangan": "ya, jika unit kerja memiliki dokumen perencanaan kinerja lengkap",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "8",
+                        "kode_item": "A.1.4.2.b",
+                        "pertanyaan": "Perencanaan kinerja telah berorientasi hasil",
+                        "keterangan": "ya, jika perencanaan kinerja telah berorientasi hasil",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "9",
+                        "kode_item": "A.1.4.2.c",
+                        "pertanyaan": "Terdapat penetapan Indikator Kinerja Utama (IKU)",
+                        "keterangan": "ya, jika unit kerja memiliki IKU",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "10",
+                        "kode_item": "A.1.4.2.d",
+                        "pertanyaan": "Indikator kinerja telah telah memenuhi kriteria SMART",
+                        "keterangan": "a. Jika seluruh indikator kinerja telah SMART\nb. Jika sebagian besar indikator kinerja telah SMART\nc. Jika sebagian kecil indikator kinerja telah SMART\nd. Jika belum ada indikator kinerja yang SMART",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "11",
+                        "kode_item": "A.1.4.2.e",
+                        "pertanyaan": "Laporan kinerja telah disusun tepat waktu",
+                        "keterangan": "Ya, jika unit kerja telah menyusun laporan kinerja tepat waktu",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "12",
+                        "kode_item": "A.1.4.2.f",
+                        "pertanyaan": "Laporan kinerja telah memberikan informasi tentang kinerja",
+                        "keterangan": "a. Jika seluruh pelaporan kinerja telah memberikan informasi tentang kinerja\nb. Jika sebagian pelaporan kinerja belum memberikan informasi tentang kinerja\nc. Jika seluruh pelaporan kinerja belum memberikan informasi tentang kinerja",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "13",
+                        "kode_item": "A.1.4.2.g",
+                        "pertanyaan": "Terdapat sistem informasi\/mekanisme informasi kinerja",
+                        "keterangan": "ya, jika terdapat sistem informasi\/mekanisme informasi kinerja",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "14",
+                        "kode_item": "A.1.4.2.h",
+                        "pertanyaan": "Unit kerja telah berupaya meningkatkan kapasitas SDM yang menangangi akuntabilitas kinerja",
+                        "keterangan": "a. Jika seluruh SDM pengelola akuntabilitas kinerja kompeten\nb. Jika sebagian SDM pengelola akuntabilitas kinerja kompeten\nc. Jika seluruh SDM pengelola akuntabilitas kinerja belum ada yang kompeten",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            }
+        ]
+    },
+    "A.1.5": {
+        "kode_evidence": "A.1.5",
+        "pokja": "Penguatan Pengawasan",
+        "aspek": "Pemenuhan",
+        "area_key": "area5",
+        "sub_komponen": [
+            {
+                "kode": "2",
+                "judul": "Pengendalian Gratifikasi (1.5)",
+                "indikator": [
+                    {
+                        "no": "3",
+                        "kode_item": "A.1.5.1.a",
+                        "pertanyaan": "Telah dilakukan public campaign tentang pengendalian gratifikasi",
+                        "keterangan": "a. Jika public campaign telah dilakukan secara berkala\nb. Jika public campaign dilakukan tidak secara berkala\nc. Jika belum dilakukan public campaign",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "4",
+                        "kode_item": "A.1.5.1.b",
+                        "pertanyaan": "Pengendalian gratifikasi telah diimplementasikan",
+                        "keterangan": "a. Jika Unit Pengendalian Gratifikasi, pengendalian gratifikasi telahmenjadi bagian dari prosedur\nb. Jika Unit Pengendalian Gratifikasi, upaya pengendalian gratifikasi telah mulai dilakukan\nc. Jika telah membentuk Unit Pengendalian Gratifikasi tetapi belum terdapat prosedur pengendalian\nd. Jika belum memiliki Unit Pengendalian Gratifikasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "5",
+                "judul": "Penerapan Sistem Pengendalian Intern Pemerintah (SPIP) (1.5)",
+                "indikator": [
+                    {
+                        "no": "6",
+                        "kode_item": "A.1.5.2.a",
+                        "pertanyaan": "Telah dibangun lingkungan pengendalian",
+                        "keterangan": "a. Jika unit kerja membangun seluruh lingkungan pengendalian sesuai dengan yang ditetapkan organisasi dan juga membuat inovasi terkait lingkungan pengendalian yang sesuai dengan karakteristik unit kerja\nb. Jika unit kerja membangun seluruh lingkungan pengendalian sesuai dengan yang ditetapkan organisasi\nc. Jika unit kerja membangun sebagian besar lingkungan pengendalian sesuai dengan yang ditetapkan organisasi\nd. Jika unit kerja membangun sebagian kecil lingkungan pengendalian sesuai dengan yang ditetapkan organisasi\ne. Jika unit kerja belum membangun lingkungan pengendalian",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "7",
+                        "kode_item": "A.1.5.2.b",
+                        "pertanyaan": "Telah dilakukan penilaian risiko atas pelaksanaan kebijakan",
+                        "keterangan": "a. Jika unit kerja melakukan penilaian risiko atas seluruh pelaksanaan kebijakan sesuai dengan yang ditetapkan organisasi dan juga membuat inovasi terkait lingkungan pengendalian yang sesuai dengan karakteristik unit kerja; \nb. Jika unit kerja melakukan penilaian risiko atas seluruh pelaksanaan kebijakan sesuai dengan yang ditetapkan organisasi\nc. Jika melakukan penilaian risiko atas sebagian besar pelaksanaan kebijakan sesuai dengan yang ditetapkan organisasi\nd. Jika melakukan penilaian risiko atas sebagian kecil pelaksanaan kebijakan sesuai dengan yang ditetapkan organisasi\ne. Jika unit kerja belum melakukan penilaian resiko",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "8",
+                        "kode_item": "A.1.5.2.c",
+                        "pertanyaan": "Telah dilakukan kegiatan pengendalian untuk meminimalisir risiko yang telah diidentifikasi",
+                        "keterangan": "a. Jika unit kerja melakukan kegiatan pengendalian untuk meminimalisir resiko sesuai dengan yang ditetapkan organisasi dan juga membuat inovasi terkait kegiatan pengendalian untuk meminimalisir resiko yang sesuai dengan karakteristik unit kerja\nb. Jika unit kerja melakukan kegiatan pengendalian untuk meminimalisir resiko sesuai dengan yang ditetapkan organisasi\nc. Jika unit kerja belum melakukan kegiatan pengendalian untuk meminimalisir resiko",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "9",
+                        "kode_item": "A.1.5.2.d",
+                        "pertanyaan": "SPI telah diinformasikan dan dikomunikasikan kepada seluruh pihak terkait",
+                        "keterangan": "a. Jika SPI telah diinformasikan dan dikomunikasikan kepada seluruh pihak terkait\nb. Jika SPI telah diinformasikan dan dikomunikasikan kepada sebagian pihak terkait\nc. Jika SPI belum diinformasikan dan dikomunikasikan kepada pihak terkait",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "10",
+                "judul": "Pengaduan Masyarakat (1.5)",
+                "indikator": [
+                    {
+                        "no": "11",
+                        "kode_item": "A.1.5.3.a",
+                        "pertanyaan": "Kebijakan Pengaduan masyarakat telah diimplementasikan",
+                        "keterangan": "a. Jika unit kerja mengimplementasikan seluruh kebijakan pengaduan masyarakat sesuai dengan yang ditetapkan organisasi dan juga membuat inovasi terkait pengaduan masyarakat yang sesuai dengan karakteristik unit kerja\nb. Jika unit kerja telah mengimplementasikan seluruh kebijakan pengaduan masyarakat sesuai dengan yang ditetapkan organisasi \nc. Jika unit kerja belum mengimplementasikan kebijakan pengaduan masyarakat",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "12",
+                        "kode_item": "A.1.5.3.b",
+                        "pertanyaan": "pengaduan masyarakat dtindaklanjuti",
+                        "keterangan": "ya,pengaduan masyaakat ditindaklanjuti",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "13",
+                        "kode_item": "A.1.5.3.c",
+                        "pertanyaan": "Telah dilakukan monitoring dan evaluasi atas penanganan pengaduan masyarakat",
+                        "keterangan": "a. Jika penanganan pengaduan masyarakat dimonitoring dan evaluasi secara berkala\nb. Jika penanganan pengaduan masyarakat dimonitoring dan evaluasi tetapi tidak secara berkala\nc. Jika penanganan pengaduan masyarakat belum di monitoring dan evaluasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "14",
+                        "kode_item": "A.1.5.3.d",
+                        "pertanyaan": "Hasil evaluasi atas penanganan pengaduan masyarakat telah ditindaklanjuti",
+                        "keterangan": "a. Jika seluruh hasil evaluasi atas penanganan pengaduan telah ditindaklanjuti oleh unit kerja\nb. Jika sebagian hasil evaluasi atas penanganan pengaduan telah ditindaklanjuti oleh unit kerja\nc. Jika hasil evaluasi atas penanganan pengaduan belum ditindaklanjuti",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "15",
+                "judul": "Whistle-Blowing System (1.5)",
+                "indikator": [
+                    {
+                        "no": "16",
+                        "kode_item": "A.1.5.4.a",
+                        "pertanyaan": "Whistle Blowing System telah diterapkan",
+                        "keterangan": "a. Jika unit kerja menerapkan seluruh kebijakan Whistle Blowing System sesuai dengan yang ditetapkan organisasi dan juga membuat inovasi terkait pelaksanaan Whistle Blowing System yang sesuai dengan karakteristik unit kerja\nb. Jika unit kerja menerapkan kebijakan Whistle Blowing System sesuai dengan yang ditetapkan organisasi\nc. Jika unit kerja belum menerapkan kebijakan Whistle Blowing System",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "17",
+                        "kode_item": "A.1.5.4.b",
+                        "pertanyaan": "Telah dilakukan evaluasi atas penerapan Whistle Blowing System",
+                        "keterangan": "a. Jika penerapan Whistle Blowing System dimonitoring dan evaluasi secara berkala\nb. Jika penerapan Whistle Blowing System dimonitoring dan evaluasi tidak secara berkala\nc. Jika penerapan Whistle Blowing System belum di monitoring dan evaluasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "18",
+                        "kode_item": "A.1.5.4.c",
+                        "pertanyaan": "Hasil evaluasi atas penerapan Whistle Blowing System telah ditindaklanjuti",
+                        "keterangan": "a. Jika seluruh hasil evaluasi atas penerapan Whistle Blowing System telah ditindaklanjuti oleh unit kerja\nb. Jika sebagian hasil evaluasi atas penerapan Whistle Blowing System telah ditindaklanjuti oleh unit kerja\nc. Jika hasil evaluasi atas penerapan Whistle Blowing System belum ditindaklanjuti",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "19",
+                "judul": "Penanganan Benturan Kepentingan (1.5)",
+                "indikator": [
+                    {
+                        "no": "20",
+                        "kode_item": "A.1.5.5.a",
+                        "pertanyaan": "Telah terdapat identifikasi\/pemetaan benturan kepentingan dalam tugas fungsi utama",
+                        "keterangan": "a. Jika terdapat  identifikasi\/pemetaan benturan kepentingan pada seluruh tugas fungsi utama\nb. Jika terdapat  identifikasi\/pemetaan benturan kepentingan tetapi pada sebagian besar tugas fungsi utama\nc. Jika terdapat  identifikasi\/pemetaan benturan kepentingan tetapi pada sebagian kecil tugas fungsi utama\nd. Jika belum terdapat  identifikasi\/pemetaan benturan kepentingan dalam tugas fungsi utama",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "21",
+                        "kode_item": "A.1.5.5.b",
+                        "pertanyaan": "Penanganan Benturan Kepentingan telah disosialisasikan\/internalisasi",
+                        "keterangan": "a. Jika penanganan Benturan Kepentingan disosialiasikan\/diinternalisasikan ke seluruh layanan\nb. Jika penanganan Benturan Kepentingan disosialiasikan\/diinternalisasikan ke sebagian besar layanan\nc.  Jika penanganan Benturan Kepentingan disosialiasikan\/diinternalisasikan ke sebagian kecil layanan\nd.  Jika penanganan Benturan Kepentingan belum disosialiasikan\/diinternalisasikan ke seluruh layanan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "22",
+                        "kode_item": "A.1.5.5.c",
+                        "pertanyaan": "Penanganan Benturan Kepentingan telah diimplementasikan",
+                        "keterangan": "a. Jika penanganan Benturan Kepentingan diimplementasikan ke seluruh layanan\nb. Jika penanganan Benturan Kepentingan diimplementasikan ke sebagian besar layanan\nc. Jika penanganan Benturan Kepentingan diimplementasikan ke sebagian kecil layanan\nd. Jika penanganan Benturan Kepentingan belum diimplementasikan ke seluruh layanan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "23",
+                        "kode_item": "A.1.5.5.d",
+                        "pertanyaan": "Telah dilakukan evaluasi atas Penanganan Benturan Kepentingan",
+                        "keterangan": "a. Jika penanganan Benturan Kepentingan dievaluasi secara berkala oleh unit kerja\nb. Jika penanganan Benturan Kepentingan dievaluasi tetapi tidak secara berkala oleh unit kerja\nc. Jika penanganan Benturan Kepentingan belum dievaluasi oleh unit kerja",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "24",
+                        "kode_item": "A.1.5.5.e",
+                        "pertanyaan": "Hasil evaluasi atas Penanganan Benturan Kepentingan telah ditindaklanjuti",
+                        "keterangan": "a. Jika seluruh hasil evaluasi atas Penanganan Benturan Kepentingan telah ditindaklanjuti oleh unit kerja\nb. Jika sebagian hasil evaluasi atas Penanganan Benturan Kepentingan telah ditindaklanjuti oleh unit kerja\nc. Jika belum ada hasil evaluasi atas Penanganan Benturan Kepentingan yang ditindaklanjuti unit kerja",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            }
+        ]
+    },
+    "A.1.6": {
+        "kode_evidence": "A.1.6",
+        "pokja": "Peningkatan Kualitas Pelayanan Publik",
+        "aspek": "Pemenuhan",
+        "area_key": "area6",
+        "sub_komponen": [
+            {
+                "kode": "2",
+                "judul": "Standar Pelayanan (1)",
+                "indikator": [
+                    {
+                        "no": "3",
+                        "kode_item": "A.1.6.1.a",
+                        "pertanyaan": "Terdapat kebijakan standar pelayanan",
+                        "keterangan": "a. Terdapat penetapan Standar Pelayanan terhadap seluruh jenis pelayanan, dan sesuai asas serta komponen standar pelayanan publik yang berlaku\nb. Terdapat penetapan Standar Pelayanan terhadap sebagian jenis pelayanan, dan sesuai asas serta komponen standar pelayanan publik yang berlaku\nc. Terdapat penetapan Standar Pelayanan terhadap seluruh jenis pelayanan, namun tidak sesuai asas serta komponen standar pelayanan publik yang berlaku\nd. Terdapat penetapan Standar Pelayanan terhadap sebagian jenis pelayanan, namun tidak sesuai asas serta komponen standar pelayanan publik yang berlaku\ne. Standar Pelayanan belum ditetapkan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "4",
+                        "kode_item": "A.1.6.1.b",
+                        "pertanyaan": "Standar pelayanan telah dimaklumatkan",
+                        "keterangan": "a. Standar pelayanan telah dimaklumatkan pada seluruh jenis pelayanan dan dipublikasikan di website dan media lainnya\nb. Standar pelayanan telah dimaklumatkan pada sebagian besar jenis pelayanan dan dipublikasikan minimal di website\nc. Standar pelayanan telah dimaklumatkan pada sebagian kecil  jenis pelayanan dan belum dipublikasikan\nd. Standar pelayanan belum dimaklumatkan pada seluruh jenis pelayanan dan belum dipublikasikan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "5",
+                        "kode_item": "A.1.6.1.c",
+                        "pertanyaan": "Dilakukan reviu dan perbaikan atas standar pelayanan",
+                        "keterangan": "a. Dilakukan reviu dan perbaikan atas standar pelayanan dan dilakukan dengan melibatkan stakeholders (antara lain : tokoh masyarakat,  akademisi, dunia usaha, dan lembaga swadaya masyarakat), serta memanfaatkan masukan hasil SKM dan pengaduan masyarakat\nb. Dilakukan reviu dan perbaikan atas standar pelayanan dan dilakukan dengan memanfaatkan masukan hasil SKM dan pengaduan masyarakat, namun tanpa melibatkan stakeholders\nc. Dilakukan reviu dan perbaikan atas standar pelayanan, namun  dilakukan tanpa memanfaatkan masukan hasil SKM dan pengaduan masyarakat, serta tanpa melibatkan stakeholders\nd. Belum dilakukan reviu dan perbaikan atas standar pelayanan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "6",
+                        "kode_item": "A.1.6.1.d",
+                        "pertanyaan": "telah melakukan publikasi atas standar pelayanan dan maklumat pelayanan",
+                        "keterangan": "ya,telah melakukan publikasi atas tandar pelayanan dan maklumat pelayanan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "7",
+                "judul": "Budaya Pelayanan Prima (1)",
+                "indikator": [
+                    {
+                        "no": "8",
+                        "kode_item": "A.1.6.2.a",
+                        "pertanyaan": "Telah dilakukan berbagai upaya peningkatan kemampuan dan\/atau kompetensi tentang penerapan budaya pelayanan prima",
+                        "keterangan": "a. Telah dilakukan pelatihan\/sosialisasi pelayanan prima secara berkelanjutan dan terjadwal, sehingga seluruh petugas\/pelaksana layanan memiliki kompetensi sesuai kebutuhan jenis layanan serta telah dan terdapat monev yang melihat kemampuan\/kecakapan petugas\/pelaksana layanan\nb. Telah dilakukan pelatihan\/sosialisasi pelayanan prima, dan  seluruh petugas\/pelaksana layanan memiliki kompetensi sesuai kebutuhan jenis layanan\nc. Telah dilakukan pelatihan\/sosialisasi pelayanan prima, akan tetapi baru sebagian besar petugas\/pelaksana layanan memiliki kompetensi sesuai kebutuhan jenis layanan \nd. Telah dilakukan pelatihan\/sosialisasi pelayanan prima namun secara terbatas, sehingga hanya sebagian kecil petugas\/pelaksana layanan yang memiliki kompetensi sesuai kebutuhan jenis layanan \ne. Belum dilakukan pelatihan\/sosialisasi pelayanan prima, dan seluruh petugas\/pelaksana layanan belum memiliki kompetensi sesuai kebutuhan jenis layanan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "9",
+                        "kode_item": "A.1.6.2.b",
+                        "pertanyaan": "Informasi tentang pelayanan mudah diakses melalui berbagai media",
+                        "keterangan": "a. Seluruh Informasi tentang pelayanan dapat diakses secara online (website\/media sosial) dan terhubung dengan sistem informasi pelayanan publik nasional\nb. Seluruh Informasi tentang pelayanan dapat diakses secara online (website\/media sosial), namun belum terhubung dengan sistem informasi pelayanan publik nasional\nc. Seluruh Informasi tentang pelayanan belum online, hanya dapat diakses di tempat layanan (intranet dan non elektronik)\nd. Informasi tentang pelayanan sulit diakses",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "10",
+                        "kode_item": "A.1.6.2.c",
+                        "pertanyaan": "Telah terdapat sistem pemberian penghargaan dan sanksi bagi petugas pemberi pelayanan",
+                        "keterangan": "a. Telah terdapat kebijakan pemberian penghargaan dan sanksi yang minimal memenuhi unsur penilaian: disiplin, kinerja, dan hasil penilaian pengguna layanan, dan telah diterapkan secara rutin\/berkelanjutan\nb. Telah terdapat kebijakan pemberian penghargaan dan sanksi yang minimal memenuhi unsur penilaian: disiplin, kinerja, dan hasil penilaian pengguna layanan, namun belum diterapkan secara rutin\/berkelanjutan\nc. Telah terdapat kebijakan pemberian penghargaan dan sanksi, namun belum memenuhi unsur penilaian minimal : disiplin, kinerja, dan hasil penilaian pengguna layanan\nd. Belum terdapat kebijakan pemberian penghargaan dan sanksi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "11",
+                        "kode_item": "A.1.6.2.d",
+                        "pertanyaan": "Telah terdapat sistem pemberian kompensasi kepada penerima layanan bila layanan tidak sesuai standar",
+                        "keterangan": "a. Telah terdapat sistem pemberian kompensasi bila layanan tidak sesuai standar bagi penerima layanan di seluruh jenis layanan\nb. Telah terdapat sistem pemberian kompensasi bila layanan tidak sesuai standar bagi penerima layanan di sebagian besar jenis layanan \nc. Telah terdapat sistem pemberian kompensasi bila layanan tidak sesuai standar bagi penerima layanan di sebagian kecil jenis layanan \nd. Belum terdapat sistem pemberian kompensasi bila layanan tidak sesuai standar",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "12",
+                        "kode_item": "A.1.6.2.e",
+                        "pertanyaan": "Terdapat sarana layanan terpadu\/terintegrasi",
+                        "keterangan": "a. Jika seluruh pelayanan sudah dilakukan secara terpadu\/terintegrasi\nb. Jika sebagian besar pelayanan sudah dilakukan secara terpadu\/terintegrasi\nc. Jika sebagian kecil pelayanan sudah dilakukan secara terpadu\/terintegrasi\nd. Jika tidak ada pelayanan yang dilakukan secara terpadu\/terintegrasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "13",
+                        "kode_item": "A.1.6.2.f",
+                        "pertanyaan": "Terdapat inovasi pelayanan",
+                        "keterangan": "a. Jika unit kerja telah memiliki inovasi pelayanan yang  berbeda dengan unit kerja lain dan mendekatkan pelayanan dengan masyarakat serta telah direplikasi\nb. Jika unit kerja telah memiliki inovasi pelayanan yang  berbeda dengan unit kerja lain dan mendekatkan pelayanan dengan masyarakat\nc. Jika unit kerja memiliki inovasi yang merupakan replikasi dan pengembangan dari inovasi yang sudah ada \nd. Jika unit kerja telah memiliki inovasi akan tetapi merupakan pelaksanaan inovasi dari instansi pemerintah \ne. Jika  unit kerja belum memiliki inovasi pelayanan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "14",
+                "judul": "Pengelolaan Pengaduan (1)",
+                "indikator": [
+                    {
+                        "no": "15",
+                        "kode_item": "A.1.6.3.a",
+                        "pertanyaan": "Terdapat media pengaduan dan konsultasi pelayanan yang terintegrasi dengan SP4N-Lapor!",
+                        "keterangan": "a. Terdapat media konsultasi dan pengaduan secara offline dan online, tersedia petugas khusus yang menangani, dan terintegrasi dengan SP4N-LAPOR!\nb. Terdapat media konsultasi dan pengaduan secara offline dan online, tersedia petugas khusus yang menangani namun belum terintegrasi dengan SP4N-LAPOR!\nc. Terdapat media konsultasi dan pengaduan secara offline dan online, namun belum tersedia petugas khusus yang menangani\nd. Hanya terdapat media konsultasi dan pengaduan secara offline\ne. Tidak terdapat media konsultasi dan pengaduan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "16",
+                        "kode_item": "A.1.6.3.b",
+                        "pertanyaan": "Terdapat unit yang mengelola pengaduan dan konsultasi pelayanan",
+                        "keterangan": "a. Terdapat unit pengelola khusus untuk konsultasi dan pengaduan, serta surat penugasan pengelola SP4N-LAPOR! di level unit kerja\nb. Terdapat SK pengelola SP4N-LAPOR! di level instansi dan\/atau surat penugasan pengelola SP4N-LAPOR! di level unit kerja, namun unit pengelola khusus untuk konsultasi dan pengaduan belum ada\nc. Belum terdapat unit pengelola khusus untuk konsultasi dan pengaduan, serta belum terdapat SK pengelola SP4N-LAPOR! di level instansi dan\/atau surat penugasan pengelola SP4N-LAPOR! di level unit kerja",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "17",
+                        "kode_item": "A.1.6.3.c",
+                        "pertanyaan": "Telah dilakukan evaluasi atas penanganan keluhan\/masukan dan konsultasi",
+                        "keterangan": "a. Evaluasi atas penanganan keluhan\/masukan dan konsultasi dilakukan secara berkala\nb. Evaluasi  atas penanganan keluhan\/masukan dan konsultasi dilakukan  tidak berkala\nc. Belum dilakukan evaluasi penanganan keluhan\/masukan dan konsultasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "18",
+                "judul": "Penilaian Kepuasan terhadap Pelayanan (1)",
+                "indikator": [
+                    {
+                        "no": "19",
+                        "kode_item": "A.1.6.4.a",
+                        "pertanyaan": "Telah dilakukan survey kepuasan masyarakat terhadap pelayanan",
+                        "keterangan": "a. Survei kepuasan masyarakat terhadap pelayanan dilakukan minimal 4 kali dalam setahun\nb. Survei kepuasan masyarakat terhadap pelayanan dilakukan minimal 3 kali dalam setahun\nc. Survei kepuasan masyarakat terhadap pelayanan dilakukan minimal 2 kali dalam setahun\nd. Survei kepuasan masyarakat terhadap pelayanan dilakukan minimal 1 kali dalam setahun\ne. Belum dilakukan survei kepuasan masyarakat terhadap pelayanan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "20",
+                        "kode_item": "A.1.6.4.b",
+                        "pertanyaan": "Hasil survei kepuasan masyarakat dapat diakses secara terbuka",
+                        "keterangan": "a. Hasil survei kepuasan masyarakat dapat diakses secara  online (website, media sosial, dll) dan offline\nb. Hasil survei kepuasan masyarakat hanya dapat diakses secara offline di tempat layanan\nc. Hasil survei kepuasan masyarakat tidak dipublikasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "21",
+                        "kode_item": "A.1.6.4.c",
+                        "pertanyaan": "Dilakukan tindak lanjut atas hasil survei kepuasan masyarakat",
+                        "keterangan": "a. Jika dilakukan tindak lanjut atas seluruh hasil survei kepuasan masyarakat\nb. Jika dilakukan tindak lanjut atas sebagian besar hasil survei kepuasan masyarakat\nc. Jika dilakukan tindak lanjut atas sebagian kecil hasil survei kepuasan masyarakat\nd. Jika belum dilakukan tindak lanjut atas hasil survei kepuasan masyarakat",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "22",
+                "judul": "Pemanfaatan Teknologi Informasi (1)",
+                "indikator": [
+                    {
+                        "no": "23",
+                        "kode_item": "A.1.6.5.a",
+                        "pertanyaan": "Telah menerapkan teknologi informasi dalam memberikan pelayanan",
+                        "keterangan": "a. Terdapat pelayanan yang menggunakan teknologi informasi pada seluruh proses pemberian layanan\nb. Terdapat pelayanan yang menggunakan teknologi informasi pada sebagian besar proses pemberian layanan\nc. Terdapat pelayanan yang menggunakan teknologi informasi pada sebagian kecil proses pemberian layanan\nd. Terdapat pelayanan yang belum menggunakan teknologi informasi pada proses pemberian pelayanan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "24",
+                        "kode_item": "A.1.6.5.b",
+                        "pertanyaan": "Telah membangun database pelayanan yang terintegrasi",
+                        "keterangan": "Ya,jika tela membangun database pelayanan yang terintegrasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "25",
+                        "kode_item": "A.1.6.5.c",
+                        "pertanyaan": "Telah dilakukan perbaikan secara terus menerus",
+                        "keterangan": "a. Perbaikan dilakukan secara terus-menerus\nb. Perbaikan dilakukan tidak secara terus menerus\nc. Belum dilakukan perbaikan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            }
+        ]
+    },
+    "A.2.1": {
+        "kode_evidence": "A.2.1",
+        "pokja": "Manajemen Perubahan",
+        "aspek": "Reform",
+        "area_key": "area1",
+        "sub_komponen": [
+            {
+                "kode": "2",
+                "judul": "Komitmen dalam perubahan (2)",
+                "indikator": []
+            },
+            {
+                "kode": "3",
+                "judul": "Agen perubahan telah membuat perubahan yang konkret di Instansi (dalam 1 tahun)\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tKeterangan:Misalkan dengan kebijakan 1 Agen 1 Perubahan Persentase diperoleh dari Jumlah Perubahan yang dibuat dibagi dengan Jumlah Agen Perubahan",
+                "indikator": [
+                    {
+                        "no": "4",
+                        "kode_item": "A.2.1.1.a.1",
+                        "pertanyaan": "- Jumlah Agen Perubahan",
+                        "keterangan": "Jumlah Agen Perubahan pada instansi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "5",
+                        "kode_item": "A.2.1.1.a.2",
+                        "pertanyaan": "- Jumlah Perubahan yang dibuat",
+                        "keterangan": "Jumlah Perubahan yang sudah dibuat oleh Agen Perubahan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "6",
+                "judul": "Perubahan yang dibuat Agen Perubahan telah terintegrasi dalam sistem manajemen\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tKeterangan:Perubahan yang dibuat Agen Perubahan telah terintegrasi dalam sistem manajemen",
+                "indikator": [
+                    {
+                        "no": "7",
+                        "kode_item": "A.2.1.1.b.1",
+                        "pertanyaan": "- Jumlah Perubahan yang dibuat",
+                        "keterangan": "Jumlah Perubahan yang sudah dibuat oleh Agen Perubahan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "8",
+                        "kode_item": "A.2.1.1.b.2",
+                        "pertanyaan": "- Jumlah Perubahan yang telah diintegrasikan dalam sistem manajemen",
+                        "keterangan": "Jumlah Perubahan yang telah diintegrasikan dalam sistem manajemen",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "9",
+                "judul": "Komitmen Pimpinan (1)",
+                "indikator": [
+                    {
+                        "no": "10",
+                        "kode_item": "A.2.1.2.a",
+                        "pertanyaan": "Pimpinan memiliki komitmen terhadap pelaksanaan reformasi birokrasi, dengan adanya target capaian reformasi yang jelas di dokumen perencanaan",
+                        "keterangan": "a. Target capaian zona integritas sudah ada di dokumen perencanaan unit kerja dan sebagian besar (diatas 80%) sudah tercapai\nb. Target capaian zona integritas sudah ada di dokumen perencanaan unit kerja dan sebagian (diatas 50%) sudah tercapai\nc. Target capaian zona integritas sudah ada di dokumen perencanaan unit kerja dan sebagian kecil (dibawah 50%) sudah tercapai\nd. Target capaian zona integritassudah ada di dokumen perencanaan unit kerja, namun belum ada yang tercapai (masih dalam tahap pembangunan)\ne. Tidak ada target capaian zona integritasdi dokumen perencanaan unit kerja",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "11",
+                "judul": "Membangun Budaya Kerja (1)",
+                "indikator": [
+                    {
+                        "no": "12",
+                        "kode_item": "A.2.1.3.a",
+                        "pertanyaan": "Instansi membangun budaya kerja positif dan menerapkan nilai-nilai organisasi dalam pelaksanaan tugas sehari-hari",
+                        "keterangan": "a. Budaya kerja dan nilai-nilai organisasi telah dinternalisasi ke seluruh anggota organisasi, dan penerapannya dituangkan dalam standar operasional pelaksanaan kegiatan\/tugas \nb. Budaya kerja dan nilai-nilai organisasi telah dinternalisasi ke seluruh anggota organisasi, namun belum dituangkan dalam standar operasional pelaksanaan kegiatan\/tugas\nc. Budaya kerja dan nilai-nilai organisasi telah disusun, namun belum dinternalisasi ke seluruh anggota organisasi\nd. Belum menyusun budaya kerja dan nilai-nilai organisasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            }
+        ]
+    },
+    "A.2.2": {
+        "kode_evidence": "A.2.2",
+        "pokja": "Penataan Tatalaksana",
+        "aspek": "Reform",
+        "area_key": "area2",
+        "sub_komponen": [
+            {
+                "kode": "2",
+                "judul": "Peta Proses Bisnis Mempengaruhi Penyederhanaan Jabatan (0.5)",
+                "indikator": [
+                    {
+                        "no": "3",
+                        "kode_item": "A.2.2.1.a",
+                        "pertanyaan": "Telah disusun peta proses bisnis dengan adanya penyederhanaan jabatan",
+                        "keterangan": "a. Peta proses bisnis telah disusun dan mempengaruhi penyederhanaan seluruh jabatan\nb. Peta proses bisnis telah disusun dan mempengaruhi penyederhanaan sebagian besar (lebih dari 50%) jabatan\nc. Peta proses bisnis telah disusun dan mempengaruhi penyederhanaan sebagian kecil (kurang dari 50%)  jabatan\nd. Peta proses bisnis telah disusun dan belum mempengaruhi penyederhanaan jabatan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "4",
+                "judul": "Sistem Pemerintahan Berbasis Elektronik (SPBE) yang Terintegrasi (1)",
+                "indikator": [
+                    {
+                        "no": "5",
+                        "kode_item": "A.2.2.2.a",
+                        "pertanyaan": "Implementasi SPBE telah terintegrasi dan mampu mendorong pelaksanaan pelayanan publik yang lebih cepat dan efisien",
+                        "keterangan": "a. Implementasi SPBE telah terintegrasi dan mampu mendorong pelaksanaan pelayanan publik yang lebih cepat dan efisien \nb. Implementasi SPBE telah mampu mendorong pelaksanaan pelayanan publik yang lebih cepat dan efisien, namun belum terintegrasi (parsial)\nc. Implementasi SPBE belum mendorong pelaksanaan pelayanan publik yang lebih cepat dan efisien",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "6",
+                        "kode_item": "A.2.2.2.b",
+                        "pertanyaan": "Implementasi SPBE telah terintegrasi dan mampu mendorong pelaksanaan pelayanan internal organisasi yang lebih cepat dan efisien",
+                        "keterangan": "a. Implementasi SPBE telah terintegrasi dan mampu mendorong pelaksanaan pelayanan internal unit kerja yang lebih cepat dan efisien \nb. Implementasi SPBE telah mampu mendorong pelaksanaan pelayanan internal unit kerja yang lebih cepat dan efisien, namun belum terintegrasi (parsial)\nc. Implementasi SPBE belum mendorong pelaksanaan pelayanan internal unit kerja yang lebih cepat dan efisien",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "7",
+                "judul": "Transformasi Digital Memberikan Nilai Manfaat (2)",
+                "indikator": [
+                    {
+                        "no": "8",
+                        "kode_item": "A.2.2.3.a",
+                        "pertanyaan": "Transformasi digital pada bidang proses bisnis utama telah mampu memberikan nilai manfaat bagi unit kerja secara optimal",
+                        "keterangan": "a. Kriteria huruf b telah terpenuhi dan penerapan atau penggunaan dari manfaat\/dampak dari transformasi digital pada bidang proses bisnis utama bagi unit kerja telah dilakukan validasi dan evaluasi serta ditindaklanjuti secara berkelanjutan\nb. Kriteria huruf c telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang proses bisnis utama telah diterapkan\/digunakan oleh unit kerja sesuai dengan sasaran dan target manfaat\/dampak\nc. Kriteria huruf d telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang proses bisnis utama telah mampu direalisasikan pada unit kerja sesuai dengan sasaran dan target manfaat\/dampak\nd. Kriteria huruf e telah terpenuhi dan kapabilitas prakiraan dan pelacakan terhadap sasaran dan target manfaat\/dampak dari transformasi digital pada bidang proses bisnis utama\ne. Sasaran dan target manfaat\/dampak dari transformasi digital pada bidang proses bisnis utama telah direncanakan, didefinisikan, dan ditetapkan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "9",
+                        "kode_item": "A.2.2.3.b",
+                        "pertanyaan": "Transformasi digital pada bidang administrasi pemerintahan telah mampu memberikan nilai manfaat bagi unit kerja secara optimal",
+                        "keterangan": "a. Kriteria huruf b telah terpenuhi dan penerapan atau penggunaan dari manfaat\/dampak dari transformasi digital pada bidang administrasi pemerintahan bagi unit kerja telah dilakukan validasi dan evaluasi serta ditindaklanjuti secara berkelanjutan\nb. Kriteria huruf c telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang administrasi pemerintahan telah diterapkan\/digunakan oleh unit kerja sesuai dengan sasaran dan target manfaat\/dampak\nc. Kriteria huruf d telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang administrasi pemerintahan telah mampu direalisasikan pada unit kerja sesuai dengan sasaran dan target manfaat\/dampak\nd. Kriteria huruf e telah terpenuhi dan kapabilitas prakiraan dan pelacakan terhadap sasaran dan target manfaat\/dampak dari transformasi digital pada bidang administrasi pemerintahan\ne. Sasaran dan target manfaat\/dampak dari transformasi digital pada bidang administrasi pemerintahan telah direncanakan, didefinisikan, dan ditetapkan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "10",
+                        "kode_item": "A.2.2.3.c",
+                        "pertanyaan": "Transformasi digital pada bidang pelayanan publik telah mampu memberikan nilai manfaat bagi unit kerja secara optimal",
+                        "keterangan": "a. Kriteria huruf b telah terpenuhi dan penerapan atau penggunaan dari manfaat\/dampak dari transformasi digital pada bidang pelayanan publik bagi unit kerja telah dilakukan validasi dan evaluasi serta ditindaklanjuti secara berkelanjutan\nb. Kriteria huruf c telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang pelayanan publik telah diterapkan\/digunakan oleh unit kerja sesuai dengan sasaran dan target manfaat\/dampak\nc. Kriteria huruf d telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang pelayanan publik telah mampu direalisasikan pada unit kerja sesuai dengan sasaran dan target manfaat\/dampak\nd. Kriteria huruf e telah terpenuhi dan kapabilitas prakiraan dan pelacakan terhadap sasaran dan target manfaat\/dampak dari transformasi digital pada bidang pelayanan publik\ne. Sasaran dan target manfaat\/dampak dari transformasi digital pada bidang pelayanan publik telah direncanakan, didefinisikan, dan ditetapkan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            }
+        ]
+    },
+    "A.2.3": {
+        "kode_evidence": "A.2.3",
+        "pokja": "Penataan Sistem Manajemen SDM Aparatur",
+        "aspek": "Reform",
+        "area_key": "area3",
+        "sub_komponen": [
+            {
+                "kode": "2",
+                "judul": "Kinerja Individu (1.5)",
+                "indikator": [
+                    {
+                        "no": "3",
+                        "kode_item": "A.2.3.1.a",
+                        "pertanyaan": "Ukuran kinerja individu telah berorientasi hasil (outcome) sesuai pada levelnya",
+                        "keterangan": "a. Seluruh ukuran kinerja individu telah berorientasi hasil (outcome) sesuai pada levelnya\nb. Sebagian ukuran kinerja individu telah berorientasi hasil (outcome) sesuai pada levelnya\nc. Tidak ada ukuran kinerja individu yang berorientasi hasil (outcome)",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "4",
+                "judul": "Assessment Pegawai (1.5)",
+                "indikator": [
+                    {
+                        "no": "5",
+                        "kode_item": "A.2.3.2.a",
+                        "pertanyaan": "Hasil assement telah dijadikan pertimbangan untuk mutasi dan pengembangan karir pegawai",
+                        "keterangan": "a. Seluruh hasil assessment dijadikan dasar mutasi internal dan pengembangan kompetensi pegawai\nb. Hasil assessment belum seluruhnya dijadikan mutasi internal dan pengembangan kompetensi pegawai\nc. Hasil assessment belum dijadikan dasar mutasi internal dan pengembangan kompetensi pegawai",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "6",
+                "judul": "Pelanggaran Disiplin Pegawai (2)",
+                "indikator": []
+            },
+            {
+                "kode": "7",
+                "judul": "Penurunan pelanggaran disiplin pegawai\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tKeterangan:Persentase pernurunan pelanggaran disiplin pegawai diperoleh dari Jumlah pelanggaran tahun sebelumnya dikurangi Jumlah pelanggaran tahun ini kemudian dibagi dengan Jumlah pelanggaran tahun sebelumnya",
+                "indikator": [
+                    {
+                        "no": "8",
+                        "kode_item": "A.2.3.3.a.1",
+                        "pertanyaan": "- Jumlah pelanggaran tahun sebelumnya",
+                        "keterangan": "Jumlah pelanggaran disiplin pegawai tahun sebelumnya",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "9",
+                        "kode_item": "A.2.3.3.a.2",
+                        "pertanyaan": "- Jumlah pelanggaran tahun ini",
+                        "keterangan": "Jumlah pelanggaran disiplin pegawai tahun ini\/tahun berjalan",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "10",
+                        "kode_item": "A.2.3.3.a.3",
+                        "pertanyaan": "- Jumlah pelanggaran yang telah diberikan sanksi\/hukuman",
+                        "keterangan": "Jumlah pelanggaran disiplin pegawai yang telah diberikan sanksi\/hukuman",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            }
+        ]
+    },
+    "A.2.4": {
+        "kode_evidence": "A.2.4",
+        "pokja": "Penguatan Akuntabilitas",
+        "aspek": "Reform",
+        "area_key": "area4",
+        "sub_komponen": [
+            {
+                "kode": "2",
+                "judul": "Meningkatnya capaian kinerja unit kerja (2)",
+                "indikator": []
+            },
+            {
+                "kode": "3",
+                "judul": "Persentase Sasaran dengan capaian 100% atau lebih\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tKeterangan:Persentase diperoleh dari Jumlah Sasaran Kinerja yang tercapai 100% atau lebih dibagi dengan Jumlah Sasaran Kinerja",
+                "indikator": [
+                    {
+                        "no": "4",
+                        "kode_item": "A.2.4.1.a.1",
+                        "pertanyaan": "- Jumlah Sasaran Kinerja",
+                        "keterangan": "Jumlah Sasaran Kinerja Unit Kerja\/Organisasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "5",
+                        "kode_item": "A.2.4.1.a.2",
+                        "pertanyaan": "- Jumlah Sasaran Kinerja yang tercapai 100% atau lebih",
+                        "keterangan": "Jumlah Sasaran Kinerja UNit Kerja\/Organisasi yang tercapai 100% atau lebih",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "6",
+                "judul": "Pemberian Reward and Punishment (1.5)",
+                "indikator": [
+                    {
+                        "no": "7",
+                        "kode_item": "A.2.4.2.a",
+                        "pertanyaan": "Hasil Capaian\/Monitoring Perjanjian Kinerja telah dijadikan dasar sebagai pemberian reward and punishment bagi organisasi",
+                        "keterangan": "a. Seluruh capaian kinerja (Perjanjian Kinerja) merupakan unsur dalam pemberian reward and punishment\nb. Sebagian besar Capaian Kinerja (lebih dari 50% Perjanjian kinerja) merupakan unsur dalam pemberian reward and punishment\nc. Sebagian kecil Capaian Kinerja (kurang dari 50% Perjanjian kinerja) merupakan unsur dalam pemberian reward and punishment\nd. Capaian Kinerja (Perjanjian kinerja) belum menjadi unsur dalam pemberian reward and punishment",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "8",
+                "judul": "Kerangka Logis Kinerja (1.5)",
+                "indikator": [
+                    {
+                        "no": "9",
+                        "kode_item": "A.2.4.3.a",
+                        "pertanyaan": "Apakah terdapat penjenjangan kinerja ((Kerangka Logis Kinerja) yang mengacu pada kinerja utama  organisasi dan dijadikan dalam penentuan kinerja seluruh pegawai?",
+                        "keterangan": "a. terdapat Kerangka Logis kinerja yang mengacu pada kinerja utama organisasi  dan digunakan dalam penjabaran kinerja seluruh pegawai\nb. terdapat  Kerangka Logis kinerja yang mengacu pada kinerja utama organisasi namun belum digunakan dalam penjabaran kinerja seluruh pegawai\nc. Kerangka Logis kinerja ada namun belum mengacu pada kinerja utama organisasi dan belum digunakan dalam penjabaran kinerja seluruh pegawai\nd. Kerangka Logis kinerja belum ada",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            }
+        ]
+    },
+    "A.2.5": {
+        "kode_evidence": "A.2.5",
+        "pokja": "Penguatan Pengawasan",
+        "aspek": "Reform",
+        "area_key": "area5",
+        "sub_komponen": [
+            {
+                "kode": "2",
+                "judul": "Mekanisme Pengendalian (2.5)",
+                "indikator": [
+                    {
+                        "no": "3",
+                        "kode_item": "A.2.5.1.a",
+                        "pertanyaan": "Telah dilakukan mekanisme pengendalian aktivitas secara berjenjang",
+                        "keterangan": "a. Terdapat pengendalian aktivitas utama organisasi yang tersistem mulai dari perencanaan, penilaian risiko, pelaksanaan, monitoring, dan pelaporan oleh penanggung jawab aktivitas serta pimpinan unit kerja dan telah menghasilkan peningkatan kinerja, mekanise kerja baru yang lebih efektif, efisien, dan terkendali\nb. Terdapat pengendalian aktivitas utama organisasi yang tersistem mulai dari perencanaan, penilaian risiko, pelaksanaan, monitoring, dan pelaporan oleh penanggung jawab aktivitas serta pimpinan unit kerja namun belum berdampak pada peningkatan kinerja unit kerja\nc.Terdapat pengendalian aktivitas utama organisasi yang tersistem mulai dari perencanaan, penilaian risiko, pelaksanaan, monitoring, dan pelaporan oleh penanggung jawab aktivitas\nd. Terdapat pengendalian aktivitas utama organisasi tetapi tidak tersistem\ne. Tidak terdapat pengendalian atas aktivitas utama organisasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "4",
+                "judul": "Penanganan Pengaduan Masyarakat (3)",
+                "indikator": []
+            },
+            {
+                "kode": "5",
+                "judul": "Persentase penanganan pengaduan masyarakat\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tKeterangan:Penilaian ini menghitung realisasi penanganan pengaduan masyarakat yang harus diselesaikan",
+                "indikator": [
+                    {
+                        "no": "6",
+                        "kode_item": "A.2.5.2.a.1",
+                        "pertanyaan": "- Jumlah pengaduan masyarakat yang harus ditindaklanjuti",
+                        "keterangan": "Jumlah dumas yang harus ditindaklanjuti",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "7",
+                        "kode_item": "A.2.5.2.a.2",
+                        "pertanyaan": "- Jumlah pengaduan masyarakat yang sedang diproses",
+                        "keterangan": "Jumlah dumas dalam diproses",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "8",
+                        "kode_item": "A.2.5.2.a.3",
+                        "pertanyaan": "- Jumlah pengaduan masyarakat yang  selesai ditindaklanjuti",
+                        "keterangan": "Jumlah dumas yang selesai di TL",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "9",
+                "judul": "Penyampaian Laporan Harta Kekayaan (2)",
+                "indikator": []
+            },
+            {
+                "kode": "10",
+                "judul": "Penyampaian Laporan Harta Kekayaan Pejabat Negara (LHKPN) (1)",
+                "indikator": []
+            },
+            {
+                "kode": "11",
+                "judul": "Persentase penyampaian LHKPN\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tKeterangan:Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam: \n1. Undang-Undang No. 28 Tahun 1999\n2. Undang-Undang No. 30 Tahun 2002\n3. Undang-Undang No. 10 Tahun 2015\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\n5. Instruksi Presiden No. 5 Tahun 2004\n6. SE MenPANRB No. SE\/03\/M.PAN\/01\/2005",
+                "indikator": []
+            },
+            {
+                "kode": "12",
+                "judul": "Jumlah yang harus melaporkan\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tKeterangan:Jumlah yang harus melaporkan LHKPN",
+                "indikator": [
+                    {
+                        "no": "13",
+                        "kode_item": "A.2.5.3.a.3",
+                        "pertanyaan": "- Kepala satuan kerja",
+                        "keterangan": "Penyampaian LHKPN bagi Kepala Satker",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "14",
+                        "kode_item": "A.2.5.3.a.4",
+                        "pertanyaan": "- Pejabat yang diwajibkan menyampaikan LHKPN",
+                        "keterangan": "Pejabat yang diwajibkan menyampaikan LHKPN",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "15",
+                        "kode_item": "A.2.5.3.a.5",
+                        "pertanyaan": "- Lainnya",
+                        "keterangan": "Pegawai Lainnya yang diwajibkan menyampaikan LHKPN",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "16",
+                        "kode_item": "A.2.5.3.a.6",
+                        "pertanyaan": "Jumlah yang sudah melaporkan",
+                        "keterangan": "Jumlah yang sudah melaporkan LHKPN",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "17",
+                "judul": "Penyampaian Laporan Harta Kekayaan Aparatur Sipil Negara (LHKASN) (1)",
+                "indikator": []
+            },
+            {
+                "kode": "18",
+                "judul": "Persentase penyampaian LHKASN\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tKeterangan:Penyampaian LHKASN diatur dalam:\n1. Undang-Undang No. 28 Tahun 1999\n2. Undang-Undang No. 30 Tahun 2002\n3. Undang-Undang No. 10 Tahun 2015\n4. SE MenPANRB No. 1 Tahun 2015",
+                "indikator": []
+            },
+            {
+                "kode": "19",
+                "judul": "Jumlah yang harus melaporkan (ASN tidak wajib LHKPN)\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tKeterangan:Jumlah yang harus melaporkan (ASN tidak wajib LHKPN)",
+                "indikator": [
+                    {
+                        "no": "20",
+                        "kode_item": "A.2.5.3.b.3",
+                        "pertanyaan": "- Pejabat administrator (eselon III)",
+                        "keterangan": "Pejabat administrator (eselon III)",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "21",
+                        "kode_item": "A.2.5.3.b.4",
+                        "pertanyaan": "- Pejabat Pengawas (eselon IV)",
+                        "keterangan": "Pejabat Pengawas (eselon IV)",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "22",
+                        "kode_item": "A.2.5.3.b.5",
+                        "pertanyaan": "- Jumlah Fungsional dan Pelaksana",
+                        "keterangan": "Jumlah Fungsional dan Pelaksana",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "23",
+                        "kode_item": "A.2.5.3.b.6",
+                        "pertanyaan": "Jumlah yang sudah melaporkan",
+                        "keterangan": "Jumlah yang sudah melaporkan (ASN tidak wajib LHKPN)",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            }
+        ]
+    },
+    "A.2.6": {
+        "kode_evidence": "A.2.6",
+        "pokja": "Peningkatan Kualitas Pelayanan Publik",
+        "aspek": "Reform",
+        "area_key": "area6",
+        "sub_komponen": [
+            {
+                "kode": "2",
+                "judul": "Upaya dan\/atau Inovasi Pelayanan Publik (2.5)",
+                "indikator": [
+                    {
+                        "no": "3",
+                        "kode_item": "A.2.6.1.a",
+                        "pertanyaan": "Upaya dan\/atau inovasi telah mendorong perbaikan pelayanan publik pada:\n1. Kesesuaian Persyaratan\n2. Kemudahan Sistem, Mekanisme, dan Prosedur\n3. Kecepatan Waktu Penyelesaian\n4. Kejelasan Biaya\/Tarif, Gratis\n5. Kualitas Produk Spesifikasi Jenis Pelayanan\n6. Kompetensi Pelaksana\/Web\n7. Perilaku Pelaksana\/Web\n8. Kualitas Sarana dan prasarana\n9. Penanganan Pengaduan, Saran dan Masukan",
+                        "keterangan": "a. Upaya dan\/atau inovasi yang dilakukan telah mendorong perbaikan seluruh pelayanan publik yang prima (lebih Cepat dan mudah) \nb. Upaya dan\/atau inovasi yang dilakukan belum seluruhnya memberikan dampak pada perbaikan pelayanan public yang prima (Cepat dan mudah) \nc. Upaya dan\/atau inovasi yang dilakukan belum sesuai kebutuhan \nd. Belum ada inovasi",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "4",
+                "judul": "Upaya dan\/atau inovasi pada perijinan\/pelayanan telah dipermudah:\n1. Waktu lebih cepat\n2. Pelayanan Publik yang terpadu\n3. Alur lebih pendek\/singkat\n4 Terintegrasi dengan aplikasi\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tKeterangan:Persentase diperoleh dari Jumlah perijinan\/pelayanan yang telah dipermudah dibagi dengan Jumlah perijinan\/pelayanan yang terdata\/terdaftar",
+                "indikator": [
+                    {
+                        "no": "5",
+                        "kode_item": "A.2.6.1.b.1",
+                        "pertanyaan": "- Jumlah perijinan\/pelayanan yang terdata\/terdaftar",
+                        "keterangan": "Jumlah perijinan\/pelayanan yang terdata\/terdaftar",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "6",
+                        "kode_item": "A.2.6.1.b.2",
+                        "pertanyaan": "- Jumlah perijinan\/pelayanan yang telah dipermudah",
+                        "keterangan": "Jumlah perijinan\/pelayanan yang telah dipermudah",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            },
+            {
+                "kode": "7",
+                "judul": "Penanganan Pengaduan Pelayanan dan Konsultasi (2.5)",
+                "indikator": [
+                    {
+                        "no": "8",
+                        "kode_item": "A.2.6.2.a",
+                        "pertanyaan": "Penanganan pengaduan pelayanan dilakukan melalui berbagai kanal\/media secara responsive dan bertanggung jawab",
+                        "keterangan": "a. Pengaduan pelayanan  dan konsultasi telah direspon dengan cepat melalui berbagai kanal\/media\nb. Pengaduan pelayanan dan konsultasi telah direspon dengan cepat melalui kanal\/media yang terbatas\nc. Pengaduan pelayanan dan konsultasi direspon lambat melalui berbagai kanal\/media\nd. Pengaduan pelayanan dan konsultasi direspon lambat dan kanal\/media terbatas",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            }
+        ]
+    },
+    "B.1": {
+        "kode_evidence": "B.1",
+        "pokja": "Birokrasi Bersih dan Akuntabel",
+        "aspek": "Hasil",
+        "area_key": "area4",
+        "sub_komponen": [
+            {
+                "kode": "",
+                "judul": "Birokrasi Bersih dan Akuntabel - Aspek Hasil",
+                "indikator": [
+                    {
+                        "no": "2",
+                        "kode_item": "B.1.a",
+                        "pertanyaan": "Nilai Survey Persepsi Korupsi (Survei Eksternal)",
+                        "keterangan": "Diisi dengan nilai hasil Survei Eksternal atas Persepsi Anti Korupsi (Indeks Persepsi Anti Korupsi \/ IPAK)\r\nNilai (0-4)",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    },
+                    {
+                        "no": "3",
+                        "kode_item": "B.1.b",
+                        "pertanyaan": "Capaian Kinerja Lebih Baik dari pada Capaian Kinerja Sebelumnya",
+                        "keterangan": "a. Target kinerja utama tercapai lebih dari 100% dan lebih baik dari capaian kinerja utama tahun sebelumnya serta lebih baik dari capaian kinerja nasional\/rata-rata capaian kinerja unit yang sejenis;\nb.Target kinerja utama tercapai 100% dan lebih baik dari capaian kinerja utama tahun sebelumnya;\nc.Target kinerja utama tercapai 100% atau lebih, namun tidak lebih baik dari capaian kinerja utama tahun sebelumnya;\nd. Kinerja utama sudah orientasi hasil akan tetapi masih terdapat target kinerja utama yang tidak tercapai;\ne. Kinerja utama tidak berorientasi hasil",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            }
+        ]
+    },
+    "B.2": {
+        "kode_evidence": "B.2",
+        "pokja": "Pelayanan Publik Prima",
+        "aspek": "Hasil",
+        "area_key": "area6",
+        "sub_komponen": [
+            {
+                "kode": "",
+                "judul": "Pelayanan Publik Prima - Aspek Hasil",
+                "indikator": [
+                    {
+                        "no": "2",
+                        "kode_item": "B.2.a",
+                        "pertanyaan": "Nilai Persepsi Kualitas Pelayanan (Survei Eksternal)",
+                        "keterangan": "Diisi dengan Nilai Hasil Survei Eksternal Kualitas Pelayanan (Indeks Persepsi Kualitas Pelayanan Publik \/ IPKP)\r\nNilai (0-4)",
+                        "jawaban": "",
+                        "dokumen_pendukung": "",
+                        "eviden_wajib": "Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital."
+                    }
+                ]
+            }
+        ]
+    }
+}

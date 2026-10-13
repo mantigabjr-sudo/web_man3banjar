@@ -2837,20 +2837,27 @@ function openPmpziDetailModal(kodeEv, namaArea, aspek, nilai, persen) {
     // Ambil dokumen eviden resmi web PMPZI saja (tanpa berkas internal LabSys)
     const pmpziDocs = allDownloadDocs.filter(d => d.area_zi === targetAreaKey && d.is_pmpzi);
 
-    // Cari detail butir dari master JSON
+    // Cari detail butir dari master JSON kriteria resmi PMPZI Kemenag RI
     let subKomponenList = [];
-    const pokjaList = pmpziMatrixMaster.detail_lke && pmpziMatrixMaster.detail_lke.pokja ? pmpziMatrixMaster.detail_lke.pokja : [];
-    
-    for (const p of pokjaList) {
-        if (p.aspek) {
-            for (const asp of p.aspek) {
-                if (asp.kode_evidence === kodeEv && asp.sub_komponen) {
-                    subKomponenList = asp.sub_komponen;
-                    break;
+    if (pmpziMatrixMaster.detail_lke) {
+        if (pmpziMatrixMaster.detail_lke[kodeEv] && pmpziMatrixMaster.detail_lke[kodeEv].sub_komponen) {
+            subKomponenList = pmpziMatrixMaster.detail_lke[kodeEv].sub_komponen;
+        } else if (Array.isArray(pmpziMatrixMaster.detail_lke)) {
+            const found = pmpziMatrixMaster.detail_lke.find(d => d.kode_evidence === kodeEv);
+            if (found && found.sub_komponen) subKomponenList = found.sub_komponen;
+        } else if (pmpziMatrixMaster.detail_lke.pokja) {
+            for (const p of pmpziMatrixMaster.detail_lke.pokja) {
+                if (p.aspek) {
+                    for (const asp of p.aspek) {
+                        if (asp.kode_evidence === kodeEv && asp.sub_komponen) {
+                            subKomponenList = asp.sub_komponen;
+                            break;
+                        }
+                    }
                 }
+                if (subKomponenList.length > 0) break;
             }
         }
-        if (subKomponenList.length > 0) break;
     }
 
     const tbody = document.getElementById('tbodyPmpziDetailItems');
@@ -2887,9 +2894,9 @@ function openPmpziDetailModal(kodeEv, namaArea, aspek, nilai, persen) {
             const trSub = document.createElement('tr');
             trSub.className = 'table-light fw-bold';
             trSub.innerHTML = `
-                <td class="text-center bg-light text-muted fw-bold">${sub.kode || ''}</td>
-                <td colspan="4" class="text-success fw-bold py-2">
-                    <i class="bi bi-folder2 me-1"></i> ${sub.judul}
+                <td class="text-center bg-light text-muted fw-bold font-monospace" style="font-size: 11.5px;">${sub.kode ? sub.kode : '•'}</td>
+                <td colspan="4" class="text-success fw-bold py-2" style="font-size: 12.5px;">
+                    <i class="bi bi-folder2-open me-1.5"></i> ${sub.judul}
                 </td>
             `;
             tbody.appendChild(trSub);
@@ -2898,11 +2905,17 @@ function openPmpziDetailModal(kodeEv, namaArea, aspek, nilai, persen) {
                 sub.indikator.forEach(ind => {
                     const tr = document.createElement('tr');
                     
+                    // Cocokkan dokumen eviden PMPZI ke butir ini (berdasarkan kode_item misal A.1.1.1.a)
+                    let itemDocs = [];
+                    if (ind.kode_item) {
+                        itemDocs = pmpziDocs.filter(d => d.keterangan && d.keterangan.includes(ind.kode_item));
+                    }
+                    
                     let docsHtml = '';
-                    if (pmpziDocs.length > 0) {
-                        docsHtml = pmpziDocs.map(d => renderPmpziEvidenceRow(d)).join('');
+                    if (itemDocs.length > 0) {
+                        docsHtml = itemDocs.map(d => renderPmpziEvidenceRow(d)).join('');
                     } else {
-                        docsHtml = '<div class="text-muted small py-1.5 d-flex align-items-center gap-1.5" style="font-size: 11.5px;"><i class="bi bi-dash-circle text-secondary"></i> Belum ada eviden di web PMPZI</div>';
+                        docsHtml = '<div class="text-muted small py-1 d-flex align-items-center gap-1.5 opacity-75" style="font-size: 11px;"><i class="bi bi-dash-circle text-secondary"></i> Belum ada dokumen di web PMPZI</div>';
                     }
 
                     tr.innerHTML = `
@@ -2914,14 +2927,16 @@ function openPmpziDetailModal(kodeEv, namaArea, aspek, nilai, persen) {
                             </div>
                         </td>
                         <td class="text-center align-middle">
-                            <span class="badge bg-success-subtle text-success border border-success-subtle font-monospace fw-bold" style="font-size: 12px;">Y / A</span>
+                            <span class="badge ${ind.jawaban ? 'bg-success text-white' : 'bg-success-subtle text-success'} border border-success-subtle font-monospace fw-bold" style="font-size: 11.5px;">
+                                ${ind.jawaban ? ind.jawaban : 'Y / A'}
+                            </span>
                         </td>
                         <td>
                             <div class="small text-dark fw-semibold mb-1" style="font-size: 12px;">
                                 <i class="bi bi-file-earmark-text text-secondary me-1"></i>Dokumen Wajib:
                             </div>
                             <div class="small text-muted" style="font-size: 11.5px; line-height: 1.4;">
-                                ${ind.eviden_wajib || 'SK Tim, Laporan, Dokumentasi rapat / notula, foto kegiatan, atau link aplikasi.'}
+                                ${ind.dokumen_pendukung || ind.eviden_wajib || 'Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital.'}
                             </div>
                         </td>
                         <td class="align-middle">

@@ -11,15 +11,14 @@ if (!function_exists('get_pmpzi_lke_summary')) {
         $json_file = FCPATH . 'scratch/pmpzi_lke_data.json';
         $cache_matrix_file = APPPATH . 'cache/pmpzi_matrix_cache.json';
 
+        $criteria_master_file = APPPATH . 'cache/pmpzi_criteria_master.json';
+        $scratch_criteria_file = FCPATH . 'scratch/pmpzi_all_criteria_detail.json';
+
         $detail_data = [];
-        if (file_exists($json_file)) {
-            $json_content = file_get_contents($json_file);
-            $parsed_json = json_decode($json_content, true);
-            if (isset($parsed_json['detail_lke'])) {
-                $detail_data = $parsed_json['detail_lke'];
-            } else {
-                $detail_data = $parsed_json;
-            }
+        if (file_exists($criteria_master_file)) {
+            $detail_data = json_decode(file_get_contents($criteria_master_file), true) ?: [];
+        } elseif (file_exists($scratch_criteria_file)) {
+            $detail_data = json_decode(file_get_contents($scratch_criteria_file), true) ?: [];
         }
 
         // Cek apakah ada data matriks hasil sinkronisasi live
