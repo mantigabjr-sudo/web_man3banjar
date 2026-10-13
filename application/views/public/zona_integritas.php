@@ -1979,6 +1979,23 @@ let currentPreviewUrl = '';
 let currentPreviewExt = '';
 
 function previewDoc(fileUrl, title, ext) {
+    if (!fileUrl) return;
+
+    // Pastikan URL selalu menggunakan skema absolut atau rute assets/downloads
+    if (!fileUrl.startsWith('http://') && !fileUrl.startsWith('https://') && !fileUrl.startsWith('/')) {
+        fileUrl = '<?= base_url('assets/downloads/') ?>' + fileUrl;
+    }
+
+    // Auto-deteksi ekstensi berkas riil dari nama file / URL jika ext generik atau tidak terdeteksi
+    const cleanPath = fileUrl.split('?')[0].split('#')[0];
+    const dotIdx = cleanPath.lastIndexOf('.');
+    if (dotIdx !== -1) {
+        const detectedExt = cleanPath.substring(dotIdx + 1).toLowerCase();
+        if (['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'jpg', 'jpeg', 'png', 'webp', 'gif'].includes(detectedExt)) {
+            ext = detectedExt;
+        }
+    }
+
     ext = (ext || 'pdf').toLowerCase().trim();
     currentPreviewUrl = fileUrl;
     currentPreviewExt = ext;
@@ -1996,7 +2013,11 @@ function previewDoc(fileUrl, title, ext) {
     const spinner = document.getElementById('previewLoadingSpinner');
 
     if (labelEl) labelEl.textContent = title || 'Pratinjau Eviden';
-    if (btnDownload) btnDownload.href = fileUrl;
+    if (btnDownload) {
+        btnDownload.href = fileUrl;
+        const cleanTitle = (title ? title.replace(/[^a-zA-Z0-9_\-]/g, '_') : 'dokumen_eviden');
+        btnDownload.setAttribute('download', cleanTitle + '.' + ext);
+    }
     if (btnOpenTab) btnOpenTab.href = fileUrl;
     if (btnDownloadLabel) btnDownloadLabel.textContent = 'Unduh ' + ext.toUpperCase();
 
@@ -2645,18 +2666,89 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 const pmpziMatrixMaster = <?= json_encode($pmpzi_matrix ?? []) ?>;
 const allDownloadDocs = <?= json_encode(array_map(function($d){
+    $meta = get_zi_file_meta($d);
+    $ext = $meta['ext'] ?? strtolower(pathinfo($d->file_path ?? '', PATHINFO_EXTENSION));
+    if(empty($ext) || $ext === 'file') $ext = 'pdf';
     return [
         'id'          => $d->id,
         'judul'       => $d->judul,
         'area_zi'     => strtolower($d->area_zi ?? ''),
         'tipe_sumber' => $d->tipe_sumber,
         'file_path'   => $d->file_path,
-        'file_ext'    => $d->file_ext ?? '',
+        'file_ext'    => $ext,
+        'file_url'    => $meta['url'],
+        'is_link'     => (bool)$meta['is_link'],
         'link_drive'  => $d->link_drive,
         'pengunggah'  => $d->pengunggah,
+        'keterangan'  => $d->keterangan ?? '',
         'tanggal'     => $d->tanggal
     ];
 }, $downloads)) ?>;
+
+// Helper membuka atau mempratinjau eviden ZI secara aman & presisi
+function openOrPreviewZiDoc(docId) {
+    const d = allDownloadDocs.find(item => String(item.id) === String(docId));
+    if (!d) return;
+
+    if (d.is_link || d.tipe_sumber === 'drive_link') {
+        const url = d.link_drive || d.file_url;
+        if (url && url !== '#') {
+            window.open(url, '_blank');
+        } else {
+            showGlobalWebToast('Tautan Google Drive belum tersedia.', 'warning');
+        }
+        return;
+    }
+
+    let targetUrl = d.file_url;
+    if (!targetUrl || targetUrl === '#') {
+        targetUrl = (d.file_path && (d.file_path.startsWith('http') || d.file_path.startsWith('/'))) 
+            ? d.file_path 
+            : '<?= base_url('assets/downloads/') ?>' + (d.file_path || '');
+    }
+
+    let ext = d.file_ext;
+    if (!ext || ext === 'file') {
+        ext = targetUrl.split('?')[0].split('.').pop().toLowerCase();
+    }
+
+    previewDoc(targetUrl, d.judul, ext);
+}
+
+// Render baris dokumen eviden dengan badge identitas sumber (PMPZI vs Pokja LabSys)
+function renderPmpziEvidenceRow(d) {
+    const isPmpzi = (d.pengunggah && d.pengunggah.includes('PMPZI')) || (d.keterangan && d.keterangan.includes('[SYNC_PMPZI'));
+    const sourceBadge = isPmpzi 
+        ? '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill" style="font-size:9.5px; padding: 2px 7px;"><i class="bi bi-cloud-check-fill me-1"></i>PMPZI</span>'
+        : `<span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill" style="font-size:9.5px; padding: 2px 7px;" title="Diunggah oleh ${d.pengunggah || 'Tim Pokja'}"><i class="bi bi-person-fill me-1"></i>${d.pengunggah || 'LabSys'}</span>`;
+    
+    const isDrive = (d.is_link || d.tipe_sumber === 'drive_link');
+    let extIcon = 'bi-file-earmark-pdf-fill text-danger';
+    if (isDrive) {
+        extIcon = 'bi-google text-success';
+    } else if (['doc', 'docx'].includes(d.file_ext)) {
+        extIcon = 'bi-file-earmark-word-fill text-primary';
+    } else if (['xls', 'xlsx'].includes(d.file_ext)) {
+        extIcon = 'bi-file-earmark-excel-fill text-success';
+    }
+
+    const actionBtn = isDrive
+        ? `<a href="${d.link_drive || d.file_url}" target="_blank" class="btn btn-xs btn-outline-success rounded-pill py-0.5 px-2.5 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 11px;"><i class="bi bi-box-arrow-up-right"></i> Drive</a>`
+        : `<button type="button" class="btn btn-xs btn-outline-primary rounded-pill py-0.5 px-2.5 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 11px;" onclick="openOrPreviewZiDoc(${d.id})"><i class="bi bi-eye"></i> Buka</button>`;
+
+    return `
+        <div class="p-2 mb-1.5 bg-light rounded-3 border d-flex align-items-center justify-content-between gap-2">
+            <div class="d-flex align-items-center gap-1.5 text-truncate" style="max-width: calc(100% - 75px);">
+                <i class="bi ${extIcon} flex-shrink-0" style="font-size: 14px;"></i>
+                <span class="text-truncate fw-medium small" title="${d.judul}">${d.judul}</span>
+                ${sourceBadge}
+            </div>
+            <div class="flex-shrink-0">
+                ${actionBtn}
+            </div>
+        </div>
+    `;
+}
 
 function switchZiMainView(mode) {
     const secMonitoring = document.getElementById('ziSectionMonitoring');
@@ -2780,12 +2872,7 @@ function openPmpziDetailModal(kodeEv, namaArea, aspek, nilai, persen) {
     if (subKomponenList.length === 0) {
         let fallbackDocsHtml = '';
         if (relevantDocs.length > 0) {
-            fallbackDocsHtml = relevantDocs.map(d => `
-                <div class="p-2 mb-1 bg-light rounded border small d-flex align-items-center justify-content-between">
-                    <span class="text-truncate me-2" style="max-width: 170px;"><i class="bi bi-file-earmark-check text-success me-1"></i>${d.judul}</span>
-                    <button class="btn btn-xs btn-outline-primary rounded-pill py-0 px-2" style="font-size: 11px;" onclick="previewDoc('${d.file_path || d.link_drive}', '${d.judul.replace(/'/g, "\\'")}', '${d.file_ext || 'pdf'}')">Buka</button>
-                </div>
-            `).join('');
+            fallbackDocsHtml = relevantDocs.map(d => renderPmpziEvidenceRow(d)).join('');
         } else {
             fallbackDocsHtml = '<span class="text-muted small"><i class="bi bi-exclamation-circle text-warning me-1"></i>Belum ada berkas</span>';
         }
@@ -2829,12 +2916,7 @@ function openPmpziDetailModal(kodeEv, namaArea, aspek, nilai, persen) {
                     
                     let docsHtml = '';
                     if (relevantDocs.length > 0) {
-                        docsHtml = relevantDocs.slice(0, 2).map(d => `
-                            <div class="p-1.5 mb-1 bg-light rounded border small d-flex align-items-center justify-content-between" style="font-size: 11.5px;">
-                                <span class="text-truncate me-1" style="max-width: 150px;"><i class="bi bi-file-earmark-check text-success me-1"></i>${d.judul}</span>
-                                <button class="btn btn-outline-primary rounded-pill py-0 px-2" style="font-size: 10px;" onclick="previewDoc('${d.file_path || d.link_drive}', '${d.judul.replace(/'/g, "\\'")}', '${d.file_ext || 'pdf'}')">Buka</button>
-                            </div>
-                        `).join('');
+                        docsHtml = relevantDocs.slice(0, 2).map(d => renderPmpziEvidenceRow(d)).join('');
                         if (relevantDocs.length > 2) {
                             docsHtml += `<small class="text-muted d-block mt-1">+${relevantDocs.length - 2} berkas lainnya di LabSys</small>`;
                         }
