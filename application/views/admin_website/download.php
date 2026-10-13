@@ -154,6 +154,39 @@ $area_names = [
                         <button type="button" class="btn btn-success rounded-pill px-3 py-2 fw-bold text-white shadow-sm" style="font-size: 13px;" data-bs-toggle="modal" data-bs-target="#modalTambahDokumen">
                             <i class="bi bi-cloud-arrow-up-fill me-1"></i> + Unggah Dokumen
                         </button>
+
+                        <!-- Tombol Sinkronisasi PMPZI Kemenag RI dengan Dropdown Rollback (Admin Only) -->
+                        <div class="btn-group shadow-xs">
+                            <button type="button" class="btn btn-outline-success rounded-start-pill px-3 py-2 fw-bold d-inline-flex align-items-center gap-2" style="font-size: 13px;" id="btnAdminMainSyncPmpzi" onclick="startPmpziSync(false)">
+                                <i class="bi bi-arrow-repeat fs-6" id="iconSyncSpinner"></i>
+                                <span id="textBtnSync">Sinkronkan PMPZI</span>
+                            </button>
+                            <button type="button" class="btn btn-outline-success dropdown-toggle dropdown-toggle-split rounded-end-pill px-2.5 py-2" data-bs-toggle="dropdown" aria-expanded="false" title="Pilihan Sinkronisasi PMPZI">
+                                <span class="visually-hidden">Pilihan</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 p-2 mt-1" style="min-width: 270px; z-index: 1050;">
+                                <li>
+                                    <button class="dropdown-item rounded-3 py-2 fw-semibold d-flex align-items-center gap-2.5 text-success" type="button" onclick="startPmpziSync(false)">
+                                        <i class="bi bi-cloud-arrow-down-fill fs-5 text-success"></i>
+                                        <div>
+                                            <div class="lh-1 text-dark">Sinkronkan Sekarang</div>
+                                            <small class="text-muted fw-normal" style="font-size: 11px;">Tarik nilai & berkas dokumen dari PMPZI</small>
+                                        </div>
+                                    </button>
+                                </li>
+                                <li><hr class="dropdown-divider my-1"></li>
+                                <li>
+                                    <button class="dropdown-item rounded-3 py-2 fw-semibold d-flex align-items-center gap-2.5 text-danger" type="button" onclick="confirmPmpziRollback()">
+                                        <i class="bi bi-arrow-counterclockwise fs-5 text-danger"></i>
+                                        <div>
+                                            <div class="lh-1 text-danger">Rollback Sinkronisasi</div>
+                                            <small class="text-muted fw-normal" style="font-size: 11px;">Pulihkan database ke kondisi awal</small>
+                                        </div>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+
                         <button type="button" class="btn btn-outline-warning rounded-pill px-3 py-2 fw-bold text-dark" style="font-size: 13px;" data-bs-toggle="modal" data-bs-target="#modalUbahPinZi" title="Atur PIN Akses Eviden ZI">
                             <i class="bi bi-key-fill text-warning me-1"></i> PIN ZI: <span class="badge bg-warning-subtle text-dark font-monospace"><?= htmlspecialchars($pin_zi ?? '123456') ?></span>
                         </button>
@@ -1384,5 +1417,250 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </div>
+
+<!-- ═══ MODAL PROGRES SINKRONISASI PMPZI KEMENAG (ADMIN) ═══ -->
+<div class="modal fade" id="modalPmpziSyncProgress" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+        <div class="modal-content border-0 shadow-2xl rounded-4 overflow-hidden">
+            <div class="modal-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(135deg, #064e3b 0%, #059669 100%);">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-white bg-opacity-20 rounded-circle text-white" style="width: 48px; height: 48px;">
+                        <i class="bi bi-arrow-repeat fs-3" id="pmpziSyncModalIcon"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0 text-white" id="pmpziSyncModalTitle">Sinkronisasi PMPZI Kemenag</h5>
+                        <p class="small text-white-50 mb-0" id="pmpziSyncModalSubtitle">Menghubungkan ke portal pmpzi.kemenag.go.id...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body p-4">
+                <div class="pmpzi-sync-steps mb-4">
+                    <div class="d-flex align-items-center gap-3 py-2 border-bottom border-light" id="syncStep1">
+                        <div class="spinner-border spinner-border-sm text-success" role="status" id="spinStep1"></div>
+                        <i class="bi bi-check-circle-fill text-success fs-5 d-none" id="checkStep1"></i>
+                        <span class="small fw-semibold text-dark" id="textStep1">1. Autentikasi & Pemecahan Captcha Otomatis</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-3 py-2 border-bottom border-light text-muted" id="syncStep2">
+                        <div class="spinner-border spinner-border-sm text-success d-none" role="status" id="spinStep2"></div>
+                        <i class="bi bi-check-circle-fill text-success fs-5 d-none" id="checkStep2"></i>
+                        <i class="bi bi-circle text-muted fs-6" id="circleStep2"></i>
+                        <span class="small fw-semibold" id="textStep2">2. Penarikan Nilai & Capaian LKE 6 Pokja</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-3 py-2 text-muted" id="syncStep3">
+                        <div class="spinner-border spinner-border-sm text-success d-none" role="status" id="spinStep3"></div>
+                        <i class="bi bi-check-circle-fill text-success fs-5 d-none" id="checkStep3"></i>
+                        <i class="bi bi-circle text-muted fs-6" id="circleStep3"></i>
+                        <span class="small fw-semibold" id="textStep3">3. Penyelarasan Dokumen & Eviden Digital</span>
+                    </div>
+                </div>
+
+                <div class="progress rounded-pill mb-3" style="height: 10px; background-color: #e2e8f0;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" id="pmpziProgressBar" role="progressbar" style="width: 25%;"></div>
+                </div>
+
+                <div class="alert alert-success border-0 rounded-3 p-3 small mb-0 d-none" id="pmpziSyncSuccessBox">
+                    <div class="d-flex align-items-center gap-2 mb-1 fw-bold text-success">
+                        <i class="bi bi-check-circle-fill fs-5"></i> Sinkronisasi Selesai!
+                    </div>
+                    <div class="text-secondary small" id="pmpziSyncSuccessMsg">
+                        Nilai LKE dan seluruh berkas eviden telah berhasil disinkronkan.
+                    </div>
+                </div>
+                <div class="alert alert-danger border-0 rounded-3 p-3 small mb-0 d-none" id="pmpziSyncErrorBox">
+                    <div class="d-flex align-items-center gap-2 mb-1 fw-bold text-danger">
+                        <i class="bi bi-exclamation-triangle-fill fs-5"></i> Sinkronisasi Gagal
+                    </div>
+                    <div class="text-secondary small" id="pmpziSyncErrorMsg">
+                        Terjadi kendala koneksi ke server PMPZI Kemenag.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 bg-light p-3">
+                <button type="button" class="btn btn-secondary rounded-pill px-4 fw-semibold small d-none" id="btnSyncModalClose" data-bs-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-success rounded-pill px-4 fw-bold small d-none" id="btnSyncModalReload" onclick="window.location.reload()">
+                    <i class="bi bi-arrow-clockwise me-1"></i> Muat Ulang Halaman
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ MODAL KONFIRMASI ROLLBACK PMPZI (ADMIN) ═══ -->
+<div class="modal fade" id="modalPmpziRollbackConfirm" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
+        <div class="modal-content border-0 shadow-2xl rounded-4 overflow-hidden">
+            <div class="modal-body text-center p-4">
+                <div class="d-inline-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-circle mb-3" style="width: 68px; height: 68px;">
+                    <i class="bi bi-arrow-counterclockwise fs-1"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-2">Rollback Sinkronisasi PMPZI?</h5>
+                <p class="text-muted small mb-3" style="line-height: 1.5;">
+                    Tindakan ini akan <strong>menghapus hanya berkas dan data yang ditarik dari PMPZI</strong>. Sebanyak <strong>24 berkas awal madrasah dijamin 100% aman dan tidak akan hilang</strong>.
+                </p>
+                <div class="p-3 bg-light rounded-3 text-start small border border-light-subtle mb-3">
+                    <div class="d-flex align-items-center gap-2 text-dark mb-1">
+                        <i class="bi bi-shield-check text-success"></i> Berkas Awal LabSys: <strong>Tetap Utuh</strong>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 text-danger">
+                        <i class="bi bi-trash3 text-danger"></i> Berkas Sync PMPZI: <strong>Dibersihkan</strong>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 justify-content-center">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-semibold text-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold" id="btnConfirmRollbackAction" onclick="executePmpziRollback()">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Ya, Rollback Sekarang
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let pmpziSyncModalInstance = null;
+let pmpziRollbackModalInstance = null;
+
+function startPmpziSync(isSilent = false) {
+    const modalEl = document.getElementById('modalPmpziSyncProgress');
+    const btnSyncSpinner = document.getElementById('iconSyncSpinner');
+    const textBtnSync = document.getElementById('textBtnSync');
+
+    if (btnSyncSpinner) btnSyncSpinner.classList.add('spinner-border', 'spinner-border-sm');
+    if (textBtnSync) textBtnSync.textContent = 'Menyinkronkan...';
+
+    if (!isSilent && modalEl) {
+        document.getElementById('spinStep1').classList.remove('d-none');
+        document.getElementById('checkStep1').classList.add('d-none');
+        
+        document.getElementById('spinStep2').classList.add('d-none');
+        document.getElementById('checkStep2').classList.add('d-none');
+        document.getElementById('circleStep2').classList.remove('d-none');
+        
+        document.getElementById('spinStep3').classList.add('d-none');
+        document.getElementById('checkStep3').classList.add('d-none');
+        document.getElementById('circleStep3').classList.remove('d-none');
+
+        document.getElementById('pmpziProgressBar').style.width = '25%';
+        document.getElementById('pmpziSyncSuccessBox').classList.add('d-none');
+        document.getElementById('pmpziSyncErrorBox').classList.add('d-none');
+        document.getElementById('btnSyncModalClose').classList.add('d-none');
+        document.getElementById('btnSyncModalReload').classList.add('d-none');
+
+        pmpziSyncModalInstance = new bootstrap.Modal(modalEl);
+        pmpziSyncModalInstance.show();
+
+        setTimeout(() => {
+            document.getElementById('spinStep1').classList.add('d-none');
+            document.getElementById('checkStep1').classList.remove('d-none');
+            document.getElementById('spinStep2').classList.remove('d-none');
+            document.getElementById('circleStep2').classList.add('d-none');
+            document.getElementById('pmpziProgressBar').style.width = '60%';
+        }, 1200);
+
+        setTimeout(() => {
+            document.getElementById('spinStep2').classList.add('d-none');
+            document.getElementById('checkStep2').classList.remove('d-none');
+            document.getElementById('spinStep3').classList.remove('d-none');
+            document.getElementById('circleStep3').classList.add('d-none');
+            document.getElementById('pmpziProgressBar').style.width = '85%';
+        }, 2400);
+    }
+
+    const syncUrl = '<?= base_url('website/sync_pmpzi_ajax') ?>' + (isSilent ? '?auto=1' : '');
+    fetch(syncUrl, {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('HTTP error ' + response.status);
+        return response.json();
+    })
+    .then(data => {
+        if (btnSyncSpinner) btnSyncSpinner.classList.remove('spinner-border', 'spinner-border-sm');
+        if (textBtnSync) textBtnSync.textContent = 'Sinkronkan PMPZI';
+
+        if (data.status === 'success') {
+            if (!isSilent) {
+                document.getElementById('spinStep3').classList.add('d-none');
+                document.getElementById('checkStep3').classList.remove('d-none');
+                document.getElementById('pmpziProgressBar').style.width = '100%';
+
+                const successBox = document.getElementById('pmpziSyncSuccessBox');
+                const successMsg = document.getElementById('pmpziSyncSuccessMsg');
+                if (successMsg) {
+                    successMsg.innerHTML = `
+                        <strong>${data.message || 'Sinkronisasi berhasil!'}</strong><br>
+                        ${data.new_files_count ? data.new_files_count + ' berkas dokumen baru ditambahkan ke LabSys.' : 'Seluruh berkas fisik sudah mutakhir.'}
+                    `;
+                }
+                successBox.classList.remove('d-none');
+                document.getElementById('btnSyncModalReload').classList.remove('d-none');
+            }
+        } else {
+            if (!isSilent) {
+                const errorBox = document.getElementById('pmpziSyncErrorBox');
+                const errorMsg = document.getElementById('pmpziSyncErrorMsg');
+                if (errorMsg) errorMsg.textContent = data.message || 'Gagal menyinkronkan data.';
+                errorBox.classList.remove('d-none');
+                document.getElementById('btnSyncModalClose').classList.remove('d-none');
+            }
+        }
+    })
+    .catch(err => {
+        if (btnSyncSpinner) btnSyncSpinner.classList.remove('spinner-border', 'spinner-border-sm');
+        if (textBtnSync) textBtnSync.textContent = 'Sinkronkan PMPZI';
+        console.error('[PMPZI Sync Error]', err);
+
+        if (!isSilent) {
+            const errorBox = document.getElementById('pmpziSyncErrorBox');
+            const errorMsg = document.getElementById('pmpziSyncErrorMsg');
+            if (errorMsg) errorMsg.textContent = 'Gagal terhubung ke endpoint sinkronisasi: ' + err.message;
+            errorBox.classList.remove('d-none');
+            document.getElementById('btnSyncModalClose').classList.remove('d-none');
+        }
+    });
+}
+
+function confirmPmpziRollback() {
+    const modalEl = document.getElementById('modalPmpziRollbackConfirm');
+    if (modalEl) {
+        pmpziRollbackModalInstance = new bootstrap.Modal(modalEl);
+        pmpziRollbackModalInstance.show();
+    }
+}
+
+function executePmpziRollback() {
+    const btnRollback = document.getElementById('btnConfirmRollbackAction');
+    if (btnRollback) {
+        btnRollback.disabled = true;
+        btnRollback.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Memulihkan...';
+    }
+
+    fetch('<?= base_url('website/rollback_pmpzi_ajax') ?>', {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Rollback Berhasil: ' + (data.message || 'Database telah dikembalikan ke kondisi semula.'));
+            window.location.reload();
+        } else {
+            alert('Rollback Gagal: ' + (data.message || 'Terjadi kesalahan sistem.'));
+            if (btnRollback) {
+                btnRollback.disabled = false;
+                btnRollback.innerHTML = '<i class="bi bi-arrow-counterclockwise me-1"></i> Ya, Rollback Sekarang';
+            }
+        }
+    })
+    .catch(err => {
+        alert('Kendala koneksi rollback: ' + err.message);
+        if (btnRollback) {
+            btnRollback.disabled = false;
+            btnRollback.innerHTML = '<i class="bi bi-arrow-counterclockwise me-1"></i> Ya, Rollback Sekarang';
+        }
+    });
+}
+</script>
 
 <?php $this->load->view('templates/footer'); ?>

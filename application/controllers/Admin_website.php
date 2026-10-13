@@ -667,6 +667,10 @@ public function delete_galeri($id){
         $setting = $this->db->get('settings')->row();
         $data['pin_zi'] = !empty($setting->pin_zi) ? $setting->pin_zi : '123456';
 
+        // Metadata Sinkronisasi PMPZI Kemenag RI
+        $this->load->helper('pmpzi');
+        $data['pmpzi_sync_meta'] = get_pmpzi_sync_meta();
+
         $this->load->view('admin_website/download', $data);
     }
 

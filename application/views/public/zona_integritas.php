@@ -613,7 +613,8 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                     </button>
                 </div>
 
-                <!-- Tombol Sinkronisasi PMPZI dengan Opsi Rollback -->
+                <!-- Tombol Sinkronisasi PMPZI dengan Opsi Rollback (HANYA MUNCUL JIKA ADMIN LOGIN) -->
+                <?php if (!empty($is_user_logged_in)): ?>
                 <div class="btn-group shadow-xs">
                     <button type="button" class="btn btn-success rounded-start-pill fw-bold px-3 py-1.5 d-inline-flex align-items-center gap-2" id="btnMainSyncPmpzi" onclick="startPmpziSync(false)">
                         <i class="bi bi-arrow-repeat fs-6" id="iconSyncSpinner"></i>
@@ -644,6 +645,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                         </li>
                     </ul>
                 </div>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -2931,7 +2933,8 @@ function startPmpziSync(isSilent = false) {
         }, 2400);
     }
 
-    fetch('<?= base_url('website/sync_pmpzi_ajax') ?>', {
+    const syncUrl = '<?= base_url('website/sync_pmpzi_ajax') ?>' + (isSilent ? '?auto=1' : '');
+    fetch(syncUrl, {
         method: 'POST',
         headers: { 'X-Requested-With': 'XMLHttpRequest' }
     })

@@ -901,16 +901,17 @@ class Website extends CI_Controller {
      * Endpoint AJAX Sinkronisasi Data PMPZI Kemenag (Tombol Klik & Auto-Sync)
      */
     public function sync_pmpzi_ajax() {
-        // Keamanan: wajib sesi terbuka (zi_unlocked) atau login LabSys
-        $is_unlocked = (bool)$this->session->userdata('zi_unlocked');
+        $is_unlocked  = (bool)$this->session->userdata('zi_unlocked');
         $is_logged_in = (bool)$this->session->userdata('logged_in');
+        $is_auto      = ($this->input->get('auto') == '1' || $this->input->post('auto') == '1');
 
-        if (!$is_unlocked && !$is_logged_in) {
+        // Manual sync button diperuntukkan khusus bagi Admin yang login atau sesi ZI
+        if (!$is_auto && !$is_logged_in && !$is_unlocked) {
             $this->output
                 ->set_content_type('application/json')
                 ->set_output(json_encode([
                     'status'  => 'error',
-                    'message' => 'Akses ditolak. Sesi portal ZI terkunci atau belum diverifikasi.'
+                    'message' => 'Akses ditolak. Fitur tombol sinkronisasi hanya tersedia untuk Administrator.'
                 ]));
             return;
         }
@@ -924,18 +925,18 @@ class Website extends CI_Controller {
     }
 
     /**
-     * Endpoint AJAX Rollback Data Sinkronisasi PMPZI
+     * Endpoint AJAX Rollback Data Sinkronisasi PMPZI (Khusus Admin)
      */
     public function rollback_pmpzi_ajax() {
-        $is_unlocked = (bool)$this->session->userdata('zi_unlocked');
         $is_logged_in = (bool)$this->session->userdata('logged_in');
+        $is_unlocked  = (bool)$this->session->userdata('zi_unlocked');
 
-        if (!$is_unlocked && !$is_logged_in) {
+        if (!$is_logged_in && !$is_unlocked) {
             $this->output
                 ->set_content_type('application/json')
                 ->set_output(json_encode([
                     'status'  => 'error',
-                    'message' => 'Akses ditolak. Sesi portal ZI terkunci.'
+                    'message' => 'Akses ditolak. Rollback hanya dapat dilakukan oleh Administrator.'
                 ]));
             return;
         }
