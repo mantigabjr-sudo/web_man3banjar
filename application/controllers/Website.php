@@ -892,8 +892,84 @@ class Website extends CI_Controller {
         // Matriks instrumen monitoring LKE PMPZI Kemenag RI (Permenpan 90/2021)
         $this->load->helper('pmpzi');
         $data['pmpzi_matrix'] = get_pmpzi_lke_summary($stats);
+        $data['pmpzi_sync_meta'] = get_pmpzi_sync_meta();
 
         $this->load->view('public/zona_integritas', $data);
+    }
+
+    /**
+     * Endpoint AJAX Sinkronisasi Data PMPZI Kemenag (Tombol Klik & Auto-Sync)
+     */
+    public function sync_pmpzi_ajax() {
+        // Keamanan: wajib sesi terbuka (zi_unlocked) atau login LabSys
+        $is_unlocked = (bool)$this->session->userdata('zi_unlocked');
+        $is_logged_in = (bool)$this->session->userdata('logged_in');
+
+        if (!$is_unlocked && !$is_logged_in) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode([
+                    'status'  => 'error',
+                    'message' => 'Akses ditolak. Sesi portal ZI terkunci atau belum diverifikasi.'
+                ]));
+            return;
+        }
+
+        $this->load->library('pmpzi_sync');
+        $result = $this->pmpzi_sync->run_sync(true);
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
+    /**
+     * Endpoint AJAX Rollback Data Sinkronisasi PMPZI
+     */
+    public function rollback_pmpzi_ajax() {
+        $is_unlocked = (bool)$this->session->userdata('zi_unlocked');
+        $is_logged_in = (bool)$this->session->userdata('logged_in');
+
+        if (!$is_unlocked && !$is_logged_in) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode([
+                    'status'  => 'error',
+                    'message' => 'Akses ditolak. Sesi portal ZI terkunci.'
+                ]));
+            return;
+        }
+
+        $this->load->library('pmpzi_sync');
+        $result = $this->pmpzi_sync->rollback();
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
+    /**
+     * Endpoint Cron / CLI Background Auto-Sync PMPZI
+     */
+    public function sync_pmpzi_cron() {
+        $key = $this->input->get('key', TRUE);
+        $valid_key = 'pmpzi_man3banjar_sync';
+
+        if (!is_cli() && $key !== $valid_key) {
+            show_error('Akses tidak diizinkan. Kunci API tidak cocok.', 403);
+            return;
+        }
+
+        $this->load->library('pmpzi_sync');
+        $result = $this->pmpzi_sync->run_sync(true);
+
+        if (is_cli()) {
+            echo "[" . date('Y-m-d H:i:s') . "] Status: " . ($result['status'] ?? 'error') . " - " . ($result['message'] ?? '') . "\n";
+        } else {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($result));
+        }
     }
 
     public function unlock_zi() {

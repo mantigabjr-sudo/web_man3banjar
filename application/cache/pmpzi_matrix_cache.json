@@ -1,0 +1,158 @@
+{
+    "tahun": "2026",
+    "regulasi": "Permenpan 90 Tahun 2021",
+    "satker": "MADRASAH ALIYAH NEGERI 3 BANJAR",
+    "kode_satker": "309442",
+    "indeks_satker": 68.67,
+    "predikat": "Memenuhi Syarat Pengusulan WBK (Ambang Batas \u2265 60.00)",
+    "pengungkit": {
+        "bobot": 60,
+        "nilai": 38.67,
+        "persen": 64.45,
+        "pemenuhan": {
+            "bobot": 30,
+            "nilai": 21.59,
+            "persen": 71.97,
+            "items": [
+                {
+                    "no": 1,
+                    "area_key": "area1",
+                    "kode_ev": "A.1.1",
+                    "nama": "Manajemen Perubahan",
+                    "bobot": 4,
+                    "nilai": 2.59,
+                    "persen": 64.7
+                },
+                {
+                    "no": 2,
+                    "area_key": "area2",
+                    "kode_ev": "A.1.2",
+                    "nama": "Penataan Tatalaksana",
+                    "bobot": 3.5,
+                    "nilai": 2.83,
+                    "persen": 80.95
+                },
+                {
+                    "no": 3,
+                    "area_key": "area3",
+                    "kode_ev": "A.1.3",
+                    "nama": "Penataan Sistem Manajemen Sdm Aparatur",
+                    "bobot": 5,
+                    "nilai": 3.72,
+                    "persen": 74.48
+                },
+                {
+                    "no": 4,
+                    "area_key": "area4",
+                    "kode_ev": "A.1.4",
+                    "nama": "Penguatan Akuntabilitas",
+                    "bobot": 5,
+                    "nilai": 4.58,
+                    "persen": 91.69
+                },
+                {
+                    "no": 5,
+                    "area_key": "area5",
+                    "kode_ev": "A.1.5",
+                    "nama": "Penguatan Pengawasan",
+                    "bobot": 7.5,
+                    "nilai": 4.65,
+                    "persen": 62.04
+                },
+                {
+                    "no": 6,
+                    "area_key": "area6",
+                    "kode_ev": "A.1.6",
+                    "nama": "Peningkatan Kualitas Pelayanan Publik",
+                    "bobot": 5,
+                    "nilai": 3.21,
+                    "persen": 64.15
+                }
+            ]
+        },
+        "reform": {
+            "bobot": 30,
+            "nilai": 17.08,
+            "persen": 56.93,
+            "items": [
+                {
+                    "no": 1,
+                    "area_key": "area1",
+                    "kode_ev": "A.2.1",
+                    "nama": "Manajemen Perubahan",
+                    "bobot": 4,
+                    "nilai": 3.42,
+                    "persen": 85.5
+                },
+                {
+                    "no": 2,
+                    "area_key": "area2",
+                    "kode_ev": "A.2.2",
+                    "nama": "Penataan Tatalaksana",
+                    "bobot": 3.5,
+                    "nilai": 2.34,
+                    "persen": 66.71
+                },
+                {
+                    "no": 3,
+                    "area_key": "area3",
+                    "kode_ev": "A.2.3",
+                    "nama": "Penataan Sistem Manajemen Sdm Aparatur",
+                    "bobot": 5,
+                    "nilai": 1.5,
+                    "persen": 30
+                },
+                {
+                    "no": 4,
+                    "area_key": "area4",
+                    "kode_ev": "A.2.4",
+                    "nama": "Penguatan Akuntabilitas",
+                    "bobot": 5,
+                    "nilai": 3.81,
+                    "persen": 76.2
+                },
+                {
+                    "no": 5,
+                    "area_key": "area5",
+                    "kode_ev": "A.2.5",
+                    "nama": "Penguatan Pengawasan",
+                    "bobot": 7.5,
+                    "nilai": 2.88,
+                    "persen": 38.33
+                },
+                {
+                    "no": 6,
+                    "area_key": "area6",
+                    "kode_ev": "A.2.6",
+                    "nama": "Peningkatan Kualitas Pelayanan Publik",
+                    "bobot": 5,
+                    "nilai": 3.14,
+                    "persen": 62.75
+                }
+            ]
+        }
+    },
+    "hasil": {
+        "bobot": 40,
+        "nilai": 30,
+        "persen": 75,
+        "items": [
+            {
+                "no": 1,
+                "kode_ev": "B.1",
+                "nama": "Birokrasi Bersih Akuntabel",
+                "bobot": 22.5,
+                "nilai": 16.88,
+                "persen": 75
+            },
+            {
+                "no": 2,
+                "kode_ev": "B.2",
+                "nama": "Pelayanan Publik Prima",
+                "bobot": 17.5,
+                "nilai": 13.13,
+                "persen": 75
+            }
+        ]
+    }
+}

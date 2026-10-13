@@ -9,10 +9,39 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 if (!function_exists('get_pmpzi_lke_summary')) {
     function get_pmpzi_lke_summary($zi_stats = []) {
         $json_file = FCPATH . 'scratch/pmpzi_lke_data.json';
+        $cache_matrix_file = APPPATH . 'cache/pmpzi_matrix_cache.json';
+
         $detail_data = [];
         if (file_exists($json_file)) {
             $json_content = file_get_contents($json_file);
-            $detail_data = json_decode($json_content, true);
+            $parsed_json = json_decode($json_content, true);
+            if (isset($parsed_json['detail_lke'])) {
+                $detail_data = $parsed_json['detail_lke'];
+            } else {
+                $detail_data = $parsed_json;
+            }
+        }
+
+        // Cek apakah ada data matriks hasil sinkronisasi live
+        if (file_exists($cache_matrix_file)) {
+            $cached_matrix = json_decode(file_get_contents($cache_matrix_file), true);
+            if (!empty($cached_matrix) && is_array($cached_matrix) && isset($cached_matrix['pengungkit'])) {
+                // Injeksi berkas_count dari database LabSys
+                if (!empty($cached_matrix['pengungkit']['pemenuhan']['items'])) {
+                    foreach ($cached_matrix['pengungkit']['pemenuhan']['items'] as &$item) {
+                        $ak = $item['area_key'] ?? '';
+                        $item['berkas_count'] = $zi_stats[$ak] ?? 0;
+                    }
+                }
+                if (!empty($cached_matrix['pengungkit']['reform']['items'])) {
+                    foreach ($cached_matrix['pengungkit']['reform']['items'] as &$item) {
+                        $ak = $item['area_key'] ?? '';
+                        $item['berkas_count'] = $zi_stats[$ak] ?? 0;
+                    }
+                }
+                $cached_matrix['detail_lke'] = $detail_data;
+                return $cached_matrix;
+            }
         }
 
         $matrix = [
@@ -202,5 +231,28 @@ if (!function_exists('get_pmpzi_lke_summary')) {
         ];
 
         return $matrix;
+    }
+}
+
+if (!function_exists('get_pmpzi_sync_meta')) {
+    function get_pmpzi_sync_meta() {
+        $meta_file = APPPATH . 'cache/pmpzi_sync_meta.json';
+        if (file_exists($meta_file)) {
+            $data = json_decode(file_get_contents($meta_file), true);
+            if (!empty($data) && is_array($data)) {
+                $last_ts = $data['last_sync_timestamp'] ?? 0;
+                $data['is_expired'] = empty($last_ts) || (time() - $last_ts > 21600);
+                return $data;
+            }
+        }
+        return [
+            'last_sync_timestamp' => null,
+            'last_sync_datetime'  => null,
+            'last_sync_formatted' => 'Belum disinkronkan',
+            'status'              => 'none',
+            'indeks_satker'       => 68.67,
+            'is_expired'          => true,
+            'message'             => ''
+        ];
     }
 }

@@ -1,517 +1,158 @@
 {
-  "tahun": "2026",
-  "regulasi": "Permenpan RB No. 90 Tahun 2021",
-  "satker": "MADRASAH ALIYAH NEGERI 3 BANJAR",
-  "pokja": [
-    {
-      "kode_area": "area1",
-      "nomor_pokja": "I",
-      "nama_area": "Manajemen Perubahan",
-      "bobot": 4.0,
-      "aspek": [
-        {
-          "jenis": "Pemenuhan",
-          "kode_evidence": "A.1.1",
-          "sub_komponen": [
-            {
-              "kode": "A.1.1.1",
-              "judul": "Penyusunan Tim Kerja",
-              "indikator": [
+    "tahun": "2026",
+    "regulasi": "Permenpan 90 Tahun 2021",
+    "satker": "MADRASAH ALIYAH NEGERI 3 BANJAR",
+    "kode_satker": "309442",
+    "indeks_satker": 68.67,
+    "predikat": "Memenuhi Syarat Pengusulan WBK (Ambang Batas \u2265 60.00)",
+    "pengungkit": {
+        "bobot": 60,
+        "nilai": 38.67,
+        "persen": 64.45,
+        "pemenuhan": {
+            "bobot": 30,
+            "nilai": 21.59,
+            "persen": 71.97,
+            "items": [
                 {
-                  "kode_indikator": "A.1.1.1.a",
-                  "pertanyaan": "Unit kerja telah membentuk tim untuk melakukan pembangunan Zona Integritas",
-                  "keterangan": "Ya, jika Tim telah dibentuk di dalam unit kerja.",
-                  "eviden_wajib": "SK Penetapan Tim Kerja Pembangunan ZI, Notula rapat pembentukan tim, Daftar hadir"
+                    "no": 1,
+                    "area_key": "area1",
+                    "kode_ev": "A.1.1",
+                    "nama": "Manajemen Perubahan",
+                    "bobot": 4,
+                    "nilai": 2.59,
+                    "persen": 64.7
                 },
                 {
-                  "kode_indikator": "A.1.1.1.b",
-                  "pertanyaan": "Penentuan anggota Tim dipilih melalui prosedur/mekanisme yang jelas",
-                  "keterangan": "a. Prosedur jelas mewakili seluruh unsur unit kerja\nb. Sebagian unsur\nc. Tidak diseleksi",
-                  "eviden_wajib": "Undangan, mekanisme seleksi/penunjukan tim, berita acara pembentukan tim"
-                }
-              ]
-            },
-            {
-              "kode": "A.1.1.2",
-              "judul": "Rencana Pembangunan Zona Integritas",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.1.2.a",
-                  "pertanyaan": "Terdapat dokumen rencana kerja pembangunan Zona Integritas menuju WBK/WBBM",
-                  "keterangan": "Ya, jika memiliki rencana kerja pembangunan Zona Integritas.",
-                  "eviden_wajib": "Dokumen Rencana Kerja Pembangunan ZI / Action Plan tahun berjalan"
+                    "no": 2,
+                    "area_key": "area2",
+                    "kode_ev": "A.1.2",
+                    "nama": "Penataan Tatalaksana",
+                    "bobot": 3.5,
+                    "nilai": 2.83,
+                    "persen": 80.95
                 },
                 {
-                  "kode_indikator": "A.1.1.2.b",
-                  "pertanyaan": "Dalam dokumen pembangunan terdapat target-target prioritas yang relevan dengan tujuan pembangunan WBK/WBBM",
-                  "keterangan": "Target-target prioritas relevan dengan sasaran strategis.",
-                  "eviden_wajib": "Matriks target prioritas rencana aksi pembangunan ZI"
-                }
-              ]
-            },
-            {
-              "kode": "A.1.1.3",
-              "judul": "Perubahan Pola Pikir dan Budaya Kerja",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.1.3.a",
-                  "pertanyaan": "Pimpinan berperan sebagai role model dalam pembangunan ZI",
-                  "keterangan": "Keteladanan pimpinan dalam kedisiplinan dan integritas.",
-                  "eviden_wajib": "Dokumentasi keteladanan pimpinan, arahan pembina apel, kepatuhan LHKPN/LHKASN"
+                    "no": 3,
+                    "area_key": "area3",
+                    "kode_ev": "A.1.3",
+                    "nama": "Penataan Sistem Manajemen Sdm Aparatur",
+                    "bobot": 5,
+                    "nilai": 3.72,
+                    "persen": 74.48
                 },
                 {
-                  "kode_indikator": "A.1.1.3.b",
-                  "pertanyaan": "Telah ditetapkan agen perubahan (Agent of Change)",
-                  "keterangan": "Penetapan agen perubahan dan rencana aksinya.",
-                  "eviden_wajib": "SK Agen Perubahan, Piagam penghargaan, Program kerja agen perubahan"
+                    "no": 4,
+                    "area_key": "area4",
+                    "kode_ev": "A.1.4",
+                    "nama": "Penguatan Akuntabilitas",
+                    "bobot": 5,
+                    "nilai": 4.58,
+                    "persen": 91.69
+                },
+                {
+                    "no": 5,
+                    "area_key": "area5",
+                    "kode_ev": "A.1.5",
+                    "nama": "Penguatan Pengawasan",
+                    "bobot": 7.5,
+                    "nilai": 4.65,
+                    "persen": 62.04
+                },
+                {
+                    "no": 6,
+                    "area_key": "area6",
+                    "kode_ev": "A.1.6",
+                    "nama": "Peningkatan Kualitas Pelayanan Publik",
+                    "bobot": 5,
+                    "nilai": 3.21,
+                    "persen": 64.15
                 }
-              ]
-            }
-          ]
+            ]
         },
-        {
-          "jenis": "Reform",
-          "kode_evidence": "A.2.1",
-          "sub_komponen": [
-            {
-              "kode": "A.2.1.1",
-              "judul": "Pemantauan dan Evaluasi Pembangunan Zona Integritas",
-              "indikator": [
+        "reform": {
+            "bobot": 30,
+            "nilai": 17.08,
+            "persen": 56.93,
+            "items": [
                 {
-                  "kode_indikator": "A.2.1.1.a",
-                  "pertanyaan": "Pimpinan memantau secara berkala pelaksanaan pembangunan Zona Integritas",
-                  "keterangan": "Monitoring berkala berkala bulanan/triwulanan dan ditindaklanjuti.",
-                  "eviden_wajib": "Laporan monev berkala ZI, Notula rapat koordinasi, Matriks tindak lanjut monev"
+                    "no": 1,
+                    "area_key": "area1",
+                    "kode_ev": "A.2.1",
+                    "nama": "Manajemen Perubahan",
+                    "bobot": 4,
+                    "nilai": 3.42,
+                    "persen": 85.5
+                },
+                {
+                    "no": 2,
+                    "area_key": "area2",
+                    "kode_ev": "A.2.2",
+                    "nama": "Penataan Tatalaksana",
+                    "bobot": 3.5,
+                    "nilai": 2.34,
+                    "persen": 66.71
+                },
+                {
+                    "no": 3,
+                    "area_key": "area3",
+                    "kode_ev": "A.2.3",
+                    "nama": "Penataan Sistem Manajemen Sdm Aparatur",
+                    "bobot": 5,
+                    "nilai": 1.5,
+                    "persen": 30
+                },
+                {
+                    "no": 4,
+                    "area_key": "area4",
+                    "kode_ev": "A.2.4",
+                    "nama": "Penguatan Akuntabilitas",
+                    "bobot": 5,
+                    "nilai": 3.81,
+                    "persen": 76.2
+                },
+                {
+                    "no": 5,
+                    "area_key": "area5",
+                    "kode_ev": "A.2.5",
+                    "nama": "Penguatan Pengawasan",
+                    "bobot": 7.5,
+                    "nilai": 2.88,
+                    "persen": 38.33
+                },
+                {
+                    "no": 6,
+                    "area_key": "area6",
+                    "kode_ev": "A.2.6",
+                    "nama": "Peningkatan Kualitas Pelayanan Publik",
+                    "bobot": 5,
+                    "nilai": 3.14,
+                    "persen": 62.75
                 }
-              ]
-            }
-          ]
+            ]
         }
-      ]
     },
-    {
-      "kode_area": "area2",
-      "nomor_pokja": "II",
-      "nama_area": "Penataan Tatalaksana",
-      "bobot": 3.5,
-      "aspek": [
-        {
-          "jenis": "Pemenuhan",
-          "kode_evidence": "A.1.2",
-          "sub_komponen": [
+    "hasil": {
+        "bobot": 40,
+        "nilai": 30,
+        "persen": 75,
+        "items": [
             {
-              "kode": "A.1.2.1",
-              "judul": "Prosedur Operasional Tetap (SOP) Kegiatan Utama",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.2.1.a",
-                  "pertanyaan": "SOP mengacu pada peta proses bisnis instansi",
-                  "keterangan": "Ya, telah disusun peta proses bisnis dan SOP turunan.",
-                  "eviden_wajib": "Peta Proses Bisnis Madrasah, Buku Dokumen SOP Layanan Utama & Administrasi"
-                },
-                {
-                  "kode_indikator": "A.1.2.1.b",
-                  "pertanyaan": "SOP telah diterapkan dalam seluruh proses kegiatan",
-                  "keterangan": "Kesesuaian pelaksanaan tupoksi dengan SOP.",
-                  "eviden_wajib": "Sampel berkas kerja sesuai SOP, tanda terima, lembar disposisi"
-                },
-                {
-                  "kode_indikator": "A.1.2.1.c",
-                  "pertanyaan": "Evaluasi terhadap SOP dilakukan secara berkala",
-                  "keterangan": "Kaji ulang SOP tahunan/berkala.",
-                  "eviden_wajib": "Laporan reviu dan evaluasi SOP, Berita acara pemutakhiran SOP"
-                }
-              ]
+                "no": 1,
+                "kode_ev": "B.1",
+                "nama": "Birokrasi Bersih Akuntabel",
+                "bobot": 22.5,
+                "nilai": 16.88,
+                "persen": 75
             },
             {
-              "kode": "A.1.2.2",
-              "judul": "Sistem Pemerintahan Berbasis Elektronik (E-Government)",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.2.2.a",
-                  "pertanyaan": "Penggunaan sistem pengukuran kinerja berbasis elektronik (e-Kinerja)",
-                  "keterangan": "Penerapan sistem pengukuran capaian kinerja digital.",
-                  "eviden_wajib": "Screenshot e-Kinerja BKN / SIMPATIKA / aplikasi kinerja"
-                },
-                {
-                  "kode_indikator": "A.1.2.2.b",
-                  "pertanyaan": "Penggunaan sistem kearsipan / surat menyurat elektronik (e-Office)",
-                  "keterangan": "Penerapan e-Office, tata persuratan elektronik, atau sistem pengarsipan digital.",
-                  "eviden_wajib": "Aplikasi SRIKANDI / e-Tata Persuratan / LabSys Arsip Digital"
-                },
-                {
-                  "kode_indikator": "A.1.2.2.c",
-                  "pertanyaan": "Penggunaan sistem manajemen kepegawaian digital",
-                  "keterangan": "Data kepegawaian terintegrasi online.",
-                  "eviden_wajib": "Database SIMPEG Kemenag / Database GTK LabSys"
-                },
-                {
-                  "kode_indikator": "A.1.2.2.d",
-                  "pertanyaan": "Penggunaan sistem pengelolaan keuangan berbasis elektronik",
-                  "keterangan": "Aplikasi keuangan negara dan madrasah.",
-                  "eviden_wajib": "Sistem SAKTI / SPAN / RKAM Digital"
-                }
-              ]
-            },
-            {
-              "kode": "A.1.2.3",
-              "judul": "Keterbukaan Informasi Publik",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.2.3.a",
-                  "pertanyaan": "Terdapat kebijakan dan unit/petugas Pejabat Pengelola Informasi dan Dokumentasi (PPID)",
-                  "keterangan": "SK dan layanan PPID madrasah.",
-                  "eviden_wajib": "SK Tim Pengelola PPID Madrasah, Standar Operasional PPID"
-                },
-                {
-                  "kode_indikator": "A.1.2.3.b",
-                  "pertanyaan": "Informasi publik madrasah mudah diakses oleh masyarakat melalui website dan medsos",
-                  "keterangan": "Aksesibilitas informasi publik.",
-                  "eviden_wajib": "Website resmi man3banjar.sch.id, Brosur info, Media sosial aktif, Papan pengumuman"
-                }
-              ]
+                "no": 2,
+                "kode_ev": "B.2",
+                "nama": "Pelayanan Publik Prima",
+                "bobot": 17.5,
+                "nilai": 13.13,
+                "persen": 75
             }
-          ]
-        },
-        {
-          "jenis": "Reform",
-          "kode_evidence": "A.2.2",
-          "sub_komponen": [
-            {
-              "kode": "A.2.2.1",
-              "judul": "Transformasi Digital dan Efisiensi Tata Kelola",
-              "indikator": [
-                {
-                  "kode_indikator": "A.2.2.1.a",
-                  "pertanyaan": "Penerapan teknologi informasi memberikan efisiensi nyata pada tata kelola dan layanan",
-                  "keterangan": "Dampak digitalisasi terhadap kecepatan layanan.",
-                  "eviden_wajib": "Laporan efektivitas integrasi digital (LabSys, Presensi biometric, Website portal)"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "kode_area": "area3",
-      "nomor_pokja": "III",
-      "nama_area": "Penataan Sistem Manajemen SDM Aparatur",
-      "bobot": 5.0,
-      "aspek": [
-        {
-          "jenis": "Pemenuhan",
-          "kode_evidence": "A.1.3",
-          "sub_komponen": [
-            {
-              "kode": "A.1.3.1",
-              "judul": "Perencanaan Kebutuhan dan Pola Mutasi Pegawai",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.3.1.a",
-                  "pertanyaan": "Unit kerja menyusun rencana kebutuhan pegawai berdasarkan Analisis Jabatan (Anjab) dan ABK",
-                  "keterangan": "Dokumen Anjab & ABK madrasah.",
-                  "eviden_wajib": "Dokumen Peta Jabatan, Analisis Jabatan (Anjab), Analisis Beban Kerja (ABK)"
-                },
-                {
-                  "kode_indikator": "A.1.3.1.b",
-                  "pertanyaan": "Penempatan pegawai mengacu pada pola penempatan dan kompetensi yang jelas",
-                  "keterangan": "Kesesuaian kualifikasi pendidikan dan penugasan.",
-                  "eviden_wajib": "SK Pembagian Tugas Mengajar & Tugas Tambahan GTK, Berita acara rapat penempatan"
-                }
-              ]
-            },
-            {
-              "kode": "A.1.3.2",
-              "judul": "Pengembangan Pegawai Berbasis Kompetensi",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.3.2.a",
-                  "pertanyaan": "Unit kerja mengidentifikasi kebutuhan pengembangan kompetensi pegawai (TNA)",
-                  "keterangan": "Training Need Analysis.",
-                  "eviden_wajib": "Formulir Analisis Kebutuhan Diklat/Pelatihan Guru dan Tendik"
-                },
-                {
-                  "kode_indikator": "A.1.3.2.b",
-                  "pertanyaan": "Terdapat keikutsertaan pegawai dalam pelatihan/diklat/workshop",
-                  "keterangan": "Peningkatan kapasitas GTK.",
-                  "eviden_wajib": "Sertifikat Pelatihan (MOOC Pintar Kemenag, BDK, MGMP/KKG, Webinar), Surat Tugas"
-                }
-              ]
-            },
-            {
-              "kode": "A.1.3.3",
-              "judul": "Penetapan Kinerja Individu dan Penegakan Disiplin",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.3.3.a",
-                  "pertanyaan": "Penilaian kinerja individu dilaksanakan secara transparan dan terukur",
-                  "keterangan": "SKP pegawai.",
-                  "eviden_wajib": "Dokumen SKP tahunan seluruh GTK, Hasil evaluasi kinerja berkala"
-                },
-                {
-                  "kode_indikator": "A.1.3.3.b",
-                  "pertanyaan": "Penegakan aturan disiplin dan kode etik pegawai dilaksanakan secara konsisten",
-                  "keterangan": "Kepatuhan jam kerja dan sanksi/teguran.",
-                  "eviden_wajib": "Rekapitulasi Presensi Digital, Dokumen tata tertib guru & pegawai, Catatan pembinaan disiplin"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "jenis": "Reform",
-          "kode_evidence": "A.2.3",
-          "sub_komponen": [
-            {
-              "kode": "A.2.3.1",
-              "judul": "Peningkatan Profesionalisme dan Kinerja SDM",
-              "indikator": [
-                {
-                  "kode_indikator": "A.2.3.1.a",
-                  "pertanyaan": "Peningkatan indeks profesionalitas dan kepuasan kerja pegawai",
-                  "keterangan": "Capaian Indeks Profesionalitas ASN (IP ASN).",
-                  "eviden_wajib": "Nilai IP ASN Kemenag pegawai unit kerja, Rekap penghargaan/prestasi GTK"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "kode_area": "area4",
-      "nomor_pokja": "IV",
-      "nama_area": "Penguatan Akuntabilitas",
-      "bobot": 5.0,
-      "aspek": [
-        {
-          "jenis": "Pemenuhan",
-          "kode_evidence": "A.1.4",
-          "sub_komponen": [
-            {
-              "kode": "A.1.4.1",
-              "judul": "Keterlibatan Pimpinan dalam Akuntabilitas Kinerja",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.4.1.a",
-                  "pertanyaan": "Pimpinan terlibat langsung dalam penyusunan perencanaan strategis dan rencana kerja tahunan",
-                  "keterangan": "Keterlibatan Kepala Madrasah dalam penyusunan Renstra/RKT/EDM.",
-                  "eviden_wajib": "Dokumen EDM (Evaluasi Diri Madrasah), RKT, Notula & Dokumentasi rapat dipimpin Kamad"
-                },
-                {
-                  "kode_indikator": "A.1.4.1.b",
-                  "pertanyaan": "Pimpinan terlibat aktif dalam pemantauan pencapaian target kinerja secara berkala",
-                  "keterangan": "Rapat monitoring berkala capaian target IKU.",
-                  "eviden_wajib": "Notula rapat monev capaian kinerja triwulanan, Lembar arahan pimpinan"
-                }
-              ]
-            },
-            {
-              "kode": "A.1.4.2",
-              "judul": "Pengelolaan Akuntabilitas Kinerja Instansi",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.4.2.a",
-                  "pertanyaan": "Unit kerja memiliki dokumen Perjanjian Kinerja (PK) yang berjenjang",
-                  "keterangan": "Perjanjian kinerja Kamad dengan Kemenag dan antar pejabat.",
-                  "eviden_wajib": "Dokumen Perjanjian Kinerja (PK) Kepala Madrasah dan Tenaga Pendidik/Kependidikan"
-                },
-                {
-                  "kode_indikator": "A.1.4.2.b",
-                  "pertanyaan": "Unit kerja menyusun Laporan Kinerja Instansi Pemerintah (LKjIP) secara tepat waktu",
-                  "keterangan": "Kualitas penyusunan LKjIP.",
-                  "eviden_wajib": "Laporan Kinerja Instansi Pemerintah (LKjIP) tahun terakhir, Tanda bukti pengiriman laporan"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "jenis": "Reform",
-          "kode_evidence": "A.2.4",
-          "sub_komponen": [
-            {
-              "kode": "A.2.4.1",
-              "judul": "Peningkatan Efektivitas Penggunaan Anggaran dan Kinerja",
-              "indikator": [
-                {
-                  "kode_indikator": "A.2.4.1.a",
-                  "pertanyaan": "Tingkat capaian indikator kinerja utama (IKU) dan realisasi penyerapan anggaran yang akuntabel",
-                  "keterangan": "Capaian output berbanding realisasi anggaran.",
-                  "eviden_wajib": "Laporan Realisasi Anggaran (LRA) Madrasah, Capaian Output SMART / OMSPAN"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "kode_area": "area5",
-      "nomor_pokja": "V",
-      "nama_area": "Penguatan Pengawasan",
-      "bobot": 7.5,
-      "aspek": [
-        {
-          "jenis": "Pemenuhan",
-          "kode_evidence": "A.1.5",
-          "sub_komponen": [
-            {
-              "kode": "A.1.5.1",
-              "judul": "Pengendalian Gratifikasi",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.5.1.a",
-                  "pertanyaan": "Unit kerja telah membentuk Unit Pengendalian Gratifikasi (UPG) dan mengimplementasikan sosialisasi tolak gratifikasi",
-                  "keterangan": "Kebijakan anti suap dan gratifikasi.",
-                  "eviden_wajib": "SK Tim UPG Madrasah, Banner/Spanduk/Stiker 'Tolak Gratifikasi/Pungli', Formulir pelaporan gratifikasi"
-                }
-              ]
-            },
-            {
-              "kode": "A.1.5.2",
-              "judul": "Penerapan Sistem Pengendalian Intern Pemerintah (SPIP)",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.5.2.a",
-                  "pertanyaan": "Unit kerja telah menyusun identifikasi dan matriks analisis risiko (Risk Assessment)",
-                  "keterangan": "Manajemen risiko operasional dan integritas.",
-                  "eviden_wajib": "Buku Daftar Risiko (Risk Register) Madrasah, Rencana Tindak Pengendalian (RTP) SPIP"
-                }
-              ]
-            },
-            {
-              "kode": "A.1.5.3",
-              "judul": "Pengaduan Masyarakat dan Whistleblowing System (WBS)",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.5.3.a",
-                  "pertanyaan": "Terdapat sarana saluran pengaduan masyarakat yang mudah diakses dan ditindaklanjuti",
-                  "keterangan": "Kotak pengaduan, hotline WhatsApp, website pengaduan, atau integrasi SP4N LAPOR.",
-                  "eviden_wajib": "SOP Pengaduan Masyarakat, Kotak Saran/Dumas fisik & digital, Register rekap aduan masuk"
-                },
-                {
-                  "kode_indikator": "A.1.5.3.b",
-                  "pertanyaan": "Telah diterapkan mekanisme Whistleblowing System (WBS) dengan jaminan perlindungan pelapor",
-                  "keterangan": "Saluran pelaporan pelanggaran internal.",
-                  "eviden_wajib": "SK/SOP WBS Madrasah, Media sosialisasi WBS, Kanal pelaporan khusus"
-                }
-              ]
-            },
-            {
-              "kode": "A.1.5.4",
-              "judul": "Penanganan Benturan Kepentingan",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.5.4.a",
-                  "pertanyaan": "Telah diidentifikasi potensi benturan kepentingan dan penanganannya",
-                  "keterangan": "Surat pernyataan bebas benturan kepentingan.",
-                  "eviden_wajib": "Peta Benturan Kepentingan Madrasah, Pakta Integritas / Pernyataan Bebas Benturan Kepentingan"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "jenis": "Reform",
-          "kode_evidence": "A.2.5",
-          "sub_komponen": [
-            {
-              "kode": "A.2.5.1",
-              "judul": "Tindak Lanjut Hasil Pengawasan / Temuan",
-              "indikator": [
-                {
-                  "kode_indikator": "A.2.5.1.a",
-                  "pertanyaan": "Seluruh hasil audit/temuan inspektorat (Itjen Kemenag/BPK) telah ditindaklanjuti 100%",
-                  "keterangan": "Penyelesaian temuan kepatuhan.",
-                  "eviden_wajib": "Surat Keterangan Bebas Temuan / Matriks Tindak Lanjut Hasil Pemeriksaan (TLHP) Itjen"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "kode_area": "area6",
-      "nomor_pokja": "VI",
-      "nama_area": "Peningkatan Kualitas Pelayanan Publik",
-      "bobot": 5.0,
-      "aspek": [
-        {
-          "jenis": "Pemenuhan",
-          "kode_evidence": "A.1.6",
-          "sub_komponen": [
-            {
-              "kode": "A.1.6.1",
-              "judul": "Standar Pelayanan dan Maklumat Pelayanan",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.6.1.a",
-                  "pertanyaan": "Unit kerja memiliki Standar Pelayanan (SP) yang telah ditetapkan dan disosialisasikan",
-                  "keterangan": "Standar layanan legalitas ijazah, mutasi siswa, PPDB, penelitian, dll.",
-                  "eviden_wajib": "SK Standar Pelayanan Madrasah, Brosur/Bagan alur 14 komponen standar pelayanan publik"
-                },
-                {
-                  "kode_indikator": "A.1.6.1.b",
-                  "pertanyaan": "Terdapat Maklumat Pelayanan yang dipublikasikan secara terbuka",
-                  "keterangan": "Pajangan maklumat pelayanan di ruang publik.",
-                  "eviden_wajib": "Foto pigura Maklumat Pelayanan terpasang di lobi PTSP, Publikasi maklumat di web resmi"
-                }
-              ]
-            },
-            {
-              "kode": "A.1.6.2",
-              "judul": "Budaya Pelayanan Prima dan PTSP",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.6.2.a",
-                  "pertanyaan": "Pelaksanaan layanan terpusat terpadu satu pintu (PTSP) dengan fasilitas ramah disabilitas dan sarana penunjang",
-                  "keterangan": "Ruang PTSP, ruang laktasi, kursi roda, jalur landai, ramah anak.",
-                  "eviden_wajib": "Foto Ruang PTSP MAN 3 Banjar, Foto fasilitas disabilitas (jalur pemandu, ram jalan, toilet khusus)"
-                },
-                {
-                  "kode_indikator": "A.1.6.2.b",
-                  "pertanyaan": "Petugas pelayanan telah menerapkan budaya pelayanan prima (5S: Senyum, Salam, Sapa, Sopan, Santun)",
-                  "keterangan": "Pelatihan service excellence untuk front office.",
-                  "eviden_wajib": "SOP Budaya Pelayanan Prima, Sertifikat/Dokumentasi briefing & pelatihan pelayanan prima"
-                }
-              ]
-            },
-            {
-              "kode": "A.1.6.3",
-              "judul": "Survei Kepuasan Masyarakat (SKM)",
-              "indikator": [
-                {
-                  "kode_indikator": "A.1.6.3.a",
-                  "pertanyaan": "Melakukan Survei Kepuasan Masyarakat (SKM) secara berkala dan mempublikasikan hasilnya",
-                  "keterangan": "SKM sesuai Permenpan 14/2017.",
-                  "eviden_wajib": "Laporan Hasil SKM Semester/Tahunan, Infografis Nilai IKM yang dipublikasikan di medsos/web"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "jenis": "Reform",
-          "kode_evidence": "A.2.6",
-          "sub_komponen": [
-            {
-              "kode": "A.2.6.1",
-              "judul": "Inovasi Pelayanan Publik",
-              "indikator": [
-                {
-                  "kode_indikator": "A.2.6.1.a",
-                  "pertanyaan": "Memiliki inovasi pelayanan publik yang mempermudah masyarakat/siswa/wali dan memberikan nilai tambah nyata",
-                  "keterangan": "Inovasi layanan madrasah (e-layanan, sistem akademik, presensi real-time, dll).",
-                  "eviden_wajib": "Dokumen Proposal Inovasi Madrasah, Buku Panduan Penggunaan Inovasi, Dokumentasi pemanfaatan"
-                }
-              ]
-            }
-          ]
-        }
-      ]
+        ]
     }
-  ]
 }
