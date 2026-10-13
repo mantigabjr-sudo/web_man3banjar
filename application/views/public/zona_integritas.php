@@ -547,6 +547,14 @@ $logged_user_name = $this->session->userdata('username') ?? '';
 .pmpzi-kpi-card:hover {
     transform: translateY(-2px);
 }
+
+/* ═══ MULTI-MODAL STACKING: MODAL PRATINJAU DOKUMEN SELALU TERDEPAN ═══ */
+#modalPreviewPdfZi {
+    z-index: 1085 !important;
+}
+.modal-backdrop.preview-nested-backdrop {
+    z-index: 1080 !important;
+}
 </style>
 
 <!-- ═══ 1. HERO HEADER ZONA INTEGRITAS ═══ -->
@@ -2061,7 +2069,15 @@ function previewDoc(fileUrl, title, ext) {
         }
     }
 
-    const bsModal = new bootstrap.Modal(modalEl);
+    // Pastikan modal pratinjau selalu berada di layer paling depan (Multi-Modal Stacking)
+    if (modalEl) {
+        modalEl.style.zIndex = '1085';
+        if (modalEl.parentElement !== document.body) {
+            document.body.appendChild(modalEl);
+        }
+    }
+
+    const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
     bsModal.show();
 }
 
@@ -3119,7 +3135,7 @@ function executePmpziRollback() {
     });
 }
 
-// ═══ HOOK AUTO-SYNC OTOMATIS BERKALA DI LATAR BELAKANG ═══
+// ═══ HOOK AUTO-SYNC & MULTI-MODAL STACKING LISTENER ═══
 document.addEventListener('DOMContentLoaded', function() {
     const isPmpziExpired = <?= !empty($pmpzi_sync_meta['is_expired']) ? 'true' : 'false' ?>;
     if (isPmpziExpired) {
@@ -3128,6 +3144,38 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('[LabSys Auto-Sync] Sesi sinkronisasi kadaluarsa (>6 jam). Memulai auto-sync latar belakang...');
             startPmpziSync(true);
         }, 3000);
+    }
+
+    // Handler Multi-Modal: Modal Pratinjau Eviden Selalu di Atas Modal Lain
+    const modalPreviewZiEl = document.getElementById('modalPreviewPdfZi');
+    if (modalPreviewZiEl) {
+        modalPreviewZiEl.addEventListener('show.bs.modal', function () {
+            modalPreviewZiEl.style.zIndex = '1085';
+            if (modalPreviewZiEl.parentElement !== document.body) {
+                document.body.appendChild(modalPreviewZiEl);
+            }
+            setTimeout(function () {
+                const backdrops = document.querySelectorAll('.modal-backdrop');
+                if (backdrops.length > 1) {
+                    const topBackdrop = backdrops[backdrops.length - 1];
+                    topBackdrop.classList.add('preview-nested-backdrop');
+                    topBackdrop.style.zIndex = '1080';
+                }
+            }, 15);
+        });
+
+        modalPreviewZiEl.addEventListener('hidden.bs.modal', function () {
+            setTimeout(function () {
+                const activeModals = document.querySelectorAll('.modal.show');
+                if (activeModals.length > 0) {
+                    document.body.classList.add('modal-open');
+                    document.body.style.overflow = 'hidden';
+                }
+            }, 100);
+
+            const iframeEl = document.getElementById('iframePdfViewerZi');
+            if (iframeEl) iframeEl.src = '';
+        });
     }
 });
 </script>
