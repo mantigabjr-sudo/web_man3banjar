@@ -531,14 +531,15 @@ $area_names = [
                         </div>
                         <div class="col-md-6" id="adminWrapperAreaZi">
                             <label class="form-label fw-bold small text-muted" id="adminLabelSubKategori">Pokja Perubahan ZI <span class="text-danger">*</span></label>
-                            <select name="area_zi" id="adminAreaZi" class="form-select rounded-3 text-success fw-bold" required>
-                                <option value="shared">🏛️ Dokumen Bersama / Induk ZI (Lintas Pokja)</option>
+                            <select name="area_zi" id="adminAreaZi" class="form-select rounded-3 text-dark fw-bold" required>
+                                <option value="" disabled selected>-- Pilih Pokja ZI Terlebih Dahulu --</option>
                                 <option value="area1">Pokja I: Manajemen Perubahan</option>
                                 <option value="area2">Pokja II: Penataan Tatalaksana</option>
                                 <option value="area3">Pokja III: Penataan Manajemen SDM</option>
                                 <option value="area4">Pokja IV: Penguatan Akuntabilitas</option>
                                 <option value="area5">Pokja V: Penguatan Pengawasan</option>
                                 <option value="area6">Pokja VI: Kualitas Pelayanan Publik</option>
+                                <option value="shared">🏛️ Dokumen Bersama / Induk ZI (Lintas Pokja)</option>
                             </select>
                         </div>
                     </div>
@@ -1225,14 +1226,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         <div class="col-md-6" id="editAdminWrapperAreaZi">
                             <label class="form-label fw-bold small text-muted" id="editAdminLabelSubKategori">Pokja Perubahan ZI <span class="text-danger">*</span></label>
-                            <select name="area_zi" id="editAdminAreaZi" class="form-select rounded-3 text-success fw-bold" required>
-                                <option value="shared">🏛️ Dokumen Bersama / Induk ZI (Lintas Pokja)</option>
+                            <select name="area_zi" id="editAdminAreaZi" class="form-select rounded-3 text-dark fw-bold" required>
                                 <option value="area1">Pokja I: Manajemen Perubahan</option>
                                 <option value="area2">Pokja II: Penataan Tatalaksana</option>
                                 <option value="area3">Pokja III: Penataan Manajemen SDM</option>
                                 <option value="area4">Pokja IV: Penguatan Akuntabilitas</option>
                                 <option value="area5">Pokja V: Penguatan Pengawasan</option>
                                 <option value="area6">Pokja VI: Kualitas Pelayanan Publik</option>
+                                <option value="shared">🏛️ Dokumen Bersama / Induk ZI (Lintas Pokja)</option>
                             </select>
                         </div>
                     </div>

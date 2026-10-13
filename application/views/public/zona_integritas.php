@@ -893,15 +893,19 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                     <div class="row g-3 mb-3">
                         <div class="col-md-12">
                             <label class="form-label fw-bold small text-muted">Pokja Perubahan ZI <span class="text-danger">*</span></label>
-                            <select name="area_zi" class="form-select rounded-3 text-success fw-bold" required>
-                                <option value="shared" <?= $active_area === 'shared' ? 'selected' : '' ?>>🏛️ Dokumen Bersama / Induk ZI (Dapat disalin ke Pokja I–VI)</option>
-                                <option value="area1" <?= $active_area === 'area1' ? 'selected' : '' ?>>Pokja I: Manajemen Perubahan (Budaya Kerja &amp; Komitmen)</option>
-                                <option value="area2" <?= $active_area === 'area2' ? 'selected' : '' ?>>Pokja II: Penataan Tatalaksana (SOP &amp; Digitalisasi e-Office)</option>
-                                <option value="area3" <?= $active_area === 'area3' ? 'selected' : '' ?>>Pokja III: Penataan Manajemen SDM (Disiplin &amp; Kinerja GTK)</option>
-                                <option value="area4" <?= $active_area === 'area4' ? 'selected' : '' ?>>Pokja IV: Penguatan Akuntabilitas (LAKIP &amp; Capaian Sasaran)</option>
-                                <option value="area5" <?= $active_area === 'area5' ? 'selected' : '' ?>>Pokja V: Penguatan Pengawasan (Gratifikasi, WBS, SPI)</option>
-                                <option value="area6" <?= $active_area === 'area6' ? 'selected' : '' ?>>Pokja VI: Peningkatan Kualitas Pelayanan Publik (IKM &amp; Layanan)</option>
+                            <select name="area_zi" id="uploadZiArea" class="form-select rounded-3 text-dark fw-bold" required>
+                                <option value="" disabled selected>-- Silakan Pilih Pokja ZI Tujuan Terlebih Dahulu --</option>
+                                <option value="area1">Pokja I: Manajemen Perubahan (Budaya Kerja &amp; Komitmen)</option>
+                                <option value="area2">Pokja II: Penataan Tatalaksana (SOP &amp; Digitalisasi e-Office)</option>
+                                <option value="area3">Pokja III: Penataan Manajemen SDM (Disiplin &amp; Kinerja GTK)</option>
+                                <option value="area4">Pokja IV: Penguatan Akuntabilitas (LAKIP &amp; Capaian Sasaran)</option>
+                                <option value="area5">Pokja V: Penguatan Pengawasan (Gratifikasi, WBS, SPI)</option>
+                                <option value="area6">Pokja VI: Peningkatan Kualitas Pelayanan Publik (IKM &amp; Layanan)</option>
+                                <option value="shared">🏛️ Dokumen Bersama / Induk ZI (Dapat disalin ke Pokja I–VI)</option>
                             </select>
+                            <div class="form-text small text-muted mt-1">
+                                <i class="bi bi-info-circle text-primary me-1"></i>Pilih Pokja tujuan berkas eviden. Dokumen bersama diperuntukkan khusus bagi berkas induk lintas pokja.
+                            </div>
                         </div>
                     </div>
 
@@ -1595,6 +1599,51 @@ function openDeleteModalZi(doc) {
     const deleteModal = new bootstrap.Modal(document.getElementById('modalDeleteZi'));
     deleteModal.show();
 }
+
+// Inisialisasi & sinkronisasi dropdown Pokja pada Modal Unggah
+document.addEventListener('DOMContentLoaded', function() {
+    const modalUploadZiEl = document.getElementById('modalUploadZi');
+    if (modalUploadZiEl) {
+        modalUploadZiEl.addEventListener('show.bs.modal', function () {
+            const selectArea = document.getElementById('uploadZiArea');
+            if (selectArea) {
+                // Jika sedang di tab Pokja spesifik (area1-area6), otomatis sinkronkan.
+                // Jika di tab 'all' atau 'shared', set placeholder agar wajib dipilih oleh pengunggah.
+                if (typeof currentArea !== 'undefined' && currentArea.startsWith('area')) {
+                    selectArea.value = currentArea;
+                    const liniSelect = document.querySelector('#modalUploadZi select[name="lini_unit"]');
+                    const pokjaMap = {
+                        'area1': 'Tim Pokja I', 'area2': 'Tim Pokja II', 'area3': 'Tim Pokja III',
+                        'area4': 'Tim Pokja IV', 'area5': 'Tim Pokja V', 'area6': 'Tim Pokja VI'
+                    };
+                    if (liniSelect && pokjaMap[currentArea]) liniSelect.value = pokjaMap[currentArea];
+                } else {
+                    selectArea.value = '';
+                }
+            }
+        });
+    }
+
+    const uploadZiAreaSelect = document.getElementById('uploadZiArea');
+    if (uploadZiAreaSelect) {
+        uploadZiAreaSelect.addEventListener('change', function () {
+            const liniSelect = document.querySelector('#modalUploadZi select[name="lini_unit"]');
+            if (!liniSelect) return;
+            const pokjaMap = {
+                'area1': 'Tim Pokja I',
+                'area2': 'Tim Pokja II',
+                'area3': 'Tim Pokja III',
+                'area4': 'Tim Pokja IV',
+                'area5': 'Tim Pokja V',
+                'area6': 'Tim Pokja VI',
+                'shared': 'Sekretariat ZI'
+            };
+            if (pokjaMap[this.value]) {
+                liniSelect.value = pokjaMap[this.value];
+            }
+        });
+    }
+});
 </script>
 
 <!-- ═══ MODAL EDIT EVIDEN ZI ═══ -->
@@ -1621,14 +1670,14 @@ function openDeleteModalZi(doc) {
                     <div class="row g-3 mb-3">
                         <div class="col-md-12">
                             <label class="form-label fw-bold small text-muted">Pokja Perubahan ZI <span class="text-danger">*</span></label>
-                            <select name="area_zi" id="editZiArea" class="form-select rounded-3 text-success fw-bold" required>
-                                <option value="shared">🏛️ Dokumen Bersama / Induk ZI (Dapat disalin ke Pokja I–VI)</option>
+                            <select name="area_zi" id="editZiArea" class="form-select rounded-3 text-dark fw-bold" required>
                                 <option value="area1">Pokja I: Manajemen Perubahan (Budaya Kerja &amp; Komitmen)</option>
                                 <option value="area2">Pokja II: Penataan Tatalaksana (SOP &amp; Digitalisasi e-Office)</option>
                                 <option value="area3">Pokja III: Penataan Manajemen SDM (Disiplin &amp; Kinerja GTK)</option>
                                 <option value="area4">Pokja IV: Penguatan Akuntabilitas (LAKIP &amp; Capaian Sasaran)</option>
                                 <option value="area5">Pokja V: Penguatan Pengawasan (Gratifikasi, WBS, SPI)</option>
                                 <option value="area6">Pokja VI: Peningkatan Kualitas Pelayanan Publik (IKM &amp; Layanan)</option>
+                                <option value="shared">🏛️ Dokumen Bersama / Induk ZI (Dapat disalin ke Pokja I–VI)</option>
                             </select>
                         </div>
                     </div>

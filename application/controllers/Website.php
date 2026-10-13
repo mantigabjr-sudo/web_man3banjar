@@ -1301,6 +1301,12 @@ class Website extends CI_Controller {
         $redirect_to = $this->input->post('redirect_to', TRUE);
         $redirect_target = ($redirect_to === 'zona_integritas') ? ('website/zona_integritas' . (!empty($area_zi) ? '?area=' . $area_zi : '')) : 'website/download';
 
+        if($redirect_to === 'zona_integritas' && (empty($area_zi) || !in_array($area_zi, ['area1', 'area2', 'area3', 'area4', 'area5', 'area6', 'shared']))){
+            $this->session->set_flashdata('error', 'Silakan pilih Pokja ZI tujuan terlebih dahulu sebelum mengunggah berkas eviden.');
+            redirect('website/zona_integritas');
+            return;
+        }
+
         if(empty($judul)){
             $this->session->set_flashdata('error', 'Nama / Judul dokumen wajib diisi.');
             redirect($redirect_target);
