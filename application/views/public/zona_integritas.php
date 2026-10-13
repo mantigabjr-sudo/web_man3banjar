@@ -703,9 +703,9 @@ $logged_user_name = $this->session->userdata('username') ?? '';
             </div>
             <div class="col-6 col-lg-3">
                 <div class="pmpzi-kpi-card text-center">
-                    <span class="small text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 11px; letter-spacing: 0.5px;">Eviden Terunggah LabSys</span>
-                    <div class="fs-2 fw-bold text-warning font-monospace mb-1"><?= $zi_stats['total'] ?? 0 ?></div>
-                    <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill" style="font-size: 11px;">+<?= $zi_stats['shared'] ?? 0 ?> Dok. Bersama</span>
+                    <span class="small text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 11px; letter-spacing: 0.5px;">Dokumen di Web PMPZI</span>
+                    <div class="fs-2 fw-bold text-success font-monospace mb-1"><?= $pmpzi_stats['total'] ?? 0 ?></div>
+                    <span class="badge bg-success-subtle text-success rounded-pill" style="font-size: 11px;"><i class="bi bi-shield-fill-check me-1"></i>Resmi Kemenag RI</span>
                 </div>
             </div>
         </div>
@@ -728,9 +728,9 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                     <p class="small text-white-50 mb-0">Satuan Kerja: <strong><?= $pmpzi_matrix['satker'] ?? 'MADRASAH ALIYAH NEGERI 3 BANJAR' ?></strong> (Kode: <?= $pmpzi_matrix['kode_satker'] ?? '309442' ?>)</p>
                 </div>
                 <div class="text-end">
-                    <button type="button" class="btn btn-light text-success fw-bold rounded-pill px-3 py-2 btn-sm shadow-xs" data-bs-toggle="modal" data-bs-target="#modalUploadZi">
-                        <i class="bi bi-cloud-arrow-up-fill me-1"></i> Unggah Eviden Pokja
-                    </button>
+                    <span class="badge bg-white text-success fw-bold rounded-pill px-3 py-2 shadow-xs" style="font-size: 12px;">
+                        <i class="bi bi-speedometer2 text-warning me-1"></i> Monitoring Live PMPZI
+                    </span>
                 </div>
             </div>
 
@@ -743,7 +743,7 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                             <th>Komponen Pengungkit (Bobot 60)</th>
                             <th class="text-center" style="width: 120px;">Nilai</th>
                             <th class="text-center" style="width: 200px;">Capaian (%)</th>
-                            <th class="text-center" style="width: 140px;">Berkas LabSys</th>
+                            <th class="text-center" style="width: 140px;">Eviden PMPZI</th>
                             <th class="text-end" style="width: 150px;">Aksi</th>
                         </tr>
                     </thead>
@@ -2638,12 +2638,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3 fw-bold" id="btnModalUploadForThisPokja">
-                            <i class="bi bi-cloud-arrow-up-fill me-1"></i> + Unggah Eviden untuk Pokja Ini
-                        </button>
-                        <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold shadow-xs" id="btnModalViewAllInArchive">
-                            <i class="bi bi-folder2-open me-1"></i> Buka di Bank Berkas
-                        </button>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1.5 fw-semibold" style="font-size: 11.5px;">
+                            <i class="bi bi-shield-check me-1"></i> Eviden Resmi Terintegrasi Web PMPZI
+                        </span>
                     </div>
                 </div>
 
@@ -2657,7 +2654,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <th style="min-width: 320px;">PENILAIAN (KRITERIA &amp; PERTANYAAN RESMI)</th>
                                     <th class="text-center" style="width: 80px;">JAWABAN</th>
                                     <th style="min-width: 250px;">NAMA / PERSYARATAN DOKUMEN PENDUKUNG</th>
-                                    <th style="min-width: 240px;">EVIDEN TERUNGGAH DI LABSYS</th>
+                                    <th style="min-width: 240px;">DOKUMEN EVIDEN DI WEB PMPZI</th>
                                 </tr>
                             </thead>
                             <tbody id="tbodyPmpziDetailItems">
@@ -2685,6 +2682,11 @@ const allDownloadDocs = <?= json_encode(array_map(function($d){
     $meta = get_zi_file_meta($d);
     $ext = $meta['ext'] ?? strtolower(pathinfo($d->file_path ?? '', PATHINFO_EXTENSION));
     if(empty($ext) || $ext === 'file') $ext = 'pdf';
+    $is_pmpzi = (
+        (stripos($d->pengunggah ?? '', 'PMPZI') !== false) ||
+        (stripos($d->keterangan ?? '', '[SYNC_PMPZI') !== false) ||
+        (stripos($d->file_path ?? '', 'pmpzi_sync') !== false)
+    );
     return [
         'id'          => $d->id,
         'judul'       => $d->judul,
@@ -2697,7 +2699,8 @@ const allDownloadDocs = <?= json_encode(array_map(function($d){
         'link_drive'  => $d->link_drive,
         'pengunggah'  => $d->pengunggah,
         'keterangan'  => $d->keterangan ?? '',
-        'tanggal'     => $d->tanggal
+        'tanggal'     => $d->tanggal,
+        'is_pmpzi'    => $is_pmpzi
     ];
 }, $downloads)) ?>;
 
@@ -2731,13 +2734,8 @@ function openOrPreviewZiDoc(docId) {
     previewDoc(targetUrl, d.judul, ext);
 }
 
-// Render baris dokumen eviden dengan badge identitas sumber (PMPZI vs Pokja LabSys)
+// Render baris dokumen eviden dengan badge identitas resmi web PMPZI
 function renderPmpziEvidenceRow(d) {
-    const isPmpzi = (d.pengunggah && d.pengunggah.includes('PMPZI')) || (d.keterangan && d.keterangan.includes('[SYNC_PMPZI'));
-    const sourceBadge = isPmpzi 
-        ? '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill" style="font-size:9.5px; padding: 2px 7px;"><i class="bi bi-cloud-check-fill me-1"></i>PMPZI</span>'
-        : `<span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill" style="font-size:9.5px; padding: 2px 7px;" title="Diunggah oleh ${d.pengunggah || 'Tim Pokja'}"><i class="bi bi-person-fill me-1"></i>${d.pengunggah || 'LabSys'}</span>`;
-    
     const isDrive = (d.is_link || d.tipe_sumber === 'drive_link');
     let extIcon = 'bi-file-earmark-pdf-fill text-danger';
     if (isDrive) {
@@ -2749,7 +2747,7 @@ function renderPmpziEvidenceRow(d) {
     }
 
     const actionBtn = isDrive
-        ? `<a href="${d.link_drive || d.file_url}" target="_blank" class="btn btn-xs btn-outline-success rounded-pill py-0.5 px-2.5 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 11px;"><i class="bi bi-box-arrow-up-right"></i> Drive</a>`
+        ? `<a href="${d.link_drive || d.file_url}" target="_blank" class="btn btn-xs btn-outline-success rounded-pill py-0.5 px-2.5 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 11px;"><i class="bi bi-box-arrow-up-right"></i> Buka</a>`
         : `<button type="button" class="btn btn-xs btn-outline-primary rounded-pill py-0.5 px-2.5 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 11px;" onclick="openOrPreviewZiDoc(${d.id})"><i class="bi bi-eye"></i> Buka</button>`;
 
     return `
@@ -2757,7 +2755,7 @@ function renderPmpziEvidenceRow(d) {
             <div class="d-flex align-items-center gap-1.5 text-truncate" style="max-width: calc(100% - 75px);">
                 <i class="bi ${extIcon} flex-shrink-0" style="font-size: 14px;"></i>
                 <span class="text-truncate fw-medium small" title="${d.judul}">${d.judul}</span>
-                ${sourceBadge}
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill" style="font-size:9.5px; padding: 2px 7px;"><i class="bi bi-patch-check-fill me-1"></i>PMPZI Kemenag</span>
             </div>
             <div class="flex-shrink-0">
                 ${actionBtn}
@@ -2836,35 +2834,8 @@ function openPmpziDetailModal(kodeEv, namaArea, aspek, nilai, persen) {
     document.getElementById('modalPmpziNilai').textContent = parseFloat(nilai).toFixed(2);
     document.getElementById('modalPmpziPersen').textContent = parseFloat(persen).toFixed(2) + '%';
 
-    // Setup Action Buttons
-    const btnUpload = document.getElementById('btnModalUploadForThisPokja');
-    if (btnUpload) {
-        btnUpload.onclick = function() {
-            const bsDetail = bootstrap.Modal.getInstance(modalEl);
-            if (bsDetail) bsDetail.hide();
-            
-            const modalUpload = new bootstrap.Modal(document.getElementById('modalUploadZi'));
-            const selectArea = document.getElementById('uploadZiArea');
-            if (selectArea) {
-                selectArea.value = targetAreaKey;
-                selectArea.dispatchEvent(new Event('change'));
-            }
-            modalUpload.show();
-        };
-    }
-
-    const btnViewArchive = document.getElementById('btnModalViewAllInArchive');
-    if (btnViewArchive) {
-        btnViewArchive.onclick = function() {
-            const bsDetail = bootstrap.Modal.getInstance(modalEl);
-            if (bsDetail) bsDetail.hide();
-            switchZiMainView('berkas');
-            selectZiArea(targetAreaKey);
-        };
-    }
-
-    // Ambil berkas LabSys yang relevan
-    const relevantDocs = allDownloadDocs.filter(d => d.area_zi === targetAreaKey);
+    // Ambil dokumen eviden resmi web PMPZI saja (tanpa berkas internal LabSys)
+    const pmpziDocs = allDownloadDocs.filter(d => d.area_zi === targetAreaKey && d.is_pmpzi);
 
     // Cari detail butir dari master JSON
     let subKomponenList = [];
@@ -2887,29 +2858,26 @@ function openPmpziDetailModal(kodeEv, namaArea, aspek, nilai, persen) {
 
     if (subKomponenList.length === 0) {
         let fallbackDocsHtml = '';
-        if (relevantDocs.length > 0) {
-            fallbackDocsHtml = relevantDocs.map(d => renderPmpziEvidenceRow(d)).join('');
+        if (pmpziDocs.length > 0) {
+            fallbackDocsHtml = pmpziDocs.map(d => renderPmpziEvidenceRow(d)).join('');
         } else {
-            fallbackDocsHtml = '<span class="text-muted small"><i class="bi bi-exclamation-circle text-warning me-1"></i>Belum ada berkas</span>';
+            fallbackDocsHtml = '<div class="text-muted small py-1.5 d-flex align-items-center gap-1.5" style="font-size: 11.5px;"><i class="bi bi-dash-circle text-secondary"></i> Belum ada eviden di web PMPZI</div>';
         }
 
         tbody.innerHTML = `
             <tr>
-                <td class="text-center fw-bold">1</td>
+                <td class="text-center fw-bold text-muted">1</td>
                 <td>
                     <strong class="text-primary d-block mb-1">${namaArea}</strong>
                     <span class="text-muted small">Kriteria pemenuhan eviden reformasi birokrasi dan capaian kinerja satuan kerja madrasah.</span>
                 </td>
-                <td class="text-center"><span class="badge bg-success-subtle text-success">Y / A</span></td>
+                <td class="text-center align-middle"><span class="badge bg-success-subtle text-success border border-success-subtle font-monospace fw-bold" style="font-size: 12px;">Y / A</span></td>
                 <td>
                     <span class="small text-dark fw-semibold">Dokumen Bukti Fisik / Digital:</span>
                     <p class="small text-muted mb-0">Buku panduan, SK, laporan monev, dokumentasi kegiatan, atau tautan sistem digital.</p>
                 </td>
-                <td>
+                <td class="align-middle">
                     ${fallbackDocsHtml}
-                    <button type="button" class="btn btn-outline-success btn-sm rounded-pill mt-2 py-0.5 px-2 w-100" style="font-size: 11px;" onclick="document.getElementById('btnModalUploadForThisPokja').click()">
-                        <i class="bi bi-plus me-1"></i>Unggah Eviden
-                    </button>
                 </td>
             </tr>
         `;
@@ -2931,13 +2899,10 @@ function openPmpziDetailModal(kodeEv, namaArea, aspek, nilai, persen) {
                     const tr = document.createElement('tr');
                     
                     let docsHtml = '';
-                    if (relevantDocs.length > 0) {
-                        docsHtml = relevantDocs.slice(0, 2).map(d => renderPmpziEvidenceRow(d)).join('');
-                        if (relevantDocs.length > 2) {
-                            docsHtml += `<small class="text-muted d-block mt-1">+${relevantDocs.length - 2} berkas lainnya di LabSys</small>`;
-                        }
+                    if (pmpziDocs.length > 0) {
+                        docsHtml = pmpziDocs.map(d => renderPmpziEvidenceRow(d)).join('');
                     } else {
-                        docsHtml = '<span class="text-muted small" style="font-size: 11.5px;"><i class="bi bi-exclamation-circle text-warning me-1"></i>Belum ada berkas</span>';
+                        docsHtml = '<div class="text-muted small py-1.5 d-flex align-items-center gap-1.5" style="font-size: 11.5px;"><i class="bi bi-dash-circle text-secondary"></i> Belum ada eviden di web PMPZI</div>';
                     }
 
                     tr.innerHTML = `
@@ -2959,11 +2924,8 @@ function openPmpziDetailModal(kodeEv, namaArea, aspek, nilai, persen) {
                                 ${ind.eviden_wajib || 'SK Tim, Laporan, Dokumentasi rapat / notula, foto kegiatan, atau link aplikasi.'}
                             </div>
                         </td>
-                        <td>
+                        <td class="align-middle">
                             ${docsHtml}
-                            <button type="button" class="btn btn-outline-success btn-sm rounded-pill mt-1 py-0.5 px-2 w-100" style="font-size: 11px;" onclick="document.getElementById('btnModalUploadForThisPokja').click()">
-                                <i class="bi bi-plus me-1"></i>Unggah Eviden
-                            </button>
                         </td>
                     `;
                     tbody.appendChild(tr);

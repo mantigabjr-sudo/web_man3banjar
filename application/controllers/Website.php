@@ -875,6 +875,31 @@ class Website extends CI_Controller {
         }
         $data['zi_stats'] = $stats;
 
+        // Hitung statistik khusus dokumen yang ditarik resmi dari web PMPZI Kemenag RI
+        $pmpzi_stats = [
+            'total'  => 0,
+            'area1'  => 0,
+            'area2'  => 0,
+            'area3'  => 0,
+            'area4'  => 0,
+            'area5'  => 0,
+            'area6'  => 0
+        ];
+
+        foreach($data['downloads'] as $row){
+            $is_pmpzi = (stripos($row->pengunggah ?? '', 'PMPZI') !== false) || 
+                         (stripos($row->keterangan ?? '', '[SYNC_PMPZI') !== false) || 
+                         (stripos($row->file_path ?? '', 'pmpzi_sync/') === 0);
+            if($is_pmpzi){
+                $area = strtolower($row->area_zi ?? '');
+                if(isset($pmpzi_stats[$area])){
+                    $pmpzi_stats[$area]++;
+                    $pmpzi_stats['total']++;
+                }
+            }
+        }
+        $data['pmpzi_stats'] = $pmpzi_stats;
+
         // PTK list untuk modal unggah
         $data['ptk_list'] = [];
         if($this->db->table_exists('ptk')){
@@ -889,9 +914,9 @@ class Website extends CI_Controller {
         $data['active_view'] = $this->input->get('view', TRUE) ? trim($this->input->get('view', TRUE)) : 'list';
         $data['main_tab']    = $this->input->get('tab', TRUE) ? trim($this->input->get('tab', TRUE)) : 'monitoring';
 
-        // Matriks instrumen monitoring LKE PMPZI Kemenag RI (Permenpan 90/2021)
+        // Matriks instrumen monitoring LKE PMPZI Kemenag RI (Permenpan 90/2021) menggunakan statistik dokumen PMPZI
         $this->load->helper('pmpzi');
-        $data['pmpzi_matrix'] = get_pmpzi_lke_summary($stats);
+        $data['pmpzi_matrix'] = get_pmpzi_lke_summary($pmpzi_stats);
         $data['pmpzi_sync_meta'] = get_pmpzi_sync_meta();
 
         $this->load->view('public/zona_integritas', $data);
