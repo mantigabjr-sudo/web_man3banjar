@@ -25,17 +25,24 @@ if (!function_exists('get_pmpzi_lke_summary')) {
         if (file_exists($cache_matrix_file)) {
             $cached_matrix = json_decode(file_get_contents($cache_matrix_file), true);
             if (!empty($cached_matrix) && is_array($cached_matrix) && isset($cached_matrix['pengungkit'])) {
-                // Injeksi berkas_count dari database LabSys
+                // Injeksi berkas_count real per kode_ev dari database LabSys
+                $by_code = $zi_stats['by_code'] ?? [];
                 if (!empty($cached_matrix['pengungkit']['pemenuhan']['items'])) {
                     foreach ($cached_matrix['pengungkit']['pemenuhan']['items'] as &$item) {
-                        $ak = $item['area_key'] ?? '';
-                        $item['berkas_count'] = $zi_stats[$ak] ?? 0;
+                        $code = $item['kode_ev'] ?? '';
+                        $item['berkas_count'] = isset($by_code[$code]) ? $by_code[$code] : ($zi_stats[$item['area_key'] ?? ''] ?? 0);
                     }
                 }
                 if (!empty($cached_matrix['pengungkit']['reform']['items'])) {
                     foreach ($cached_matrix['pengungkit']['reform']['items'] as &$item) {
-                        $ak = $item['area_key'] ?? '';
-                        $item['berkas_count'] = $zi_stats[$ak] ?? 0;
+                        $code = $item['kode_ev'] ?? '';
+                        $item['berkas_count'] = isset($by_code[$code]) ? $by_code[$code] : 0;
+                    }
+                }
+                if (!empty($cached_matrix['hasil']['items'])) {
+                    foreach ($cached_matrix['hasil']['items'] as &$item) {
+                        $code = $item['kode_ev'] ?? '';
+                        $item['berkas_count'] = isset($by_code[$code]) ? $by_code[$code] : 0;
                     }
                 }
                 $cached_matrix['detail_lke'] = $detail_data;

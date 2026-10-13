@@ -21,7 +21,8 @@
                     "nama": "Manajemen Perubahan",
                     "bobot": 4,
                     "nilai": 2.59,
-                    "persen": 64.7
+                    "persen": 64.7,
+                    "berkas_count": 1
                 },
                 {
                     "no": 2,
@@ -30,7 +31,8 @@
                     "nama": "Penataan Tatalaksana",
                     "bobot": 3.5,
                     "nilai": 2.83,
-                    "persen": 80.95
+                    "persen": 80.95,
+                    "berkas_count": 7
                 },
                 {
                     "no": 3,
@@ -39,7 +41,8 @@
                     "nama": "Penataan Sistem Manajemen Sdm Aparatur",
                     "bobot": 5,
                     "nilai": 3.72,
-                    "persen": 74.48
+                    "persen": 74.48,
+                    "berkas_count": 7
                 },
                 {
                     "no": 4,
@@ -48,7 +51,8 @@
                     "nama": "Penguatan Akuntabilitas",
                     "bobot": 5,
                     "nilai": 4.58,
-                    "persen": 91.69
+                    "persen": 91.69,
+                    "berkas_count": 13
                 },
                 {
                     "no": 5,
@@ -57,7 +61,8 @@
                     "nama": "Penguatan Pengawasan",
                     "bobot": 7.5,
                     "nilai": 4.65,
-                    "persen": 62.04
+                    "persen": 62.04,
+                    "berkas_count": 7
                 },
                 {
                     "no": 6,
@@ -66,7 +71,8 @@
                     "nama": "Peningkatan Kualitas Pelayanan Publik",
                     "bobot": 5,
                     "nilai": 3.21,
-                    "persen": 64.15
+                    "persen": 64.15,
+                    "berkas_count": 17
                 }
             ]
         },
@@ -82,7 +88,8 @@
                     "nama": "Manajemen Perubahan",
                     "bobot": 4,
                     "nilai": 3.42,
-                    "persen": 85.5
+                    "persen": 85.5,
+                    "berkas_count": 0
                 },
                 {
                     "no": 2,
@@ -91,7 +98,8 @@
                     "nama": "Penataan Tatalaksana",
                     "bobot": 3.5,
                     "nilai": 2.34,
-                    "persen": 66.71
+                    "persen": 66.71,
+                    "berkas_count": 0
                 },
                 {
                     "no": 3,
@@ -100,7 +108,8 @@
                     "nama": "Penataan Sistem Manajemen Sdm Aparatur",
                     "bobot": 5,
                     "nilai": 1.5,
-                    "persen": 30
+                    "persen": 30,
+                    "berkas_count": 0
                 },
                 {
                     "no": 4,
@@ -109,7 +118,8 @@
                     "nama": "Penguatan Akuntabilitas",
                     "bobot": 5,
                     "nilai": 3.81,
-                    "persen": 76.2
+                    "persen": 76.2,
+                    "berkas_count": 0
                 },
                 {
                     "no": 5,
@@ -118,7 +128,8 @@
                     "nama": "Penguatan Pengawasan",
                     "bobot": 7.5,
                     "nilai": 2.88,
-                    "persen": 38.33
+                    "persen": 38.33,
+                    "berkas_count": 0
                 },
                 {
                     "no": 6,
@@ -127,7 +138,8 @@
                     "nama": "Peningkatan Kualitas Pelayanan Publik",
                     "bobot": 5,
                     "nilai": 3.14,
-                    "persen": 62.75
+                    "persen": 62.75,
+                    "berkas_count": 5
                 }
             ]
         }
@@ -143,7 +155,8 @@
                 "nama": "Birokrasi Bersih Akuntabel",
                 "bobot": 22.5,
                 "nilai": 16.88,
-                "persen": 75
+                "persen": 75,
+                "berkas_count": 0
             },
             {
                 "no": 2,
@@ -151,7 +164,8 @@
                 "nama": "Pelayanan Publik Prima",
                 "bobot": 17.5,
                 "nilai": 13.13,
-                "persen": 75
+                "persen": 75,
+                "berkas_count": 0
             }
         ]
     }

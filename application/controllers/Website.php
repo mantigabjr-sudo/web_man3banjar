@@ -875,15 +875,20 @@ class Website extends CI_Controller {
         }
         $data['zi_stats'] = $stats;
 
-        // Hitung statistik khusus dokumen yang ditarik resmi dari web PMPZI Kemenag RI
+        // Hitung statistik dokumen PMPZI real per kode evidence (A.1.1 s/d A.2.6) dan per area
         $pmpzi_stats = [
-            'total'  => 0,
-            'area1'  => 0,
-            'area2'  => 0,
-            'area3'  => 0,
-            'area4'  => 0,
-            'area5'  => 0,
-            'area6'  => 0
+            'total'   => 0,
+            'area1'   => 0,
+            'area2'   => 0,
+            'area3'   => 0,
+            'area4'   => 0,
+            'area5'   => 0,
+            'area6'   => 0,
+            'by_code' => [
+                'A.1.1' => 0, 'A.1.2' => 0, 'A.1.3' => 0, 'A.1.4' => 0, 'A.1.5' => 0, 'A.1.6' => 0,
+                'A.2.1' => 0, 'A.2.2' => 0, 'A.2.3' => 0, 'A.2.4' => 0, 'A.2.5' => 0, 'A.2.6' => 0,
+                'B.1'   => 0, 'B.2'   => 0
+            ]
         ];
 
         foreach($data['downloads'] as $row){
@@ -895,6 +900,15 @@ class Website extends CI_Controller {
                 if(isset($pmpzi_stats[$area])){
                     $pmpzi_stats[$area]++;
                     $pmpzi_stats['total']++;
+                }
+
+                // Hitung real per kode evidence (misal Butir: A.1.6.1.a -> A.1.6 atau A.2.6.1.a -> A.2.6)
+                if (preg_match('/Butir:\s*([A-Za-z0-9\.]+)/', $row->keterangan ?? '', $km)) {
+                    $parts = explode('.', $km[1]);
+                    $pref = count($parts) >= 3 ? ($parts[0] . '.' . $parts[1] . '.' . $parts[2]) : $km[1];
+                    if (isset($pmpzi_stats['by_code'][$pref])) {
+                        $pmpzi_stats['by_code'][$pref]++;
+                    }
                 }
             }
         }

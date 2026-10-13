@@ -790,9 +790,15 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge bg-light text-dark border rounded-pill px-2.5 py-1.5 font-monospace fw-bold" style="font-size: 12px;">
-                                            <i class="bi bi-file-earmark-check text-success me-1"></i><?= $it['berkas_count'] ?> Berkas
-                                        </span>
+                                        <?php if((int)($it['berkas_count'] ?? 0) > 0): ?>
+                                            <span class="badge bg-light text-dark border rounded-pill px-2.5 py-1.5 font-monospace fw-bold" style="font-size: 12px;">
+                                                <i class="bi bi-file-earmark-check text-success me-1"></i><?= $it['berkas_count'] ?> Berkas
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="badge bg-light text-muted border rounded-pill px-2.5 py-1 font-monospace" style="font-size: 11px;">
+                                                <i class="bi bi-dash-circle text-secondary me-1"></i>0 Berkas
+                                            </span>
+                                        <?php endif; ?>
                                     </td>
                                     <td class="text-end">
                                         <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 fw-bold" onclick="openPmpziDetailModal('<?= $it['kode_ev'] ?>', '<?= htmlspecialchars($it['nama'], ENT_QUOTES) ?>', 'Pemenuhan', '<?= $it['nilai'] ?>', '<?= $it['persen'] ?>')">
@@ -854,9 +860,15 @@ $logged_user_name = $this->session->userdata('username') ?? '';
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge bg-light text-dark border rounded-pill px-2.5 py-1.5 font-monospace fw-bold" style="font-size: 12px;">
-                                            <i class="bi bi-file-earmark-check text-success me-1"></i><?= $it['berkas_count'] ?> Berkas
-                                        </span>
+                                        <?php if((int)($it['berkas_count'] ?? 0) > 0): ?>
+                                            <span class="badge bg-light text-dark border rounded-pill px-2.5 py-1.5 font-monospace fw-bold" style="font-size: 12px;">
+                                                <i class="bi bi-file-earmark-check text-success me-1"></i><?= $it['berkas_count'] ?> Berkas
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="badge bg-light text-muted border rounded-pill px-2.5 py-1 font-monospace" style="font-size: 11px;">
+                                                <i class="bi bi-dash-circle text-secondary me-1"></i>0 Berkas
+                                            </span>
+                                        <?php endif; ?>
                                     </td>
                                     <td class="text-end">
                                         <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 fw-bold" onclick="openPmpziDetailModal('<?= $it['kode_ev'] ?>', '<?= htmlspecialchars($it['nama'], ENT_QUOTES) ?>', 'Reform', '<?= $it['nilai'] ?>', '<?= $it['persen'] ?>')">
@@ -2834,8 +2846,12 @@ function openPmpziDetailModal(kodeEv, namaArea, aspek, nilai, persen) {
     document.getElementById('modalPmpziNilai').textContent = parseFloat(nilai).toFixed(2);
     document.getElementById('modalPmpziPersen').textContent = parseFloat(persen).toFixed(2) + '%';
 
-    // Ambil dokumen eviden resmi web PMPZI saja (tanpa berkas internal LabSys)
-    const pmpziDocs = allDownloadDocs.filter(d => d.area_zi === targetAreaKey && d.is_pmpzi);
+    // Ambil dokumen eviden resmi web PMPZI spesifik untuk kode evidence ini (misal A.1.6 vs A.2.6)
+    const pmpziDocs = allDownloadDocs.filter(d => {
+        if (!d.is_pmpzi) return false;
+        if (d.keterangan && d.keterangan.includes('Butir: ' + kodeEv)) return true;
+        return (d.area_zi === targetAreaKey && !d.keterangan.includes('Butir: A.'));
+    });
 
     // Cari detail butir dari master JSON kriteria resmi PMPZI Kemenag RI
     let subKomponenList = [];
