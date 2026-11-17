@@ -88,4 +88,21 @@ $route['api/ppdb/sync'] = 'api_ppdb/sync_pendaftar';
 $route['api/ppdb/confirm_sync'] = 'api_ppdb/confirm_sync';
 $route['api/ppdb/stats'] = 'api_ppdb/stats';
 
+// Layanan Mandiri Cuti ASN Online (BKN)
+$route['cuti']                     = 'cuti/index';
+$route['cuti/ajax_get_ptk']        = 'cuti/ajax_get_ptk';
+$route['cuti/ajax_hitung_hari']    = 'cuti/ajax_hitung_hari';
+$route['cuti/submit']              = 'cuti/submit';
+$route['cuti/sukses/(:num)']       = 'cuti/sukses/$1';
+$route['cuti/cetak/(:num)']        = 'cuti/cetak/$1';
+$route['cuti/ajax_cek_status']     = 'cuti/ajax_cek_status';
+$route['cuti/sync_kuota_sheet']    = 'cuti/sync_kuota_sheet';
+$route['cuti/(:any)']              = 'cuti/$1';
+
+// API Sync Cuti
+$route['api/sync/migrate_cuti']    = 'api_sync/migrate_cuti_schema';
+$route['api/sync/sync_cuti_data']  = 'api_sync/sync_cuti_data';
+$route['api/sync/pull_cuti']       = 'api_sync/pull_cuti';
+
+
 

@@ -967,5 +967,147 @@ class Api_sync extends CI_Controller {
             'filename' => $file_verified
         ]);
     }
+
+    // ═══ 5. SINKRONISASI CUTI ASN ONLINE ═══
+
+    public function migrate_cuti_schema(){
+        $this->validate_key();
+
+        $sql_tu_cuti_asn = "CREATE TABLE IF NOT EXISTS `tu_cuti_asn` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `ptk_id` int(11) NOT NULL,
+            `tanggal_surat` date DEFAULT NULL,
+            `yth_kepada` varchar(150) DEFAULT 'Kepala Kantor Kemenag Kab. Banjar',
+            `di_tempat` varchar(150) DEFAULT 'Martapura',
+            `masa_kerja` varchar(50) DEFAULT NULL,
+            `jenis_cuti` varchar(100) NOT NULL,
+            `alasan_cuti` text DEFAULT NULL,
+            `file_lampiran` varchar(255) DEFAULT NULL,
+            `lama_cuti_jumlah` int(11) NOT NULL DEFAULT 1,
+            `lama_cuti_satuan` enum('Hari','Bulan','Tahun') DEFAULT 'Hari',
+            `tanggal_mulai` date NOT NULL,
+            `tanggal_selesai` date NOT NULL,
+            `catatan_cuti_tahunan_n2_sisa` varchar(10) DEFAULT '0',
+            `catatan_cuti_tahunan_n2_ket` varchar(100) DEFAULT NULL,
+            `catatan_cuti_tahunan_n1_sisa` varchar(10) DEFAULT '0',
+            `catatan_cuti_tahunan_n1_ket` varchar(100) DEFAULT NULL,
+            `catatan_cuti_tahunan_n_sisa` varchar(10) DEFAULT '12',
+            `catatan_cuti_tahunan_n_ket` varchar(100) DEFAULT NULL,
+            `catatan_cuti_besar` varchar(50) DEFAULT '-',
+            `catatan_cuti_sakit` varchar(50) DEFAULT '-',
+            `catatan_cuti_melahirkan` varchar(50) DEFAULT '-',
+            `catatan_cuti_alasan_penting` varchar(50) DEFAULT '-',
+            `catatan_cuti_diluar_tanggungan` varchar(50) DEFAULT '-',
+            `alamat_cuti` text DEFAULT NULL,
+            `telepon_cuti` varchar(50) DEFAULT NULL,
+            `atasan_langsung_nama` varchar(150) DEFAULT NULL,
+            `atasan_langsung_nip` varchar(50) DEFAULT NULL,
+            `atasan_langsung_keputusan` enum('DI SETUJUI','PERUBAHAN','DITANGGUHKAN','TIDAK DI SETUJUI','') DEFAULT 'DI SETUJUI',
+            `pejabat_berwenang_nama` varchar(150) DEFAULT NULL,
+            `pejabat_berwenang_nip` varchar(50) DEFAULT NULL,
+            `pejabat_berwenang_jabatan` varchar(150) DEFAULT NULL,
+            `pejabat_berwenang_keputusan` enum('DI SETUJUI','PERUBAHAN','DITANGGUHKAN','TIDAK DI SETUJUI','') DEFAULT 'DI SETUJUI',
+            `status` enum('Draft','Disetujui Kepala','Aktif','Ditolak','Nonaktif') DEFAULT 'Draft',
+            `created_by_ptk_id` int(11) DEFAULT NULL,
+            `created_at` datetime DEFAULT NULL,
+            `updated_at` datetime DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            KEY `ptk_id` (`ptk_id`),
+            KEY `status` (`status`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
+
+        $sql_tu_cuti_kuota = "CREATE TABLE IF NOT EXISTS `tu_cuti_kuota` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `ptk_id` int(11) NOT NULL,
+            `tahun` int(4) NOT NULL,
+            `jatah` int(11) NOT NULL DEFAULT 12,
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `ptk_tahun` (`ptk_id`,`tahun`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
+
+        $sql_hari_libur = "CREATE TABLE IF NOT EXISTS `presensi_hari_libur` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `tanggal` date NOT NULL,
+            `keterangan` varchar(255) NOT NULL,
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `tanggal` (`tanggal`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
+
+        $this->db->query($sql_tu_cuti_asn);
+        $this->db->query($sql_tu_cuti_kuota);
+        $this->db->query($sql_hari_libur);
+
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Schema tabel tu_cuti_asn, tu_cuti_kuota, & presensi_hari_libur berhasil diverifikasi di hosting.'
+        ]);
+    }
+
+    public function sync_cuti_data(){
+        $this->validate_key();
+        $payload = json_decode($this->input->raw_input_stream, true);
+
+        $synced_kuota = 0;
+        $synced_libur = 0;
+        $synced_asn   = 0;
+
+        if(!empty($payload['kuota'])){
+            foreach($payload['kuota'] as $k){
+                $cek = $this->db->where('ptk_id', $k['ptk_id'])->where('tahun', $k['tahun'])->get('tu_cuti_kuota')->row();
+                if($cek){
+                    $this->db->where('id', $cek->id)->update('tu_cuti_kuota', ['jatah' => $k['jatah']]);
+                } else {
+                    $this->db->insert('tu_cuti_kuota', $k);
+                }
+                $synced_kuota++;
+            }
+        }
+
+        if(!empty($payload['hari_libur'])){
+            foreach($payload['hari_libur'] as $h){
+                $cek = $this->db->where('tanggal', $h['tanggal'])->get('presensi_hari_libur')->row();
+                if(!$cek){
+                    $this->db->insert('presensi_hari_libur', $h);
+                } else {
+                    $this->db->where('id', $cek->id)->update('presensi_hari_libur', ['keterangan' => $h['keterangan']]);
+                }
+                $synced_libur++;
+            }
+        }
+
+        if(!empty($payload['cuti_asn'])){
+            foreach($payload['cuti_asn'] as $c){
+                $cek = $this->db->where('ptk_id', $c['ptk_id'])->where('tanggal_mulai', $c['tanggal_mulai'])->get('tu_cuti_asn')->row();
+                if(!$cek){
+                    $this->db->insert('tu_cuti_asn', $c);
+                } else {
+                    $this->db->where('id', $cek->id)->update('tu_cuti_asn', $c);
+                }
+                $synced_asn++;
+            }
+        }
+
+        echo json_encode([
+            'status' => 'success',
+            'message' => "Sinkronisasi cuti: {$synced_kuota} kuota, {$synced_libur} hari libur, {$synced_asn} permohonan berhasil disinkronkan."
+        ]);
+    }
+
+    public function pull_cuti(){
+        $this->validate_key();
+
+        $cuti_asn = $this->db->table_exists('tu_cuti_asn') ? $this->db->order_by('id', 'DESC')->get('tu_cuti_asn')->result_array() : [];
+        $kuota = $this->db->table_exists('tu_cuti_kuota') ? $this->db->get('tu_cuti_kuota')->result_array() : [];
+
+        echo json_encode([
+            'status' => 'success',
+            'total' => count($cuti_asn),
+            'data' => [
+                'cuti_asn' => $cuti_asn,
+                'kuota' => $kuota
+            ]
+        ]);
+    }
 }
+
 
