@@ -60,15 +60,6 @@
             padding: 8px 12px;
             border-bottom: 1px solid #f1f5f9;
         }
-
-        .btn-print {
-            background: linear-gradient(135deg, #198754 0%, #157347 100%);
-            border: none;
-            padding: 12px 28px;
-            font-weight: 600;
-            font-size: 1.05rem;
-            border-radius: 8px;
-        }
     </style>
 </head>
 <body>
@@ -79,15 +70,15 @@
                 <i class="fa fa-check text-white"></i>
             </div>
             <h3 class="fw-bold mb-1">Pengajuan Cuti Berhasil Dikirim!</h3>
-            <p class="mb-0 opacity-90 small">Formulir Permintaan dan Pemberian Cuti Resmi Telah Dibuat</p>
+            <p class="mb-0 opacity-90 small">Permohonan Mandiri (Mode Bypass Tanpa Login) Telah Didaftarkan</p>
         </div>
 
         <div class="card-body p-4 p-md-5">
 
-            <div class="alert alert-success d-flex align-items-center text-start mb-4 py-2 px-3 small">
-                <i class="fa fa-info-circle fa-2x me-3 text-success"></i>
+            <div class="alert alert-info d-flex align-items-center text-start mb-4 py-2 px-3 small">
+                <i class="fa fa-info-circle fa-2x me-3 text-primary"></i>
                 <div>
-                    Permohonan cuti Anda telah tercatat di sistem <strong>LabSys Urusan Tata Usaha</strong> dengan status <strong>Draft (Menunggu Persetujuan Atasan Langsung)</strong>.
+                    Permohonan cuti Anda telah tercatat dengan status <strong>Draft (Menunggu Persetujuan Atasan Langsung & Admin TU)</strong>. Pengajuan ini akan ditinjau dan disetujui terlebih dahulu oleh Kepala Madrasah.
                 </div>
             </div>
 
@@ -122,21 +113,27 @@
                 </tr>
                 <tr>
                     <td class="text-muted">Status Pengajuan</td>
-                    <td><span class="badge bg-warning text-dark"><i class="fa fa-hourglass-half me-1"></i><?= $cuti->status ?></span></td>
+                    <td><span class="badge bg-warning text-dark"><i class="fa fa-hourglass-half me-1"></i>Menunggu Verifikasi TU</span></td>
                 </tr>
             </table>
 
-            <div class="d-grid gap-2 d-md-flex justify-content-center">
-                <a href="<?= site_url('cuti/cetak/' . $cuti->id) ?>" target="_blank" class="btn btn-success btn-print text-white shadow">
-                    <i class="fa fa-print me-2"></i>Cetak / Unduh Formulir PDF (BKN)
-                </a>
-                <a href="<?= site_url('cuti') ?>" class="btn btn-outline-secondary px-4 py-2">
-                    <i class="fa fa-arrow-left me-1"></i>Kembali
-                </a>
+            <div class="p-3 bg-light rounded-3 text-start small border mb-4">
+                <div class="fw-bold text-dark mb-1"><i class="fa fa-shield-halved text-success me-1"></i>Informasi Pencetakan Formulir Resmi:</div>
+                <div class="text-muted">
+                    Sesuai prosedur resmi, formulir cuti BKN tidak dapat dicetak secara bebas. Pencetakan hanya dapat dilakukan oleh <strong>Admin Tata Usaha</strong> atau melalui <strong>Akun Pribadi Pegawai masing-masing</strong> setelah permohonan disetujui oleh Kepala Madrasah.
+                </div>
             </div>
 
-            <div class="mt-4 pt-3 border-top text-muted small">
-                <i class="fa fa-file-pdf text-danger me-1"></i>Anda dapat mencetak formulir di atas dan menyerahkannya ke Urusan Tata Usaha atau menunggu proses verifikasi lebih lanjut.
+            <div class="d-grid gap-2 d-md-flex justify-content-center">
+                <a href="<?= site_url('cuti') ?>#tab-status" class="btn btn-success px-4 py-2 fw-semibold">
+                    <i class="fa fa-list-check me-1"></i>Lihat Status di Monitoring
+                </a>
+                <a href="<?= site_url('auth') ?>" class="btn btn-outline-primary px-3 py-2 fw-semibold">
+                    <i class="fa fa-right-to-bracket me-1"></i>Login Akun Madrasah
+                </a>
+                <a href="<?= site_url('cuti') ?>" class="btn btn-outline-secondary px-3 py-2">
+                    <i class="fa fa-arrow-left me-1"></i>Kembali
+                </a>
             </div>
 
         </div>

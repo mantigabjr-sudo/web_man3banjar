@@ -163,6 +163,22 @@ class Cuti extends CI_Controller {
             ->get('ptk')
             ->result();
 
+        // Ambil riwayat seluruh permohonan cuti untuk langsung ditampilkan di monitoring tanpa harus input NIP
+        $data['riwayat_cuti'] = $this->db
+            ->select('tu_cuti_asn.*, ptk.nama_lengkap, ptk.nip, ptk.jabatan as ptk_jabatan')
+            ->from('tu_cuti_asn')
+            ->join('ptk', 'ptk.id = tu_cuti_asn.ptk_id', 'left')
+            ->order_by('tu_cuti_asn.id', 'DESC')
+            ->limit(50)
+            ->get()
+            ->result();
+
+        // Cek status sesi login (apakah admin atau user login)
+        $is_logged_in = $this->session->userdata('logged_in');
+        $data['is_logged_in'] = $is_logged_in;
+        $data['is_admin']     = ($is_logged_in && in_array($this->session->userdata('role'), ['admin', 'tata_usaha']));
+        $data['session_ptk']  = $this->session->userdata('ptk_id');
+
         // Ambil atasan langsung (Kepala Madrasah)
         $kamad = $this->db
             ->like('jabatan', 'Kepala Madrasah')
@@ -453,6 +469,7 @@ class Cuti extends CI_Controller {
 
     /**
      * Cetak Formulir Cuti Resmi BKN (A4 Siap Cetak / Unduh PDF)
+     * Proteksi: Hanya dapat diakses oleh Admin Tata Usaha atau Pegawai Pemohon yang Login
      */
     public function cetak($id) {
         $data['cuti'] = $this->db
@@ -465,6 +482,20 @@ class Cuti extends CI_Controller {
 
         if (!$data['cuti']) {
             show_404();
+            return;
+        }
+
+        // Cek otorisasi cetak:
+        // Sesuai ketentuan: Cetak resmi HANYA untuk Admin atau akun masing-masing pegawai yang login
+        $is_logged_in = $this->session->userdata('logged_in');
+        $user_role    = $this->session->userdata('role');
+        $session_ptk  = $this->session->userdata('ptk_id');
+
+        $is_admin = ($is_logged_in && in_array($user_role, ['admin', 'tata_usaha']));
+        $is_owner = ($is_logged_in && !empty($session_ptk) && (int)$session_ptk === (int)$data['cuti']->ptk_id);
+
+        if (!$is_admin && !$is_owner) {
+            $this->load->view('cuti/cetak_terkunci', $data);
             return;
         }
 
@@ -518,9 +549,21 @@ class Cuti extends CI_Controller {
 
     /**
      * Sinkronisasi Kuota Cuti Pegawai dari Google Spreadsheet (Sheet C)
+     * Proteksi: Khusus Admin Tata Usaha atau request dengan API Key yang valid
      */
     public function sync_kuota_sheet() {
         header('Content-Type: application/json');
+
+        // Validasi hak akses Admin
+        $is_admin = ($this->session->userdata('logged_in') && in_array($this->session->userdata('role'), ['admin', 'tata_usaha']));
+        $api_key = $this->input->get_post('api_key') ?: $this->input->get_request_header('X-API-KEY');
+        if (!$is_admin && $api_key !== 'MAN3BANJAR_SECRET_SYNC_KEY_2026') {
+            echo json_encode([
+                'status'  => 'error',
+                'message' => 'Akses ditolak: Fitur sinkronisasi spreadsheet merupakan fitur khusus Administrator / Tata Usaha.'
+            ]);
+            return;
+        }
 
         $sheet_name = $this->input->get_post('sheet') ?: 'C';
         $sheet_url = "https://docs.google.com/spreadsheets/d/1u58r2gQ3dn9AiLx7QSDle_fB1QykOjq3lHWgyFkCf0o/gviz/tq?tqx=out:csv&sheet=" . urlencode($sheet_name);

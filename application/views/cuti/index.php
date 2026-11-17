@@ -167,9 +167,15 @@
                     </div>
                 </div>
                 <div class="col-md-3 text-md-end mt-3 mt-md-0 d-flex justify-content-md-end align-items-center gap-2">
-                    <button type="button" class="btn btn-sm btn-light text-success fw-bold rounded-pill px-3 py-1 shadow-sm" onclick="syncGoogleSheet(this)" title="Sinkronkan data jatah cuti dari Google Spreadsheet">
-                        <i class="fa fa-sync me-1"></i> Sinkron Spreadsheet
-                    </button>
+                    <?php if (!empty($is_admin)): ?>
+                        <button type="button" class="btn btn-sm btn-light text-success fw-bold rounded-pill px-3 py-1 shadow-sm" onclick="syncGoogleSheet(this)" title="Fitur Admin: Sinkronkan data jatah cuti dari Google Spreadsheet">
+                            <i class="fa fa-sync me-1"></i> Sinkron Spreadsheet
+                        </button>
+                    <?php else: ?>
+                        <a href="<?= site_url('auth') ?>" class="btn btn-sm btn-light text-success fw-bold rounded-pill px-3 py-1 shadow-sm" title="Login ke Sistem Informasi Madrasah">
+                            <i class="fa fa-right-to-bracket me-1"></i> Login Akun
+                        </a>
+                    <?php endif; ?>
                     <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-semibold">
                         <i class="fa fa-calendar-check me-1"></i> Tahun <?= date('Y') ?>
                     </span>
@@ -198,7 +204,7 @@
             </li>
             <li class="nav-item">
                 <button class="nav-link" id="status-tab" data-bs-toggle="tab" data-bs-target="#tab-status" type="button">
-                    <i class="fa fa-search me-2"></i>Cek Status & Riwayat Cuti
+                    <i class="fa fa-list-check me-2"></i>Hasil & Status Pengajuan Cuti
                 </button>
             </li>
             <li class="nav-item">
@@ -210,8 +216,20 @@
 
         <div class="tab-content" id="cutiTabsContent">
 
-            <!-- TAB 1: FORM PENGAJUAN CUTI -->
+            <!-- TAB 1: FORM PENGAJUAN CUTI (MODE MANDIRI BYPASS) -->
             <div class="tab-pane fade show active" id="tab-form" role="tabpanel">
+
+                <!-- INFORMASI ALUR BYPASS -->
+                <div class="alert alert-success border-0 shadow-sm d-flex align-items-center mb-4 py-3 px-4 rounded-3" style="background-color: #ecfdf5;">
+                    <i class="fa fa-shield-halved fa-2x text-success me-3"></i>
+                    <div>
+                        <strong class="d-block text-success">Layanan Pengajuan Cuti Mandiri (Mode Bypass Tanpa Login)</strong>
+                        <span class="text-secondary small">
+                            Fasilitas ini disediakan untuk mempermudah Bapak/Ibu guru dan staf ASN mengajukan permohonan cuti secara cepat. 
+                            Setiap permohonan yang diajukan berstatus <strong>Menunggu Persetujuan</strong> dan wajib diverifikasi serta disetujui terlebih dahulu oleh Kepala Madrasah dan Admin Tata Usaha sebelum formulir resmi dapat disahkan.
+                        </span>
+                    </div>
+                </div>
 
                 <form action="<?= site_url('cuti/submit') ?>" method="POST" enctype="multipart/form-data" id="formCuti">
 
@@ -510,11 +528,11 @@
 
                     <!-- SUBMIT BUTTON -->
                     <div class="text-center my-4 pb-4">
-                        <button type="submit" class="btn btn-success btn-submit text-white shadow-lg">
-                            <i class="fa fa-paper-plane me-2"></i>Kirim Pengajuan Cuti & Cetak Formulir
+                        <button type="submit" class="btn btn-success btn-submit text-white shadow-lg px-5">
+                            <i class="fa fa-paper-plane me-2"></i>Kirim Pengajuan Cuti Mandiri
                         </button>
                         <div class="small text-muted mt-2">
-                            <i class="fa fa-shield-alt text-success me-1"></i>Formulir ini akan otomatis dibuatkan format resmi BKN dan siap langsung dicetak/diunduh.
+                            <i class="fa fa-circle-info text-primary me-1"></i>Permohonan berstatus <strong>Menunggu Persetujuan</strong> dan akan diverifikasi oleh Kepala Madrasah / Admin TU terlebih dahulu.
                         </div>
                     </div>
 
@@ -522,55 +540,154 @@
 
             </div>
 
-            <!-- TAB 2: CEK STATUS & RIWAYAT CUTI -->
+            <!-- TAB 2: HASIL & MONITORING STATUS PENGAJUAN CUTI (LANGSUNG TAMPIL TANPA NIP) -->
             <div class="tab-pane fade" id="tab-status" role="tabpanel">
                 <div class="card card-custom">
                     <div class="card-header-green">
-                        <span><i class="fa fa-search me-2 text-success"></i>Lacak Pengajuan & Riwayat Cuti</span>
-                        <span class="badge bg-light text-dark">Tanpa Perlu Login Akun</span>
+                        <span><i class="fa fa-clipboard-list me-2 text-success"></i>Daftar Pengajuan & Status Cuti Pegawai ASN</span>
+                        <span class="badge bg-success-subtle text-success">Monitoring Terbuka Tanpa Login</span>
                     </div>
                     <div class="card-body p-4">
-                        <div class="row g-3 justify-content-center">
-                            <div class="col-md-8">
-                                <label class="form-label fw-bold">Masukkan NIP Anda</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control form-control-lg" id="cari_nip_status" placeholder="Masukkan 18 digit NIP Anda (Contoh: 198311282011012012)">
-                                    <button class="btn btn-success px-4" type="button" onclick="cekStatusCuti()">
-                                        <i class="fa fa-search me-1"></i> Cari Data
-                                    </button>
-                                </div>
+
+                        <!-- INFO KETENTUAN MONITORING & CETAK -->
+                        <div class="alert alert-light border d-flex align-items-center mb-4 py-2 px-3 small">
+                            <i class="fa fa-shield-halved fa-2x text-warning me-3"></i>
+                            <div>
+                                <strong>Informasi Monitoring & Cetak:</strong> Tabel ini menampilkan status seluruh pengajuan cuti pegawai secara transparan. 
+                                Sesuai ketentuan, <strong>pencetakan formulir resmi BKN hanya dapat dilakukan oleh Admin Tata Usaha atau melalui Akun Pegawai masing-masing</strong> setelah permohonan disetujui oleh Kepala Madrasah.
                             </div>
                         </div>
 
-                        <!-- HASIL PENCARIAN STATUS -->
-                        <div id="hasil_status_box" class="mt-4" style="display: none;">
-                            <div class="border-top pt-4">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <div>
-                                        <h5 class="fw-bold mb-0 text-success" id="status_nama_pegawai"></h5>
-                                        <div class="text-muted small" id="status_nip_pegawai"></div>
-                                    </div>
-                                    <div class="text-end">
-                                        <span class="badge bg-success-subtle text-success fs-6" id="status_sisa_cuti"></span>
-                                    </div>
+                        <!-- LIVE FILTER & SEARCH -->
+                        <div class="row g-2 mb-3 align-items-center">
+                            <div class="col-md-7">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white"><i class="fa fa-search text-muted"></i></span>
+                                    <input type="text" class="form-control" id="search_monitoring" placeholder="Ketik Nama Pegawai atau NIP untuk menyaring data..." onkeyup="filterTabelMonitoring()">
                                 </div>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="filter_status_select" onchange="filterTabelMonitoring()">
+                                    <option value="">-- Semua Status Permohonan --</option>
+                                    <option value="Draft">Menunggu Verifikasi TU</option>
+                                    <option value="Disetujui Kepala">Disetujui Kepala Madrasah</option>
+                                    <option value="Aktif">Disetujui Penuh (Aktif)</option>
+                                    <option value="Ditolak">Ditolak</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 text-md-end text-muted small">
+                                Total: <strong id="count_monitoring"><?= count($riwayat_cuti) ?></strong> Data
+                            </div>
+                        </div>
 
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover align-middle">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th class="text-center" width="5%">No</th>
-                                                <th>Jenis Cuti</th>
-                                                <th>Lama Cuti</th>
-                                                <th>Tanggal Pelaksanaan</th>
-                                                <th>Alasan</th>
-                                                <th class="text-center">Status</th>
-                                                <th class="text-center" width="15%">Aksi</th>
+                        <!-- TABEL MONITORING PENGAJUAN (LANGSUNG TAMPIL) -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover align-middle mb-0" id="table_monitoring">
+                                <thead class="table-light">
+                                    <tr class="text-nowrap" style="font-size: 0.85rem;">
+                                        <th class="text-center" width="4%">No</th>
+                                        <th width="10%">Tanggal</th>
+                                        <th width="24%">Nama Pegawai & NIP</th>
+                                        <th width="14%">Jenis Cuti</th>
+                                        <th width="8%" class="text-center">Durasi</th>
+                                        <th width="16%">Rentang Pelaksanaan</th>
+                                        <th width="12%">Alasan</th>
+                                        <th width="12%" class="text-center">Status</th>
+                                        <th width="10%" class="text-center">Hak Cetak</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (empty($riwayat_cuti)): ?>
+                                        <tr>
+                                            <td colspan="9" class="text-center text-muted py-4">Belum ada data pengajuan cuti yang tercatat.</td>
+                                        </tr>
+                                    <?php else: ?>
+                                        <?php $no = 1; foreach ($riwayat_cuti as $r): ?>
+                                            <?php
+                                            $tgl_surat = !empty($r->tanggal_surat) && $r->tanggal_surat != '0000-00-00' ? date('d/m/Y', strtotime($r->tanggal_surat)) : '-';
+                                            $tgl_mulai = !empty($r->tanggal_mulai) && $r->tanggal_mulai != '0000-00-00' ? date('d M Y', strtotime($r->tanggal_mulai)) : '-';
+                                            $tgl_selesai = !empty($r->tanggal_selesai) && $r->tanggal_selesai != '0000-00-00' ? date('d M Y', strtotime($r->tanggal_selesai)) : '-';
+                                            
+                                            $badge_class = 'bg-secondary';
+                                            $status_label = $r->status;
+                                            if ($r->status == 'Draft') {
+                                                $badge_class = 'bg-warning text-dark';
+                                                $status_label = '<i class="fa fa-clock me-1"></i>Menunggu TU';
+                                            } elseif ($r->status == 'Disetujui Kepala') {
+                                                $badge_class = 'bg-info text-dark';
+                                                $status_label = '<i class="fa fa-check-circle me-1"></i>Disetujui Kamad';
+                                            } elseif ($r->status == 'Aktif') {
+                                                $badge_class = 'bg-success';
+                                                $status_label = '<i class="fa fa-check-double me-1"></i>Disetujui (Aktif)';
+                                            } elseif ($r->status == 'Ditolak') {
+                                                $badge_class = 'bg-danger';
+                                                $status_label = '<i class="fa fa-times-circle me-1"></i>Ditolak';
+                                            }
+                                            ?>
+                                            <tr class="row-monitoring" data-nama="<?= strtolower(htmlspecialchars($r->nama_lengkap ?? '')) ?>" data-nip="<?= htmlspecialchars($r->nip ?? '') ?>" data-status="<?= htmlspecialchars($r->status) ?>">
+                                                <td class="text-center small text-muted"><?= $no++ ?></td>
+                                                <td class="small text-muted"><?= $tgl_surat ?></td>
+                                                <td>
+                                                    <div class="fw-bold text-dark" style="font-size: 0.9rem;"><?= htmlspecialchars($r->nama_lengkap ?? '-') ?></div>
+                                                    <div class="text-muted small">NIP. <?= htmlspecialchars($r->nip ?? '-') ?></div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-success-subtle text-success fw-semibold" style="font-size: 0.78rem;">
+                                                        <?= htmlspecialchars($r->jenis_cuti) ?>
+                                                    </span>
+                                                </td>
+                                                <td class="text-center fw-bold" style="font-size: 0.88rem;">
+                                                    <?= $r->lama_cuti_jumlah ?> <?= $r->lama_cuti_satuan ?>
+                                                </td>
+                                                <td class="small">
+                                                    <div><?= $tgl_mulai ?></div>
+                                                    <div class="text-muted">s.d <?= $tgl_selesai ?></div>
+                                                </td>
+                                                <td class="small text-muted" style="max-width: 160px;">
+                                                    <?= htmlspecialchars($r->alasan_cuti ?: '-') ?>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge <?= $badge_class ?>" style="font-size: 0.75rem;"><?= $status_label ?></span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-light text-muted border py-1 px-2" title="Pencetakan formulir resmi BKN hanya dapat dilakukan oleh Admin Tata Usaha atau melalui Akun Pegawai masing-masing setelah disetujui." style="cursor: help; font-size: 0.72rem;">
+                                                        <i class="fa fa-lock me-1 text-secondary"></i>Via Akun/Admin
+                                                    </span>
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody id="status_table_body">
-                                        </tbody>
-                                    </table>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- PANEL OPSIONAL: CEK RINCIAN SALDO CUTI PRIBADI -->
+                        <div class="mt-4 pt-3 border-top">
+                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#boxCekSaldoPribadi">
+                                <i class="fa fa-id-card me-1"></i>Ingin Cek Rincian Sisa Jatah Cuti Anda? Klik di Sini
+                            </button>
+                            <div class="collapse mt-3" id="boxCekSaldoPribadi">
+                                <div class="p-3 bg-light rounded-3 border">
+                                    <div class="row g-2 align-items-center">
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-bold mb-1">Masukkan NIP Anda</label>
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" class="form-control" id="cari_nip_status" placeholder="Masukkan 18 digit NIP Anda (Contoh: 198311282011012012)">
+                                                <button class="btn btn-success px-3" type="button" onclick="cekStatusCuti()">
+                                                    <i class="fa fa-search me-1"></i> Cek Saldo
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="hasil_status_box" class="mt-3 pt-3 border-top" style="display: none;">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong class="text-success" id="status_nama_pegawai"></strong>
+                                                <div class="text-muted small" id="status_nip_pegawai"></div>
+                                            </div>
+                                            <span class="badge bg-success" id="status_sisa_cuti"></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -951,6 +1068,40 @@
             });
         }
 
+        function filterTabelMonitoring() {
+            const keyword = $('#search_monitoring').val().toLowerCase().trim();
+            const statusFilter = $('#filter_status_select').val();
+
+            let visibleCount = 0;
+            $('.row-monitoring').each(function() {
+                const nama = $(this).data('nama') || '';
+                const nip = String($(this).data('nip') || '');
+                const status = String($(this).data('status') || '');
+
+                const matchKeyword = !keyword || (nama.indexOf(keyword) !== -1 || nip.indexOf(keyword) !== -1);
+                const matchStatus = !statusFilter || (status === statusFilter);
+
+                if (matchKeyword && matchStatus) {
+                    $(this).show();
+                    visibleCount++;
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            $('#count_monitoring').text(visibleCount);
+        }
+
+        $(document).ready(function() {
+            if (window.location.hash === '#tab-status') {
+                const triggerEl = document.querySelector('#status-tab');
+                if (triggerEl) {
+                    const tabInstance = new bootstrap.Tab(triggerEl);
+                    tabInstance.show();
+                }
+            }
+        });
+
         function cekStatusCuti() {
             const nip = $('#cari_nip_status').val().trim();
             if (!nip) {
@@ -968,37 +1119,11 @@
                         $('#status_nama_pegawai').text(res.pegawai.nama);
                         $('#status_nip_pegawai').text('NIP. ' + res.pegawai.nip + ' | ' + res.pegawai.jabatan);
                         $('#status_sisa_cuti').text('Sisa Hak Cuti ' + res.saldo.tahun_n + ': ' + res.saldo.total_hak + ' Hari');
-
-                        let html = '';
-                        if (res.riwayat.length === 0) {
-                            html = '<tr><td colspan="7" class="text-center text-muted py-4">Belum ada riwayat permohonan cuti yang tercatat.</td></tr>';
-                        } else {
-                            res.riwayat.forEach((r, idx) => {
-                                let badgeClass = 'bg-secondary';
-                                if (r.status === 'Draft') badgeClass = 'bg-warning text-dark';
-                                else if (r.status === 'Disetujui Kepala') badgeClass = 'bg-info text-dark';
-                                else if (r.status === 'Aktif') badgeClass = 'bg-success';
-                                else if (r.status === 'Ditolak') badgeClass = 'bg-danger';
-
-                                html += `
-                                    <tr>
-                                        <td class="text-center">${idx + 1}</td>
-                                        <td><strong>${r.jenis_cuti}</strong></td>
-                                        <td>${r.lama_cuti_jumlah} ${r.lama_cuti_satuan}</td>
-                                        <td>${r.tanggal_mulai} s.d ${r.tanggal_selesai}</td>
-                                        <td>${r.alasan_cuti || '-'}</td>
-                                        <td class="text-center"><span class="badge ${badgeClass}">${r.status}</span></td>
-                                        <td class="text-center">
-                                            <a href="<?= site_url('cuti/cetak/') ?>${r.id}" target="_blank" class="btn btn-sm btn-outline-success">
-                                                <i class="fa fa-print me-1"></i>Cetak Form
-                                            </a>
-                                        </td>
-                                    </tr>
-                                `;
-                            });
-                        }
-                        $('#status_table_body').html(html);
                         $('#hasil_status_box').slideDown();
+
+                        // Otomatis saring tabel monitoring utama dengan NIP yang dicari
+                        $('#search_monitoring').val(res.pegawai.nip);
+                        filterTabelMonitoring();
                     } else {
                         alert(res.message);
                     }
