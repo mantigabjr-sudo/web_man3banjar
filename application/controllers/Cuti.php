@@ -155,6 +155,14 @@ class Cuti extends CI_Controller {
      * Halaman Utama: Layanan Mandiri Pengajuan Cuti ASN
      */
     public function index() {
+        // Data dasar profil website untuk header/footer resmi madrasah
+        $data['page_title']    = 'Layanan Mandiri Cuti ASN';
+        $data['nama_madrasah'] = 'MAN 3 Banjar';
+        $data['profil_website'] = null;
+        if ($this->db->table_exists('website_profil')) {
+            $data['profil_website'] = $this->db->limit(1)->get('website_profil')->row();
+        }
+
         // Ambil daftar seluruh pegawai ASN (PNS & PPPK) untuk dropdown autocomplete
         $data['pegawai_list'] = $this->db
             ->select('id, nama_lengkap, nip, status_kepegawaian, jabatan')
