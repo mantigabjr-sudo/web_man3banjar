@@ -509,10 +509,10 @@ $tgl_rentang = tgl_indo_pendek($cuti->tanggal_mulai) . ' s.d ' . tgl_indo_pendek
                     <td colspan="3">TIDAK DI SETUJUI****</td>
                 </tr>
                 <tr class="text-center" style="height: 18px;">
-                    <td class="check-cell"><?= $is_atasan_setuju ? $v : '' ?></td>
-                    <td colspan="2" class="check-cell"><?= $cuti->atasan_langsung_keputusan == 'PERUBAHAN' ? $v : '' ?></td>
-                    <td colspan="2" class="check-cell"><?= $cuti->atasan_langsung_keputusan == 'DI TANGGUHKAN' ? $v : '' ?></td>
-                    <td colspan="3" class="check-cell"><?= $cuti->atasan_langsung_keputusan == 'TIDAK DI SETUJUI' ? $v : '' ?></td>
+                    <td class="check-cell"></td>
+                    <td colspan="2" class="check-cell"></td>
+                    <td colspan="2" class="check-cell"></td>
+                    <td colspan="3" class="check-cell"></td>
                 </tr>
                 <tr>
                     <td colspan="5" rowspan="3" style="border-right: 1px solid #000; border-top: none; border-bottom: 1px solid #000;"></td>
@@ -555,10 +555,10 @@ $tgl_rentang = tgl_indo_pendek($cuti->tanggal_mulai) . ' s.d ' . tgl_indo_pendek
                     <td colspan="3">TIDAK DI SETUJUI****</td>
                 </tr>
                 <tr class="text-center" style="height: 18px;">
-                    <td class="check-cell"><?= $is_pejabat_setuju ? $v : '' ?></td>
-                    <td colspan="2" class="check-cell"><?= $cuti->pejabat_berwenang_keputusan == 'PERUBAHAN' ? $v : '' ?></td>
-                    <td colspan="2" class="check-cell"><?= $cuti->pejabat_berwenang_keputusan == 'DI TANGGUHKAN' ? $v : '' ?></td>
-                    <td colspan="3" class="check-cell"><?= $cuti->pejabat_berwenang_keputusan == 'TIDAK DI SETUJUI' ? $v : '' ?></td>
+                    <td class="check-cell"></td>
+                    <td colspan="2" class="check-cell"></td>
+                    <td colspan="2" class="check-cell"></td>
+                    <td colspan="3" class="check-cell"></td>
                 </tr>
                 <tr>
                     <!-- CATATAN BKN DI SISI KIRI (Kolom A-E) -->
