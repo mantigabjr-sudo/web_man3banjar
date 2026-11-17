@@ -72,8 +72,8 @@ $s_n1 = (!empty($cuti->catatan_cuti_tahunan_n1_sisa) && $cuti->catatan_cuti_tahu
 $s_n  = (!empty($cuti->catatan_cuti_tahunan_n_sisa) && $cuti->catatan_cuti_tahunan_n_sisa != '0' && $cuti->catatan_cuti_tahunan_n_sisa != '-') ? $cuti->catatan_cuti_tahunan_n_sisa : '-';
 
 // Keputusan Persetujuan
-$is_atasan_setuju = ($cuti->atasan_langsung_keputusan == 'DI SETUJUI' || in_array($cuti->status, ['Disetujui', 'Disetujui Kepala', 'Selesai']));
-$is_pejabat_setuju = ($cuti->pejabat_berwenang_keputusan == 'DI SETUJUI' || $cuti->status == 'Selesai');
+$is_atasan_setuju = ($cuti->atasan_langsung_keputusan == 'DI SETUJUI' || in_array($cuti->status, ['Disetujui', 'Disetujui Kepala', 'Selesai', 'Aktif']));
+$is_pejabat_setuju = ($cuti->pejabat_berwenang_keputusan == 'DI SETUJUI' || in_array($cuti->status, ['Disetujui', 'Disetujui Kepala', 'Selesai', 'Aktif']));
 
 // Format tanggal
 $tgl_surat_indo = 'Banjar, ' . tgl_indo_lengkap($cuti->tanggal_surat);
