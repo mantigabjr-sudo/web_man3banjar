@@ -677,12 +677,13 @@ $rdm_url = (strpos($rdm_raw, 'http://') === 0 || strpos($rdm_raw, 'https://') ==
                     </ul>
                 </li>
 
-                <!-- Layanan Akademik -->
+                <!-- Layanan -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Layanan Akademik
+                        Layanan
                     </a>
                     <ul class="dropdown-menu shadow-sm border-0 py-2" style="border-radius:14px;">
+                        <li><a class="dropdown-item py-2 fw-bold text-success" href="<?= base_url('cuti') ?>"><i class="bi bi-calendar2-check-fill text-success me-1"></i> Layanan Cuti ASN</a></li>
                         <li><a class="dropdown-item py-2 fw-bold text-success" href="<?= base_url('website/monitoring_kbm') ?>"><i class="bi bi-broadcast text-danger me-1"></i> Live Monitoring KBM</a></li>
                         <li><a class="dropdown-item py-2 fw-bold text-dark" href="<?= base_url('verifikasi_foto_ijazah') ?>"><i class="bi bi-mortarboard-fill text-success me-1"></i> Verifikasi Foto Ijazah XII</a></li>
                         <li><hr class="dropdown-divider my-1"></li>

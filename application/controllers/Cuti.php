@@ -177,9 +177,25 @@ class Cuti extends CI_Controller {
             ->from('tu_cuti_asn')
             ->join('ptk', 'ptk.id = tu_cuti_asn.ptk_id', 'left')
             ->order_by('tu_cuti_asn.id', 'DESC')
-            ->limit(50)
+            ->limit(100)
             ->get()
             ->result();
+
+        // Hitung statistik ringkasan untuk 4 kartu KPI
+        $stat_total   = count($data['riwayat_cuti']);
+        $stat_aktif   = 0;
+        $stat_draft   = 0;
+        foreach ($data['riwayat_cuti'] as $rc) {
+            if (in_array($rc->status, ['Aktif', 'Disetujui Kepala'])) {
+                $stat_aktif++;
+            } elseif ($rc->status == 'Draft') {
+                $stat_draft++;
+            }
+        }
+        $data['stat_total']   = $stat_total;
+        $data['stat_aktif']   = $stat_aktif;
+        $data['stat_draft']   = $stat_draft;
+        $data['stat_pegawai'] = count($data['pegawai_list']);
 
         // Cek status sesi login (apakah admin atau user login)
         $is_logged_in = $this->session->userdata('logged_in');
