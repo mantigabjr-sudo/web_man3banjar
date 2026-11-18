@@ -54,8 +54,13 @@ if (substr(trim($pejabat_jabatan), -1) !== ',') {
 $pejabat_nama = !empty($cuti->pejabat_berwenang_nama) ? $cuti->pejabat_berwenang_nama : 'Dr. H. Ahmad Kamal, S.H.I., M.Ag.';
 $pejabat_nip  = !empty($cuti->pejabat_berwenang_nip) ? $cuti->pejabat_berwenang_nip : '198107032005011007';
 
-// Simbol checkmark resmi BKN
-$v = '<span style="font-family: Arial, sans-serif; font-weight: bold; font-size: 11pt;">&#8730;</span>';
+// Mode render PDF (Dompdf) vs tampilan browser cetak
+$is_pdf = !empty($is_pdf);
+
+// Simbol checkmark resmi BKN (DejaVu Sans wajib agar Dompdf merender simbol √ dengan sempurna)
+$v = $is_pdf
+    ? '<span style="font-family: DejaVu Sans, sans-serif; font-weight: bold; font-size: 10pt;">&#8730;</span>'
+    : '<span style="font-family: Arial, sans-serif; font-weight: bold; font-size: 11pt;">&#8730;</span>';
 $strip = '-';
 
 // Penentuan jenis cuti yang diambil
@@ -233,10 +238,38 @@ $tgl_rentang = tgl_indo_pendek($cuti->tanggal_mulai) . ' s.d ' . tgl_indo_pendek
                 page-break-inside: avoid;
             }
         }
+        <?php if ($is_pdf): ?>
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-size: 8.2pt;
+            line-height: 1.15;
+            background: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .page {
+            width: 100%;
+            min-height: auto;
+            padding: 0;
+            margin: 0;
+            box-shadow: none;
+        }
+        table.bkn-grid {
+            font-size: 8pt;
+            margin-bottom: 3px;
+        }
+        table.bkn-grid td, table.bkn-grid th {
+            padding: 2px 4px;
+        }
+        .sig-space {
+            height: 36px;
+        }
+        <?php endif; ?>
     </style>
 </head>
 <body>
 
+    <?php if (!$is_pdf): ?>
     <!-- TOOLBAR LAYAR (Tidak ikut dicetak) -->
     <div class="screen-toolbar">
         <div>
@@ -252,6 +285,7 @@ $tgl_rentang = tgl_indo_pendek($cuti->tanggal_mulai) . ' s.d ' . tgl_indo_pendek
             </button>
         </div>
     </div>
+    <?php endif; ?>
 
     <!-- HALAMAN A4 RESMI -->
     <div class="page">
@@ -509,6 +543,10 @@ $tgl_rentang = tgl_indo_pendek($cuti->tanggal_mulai) . ' s.d ' . tgl_indo_pendek
                     <td colspan="3">TIDAK DI SETUJUI****</td>
                 </tr>
                 <tr class="text-center" style="height: 18px;">
+                    <td class="check-cell"><?= $is_atasan_setuju ? $v : '' ?></td>
+                    <td colspan="2" class="check-cell"><?= $cuti->atasan_langsung_keputusan == 'PERUBAHAN' ? $v : '' ?></td>
+                    <td colspan="2" class="check-cell"><?= $cuti->atasan_langsung_keputusan == 'DI TANGGUHKAN' ? $v : '' ?></td>
+                    <td colspan="3" class="check-cell"><?= $cuti->atasan_langsung_keputusan == 'TIDAK DI SETUJUI' ? $v : '' ?></td>
                     <td class="check-cell"></td>
                     <td colspan="2" class="check-cell"></td>
                     <td colspan="2" class="check-cell"></td>
@@ -555,6 +593,10 @@ $tgl_rentang = tgl_indo_pendek($cuti->tanggal_mulai) . ' s.d ' . tgl_indo_pendek
                     <td colspan="3">TIDAK DI SETUJUI****</td>
                 </tr>
                 <tr class="text-center" style="height: 18px;">
+                    <td class="check-cell"><?= $is_pejabat_setuju ? $v : '' ?></td>
+                    <td colspan="2" class="check-cell"><?= $cuti->pejabat_berwenang_keputusan == 'PERUBAHAN' ? $v : '' ?></td>
+                    <td colspan="2" class="check-cell"><?= $cuti->pejabat_berwenang_keputusan == 'DI TANGGUHKAN' ? $v : '' ?></td>
+                    <td colspan="3" class="check-cell"><?= $cuti->pejabat_berwenang_keputusan == 'TIDAK DI SETUJUI' ? $v : '' ?></td>
                     <td class="check-cell"></td>
                     <td colspan="2" class="check-cell"></td>
                     <td colspan="2" class="check-cell"></td>

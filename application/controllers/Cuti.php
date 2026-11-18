@@ -536,6 +536,58 @@ class Cuti extends CI_Controller {
     }
 
     /**
+     * Unduh / Buka Formulir Resmi Cuti BKN melalui tautan bertoken aman (dikirim via WA)
+     * URL: cuti/berkas/{ptk_id}/{tanggal_mulai}/{token}
+     */
+    public function berkas($ptk_id = null, $tanggal_mulai = null, $token = null) {
+        $ptk_id = (int)$ptk_id;
+        $tgl    = trim((string)$tanggal_mulai);
+        $token  = trim((string)$token);
+
+        $expected = substr(hash_hmac('sha256', 'cuti_pdf_' . $ptk_id . '_' . $tgl, 'MAN3BANJAR_CUTI_PDF_SECRET_2026'), 0, 16);
+        if ($ptk_id <= 0 || $tgl === '' || !hash_equals($expected, $token)) {
+            show_error('Tautan berkas cuti tidak valid atau sudah kadaluarsa.', 403);
+            return;
+        }
+
+        $cuti = $this->db
+            ->select('tu_cuti_asn.*, ptk.nama_lengkap, ptk.nip, ptk.jabatan as ptk_jabatan')
+            ->from('tu_cuti_asn')
+            ->join('ptk', 'ptk.id = tu_cuti_asn.ptk_id', 'left')
+            ->where('tu_cuti_asn.ptk_id', $ptk_id)
+            ->where('tu_cuti_asn.tanggal_mulai', $tgl)
+            ->order_by('tu_cuti_asn.id', 'DESC')
+            ->limit(1)
+            ->get()
+            ->row();
+
+        if (!$cuti || $cuti->status !== 'Aktif') {
+            show_error('Berkas formulir cuti belum disetujui (ACC) atau tidak ditemukan.', 404);
+            return;
+        }
+
+        $setting = $this->db->get('settings')->row();
+        $data = [
+            'cuti'    => $cuti,
+            'setting' => $setting
+        ];
+
+        // Jika Dompdf tersedia, langsung sajikan file PDF A4 siap unduh/cetak di HP
+        if (file_exists(APPPATH . 'libraries/Pdf.php') && class_exists('\Dompdf\Dompdf')) {
+            $this->load->library('pdf');
+            $data['is_pdf'] = true;
+            $html = $this->load->view('admin_tata_usaha/cetak_cuti_asn', $data, true);
+            $safe_name = preg_replace('/[^A-Za-z0-9_-]/', '_', $cuti->nama_lengkap ?: ('ASN_' . $cuti->ptk_id));
+            $safe_name = substr(preg_replace('/_+/', '_', trim($safe_name, '_')), 0, 40);
+            $this->pdf->generate($html, 'Formulir_Cuti_' . $safe_name . '.pdf', 'A4', 'portrait', false);
+            return;
+        }
+
+        // Fallback HTML cetak A4 resmi (siap Print / Save as PDF dari HP)
+        $this->load->view('admin_tata_usaha/cetak_cuti_asn', $data);
+    }
+
+    /**
      * AJAX: Cek Riwayat & Status Pengajuan Cuti Berdasarkan NIP
      */
     public function ajax_cek_status() {
