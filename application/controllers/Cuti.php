@@ -143,6 +143,7 @@ class Cuti extends CI_Controller {
             'sisa_n1'   => $sisa_n1,
             'sisa_n2'   => $sisa_n2,
             'total_hak' => $total_hak_cuti,
+            'total_tersedia' => $total_hak_cuti,
             'taken_besar'   => $taken_besar,
             'taken_sakit'   => $taken_sakit,
             'taken_lahir'   => $taken_lahir,
@@ -539,39 +540,51 @@ class Cuti extends CI_Controller {
      */
     public function ajax_cek_status() {
         header('Content-Type: application/json');
-        $nip = trim($this->input->get_post('nip'));
+        $nip = trim((string)$this->input->get_post('nip'));
 
-        if (empty($nip)) {
-            echo json_encode(['status' => 'error', 'message' => 'NIP tidak boleh kosong']);
+        if ($nip === '') {
+            echo json_encode(['status' => 'error', 'message' => 'Silakan pilih pegawai atau masukkan NIP/Nama Anda.']);
             return;
         }
 
         $nip_clean = preg_replace('/[^0-9]/', '', $nip);
-        $ptk = $this->db
-            ->where('nip', $nip)
-            ->or_where('REPLACE(nip, " ", "") =', $nip_clean)
-            ->get('ptk')
-            ->row();
+        $this->db->group_start()
+            ->where('nip', $nip);
+        if ($nip_clean !== '') {
+            $this->db->or_where('REPLACE(nip, " ", "") =', $nip_clean);
+            if (ctype_digit($nip) && strlen($nip) < 10) {
+                $this->db->or_where('id', (int)$nip);
+            }
+        }
+        $this->db->or_like('nama_lengkap', $nip)
+            ->group_end();
+
+        $ptk = $this->db->get('ptk')->row();
 
         if (!$ptk) {
-            echo json_encode(['status' => 'error', 'message' => 'Pegawai tidak ditemukan.']);
+            echo json_encode(['status' => 'error', 'message' => 'Data pegawai tidak ditemukan. Pastikan nama atau NIP sudah benar.']);
             return;
         }
 
         $riwayat = $this->db
             ->where('ptk_id', $ptk->id)
+            ->order_by('tanggal_mulai', 'DESC')
             ->order_by('id', 'DESC')
             ->get('tu_cuti_asn')
             ->result();
 
         $saldo = $this->hitung_saldo_cuti($ptk->id);
+        $saldo['total_tersedia'] = $saldo['total_hak'];
 
         echo json_encode([
             'status'  => 'success',
             'pegawai' => [
-                'nama' => $ptk->nama_lengkap,
-                'nip'  => $ptk->nip,
-                'jabatan' => $ptk->jabatan
+                'id'                 => $ptk->id,
+                'nama'               => $ptk->nama_lengkap,
+                'nip'                => $ptk->nip ?: '-',
+                'jabatan'            => !empty($ptk->jabatan) ? $ptk->jabatan : 'Guru / Pegawai ASN',
+                'status_kepegawaian' => !empty($ptk->status_kepegawaian) ? $ptk->status_kepegawaian : 'ASN',
+                'masa_kerja'         => $this->hitung_masa_kerja($ptk)
             ],
             'saldo'   => $saldo,
             'riwayat' => $riwayat

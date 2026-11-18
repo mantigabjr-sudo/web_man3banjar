@@ -474,8 +474,34 @@ if (!function_exists('cuti_jenis_badge_class')) {
 }
 
 .cuti-compact-form-wrap {
-    max-width: 780px;
-    margin: 0 auto 28px auto;
+    width: 100%;
+    margin-bottom: 28px;
+}
+
+.cuti-form-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+}
+
+.cuti-form-col-left {
+    border-right: 1px solid #f1f5f9;
+}
+
+.cuti-form-col-left,
+.cuti-form-col-right {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+@media(max-width: 991.98px) {
+    .cuti-form-grid {
+        grid-template-columns: 1fr;
+    }
+    .cuti-form-col-left {
+        border-right: none;
+        border-bottom: 1px solid #f1f5f9;
+    }
 }
 
 .cuti-form-section {
@@ -1223,184 +1249,197 @@ if (!function_exists('cuti_jenis_badge_class')) {
                     </button>
                 </div>
 
-                <!-- BLOK 1: PILIH PEGAWAI + RINGKASAN PROFIL & SALDO -->
-                <div class="cuti-form-section">
-                    <div class="cuti-step-label">
-                        <span class="cuti-step-num">1</span> Identitas Pegawai Pemohon
-                    </div>
+                <!-- BODY FORM: 2 KOLOM SEIMBANG DI DESKTOP (100% LEBAR), 1 KOLOM RINGKAS DI MOBILE -->
+                <div class="cuti-form-grid">
 
-                    <select class="form-select select2-pegawai" id="select_ptk" name="ptk_selector" required>
-                        <option value="">-- Ketik Nama Lengkap atau NIP Anda --</option>
-                        <?php foreach ($pegawai_list as $p): ?>
-                            <option value="<?= $p->nip ?>" data-id="<?= $p->id ?>" data-nama="<?= htmlspecialchars($p->nama_lengkap) ?>">
-                                <?= htmlspecialchars($p->nama_lengkap) ?> - <?= $p->nip ?: 'Non-NIP' ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                    <input type="hidden" name="ptk_id" id="val_ptk_id">
+                    <!-- KOLOM KIRI: IDENTITAS + JENIS CUTI -->
+                    <div class="cuti-form-col-left">
+                        <!-- BLOK 1: PILIH PEGAWAI + RINGKASAN PROFIL & SALDO -->
+                        <div class="cuti-form-section">
+                            <div class="cuti-step-label">
+                                <span class="cuti-step-num">1</span> Identitas Pegawai Pemohon
+                            </div>
 
-                    <!-- Strip Ringkas Profil & Saldo (1 blok rapat, bukan 6 input!) -->
-                    <div id="detail_pegawai_box" class="cuti-profile-strip" style="display: none;">
-                        <div class="cuti-profile-meta">
-                            <div>
-                                <div class="fw-bold text-dark" style="font-size: 14px;" id="res_nama_txt">Memuat data...</div>
-                                <div class="small text-muted font-monospace" style="font-size: 11.5px;" id="res_nip_txt"></div>
-                                <div class="small text-muted mt-0.5" style="font-size: 12px;" id="res_jabatan_txt"></div>
-                            </div>
-                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1 fw-bold" style="font-size: 11px;" id="res_masakerja_badge">
-                                Masa Kerja: -
-                            </span>
-                        </div>
+                            <select class="form-select select2-pegawai" id="select_ptk" name="ptk_selector" required>
+                                <option value="">-- Ketik Nama Lengkap atau NIP Anda --</option>
+                                <?php foreach ($pegawai_list as $p): ?>
+                                    <option value="<?= $p->nip ?>" data-id="<?= $p->id ?>" data-nama="<?= htmlspecialchars($p->nama_lengkap) ?>">
+                                        <?= htmlspecialchars($p->nama_lengkap) ?> - <?= $p->nip ?: 'Non-NIP' ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <input type="hidden" name="ptk_id" id="val_ptk_id">
 
-                        <div class="cuti-saldo-strip">
-                            <div class="cuti-saldo-mini">
-                                <small>N-2 (<?= date('Y')-2 ?>)</small>
-                                <strong id="res_sisa_n2">0</strong>
-                            </div>
-                            <div class="cuti-saldo-mini">
-                                <small>N-1 (<?= date('Y')-1 ?>)</small>
-                                <strong id="res_sisa_n1">0</strong>
-                            </div>
-                            <div class="cuti-saldo-mini">
-                                <small>N (<?= date('Y') ?>)</small>
-                                <strong id="res_sisa_n">12</strong>
-                            </div>
-                            <div class="cuti-saldo-mini is-total">
-                                <small>Total Hak</small>
-                                <strong id="res_sisa_total">12</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                            <!-- Strip Ringkas Profil & Saldo -->
+                            <div id="detail_pegawai_box" class="cuti-profile-strip" style="display: none;">
+                                <div class="cuti-profile-meta">
+                                    <div>
+                                        <div class="fw-bold text-dark" style="font-size: 14px;" id="res_nama_txt">Memuat data...</div>
+                                        <div class="small text-muted font-monospace" style="font-size: 11.5px;" id="res_nip_txt"></div>
+                                        <div class="small text-muted mt-0.5" style="font-size: 12px;" id="res_jabatan_txt"></div>
+                                    </div>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1 fw-bold" style="font-size: 11px;" id="res_masakerja_badge">
+                                        Masa Kerja: -
+                                    </span>
+                                </div>
 
-                <!-- BLOK 2: JENIS CUTI, TANGGAL & ALASAN -->
-                <div class="cuti-form-section">
-                    <div class="cuti-step-label">
-                        <span class="cuti-step-num">2</span> Jenis, Tanggal &amp; Alasan Cuti
-                    </div>
-
-                    <!-- Grid Chip Jenis Cuti (2 kolom HP, 3 kolom Desktop) -->
-                    <div class="cuti-jenis-grid">
-                        <div class="jenis-cuti-card active" onclick="pilihJenisCuti('Cuti Tahunan', this)" data-hint="Hak 12 hari kerja per tahun (akumulasi N-1 &amp; N-2 maks 6 hari).">
-                            <span class="jenis-cuti-title">Cuti Tahunan</span>
-                            <i class="bi bi-check-circle-fill text-success check-icon"></i>
-                        </div>
-                        <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti Sakit', this)" data-hint="Wajib melampirkan surat keterangan dokter / rumah sakit.">
-                            <span class="jenis-cuti-title">Cuti Sakit</span>
-                            <i class="bi bi-circle text-muted check-icon"></i>
-                        </div>
-                        <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti Alasan Penting', this)" data-hint="Keluarga sakit/wafat, menikah, bencana, atau istri sesar (maks 1 bulan).">
-                            <span class="jenis-cuti-title">Alasan Penting</span>
-                            <i class="bi bi-circle text-muted check-icon"></i>
-                        </div>
-                        <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti Besar', this)" data-hint="Masa kerja minimal 5 tahun terus-menerus (maksimal 3 bulan).">
-                            <span class="jenis-cuti-title">Cuti Besar</span>
-                            <i class="bi bi-circle text-muted check-icon"></i>
-                        </div>
-                        <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti Melahirkan', this)" data-hint="Kelahiran anak ke-1 s.d ke-3 (durasi 3 bulan penuh).">
-                            <span class="jenis-cuti-title">Melahirkan</span>
-                            <i class="bi bi-circle text-muted check-icon"></i>
-                        </div>
-                        <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti diluar Tanggungan Negara', this)" data-hint="Masa kerja minimal 5 tahun untuk alasan mendesak (s.d 3 tahun).">
-                            <span class="jenis-cuti-title">Luar Tanggungan</span>
-                            <i class="bi bi-circle text-muted check-icon"></i>
-                        </div>
-                    </div>
-
-                    <div class="cuti-jenis-hint" id="cutiJenisHint">
-                        <i class="bi bi-info-circle text-success me-1"></i> Hak 12 hari kerja per tahun (akumulasi N-1 &amp; N-2 maks 6 hari).
-                    </div>
-                    <input type="hidden" name="jenis_cuti" id="input_jenis_cuti" value="Cuti Tahunan">
-
-                    <!-- Sub-opsi sumber kuota tahunan (otomatis tampil HANYA jika pegawai punya sisa N-1 / N-2) -->
-                    <div id="sub_opsi_cuti_tahunan" class="mt-3" style="display: none;">
-                        <label class="form-label fw-bold small text-secondary mb-1.5" style="font-size: 12px;">Gunakan Sumber Kuota:</label>
-                        <div class="cuti-kuota-radios">
-                            <div class="cuti-kuota-opt">
-                                <input type="radio" name="alokasi_cuti_tahunan" id="opt_thn_n" value="Cuti Tahunan" checked onchange="ubahAlokasiCuti(this.value)">
-                                <label for="opt_thn_n">Tahun <?= date('Y') ?><br><span class="text-success">Sisa <span id="lbl_opt_sisa_n">12</span>h</span></label>
-                            </div>
-                            <div class="cuti-kuota-opt" id="box_opt_n1">
-                                <input type="radio" name="alokasi_cuti_tahunan" id="opt_thn_n1" value="Cuti Tahunan N-1" onchange="ubahAlokasiCuti(this.value)">
-                                <label for="opt_thn_n1">Sisa <?= date('Y')-1 ?><br><span class="text-primary">Sisa <span id="lbl_opt_sisa_n1">0</span>h</span></label>
-                            </div>
-                            <div class="cuti-kuota-opt" id="box_opt_n2">
-                                <input type="radio" name="alokasi_cuti_tahunan" id="opt_thn_n2" value="Cuti Tahunan N-2" onchange="ubahAlokasiCuti(this.value)">
-                                <label for="opt_thn_n2">Sisa <?= date('Y')-2 ?><br><span class="text-muted">Sisa <span id="lbl_opt_sisa_n2">0</span>h</span></label>
+                                <div class="cuti-saldo-strip">
+                                    <div class="cuti-saldo-mini">
+                                        <small>N-2 (<?= date('Y')-2 ?>)</small>
+                                        <strong id="res_sisa_n2">0</strong>
+                                    </div>
+                                    <div class="cuti-saldo-mini">
+                                        <small>N-1 (<?= date('Y')-1 ?>)</small>
+                                        <strong id="res_sisa_n1">0</strong>
+                                    </div>
+                                    <div class="cuti-saldo-mini">
+                                        <small>N (<?= date('Y') ?>)</small>
+                                        <strong id="res_sisa_n">12</strong>
+                                    </div>
+                                    <div class="cuti-saldo-mini is-total">
+                                        <small>Total Hak</small>
+                                        <strong id="res_sisa_total">12</strong>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Rentang Tanggal (2 Kolom Sejajar Bahkan di HP) + Lama Cuti -->
-                    <div class="row g-2 mt-3">
-                        <div class="col-6 col-md-4">
-                            <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">Tanggal Mulai <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control cuti-form-input" name="tanggal_mulai" id="tgl_mulai" required onchange="onTanggalMulaiChange()">
-                        </div>
-                        <div class="col-6 col-md-4">
-                            <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">Tanggal Selesai <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control cuti-form-input" name="tanggal_selesai" id="tgl_selesai" required onchange="hitungHariKerja()">
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">Lama Cuti (Otomatis)</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control cuti-form-input fw-bold text-success" name="lama_cuti_jumlah" id="lama_cuti_jumlah" value="1" min="1" required style="border-radius: 10px 0 0 10px;">
-                                <input type="text" class="form-control cuti-form-input text-muted text-center bg-light" name="lama_cuti_satuan" id="lama_cuti_satuan" value="Hari" readonly style="border-radius: 0 10px 10px 0; max-width: 76px;">
+                        <!-- BLOK 2: JENIS CUTI -->
+                        <div class="cuti-form-section flex-grow-1">
+                            <div class="cuti-step-label">
+                                <span class="cuti-step-num">2</span> Jenis Cuti yang Diambil
+                            </div>
+
+                            <div class="cuti-jenis-grid">
+                                <div class="jenis-cuti-card active" onclick="pilihJenisCuti('Cuti Tahunan', this)" data-hint="Hak 12 hari kerja per tahun (akumulasi N-1 &amp; N-2 maks 6 hari).">
+                                    <span class="jenis-cuti-title">Cuti Tahunan</span>
+                                    <i class="bi bi-check-circle-fill text-success check-icon"></i>
+                                </div>
+                                <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti Sakit', this)" data-hint="Wajib melampirkan surat keterangan dokter / rumah sakit.">
+                                    <span class="jenis-cuti-title">Cuti Sakit</span>
+                                    <i class="bi bi-circle text-muted check-icon"></i>
+                                </div>
+                                <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti Alasan Penting', this)" data-hint="Keluarga sakit/wafat, menikah, bencana, atau istri sesar (maks 1 bulan).">
+                                    <span class="jenis-cuti-title">Alasan Penting</span>
+                                    <i class="bi bi-circle text-muted check-icon"></i>
+                                </div>
+                                <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti Besar', this)" data-hint="Masa kerja minimal 5 tahun terus-menerus (maksimal 3 bulan).">
+                                    <span class="jenis-cuti-title">Cuti Besar</span>
+                                    <i class="bi bi-circle text-muted check-icon"></i>
+                                </div>
+                                <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti Melahirkan', this)" data-hint="Kelahiran anak ke-1 s.d ke-3 (durasi 3 bulan penuh).">
+                                    <span class="jenis-cuti-title">Melahirkan</span>
+                                    <i class="bi bi-circle text-muted check-icon"></i>
+                                </div>
+                                <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti diluar Tanggungan Negara', this)" data-hint="Masa kerja minimal 5 tahun untuk alasan mendesak (s.d 3 tahun).">
+                                    <span class="jenis-cuti-title">Luar Tanggungan</span>
+                                    <i class="bi bi-circle text-muted check-icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="cuti-jenis-hint" id="cutiJenisHint">
+                                <i class="bi bi-info-circle text-success me-1"></i> Hak 12 hari kerja per tahun (akumulasi N-1 &amp; N-2 maks 6 hari).
+                            </div>
+                            <input type="hidden" name="jenis_cuti" id="input_jenis_cuti" value="Cuti Tahunan">
+
+                            <!-- Sub-opsi sumber kuota tahunan (otomatis tampil HANYA jika pegawai punya sisa N-1 / N-2) -->
+                            <div id="sub_opsi_cuti_tahunan" class="mt-3" style="display: none;">
+                                <label class="form-label fw-bold small text-secondary mb-1.5" style="font-size: 12px;">Gunakan Sumber Kuota:</label>
+                                <div class="cuti-kuota-radios">
+                                    <div class="cuti-kuota-opt">
+                                        <input type="radio" name="alokasi_cuti_tahunan" id="opt_thn_n" value="Cuti Tahunan" checked onchange="ubahAlokasiCuti(this.value)">
+                                        <label for="opt_thn_n">Tahun <?= date('Y') ?><br><span class="text-success">Sisa <span id="lbl_opt_sisa_n">12</span>h</span></label>
+                                    </div>
+                                    <div class="cuti-kuota-opt" id="box_opt_n1">
+                                        <input type="radio" name="alokasi_cuti_tahunan" id="opt_thn_n1" value="Cuti Tahunan N-1" onchange="ubahAlokasiCuti(this.value)">
+                                        <label for="opt_thn_n1">Sisa <?= date('Y')-1 ?><br><span class="text-primary">Sisa <span id="lbl_opt_sisa_n1">0</span>h</span></label>
+                                    </div>
+                                    <div class="cuti-kuota-opt" id="box_opt_n2">
+                                        <input type="radio" name="alokasi_cuti_tahunan" id="opt_thn_n2" value="Cuti Tahunan N-2" onchange="ubahAlokasiCuti(this.value)">
+                                        <label for="opt_thn_n2">Sisa <?= date('Y')-2 ?><br><span class="text-muted">Sisa <span id="lbl_opt_sisa_n2">0</span>h</span></label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Info Kalkulasi Hari Kerja -->
-                    <div id="info_hitung_hari" class="mt-2" style="display: none;">
-                        <div class="px-3 py-2 rounded-3 bg-success-subtle text-success-emphasis small" style="font-size: 12px;">
-                            <i class="bi bi-calendar-check me-1"></i><span id="txt_hitung_hari"></span>
+                    <!-- KOLOM KANAN: TANGGAL & ALASAN + KONTAK & LAMPIRAN -->
+                    <div class="cuti-form-col-right">
+                        <!-- BLOK 3: TANGGAL, DURASI & ALASAN -->
+                        <div class="cuti-form-section">
+                            <div class="cuti-step-label">
+                                <span class="cuti-step-num">3</span> Jadwal &amp; Alasan Cuti
+                            </div>
+
+                            <div class="row g-2">
+                                <div class="col-6 col-md-4">
+                                    <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">Tanggal Mulai <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control cuti-form-input" name="tanggal_mulai" id="tgl_mulai" required onchange="onTanggalMulaiChange()">
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">Tanggal Selesai <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control cuti-form-input" name="tanggal_selesai" id="tgl_selesai" required onchange="hitungHariKerja()">
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">Lama Cuti</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control cuti-form-input fw-bold text-success" name="lama_cuti_jumlah" id="lama_cuti_jumlah" value="1" min="1" required style="border-radius: 10px 0 0 10px;">
+                                        <input type="text" class="form-control cuti-form-input text-muted text-center bg-light" name="lama_cuti_satuan" id="lama_cuti_satuan" value="Hari" readonly style="border-radius: 0 10px 10px 0; max-width: 68px;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="info_hitung_hari" class="mt-2" style="display: none;">
+                                <div class="px-3 py-2 rounded-3 bg-success-subtle text-success-emphasis small" style="font-size: 12px;">
+                                    <i class="bi bi-calendar-check me-1"></i><span id="txt_hitung_hari"></span>
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">Alasan Cuti <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control cuti-form-input" name="alasan_cuti" id="input_alasan" placeholder="Tulis singkat alasan cuti Anda..." required>
+                                <div class="cuti-alasan-chips">
+                                    <button type="button" class="cuti-alasan-chip" onclick="isiAlasan('Acara Keluarga')">Acara Keluarga</button>
+                                    <button type="button" class="cuti-alasan-chip" onclick="isiAlasan('Pernikahan Keluarga')">Pernikahan</button>
+                                    <button type="button" class="cuti-alasan-chip" onclick="isiAlasan('Mengantar anak ke pondok pesantren')">Antar Anak</button>
+                                    <button type="button" class="cuti-alasan-chip" onclick="isiAlasan('Orangtua (Mertua) Sakit')">Orangtua Sakit</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BLOK 4: KONTAK, ALAMAT & LAMPIRAN -->
+                        <div class="cuti-form-section flex-grow-1">
+                            <div class="cuti-step-label">
+                                <span class="cuti-step-num">4</span> Kontak &amp; Alamat Selama Cuti
+                            </div>
+
+                            <div class="row g-2">
+                                <div class="col-12 col-sm-5">
+                                    <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">No. HP / WhatsApp <span class="text-danger">*</span></label>
+                                    <input type="tel" class="form-control cuti-form-input" name="telepon_cuti" id="input_telepon" placeholder="08xxxxxxxxxx" required>
+                                </div>
+                                <div class="col-12 col-sm-7">
+                                    <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">Alamat Selama Cuti <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control cuti-form-input" name="alamat_cuti" id="input_alamat" placeholder="Desa/Kelurahan, Kecamatan, Kab/Kota" required>
+                                </div>
+                            </div>
+
+                            <div class="mt-3" id="boxLampiranCuti">
+                                <label class="form-label fw-bold text-secondary mb-1 d-flex justify-content-between align-items-center" style="font-size: 12px;">
+                                    <span>Lampiran / Surat Dokter <span id="lampiranReqTag" class="fw-normal text-muted">(Opsional)</span></span>
+                                    <span class="fw-normal text-muted" style="font-size: 11px;">PDF/JPG/PNG maks 5MB</span>
+                                </label>
+                                <input type="file" class="form-control cuti-form-input py-2" name="file_lampiran" id="file_lampiran" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="font-size: 13px;">
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Alasan Cuti + Chip Cepat -->
-                    <div class="mt-3">
-                        <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">Alasan Cuti <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control cuti-form-input" name="alasan_cuti" id="input_alasan" placeholder="Tulis singkat alasan cuti Anda..." required>
-                        <div class="cuti-alasan-chips">
-                            <button type="button" class="cuti-alasan-chip" onclick="isiAlasan('Acara Keluarga')">Acara Keluarga</button>
-                            <button type="button" class="cuti-alasan-chip" onclick="isiAlasan('Pernikahan Keluarga')">Pernikahan</button>
-                            <button type="button" class="cuti-alasan-chip" onclick="isiAlasan('Mengantar anak ke pondok pesantren')">Antar Anak</button>
-                            <button type="button" class="cuti-alasan-chip" onclick="isiAlasan('Orangtua (Mertua) Sakit')">Orangtua Sakit</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- BLOK 3: KONTAK, ALAMAT & LAMPIRAN -->
-                <div class="cuti-form-section">
-                    <div class="cuti-step-label">
-                        <span class="cuti-step-num">3</span> Kontak &amp; Alamat Selama Cuti
-                    </div>
-
-                    <div class="row g-2">
-                        <div class="col-12 col-md-5">
-                            <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">No. HP / WhatsApp <span class="text-danger">*</span></label>
-                            <input type="tel" class="form-control cuti-form-input" name="telepon_cuti" id="input_telepon" placeholder="08xxxxxxxxxx" required>
-                        </div>
-                        <div class="col-12 col-md-7">
-                            <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">Alamat Selama Cuti <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control cuti-form-input" name="alamat_cuti" id="input_alamat" placeholder="Desa/Kelurahan, Kecamatan, Kab/Kota" required>
-                        </div>
-                    </div>
-
-                    <!-- Lampiran Dokumen (Ringkas; otomatis disorot jika Cuti Sakit) -->
-                    <div class="mt-3" id="boxLampiranCuti">
-                        <label class="form-label fw-bold text-secondary mb-1 d-flex justify-content-between align-items-center" style="font-size: 12px;">
-                            <span>Lampiran / Surat Dokter <span id="lampiranReqTag" class="fw-normal text-muted">(Opsional)</span></span>
-                            <span class="fw-normal text-muted" style="font-size: 11px;">PDF/JPG/PNG maks 5MB</span>
-                        </label>
-                        <input type="file" class="form-control cuti-form-input py-2" name="file_lampiran" id="file_lampiran" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="font-size: 13px;">
-                    </div>
                 </div>
 
                 <!-- FOOTER & TOMBOL SUBMIT -->
-                <div class="p-3 p-md-4 d-flex flex-column flex-md-row align-items-center justify-content-between gap-2" style="background: #f8fafc;">
+                <div class="px-3 px-md-4 py-3 border-top d-flex flex-column flex-md-row align-items-center justify-content-between gap-2" style="background: #f8fafc;">
                     <div class="small text-muted text-center text-md-start" style="font-size: 12px;">
-                        <i class="bi bi-shield-check text-success me-1"></i> Diverifikasi oleh Kepala Madrasah &amp; Tata Usaha.
+                        <i class="bi bi-shield-check text-success me-1"></i> Permohonan akan diverifikasi oleh Kepala Madrasah &amp; Tata Usaha.
                     </div>
                     <button type="submit" class="btn btn-success fw-bold px-4 py-2.5 w-100 w-md-auto d-inline-flex align-items-center justify-content-center gap-2 shadow-sm" style="border-radius: 12px; background: #15803d; border-color: #15803d; min-height: 46px; font-size: 14.5px; max-width: 280px;">
                         <i class="bi bi-send-fill"></i> Kirim Pengajuan Cuti
@@ -1413,49 +1452,85 @@ if (!function_exists('cuti_jenis_badge_class')) {
 
     <!-- ── SECTION C: CEK SALDO & LACAK STATUS PRIBADI ── -->
     <div id="section-lacak" style="display: none;">
-        <div class="card cuti-card-main mb-4">
-            <div class="card-body p-4 p-md-5">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold" style="font-size: 12px;">
-                        <i class="bi bi-search me-1"></i> Lacak Status &amp; Sisa Cuti
-                    </span>
+        <div class="card cuti-card-main mb-4 overflow-hidden">
+            <div class="px-3 px-md-4 py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2" style="background: #f8fafc;">
+                <div>
+                    <h5 class="fw-bold mb-0 text-dark" style="font-size: 16px;">Cek Saldo &amp; Riwayat Cuti Pegawai</h5>
+                    <small class="text-muted" style="font-size: 12px;">Pilih nama Anda atau ketik NIP untuk melihat sisa hak cuti (N, N-1, N-2) dan status permohonan.</small>
                 </div>
-                <h4 class="fw-bold mb-1" style="color: #0f172a;">Cek Sisa Jatah Hak Cuti Pribadi (N, N-1, N-2)</h4>
-                <p class="text-muted mb-4 small">Masukkan 18 digit NIP Anda untuk melihat status permohonan terkini dan kalkulasi saldo cuti Anda.</p>
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="switchViewSection('monitoring')">
+                    <i class="bi bi-arrow-left me-1"></i> Kembali
+                </button>
+            </div>
 
-                <div class="row g-3 align-items-center mb-4">
-                    <div class="col-md-7">
-                        <label class="form-label small fw-bold text-secondary">Nomor Induk Pegawai (NIP)</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-0" style="border-radius: 12px 0 0 12px;"><i class="bi bi-person-vcard text-muted"></i></span>
-                            <input type="text" class="form-control bg-light border-0 py-2" id="cari_nip_status" placeholder="Masukkan 18 digit NIP Anda..." style="font-size: 14px;">
-                            <button class="btn btn-success px-4 fw-bold" type="button" onclick="cekStatusCuti()" style="border-radius: 0 12px 12px 0; background: #059669; border-color: #059669;">
-                                <i class="bi bi-search me-1"></i> Cek Saldo &amp; Status
-                            </button>
-                        </div>
+            <div class="card-body p-3 p-md-4">
+                <div class="row g-2 align-items-end mb-3">
+                    <div class="col-12 col-md-8">
+                        <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">Pilih Pegawai / Cari Nama atau NIP</label>
+                        <select class="form-select select2-lacak" id="cari_nip_status">
+                            <option value="">-- Ketik Nama atau NIP Pegawai di sini --</option>
+                            <?php foreach ($pegawai_list as $p): ?>
+                                <option value="<?= htmlspecialchars($p->nip ?: $p->id) ?>">
+                                    <?= htmlspecialchars($p->nama_lengkap) ?> - <?= $p->nip ?: 'Non-NIP' ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <button class="btn btn-success w-100 fw-bold d-inline-flex align-items-center justify-content-center gap-2" id="btnCekStatusCuti" type="button" onclick="cekStatusCuti()" style="border-radius: 10px; background: #15803d; border-color: #15803d; min-height: 46px;">
+                            <i class="bi bi-search"></i> Cek Saldo &amp; Status
+                        </button>
                     </div>
                 </div>
 
+                <!-- PESAN ERROR RINGAN -->
+                <div id="lacak_error_box" class="alert alert-warning border-0 rounded-3 py-2 px-3 small mb-3" style="display: none;"></div>
+
                 <!-- HASIL PENCARIAN STATUS & SALDO -->
-                <div id="hasil_status_box" class="pt-4 border-top" style="display: none;">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                        <div>
-                            <h5 class="fw-bold text-dark mb-0" id="status_nama_pegawai"></h5>
-                            <div class="text-muted small" id="status_nip_pegawai"></div>
+                <div id="hasil_status_box" class="pt-3 border-top" style="display: none;">
+                    <div class="cuti-profile-strip mt-0 mb-3">
+                        <div class="cuti-profile-meta">
+                            <div>
+                                <h5 class="fw-bold text-dark mb-0" style="font-size: 15.5px;" id="status_nama_pegawai"></h5>
+                                <div class="text-muted font-monospace small" style="font-size: 12px;" id="status_nip_pegawai"></div>
+                                <div class="text-muted small" style="font-size: 12px;" id="status_jabatan_pegawai"></div>
+                            </div>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1.5 rounded-pill fw-bold" style="font-size: 12px;" id="status_sisa_cuti"></span>
                         </div>
-                        <span class="badge bg-success px-3 py-2 rounded-pill fs-6" id="status_sisa_cuti"></span>
+
+                        <div class="cuti-saldo-strip">
+                            <div class="cuti-saldo-mini">
+                                <small>N-2 (<?= date('Y')-2 ?>)</small>
+                                <strong id="lacak_sisa_n2">0</strong>
+                            </div>
+                            <div class="cuti-saldo-mini">
+                                <small>N-1 (<?= date('Y')-1 ?>)</small>
+                                <strong id="lacak_sisa_n1">0</strong>
+                            </div>
+                            <div class="cuti-saldo-mini">
+                                <small>N (<?= date('Y') ?>)</small>
+                                <strong id="lacak_sisa_n">12</strong>
+                            </div>
+                            <div class="cuti-saldo-mini is-total">
+                                <small>Total Hak</small>
+                                <strong id="lacak_sisa_total">12</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fw-bold text-dark small mb-2">
+                        <i class="bi bi-clock-history text-success me-1"></i> Riwayat Permohonan Cuti
                     </div>
 
                     <!-- RIWAYAT PERMOHONAN PEGAWAI TERSEBUT -->
-                    <div class="table-responsive mt-3" style="border-radius: 14px; border: 1px solid #e2e8f0;">
+                    <div class="table-responsive" style="border-radius: 12px; border: 1px solid #e2e8f0;">
                         <table class="table table-hover align-middle mb-0" style="font-size: 13px;">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th>No</th>
-                                    <th>Tanggal Surat</th>
+                            <thead style="background: #f8fafc; color: #475569;">
+                                <tr class="text-nowrap">
+                                    <th class="text-center" width="5%">No</th>
                                     <th>Jenis Cuti</th>
                                     <th>Durasi</th>
-                                    <th>Rentang Waktu</th>
+                                    <th>Rentang Tanggal</th>
                                     <th>Alasan</th>
                                     <th class="text-center">Status</th>
                                 </tr>
@@ -1695,6 +1770,22 @@ $(document).ready(function() {
         width: '100%'
     });
 
+    $('#cari_nip_status').select2({
+        theme: 'bootstrap-5',
+        placeholder: '-- Ketik Nama atau NIP Pegawai di sini --',
+        allowClear: true,
+        width: '100%'
+    });
+
+    $('#cari_nip_status').on('change', function() {
+        if ($(this).val()) {
+            cekStatusCuti();
+        } else {
+            $('#hasil_status_box').slideUp(180);
+            $('#lacak_error_box').hide();
+        }
+    });
+
     $('#select_ptk').on('change', function() {
         const nip = $(this).val();
         if (!nip) {
@@ -1729,11 +1820,12 @@ $(document).ready(function() {
                     if (d.no_hp && !$('#input_telepon').val()) $('#input_telepon').val(d.no_hp);
 
                     // Saldo Cuti
-                    const s = d.saldo;
-                    $('#res_sisa_n2').text(s.sisa_n2);
-                    $('#res_sisa_n1').text(s.sisa_n1);
-                    $('#res_sisa_n').text(s.sisa_n);
-                    $('#res_sisa_total').text(s.total_tersedia);
+                    const s = d.saldo || {};
+                    const totalHak = (s.total_hak !== undefined) ? s.total_hak : (s.total_tersedia !== undefined ? s.total_tersedia : ((s.sisa_n || 0) + (s.sisa_n1 || 0) + (s.sisa_n2 || 0)));
+                    $('#res_sisa_n2').text(s.sisa_n2 ?? 0);
+                    $('#res_sisa_n1').text(s.sisa_n1 ?? 0);
+                    $('#res_sisa_n').text(s.sisa_n ?? 0);
+                    $('#res_sisa_total').text(totalHak);
 
                     // Label Opsi Cuti Tahunan
                     $('#lbl_opt_sisa_n').text(s.sisa_n);
@@ -1848,11 +1940,19 @@ function hitungHariKerja() {
 
 // Cek Status & Saldo Cuti Pribadi
 function cekStatusCuti() {
-    const nip = $('#cari_nip_status').val().trim();
+    const nip = ($('#cari_nip_status').val() || '').toString().trim();
+    const $err = $('#lacak_error_box');
+    const $btn = $('#btnCekStatusCuti');
+
     if (!nip) {
-        alert('Silakan masukkan 18 digit NIP Anda.');
+        $err.text('Silakan pilih nama pegawai atau masukkan NIP Anda terlebih dahulu.').show();
+        $('#hasil_status_box').slideUp(180);
         return;
     }
+
+    $err.hide();
+    const origBtnHtml = $btn.html();
+    $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Memuat...');
 
     $.ajax({
         url: '<?= base_url("cuti/ajax_cek_status") ?>',
@@ -1860,45 +1960,64 @@ function cekStatusCuti() {
         data: { nip: nip },
         dataType: 'json',
         success: function(res) {
-            if (res.status === 'success') {
-                $('#hasil_status_box').slideDown(200);
-                $('#status_nama_pegawai').text(res.data.ptk.nama_lengkap);
-                $('#status_nip_pegawai').text('NIP. ' + res.data.ptk.nip + ' (' + res.data.ptk.status_kepegawaian + ')');
+            $btn.prop('disabled', false).html(origBtnHtml);
+            if (res && res.status === 'success') {
+                const peg = res.pegawai || (res.data && res.data.ptk) || {};
+                const s   = res.saldo   || (res.data && res.data.saldo) || {};
+                const riw = res.riwayat || (res.data && res.data.riwayat) || [];
 
-                const s = res.data.saldo;
-                $('#status_sisa_cuti').text('Sisa Cuti ' + <?= date('Y') ?> + ': ' + s.sisa_n + ' Hari (Total: ' + s.total_tersedia + ' Hari)');
+                const nama = peg.nama || peg.nama_lengkap || 'Pegawai ASN';
+                const nipTxt = peg.nip || '-';
+                const statusPeg = peg.status_kepegawaian ? (' • ' + peg.status_kepegawaian) : '';
+                const jabTxt = [peg.jabatan, peg.masa_kerja ? ('Masa Kerja: ' + peg.masa_kerja) : ''].filter(Boolean).join(' • ');
+
+                const sisaN  = s.sisa_n ?? 0;
+                const sisaN1 = s.sisa_n1 ?? 0;
+                const sisaN2 = s.sisa_n2 ?? 0;
+                const totalHak = (s.total_hak !== undefined) ? s.total_hak : (s.total_tersedia !== undefined ? s.total_tersedia : (sisaN + sisaN1 + sisaN2));
+
+                $('#hasil_status_box').slideDown(180);
+                $('#status_nama_pegawai').text(nama);
+                $('#status_nip_pegawai').text('NIP. ' + nipTxt + statusPeg);
+                $('#status_jabatan_pegawai').text(jabTxt);
+                $('#status_sisa_cuti').text('Total Hak Cuti: ' + totalHak + ' Hari');
+
+                $('#lacak_sisa_n2').text(sisaN2);
+                $('#lacak_sisa_n1').text(sisaN1);
+                $('#lacak_sisa_n').text(sisaN);
+                $('#lacak_sisa_total').text(totalHak);
 
                 let rowsHtml = '';
-                if (!res.data.riwayat || res.data.riwayat.length === 0) {
-                    rowsHtml = '<tr><td colspan="7" class="text-center text-muted py-3">Belum ada riwayat permohonan cuti untuk pegawai ini.</td></tr>';
+                if (!riw || riw.length === 0) {
+                    rowsHtml = '<tr><td colspan="6" class="text-center text-muted py-4">Belum ada riwayat permohonan cuti untuk pegawai ini.</td></tr>';
                 } else {
-                    res.data.riwayat.forEach(function(item, idx) {
-                        let stBadge = '<span class="badge bg-warning text-dark">Menunggu TU</span>';
-                        if (item.status === 'Aktif') stBadge = '<span class="badge bg-success">Disetujui (Aktif)</span>';
-                        else if (item.status === 'Disetujui Kepala') stBadge = '<span class="badge bg-info text-dark">Disetujui Kamad</span>';
-                        else if (item.status === 'Ditolak') stBadge = '<span class="badge bg-danger">Ditolak</span>';
+                    riw.forEach(function(item, idx) {
+                        let stBadge = '<span class="kbm-status-pill pill-pending"><i class="bi bi-clock-history"></i> Menunggu TU</span>';
+                        if (item.status === 'Aktif') stBadge = '<span class="kbm-status-pill pill-hadir"><i class="bi bi-check-all"></i> Disetujui (Aktif)</span>';
+                        else if (item.status === 'Disetujui Kepala') stBadge = '<span class="kbm-status-pill pill-tugas-luar"><i class="bi bi-check-circle-fill"></i> Disetujui Kamad</span>';
+                        else if (item.status === 'Ditolak') stBadge = '<span class="kbm-status-pill pill-sakit"><i class="bi bi-x-circle-fill"></i> Ditolak</span>';
 
                         rowsHtml += `
                             <tr>
-                                <td>${idx + 1}</td>
-                                <td>${item.tanggal_surat || '-'}</td>
-                                <td><strong>${item.jenis_cuti}</strong></td>
-                                <td>${item.lama_cuti_jumlah} ${item.lama_cuti_satuan}</td>
-                                <td>${item.tanggal_mulai} s.d ${item.tanggal_selesai}</td>
-                                <td>${item.alasan_cuti || '-'}</td>
-                                <td class="text-center">${stBadge}</td>
+                                <td class="text-center text-muted">${idx + 1}</td>
+                                <td><strong>${item.jenis_cuti || '-'}</strong></td>
+                                <td class="text-nowrap fw-semibold">${item.lama_cuti_jumlah || 0} ${item.lama_cuti_satuan || 'Hari'}</td>
+                                <td class="text-nowrap small">${item.tanggal_mulai || '-'} s.d ${item.tanggal_selesai || '-'}</td>
+                                <td class="small text-muted">${item.alasan_cuti || '-'}</td>
+                                <td class="text-center text-nowrap">${stBadge}</td>
                             </tr>
                         `;
                     });
                 }
                 $('#body_riwayat_pribadi').html(rowsHtml);
             } else {
-                alert(res.message);
-                $('#hasil_status_box').slideUp(200);
+                $err.text((res && res.message) ? res.message : 'Data pegawai tidak ditemukan.').show();
+                $('#hasil_status_box').slideUp(180);
             }
         },
         error: function() {
-            alert('Gagal menghubungi server.');
+            $btn.prop('disabled', false).html(origBtnHtml);
+            $err.text('Gagal menghubungi server. Silakan coba beberapa saat lagi.').show();
         }
     });
 }
