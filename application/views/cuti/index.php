@@ -2,19 +2,47 @@
 // Load Header Resmi Website Madrasah
 $this->load->view('public/partials/archive_header'); 
 
-// Hitung data statistik ringkasan jika belum diset dari controller
-$stat_total   = isset($stat_total) ? $stat_total : count($riwayat_cuti);
-$stat_aktif   = isset($stat_aktif) ? $stat_aktif : 0;
-$stat_draft   = isset($stat_draft) ? $stat_draft : 0;
-$stat_pegawai = isset($stat_pegawai) ? $stat_pegawai : count($pegawai_list);
+// Hitung data statistik ringkasan secara konsisten
+$stat_total   = isset($stat_total) ? (int)$stat_total : count($riwayat_cuti);
+$stat_aktif   = isset($stat_aktif) ? (int)$stat_aktif : 0;
+$stat_draft   = isset($stat_draft) ? (int)$stat_draft : 0;
+$stat_pegawai = isset($stat_pegawai) ? (int)$stat_pegawai : count($pegawai_list);
 
-if (!isset($stat_aktif) || $stat_aktif === 0) {
+if (!isset($stat_aktif) && !empty($riwayat_cuti)) {
     foreach ($riwayat_cuti as $r_item) {
-        if (in_array($r_item->status, ['Aktif', 'Disetujui Kepala'])) {
+        if ($r_item->status == 'Aktif') {
             $stat_aktif++;
-        } elseif ($r_item->status == 'Draft') {
+        } elseif (in_array($r_item->status, ['Draft', 'Disetujui Kepala'])) {
             $stat_draft++;
         }
+    }
+}
+
+if (!function_exists('cuti_initials')) {
+    function cuti_initials($name) {
+        $clean = trim(preg_replace('/,.*$/', '', (string)$name));
+        $parts = preg_split('/\s+/', $clean);
+        $init = '';
+        foreach ($parts as $p) {
+            $p = preg_replace('/[^a-zA-Z]/', '', $p);
+            if ($p !== '') {
+                $init .= strtoupper($p[0]);
+                if (strlen($init) >= 2) break;
+            }
+        }
+        return $init ?: 'ASN';
+    }
+}
+
+if (!function_exists('cuti_jenis_badge_class')) {
+    function cuti_jenis_badge_class($jenis) {
+        $j = strtolower((string)$jenis);
+        if (strpos($j, 'sakit') !== false) return 'cuti-type-sakit';
+        if (strpos($j, 'melahirkan') !== false) return 'cuti-type-lahir';
+        if (strpos($j, 'besar') !== false) return 'cuti-type-besar';
+        if (strpos($j, 'penting') !== false) return 'cuti-type-penting';
+        if (strpos($j, 'tanggungan') !== false) return 'cuti-type-cltn';
+        return 'cuti-type-tahunan';
     }
 }
 ?>
@@ -26,36 +54,36 @@ if (!isset($stat_aktif) || $stat_aktif === 0) {
 
 <style>
 :root {
-    --live-green: #16a34a;
-    --live-amber: #f59e0b;
-    --live-blue: #2563eb;
-    --live-red: #ef4444;
-    --live-purple: #7c3aed;
+    --cuti-brand-dark: #0f4422;
+    --cuti-brand: #15803d;
+    --cuti-brand-light: #ecfdf5;
+    --cuti-ink: #0f172a;
+    --cuti-muted: #64748b;
+    --cuti-border: #e2e8f0;
+    --cuti-surface: #ffffff;
+    --cuti-bg-soft: #f8fafc;
 }
 
-/* ═══ HERO BANNER (IDENTIK MONITORING JADWAL KBM) ═══ */
+/* ═══ 1. HERO HEADER (SELARAS IDENTITAS MAN 3 BANJAR) ═══ */
 .kbm-hero {
-    background:
-        radial-gradient(circle at 10% 20%, rgba(255,255,255,0.18), transparent 30%),
-        radial-gradient(circle at 90% 80%, rgba(34,197,94,0.3), transparent 40%),
-        linear-gradient(135deg, #0f4422 0%, #15803d 50%, #16a34a 100%);
-    color: white;
-    border-radius: 28px;
-    padding: 28px 32px;
-    margin-bottom: 24px;
-    box-shadow: 0 20px 45px rgba(22,163,74,0.22);
+    background: linear-gradient(135deg, #0f4422 0%, #15803d 55%, #16a34a 100%);
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 26px 30px;
+    margin-bottom: 20px;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 12px 28px rgba(15, 68, 34, 0.16);
 }
 
 .kbm-hero::after {
     content: '';
     position: absolute;
-    right: -40px;
-    bottom: -40px;
-    width: 220px;
-    height: 220px;
-    background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%);
+    right: -60px;
+    top: -60px;
+    width: 240px;
+    height: 240px;
+    background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
     border-radius: 50%;
     pointer-events: none;
 }
@@ -63,7 +91,7 @@ if (!isset($stat_aktif) || $stat_aktif === 0) {
 .kbm-hero-top {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     flex-wrap: wrap;
     gap: 16px;
     position: relative;
@@ -74,51 +102,53 @@ if (!isset($stat_aktif) || $stat_aktif === 0) {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(0,0,0,0.25);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.3);
-    padding: 6px 14px;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    padding: 5px 12px;
     border-radius: 999px;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
     text-transform: uppercase;
 }
 
 .pulse-dot {
-    width: 10px;
-    height: 10px;
-    background-color: #22c55e;
+    width: 8px;
+    height: 8px;
+    background-color: #4ade80;
     border-radius: 50%;
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
-    animation: livePulse 1.6s infinite;
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+    animation: livePulse 2s infinite;
     display: inline-block;
 }
 
 @keyframes livePulse {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.65); }
+    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(74, 222, 128, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+
+.live-clock-box {
+    text-align: right;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 16px;
+    border-radius: 14px;
 }
 
 .live-clock {
-    font-size: 32px;
-    font-weight: 900;
-    letter-spacing: 1px;
-    font-family: 'Courier New', Courier, monospace;
-    background: rgba(255,255,255,0.15);
-    padding: 4px 16px;
-    border-radius: 16px;
-    border: 1px solid rgba(255,255,255,0.2);
-    display: inline-block;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
 }
 
-.current-jam-alert {
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.3);
-    backdrop-filter: blur(12px);
-    border-radius: 16px;
-    padding: 12px 18px;
+.hero-action-bar {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    padding: 12px 16px;
     margin-top: 18px;
     display: flex;
     align-items: center;
@@ -129,247 +159,337 @@ if (!isset($stat_aktif) || $stat_aktif === 0) {
     z-index: 2;
 }
 
-/* ═══ 4 KPI STATS GRID (IDENTIK MONITORING KBM) ═══ */
+/* ═══ 2. 4 KPI STATS GRID (PROPORSIONAL & PALET TERPADU) ═══ */
 .kbm-stats-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 14px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .kbm-stat-card {
-    background: white;
-    border-radius: 20px;
-    padding: 18px 20px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 25px rgba(15,23,42,0.04);
+    background: var(--cuti-surface);
+    border-radius: 16px;
+    padding: 16px 18px;
+    border: 1px solid var(--cuti-border);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
     display: flex;
     align-items: center;
-    gap: 16px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    gap: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .kbm-stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(15,23,42,0.08);
+    border-color: #cbd5e1;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.05);
 }
 
 .kbm-stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: 20px;
     flex-shrink: 0;
+}
+
+.kbm-stat-body {
+    min-width: 0;
 }
 
 .kbm-stat-card small {
     display: block;
-    font-size: 11.5px;
-    font-weight: 800;
-    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--cuti-muted);
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.35px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .kbm-stat-card strong {
     display: block;
-    font-size: 22px;
-    font-weight: 900;
-    color: #0f172a;
-    line-height: 1.1;
-    margin-top: 3px;
+    font-size: 21px;
+    font-weight: 800;
+    color: var(--cuti-ink);
+    line-height: 1.2;
+    margin-top: 2px;
+    font-variant-numeric: tabular-nums;
 }
 
-/* ═══ FILTER BAR & QUICK PILLS (IDENTIK MONITORING KBM) ═══ */
+/* ═══ 3. FILTER & TAB BAR ═══ */
 .kbm-filter-bar {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 22px;
-    padding: 20px;
-    margin-bottom: 24px;
-    box-shadow: 0 8px 25px rgba(15,23,42,0.04);
+    background: var(--cuti-surface);
+    border: 1px solid var(--cuti-border);
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
 }
 
 .kbm-quick-pills {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     overflow-x: auto;
     white-space: nowrap;
-    padding-bottom: 6px;
-    margin-bottom: 16px;
+    padding-bottom: 2px;
 }
 
 .kbm-quick-pill {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 9px 18px;
-    border-radius: 999px;
+    padding: 8px 15px;
+    border-radius: 10px;
     font-size: 13px;
-    font-weight: 800;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    font-weight: 700;
+    background: var(--cuti-bg-soft);
+    border: 1px solid var(--cuti-border);
     color: #475569;
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.18s ease;
 }
 
 .kbm-quick-pill:hover {
     background: #ecfdf5;
-    color: #166534;
+    color: #15803d;
     border-color: #bbf7d0;
 }
 
 .kbm-quick-pill.active {
-    background: #16a34a !important;
-    color: white !important;
-    border-color: #16a34a !important;
-    box-shadow: 0 4px 12px rgba(22,163,74,0.3);
+    background: #15803d !important;
+    color: #ffffff !important;
+    border-color: #15803d !important;
 }
 
-/* ═══ MONITORING GRID CARDS (IDENTIK MONITORING KBM) ═══ */
+.cuti-filter-input {
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    border-radius: 10px;
+    font-size: 13.5px;
+    color: var(--cuti-ink);
+}
+
+.cuti-filter-input:focus {
+    border-color: #15803d;
+    box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.12);
+}
+
+/* ═══ 4. CARD CONTAINER BARU (BERSIH, TERSTRUKTUR, MUDAH DIPINDAI) ═══ */
 .kbm-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 16px;
-    margin-bottom: 30px;
+    margin-bottom: 28px;
 }
 
-.kbm-card {
-    background: white;
-    border-radius: 22px;
-    border: 1px solid #e2e8f0;
+.cuti-item-card {
+    background: var(--cuti-surface);
+    border-radius: 16px;
+    border: 1px solid var(--cuti-border);
     padding: 18px;
-    box-shadow: 0 10px 24px rgba(15,23,42,0.04);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    gap: 14px;
 }
 
-.kbm-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 14px 30px rgba(15,23,42,0.08);
+.cuti-item-card:hover {
+    border-color: #86efac;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    transform: translateY(-2px);
 }
 
-.kbm-card-head {
+.cuti-card-top {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 10px;
-    border-bottom: 1px dashed #e2e8f0;
-    padding-bottom: 12px;
-    margin-bottom: 12px;
 }
 
-.kbm-kelas-badge {
-    background: #0f172a;
-    color: white;
-    font-weight: 900;
-    padding: 6px 12px;
-    border-radius: 12px;
-    font-size: 12.5px;
-    letter-spacing: 0.3px;
+.cuti-person {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    min-width: 0;
 }
 
-.kbm-jam-badge {
-    background: #f1f5f9;
-    color: #475569;
+.cuti-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #d1fae5;
     font-weight: 800;
-    font-size: 11.5px;
-    padding: 5px 11px;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
+    font-size: 13.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    object-fit: cover;
 }
 
-.kbm-mapel {
-    font-size: 15.5px;
-    font-weight: 900;
-    color: #0f172a;
-    margin-bottom: 4px;
+.cuti-person-info {
+    min-width: 0;
+}
+
+.cuti-person-name {
+    font-size: 14.5px;
+    font-weight: 800;
+    color: var(--cuti-ink);
+    line-height: 1.25;
+    margin-bottom: 2px;
+    word-break: break-word;
+}
+
+.cuti-person-nip {
+    font-size: 11.5px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: var(--cuti-muted);
     line-height: 1.3;
 }
 
-.kbm-guru {
-    font-size: 13px;
+.cuti-person-jabatan {
+    font-size: 11.5px;
+    color: #64748b;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Soft semantic badges untuk jenis cuti */
+.cuti-type-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
     font-weight: 700;
-    color: #475569;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.cuti-type-tahunan { background: #ecfdf5; color: #047857; border: 1px solid #bbf7d0; }
+.cuti-type-sakit   { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+.cuti-type-lahir   { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.cuti-type-besar   { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+.cuti-type-penting { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+.cuti-type-cltn    { background: #f8fafc; color: #475569; border: 1px solid #cbd5e1; }
+
+/* Blok Jadwal & Alasan */
+.cuti-schedule-box {
+    background: var(--cuti-bg-soft);
+    border: 1px solid #edf2f7;
+    border-radius: 12px;
+    padding: 11px 13px;
+}
+
+.cuti-schedule-row {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.cuti-date-range {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--cuti-ink);
+    display: inline-flex;
     align-items: center;
     gap: 6px;
-    margin-bottom: 8px;
+}
+
+.cuti-duration-chip {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #047857;
+    font-weight: 800;
+    font-size: 11.5px;
+    padding: 3px 9px;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+
+.cuti-alasan-text {
+    font-size: 12px;
+    color: #475569;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed #e2e8f0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.45;
+}
+
+/* Footer kartu */
+.cuti-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #f1f5f9;
 }
 
 .kbm-status-pill {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 5px 12px;
+    gap: 5px;
+    padding: 4px 11px;
     border-radius: 999px;
     font-size: 11.5px;
-    font-weight: 800;
+    font-weight: 700;
 }
 
-.pill-hadir {
-    background: #dcfce7;
-    color: #166534;
-    border: 1px solid #bbf7d0;
-}
+.pill-hadir      { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.pill-tugas-luar { background: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+.pill-sakit      { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.pill-pending    { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
 
-.pill-tugas-luar {
-    background: #fef3c7;
-    color: #92400e;
-    border: 1px solid #fde68a;
-}
-
-.pill-cuti {
-    background: #ede9fe;
-    color: #5b21b6;
-    border: 1px solid #ddd6fe;
-}
-
-.pill-sakit {
-    background: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
-}
-
-.pill-pending {
-    background: #f8fafc;
-    color: #64748b;
-    border: 1px solid #e2e8f0;
+.cuti-meta-date {
+    font-size: 11.5px;
+    color: var(--cuti-muted);
+    white-space: nowrap;
 }
 
 /* ═══ FORM & SALDO STYLING ═══ */
 .cuti-card-main {
-    border-radius: 24px;
+    border-radius: 16px;
     background: #ffffff;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+    border: 1px solid var(--cuti-border);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
 }
 
 .saldo-box {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 14px;
+    border-radius: 12px;
     padding: 14px;
     text-align: center;
-    transition: all 0.2s ease;
+    transition: border-color 0.2s ease;
 }
 
 .saldo-box:hover {
-    border-color: #059669;
-    transform: translateY(-2px);
+    border-color: #15803d;
 }
 
 .saldo-num {
     font-size: 1.6rem;
     font-weight: 800;
-    color: #059669;
+    color: #15803d;
     line-height: 1.2;
 }
 
@@ -378,159 +498,162 @@ if (!isset($stat_aktif) || $stat_aktif === 0) {
     color: #64748b;
     text-transform: uppercase;
     font-weight: 700;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
 }
 
 .jenis-cuti-card {
-    border: 2px solid #e2e8f0;
-    border-radius: 16px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
     padding: 14px 16px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.18s ease;
     height: 100%;
     background: #ffffff;
 }
 
 .jenis-cuti-card:hover {
-    border-color: #059669;
+    border-color: #15803d;
     background-color: #f0fdf4;
 }
 
 .jenis-cuti-card.active {
-    border-color: #059669;
+    border-color: #15803d;
     background-color: #ecfdf5;
-    box-shadow: 0 0 0 1px #059669;
+    box-shadow: 0 0 0 1px #15803d;
 }
 
 .select2-container--bootstrap-5 .select2-selection {
-    min-height: 48px;
+    min-height: 46px;
     font-size: 0.95rem;
-    border-radius: 12px;
+    border-radius: 10px;
     border: 1px solid #cbd5e1;
 }
 
 .table-monitoring th {
-    font-size: 12px;
+    font-size: 11.5px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 800;
+    letter-spacing: 0.4px;
+    font-weight: 700;
 }
 
 .table-monitoring td {
     font-size: 13.5px;
 }
 
-/* RESPONSIVE */
 @media(max-width: 992px) {
     .kbm-stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media(max-width: 576px) {
-    .kbm-stats-grid {
+    .kbm-grid {
         grid-template-columns: 1fr;
     }
     .kbm-hero {
         padding: 20px;
     }
+    .live-clock-box {
+        width: 100%;
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
     .live-clock {
-        font-size: 24px;
-        padding: 2px 10px;
+        font-size: 20px;
     }
 }
 </style>
 
 <div class="container py-4" id="cutiMonitoringWrapper">
 
-    <!-- ═══ 1. HERO HEADER (PERSIS GAYA LIVE MONITORING KBM) ═══ -->
+    <!-- ═══ 1. HERO HEADER ═══ -->
     <div class="kbm-hero">
         <div class="kbm-hero-top">
             <div>
                 <div class="live-pulse-badge mb-2">
-                    <span class="pulse-dot"></span> Real-Time Layanan &amp; Monitoring Cuti ASN
+                    <span class="pulse-dot"></span> Layanan &amp; Monitoring Cuti ASN
                 </div>
-                <h2 style="font-weight: 900; margin: 0; letter-spacing: -0.5px;">Monitoring &amp; Layanan Cuti Pegawai ASN</h2>
-                <p style="margin: 6px 0 0; opacity: 0.9; font-size: 14px;">
-                    <?= htmlspecialchars($nama_madrasah ?? 'MAN 3 Banjar', ENT_QUOTES, 'UTF-8') ?> • Berbasis Regulasi BKN No. 24/2017 &bull; Tahun <?= date('Y') ?>
+                <h2 style="font-weight: 800; margin: 0; letter-spacing: -0.4px; font-size: clamp(1.35rem, 2.4vw, 1.85rem);">
+                    Portal Cuti Pegawai ASN <?= htmlspecialchars($nama_madrasah ?? 'MAN 3 Banjar', ENT_QUOTES, 'UTF-8') ?>
+                </h2>
+                <p style="margin: 6px 0 0; opacity: 0.88; font-size: 13.5px;">
+                    Pengajuan mandiri, pengecekan sisa hak cuti, dan pemantauan status persetujuan berbasis Peraturan BKN No. 24/2017.
                 </p>
             </div>
 
-            <div class="text-end">
+            <div class="live-clock-box">
                 <div class="live-clock" id="liveClockDisplay">--:--:--</div>
-                <div class="text-white small fw-bold mt-1 opacity-90" id="liveDateDisplay">
+                <div class="text-white small fw-semibold opacity-90 mt-1" id="liveDateDisplay" style="font-size: 12px;">
                     <i class="bi bi-calendar3 me-1"></i> <?= date('d M Y') ?>
                 </div>
             </div>
         </div>
 
-        <!-- SUB-STRIP STATUS LAYANAN -->
-        <div class="current-jam-alert">
-            <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-clock-history fs-5 text-white"></i>
-                <div style="font-size: 13.5px;">
-                    <strong class="d-block d-sm-inline">STATUS PELAYANAN SAAT INI:</strong>
-                    <span class="opacity-90">Formulir Mandiri &amp; Pemantauan Status Terbuka 24 Jam</span>
-                </div>
+        <!-- BARIS AKSI LANGSUNG -->
+        <div class="hero-action-bar">
+            <div class="d-flex align-items-center gap-2 small">
+                <i class="bi bi-shield-check fs-5 text-white"></i>
+                <span>Tersinkronisasi dengan database kepegawaian Tata Usaha Tahun <?= date('Y') ?>.</span>
             </div>
-            <div>
-                <span class="badge bg-white bg-opacity-20 text-white border border-white border-opacity-25 px-3 py-2 rounded-pill fw-bold" style="font-size: 12.5px;">
-                    <span class="pulse-dot me-1"></span> Terhubung Database Kepegawaian
-                </span>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <button type="button" class="btn btn-light btn-sm fw-bold rounded-pill px-3 py-1.5 text-success" onclick="switchViewSection('form')">
+                    <i class="bi bi-plus-circle-fill me-1"></i> Ajukan Cuti Baru
+                </button>
+                <button type="button" class="btn btn-outline-light btn-sm fw-semibold rounded-pill px-3 py-1.5" onclick="switchViewSection('lacak')">
+                    <i class="bi bi-search me-1"></i> Cek Saldo Cuti
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- ═══ 2. 4 KPI STATS GRID (PERSIS GAYA MONITORING KBM) ═══ -->
+    <!-- ═══ 2. 4 KPI STATS GRID ═══ -->
     <div class="kbm-stats-grid">
-        <!-- CARD 1: TOTAL PERMOHONAN -->
         <div class="kbm-stat-card">
-            <div class="kbm-stat-icon" style="background: #e0f2fe; color: #0284c7;">
-                <i class="bi bi-calendar-check-fill"></i>
+            <div class="kbm-stat-icon" style="background: #f1f5f9; color: #334155;">
+                <i class="bi bi-folder2-open"></i>
             </div>
-            <div>
-                <small>TOTAL PERMOHONAN</small>
+            <div class="kbm-stat-body">
+                <small>Total Permohonan</small>
                 <strong><?= $stat_total ?> Berkas</strong>
             </div>
         </div>
 
-        <!-- CARD 2: CUTI AKTIF / DISETUJUI -->
         <div class="kbm-stat-card">
-            <div class="kbm-stat-icon" style="background: #dcfce7; color: #16a34a;">
+            <div class="kbm-stat-icon" style="background: #dcfce7; color: #15803d;">
                 <i class="bi bi-check-circle-fill"></i>
             </div>
-            <div>
-                <small>CUTI AKTIF / DISETUJUI</small>
-                <strong class="text-success"><?= $stat_aktif ?> Pegawai</strong>
+            <div class="kbm-stat-body">
+                <small>Disetujui / Aktif</small>
+                <strong class="text-success"><?= $stat_aktif ?> Berkas</strong>
             </div>
         </div>
 
-        <!-- CARD 3: MENUNGGU PERSETUJUAN (DRAFT) -->
         <div class="kbm-stat-card">
-            <div class="kbm-stat-icon" style="background: #fef3c7; color: #d97706;">
+            <div class="kbm-stat-icon" style="background: <?= $stat_draft > 0 ? '#fef3c7' : '#f1f5f9' ?>; color: <?= $stat_draft > 0 ? '#b45309' : '#64748b' ?>;">
                 <i class="bi bi-hourglass-split"></i>
             </div>
-            <div>
-                <small>MENUNGGU VERIFIKASI (DRAFT)</small>
-                <strong class="text-warning"><?= $stat_draft ?> Berkas</strong>
+            <div class="kbm-stat-body">
+                <small>Menunggu Proses</small>
+                <strong style="color: <?= $stat_draft > 0 ? '#b45309' : '#0f172a' ?>;"><?= $stat_draft ?> Berkas</strong>
             </div>
         </div>
 
-        <!-- CARD 4: PEGAWAI ASN TERDATA -->
         <div class="kbm-stat-card">
-            <div class="kbm-stat-icon" style="background: #f3e8ff; color: #7c3aed;">
+            <div class="kbm-stat-icon" style="background: #ecfdf5; color: #047857;">
                 <i class="bi bi-people-fill"></i>
             </div>
-            <div>
-                <small>PEGAWAI ASN TERDATA</small>
-                <strong style="color: #7c3aed;"><?= $stat_pegawai ?> Pegawai</strong>
+            <div class="kbm-stat-body">
+                <small>Pegawai ASN</small>
+                <strong><?= $stat_pegawai ?> Orang</strong>
             </div>
         </div>
     </div>
 
     <!-- NOTIFIKASI FLASH DATA -->
     <?php if($this->session->flashdata('success')): ?>
-        <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mb-4" style="border-radius: 16px; background: #ecfdf5; color: #065f46; border-left: 5px solid #10b981 !important;" role="alert">
+        <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mb-4" style="border-radius: 14px; background: #ecfdf5; color: #065f46; border-left: 4px solid #15803d !important;" role="alert">
             <div class="d-flex align-items-center">
                 <i class="bi bi-check-circle-fill fs-4 me-3 text-success"></i>
                 <div>
@@ -543,7 +666,7 @@ if (!isset($stat_aktif) || $stat_aktif === 0) {
     <?php endif; ?>
 
     <?php if($this->session->flashdata('error')): ?>
-        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mb-4" style="border-radius: 16px; background: #fef2f2; color: #991b1b; border-left: 5px solid #ef4444 !important;" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mb-4" style="border-radius: 14px; background: #fef2f2; color: #991b1b; border-left: 4px solid #dc2626 !important;" role="alert">
             <div class="d-flex align-items-center">
                 <i class="bi bi-exclamation-triangle-fill fs-4 me-3 text-danger"></i>
                 <div>
@@ -555,58 +678,56 @@ if (!isset($stat_aktif) || $stat_aktif === 0) {
         </div>
     <?php endif; ?>
 
-    <!-- ═══ 3. FILTER BAR & QUICK PILLS (IDENTIK MONITORING KBM) ═══ -->
+    <!-- ═══ 3. NAVIGASI TAB & FILTER BAR ═══ -->
     <div class="kbm-filter-bar">
-        <!-- BARIS PILLS UTAMA -->
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div class="kbm-quick-pills mb-0">
                 <button type="button" class="kbm-quick-pill active" id="pill-monitoring" onclick="switchViewSection('monitoring')">
-                    <i class="bi bi-grid-3x3-gap-fill"></i> Monitoring Cuti (<?= $stat_total ?>)
+                    <i class="bi bi-grid-3x3-gap-fill"></i> Daftar Cuti (<?= $stat_total ?>)
                 </button>
                 <button type="button" class="kbm-quick-pill" id="pill-form" onclick="switchViewSection('form')">
-                    <i class="bi bi-pencil-square"></i> Buat Pengajuan Cuti Baru
+                    <i class="bi bi-pencil-square"></i> Buat Pengajuan
                 </button>
                 <button type="button" class="kbm-quick-pill" id="pill-lacak" onclick="switchViewSection('lacak')">
-                    <i class="bi bi-search"></i> Cek Saldo &amp; Lacak Status
+                    <i class="bi bi-search"></i> Cek Saldo &amp; Lacak
                 </button>
                 <button type="button" class="kbm-quick-pill" id="pill-regulasi" onclick="switchViewSection('regulasi')">
-                    <i class="bi bi-journal-text"></i> Regulasi Cuti BKN
+                    <i class="bi bi-journal-text"></i> Regulasi BKN
                 </button>
             </div>
 
             <div class="d-flex align-items-center gap-2">
-                <!-- TOGGLE TAMPILAN KARTU / TABEL -->
                 <div class="btn-group btn-group-sm" role="group" id="btnGroupTampilan">
-                    <button type="button" class="btn btn-outline-success active" id="btnViewCards" onclick="setMonitoringLayout('cards')" title="Mode Kartu Grid (Gaya KBM)">
-                        <i class="bi bi-grid-fill"></i> Kartu
+                    <button type="button" class="btn btn-outline-success active fw-semibold" id="btnViewCards" onclick="setMonitoringLayout('cards')" title="Mode Kartu Grid">
+                        <i class="bi bi-grid-fill me-1"></i> Kartu
                     </button>
-                    <button type="button" class="btn btn-outline-success" id="btnViewTable" onclick="setMonitoringLayout('table')" title="Mode Tabel Lengkap">
-                        <i class="bi bi-table"></i> Tabel
+                    <button type="button" class="btn btn-outline-success fw-semibold" id="btnViewTable" onclick="setMonitoringLayout('table')" title="Mode Tabel Lengkap">
+                        <i class="bi bi-table me-1"></i> Tabel
                     </button>
                 </div>
 
                 <?php if(!empty($is_admin)): ?>
-                    <button type="button" class="btn btn-sm btn-outline-secondary fw-bold rounded-pill px-3" onclick="syncGoogleSheet(this)" title="Fitur Khusus Admin: Sinkron Spreadsheet">
+                    <button type="button" class="btn btn-sm btn-outline-secondary fw-semibold rounded-pill px-3" onclick="syncGoogleSheet(this)" title="Sinkron Spreadsheet">
                         <i class="bi bi-arrow-repeat"></i> Sinkron Sheet
                     </button>
                 <?php endif; ?>
             </div>
         </div>
 
-        <!-- FILTER & LIVE SEARCH (HANYA AKTIF SAAT DI VIEW MONITORING) -->
-        <div id="filterSearchRow" class="pt-3 border-top">
+        <!-- FILTER & LIVE SEARCH -->
+        <div id="filterSearchRow" class="pt-3 mt-3 border-top">
             <div class="row g-2 align-items-center">
                 <div class="col-md-5">
                     <div class="input-group">
-                        <span class="input-group-text bg-light border-0" style="border-radius: 12px 0 0 12px;">
-                            <i class="bi bi-search text-muted"></i>
+                        <span class="input-group-text bg-white border-end-0 text-muted" style="border-color: #cbd5e1; border-radius: 10px 0 0 10px;">
+                            <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control bg-light border-0 py-2" id="liveSearchInput" placeholder="Ketik cepat nama pegawai atau NIP..." style="border-radius: 0 12px 12px 0; font-size: 13.5px;">
+                        <input type="text" class="form-control border-start-0 py-2 cuti-filter-input" id="liveSearchInput" placeholder="Cari nama pegawai, NIP, atau alasan cuti..." style="border-radius: 0 10px 10px 0;">
                     </div>
                 </div>
 
                 <div class="col-md-3">
-                    <select class="form-select bg-light border-0 py-2" id="filterJenisSelect" style="border-radius: 12px; font-size: 13.5px;" onchange="applyMonitoringFilters()">
+                    <select class="form-select py-2 cuti-filter-input" id="filterJenisSelect" onchange="applyMonitoringFilters()">
                         <option value="">Semua Jenis Cuti</option>
                         <option value="Cuti Tahunan">Cuti Tahunan</option>
                         <option value="Cuti Sakit">Cuti Sakit</option>
@@ -618,23 +739,14 @@ if (!isset($stat_aktif) || $stat_aktif === 0) {
                 </div>
 
                 <div class="col-md-4">
-                    <select class="form-select bg-light border-0 py-2" id="filterStatusSelect" style="border-radius: 12px; font-size: 13.5px;" onchange="applyMonitoringFilters()">
-                        <option value="">Semua Status Permohonan</option>
-                        <option value="Aktif">Disetujui Penuh (Aktif)</option>
+                    <select class="form-select py-2 cuti-filter-input" id="filterStatusSelect" onchange="applyMonitoringFilters()">
+                        <option value="">Semua Status</option>
+                        <option value="Aktif">Disetujui (Aktif)</option>
                         <option value="Disetujui Kepala">Disetujui Kepala Madrasah</option>
-                        <option value="Draft">Menunggu Verifikasi TU</option>
+                        <option value="Draft">Menunggu Verifikasi</option>
                         <option value="Ditolak">Ditolak</option>
                     </select>
                 </div>
-            </div>
-
-            <!-- STATUS LEGEND PILLS -->
-            <div class="d-flex align-items-center gap-3 mt-3 flex-wrap small text-muted">
-                <span class="fw-bold text-dark"><i class="bi bi-tag-fill me-1 text-success"></i> Indikator:</span>
-                <span><i class="bi bi-circle-fill text-success me-1" style="font-size: 9px;"></i> Disetujui (Aktif)</span>
-                <span><i class="bi bi-circle-fill text-info me-1" style="font-size: 9px;"></i> Disetujui Kamad</span>
-                <span><i class="bi bi-circle-fill text-warning me-1" style="font-size: 9px;"></i> Menunggu (Draft)</span>
-                <span><i class="bi bi-circle-fill text-danger me-1" style="font-size: 9px;"></i> Ditolak</span>
             </div>
         </div>
     </div>
@@ -644,25 +756,27 @@ if (!isset($stat_aktif) || $stat_aktif === 0) {
     <!-- ── SECTION A: MONITORING (KARTU GRID & TABEL) ── -->
     <div id="section-monitoring">
 
-        <!-- A.1 MODE KARTU GRID (PERSIS GAYA KBM DI SCREENSHOT) -->
+        <!-- A.1 MODE KARTU GRID -->
         <div id="containerCardsView" class="kbm-grid">
             <?php if (empty($riwayat_cuti)): ?>
-                <div class="col-12 text-center py-5 bg-white rounded-4 border shadow-sm my-2">
-                    <i class="bi bi-calendar-x text-muted" style="font-size: 48px;"></i>
+                <div class="text-center py-5 bg-white rounded-4 border" style="grid-column: 1 / -1;">
+                    <i class="bi bi-calendar-x text-muted" style="font-size: 44px;"></i>
                     <h5 class="fw-bold mt-3 text-dark">Belum Ada Permohonan Cuti</h5>
-                    <p class="text-muted small">Belum ada pengajuan cuti pegawai ASN yang tercatat di sistem.</p>
-                    <button type="button" class="btn btn-sm btn-success rounded-pill px-4" onclick="switchViewSection('form')">
+                    <p class="text-muted small mb-3">Belum ada pengajuan cuti pegawai ASN yang tercatat di sistem.</p>
+                    <button type="button" class="btn btn-sm btn-success rounded-pill px-4 fw-semibold" onclick="switchViewSection('form')">
                         <i class="bi bi-plus-circle me-1"></i> Ajukan Cuti Sekarang
                     </button>
                 </div>
             <?php else: ?>
                 <?php foreach ($riwayat_cuti as $r): ?>
                     <?php
-                    $tgl_surat = !empty($r->tanggal_surat) && $r->tanggal_surat != '0000-00-00' ? date('d/m/Y', strtotime($r->tanggal_surat)) : '-';
-                    $tgl_mulai = !empty($r->tanggal_mulai) && $r->tanggal_mulai != '0000-00-00' ? date('d M Y', strtotime($r->tanggal_mulai)) : '-';
+                    $tgl_surat   = !empty($r->tanggal_surat) && $r->tanggal_surat != '0000-00-00' ? date('d M Y', strtotime($r->tanggal_surat)) : '-';
+                    $tgl_mulai   = !empty($r->tanggal_mulai) && $r->tanggal_mulai != '0000-00-00' ? date('d M Y', strtotime($r->tanggal_mulai)) : '-';
                     $tgl_selesai = !empty($r->tanggal_selesai) && $r->tanggal_selesai != '0000-00-00' ? date('d M Y', strtotime($r->tanggal_selesai)) : '-';
 
                     $search_text = strtolower(($r->nama_lengkap ?? '') . ' ' . ($r->nip ?? '') . ' ' . ($r->jenis_cuti ?? '') . ' ' . ($r->alasan_cuti ?? ''));
+                    $jenis_cls   = cuti_jenis_badge_class($r->jenis_cuti ?? '');
+                    $has_foto    = !empty($r->ptk_foto) && file_exists(FCPATH . 'uploads/ptk/foto/' . $r->ptk_foto);
 
                     $status_pill_class = 'pill-pending';
                     $status_label = '<i class="bi bi-clock-history"></i> Menunggu TU';
@@ -677,56 +791,58 @@ if (!isset($stat_aktif) || $stat_aktif === 0) {
                         $status_label = '<i class="bi bi-x-circle-fill"></i> Ditolak';
                     }
                     ?>
-                    <div class="kbm-card monitoring-item" data-search="<?= htmlspecialchars($search_text) ?>" data-jenis="<?= htmlspecialchars($r->jenis_cuti) ?>" data-status="<?= htmlspecialchars($r->status) ?>">
-                        <div>
-                            <div class="kbm-card-head">
-                                <span class="kbm-kelas-badge">
-                                    <i class="bi bi-file-earmark-text me-1"></i> <?= htmlspecialchars($r->jenis_cuti) ?>
-                                </span>
-                                <span class="kbm-jam-badge">
-                                    <i class="bi bi-clock me-1"></i> <?= $r->lama_cuti_jumlah ?> <?= $r->lama_cuti_satuan ?>
-                                </span>
-                            </div>
-
-                            <div class="kbm-mapel">
-                                <?= htmlspecialchars($r->nama_lengkap ?: 'Pegawai ASN') ?>
-                            </div>
-
-                            <div class="kbm-guru">
-                                <i class="bi bi-person-badge text-muted"></i>
-                                <span>NIP. <?= htmlspecialchars($r->nip ?: '-') ?></span>
-                            </div>
-
-                            <?php if(!empty($r->ptk_jabatan)): ?>
-                                <div class="small text-muted mb-2" style="font-size: 11.5px;">
-                                    <i class="bi bi-briefcase me-1"></i> <?= htmlspecialchars($r->ptk_jabatan) ?>
+                    <div class="cuti-item-card monitoring-item" data-search="<?= htmlspecialchars($search_text) ?>" data-jenis="<?= htmlspecialchars($r->jenis_cuti) ?>" data-status="<?= htmlspecialchars($r->status) ?>">
+                        <div class="d-flex flex-column gap-3">
+                            <!-- Identitas Pegawai + Jenis Cuti -->
+                            <div class="cuti-card-top">
+                                <div class="cuti-person">
+                                    <?php if ($has_foto): ?>
+                                        <img src="<?= base_url('uploads/ptk/foto/' . $r->ptk_foto) ?>" alt="<?= htmlspecialchars($r->nama_lengkap ?? 'ASN') ?>" class="cuti-avatar" loading="lazy">
+                                    <?php else: ?>
+                                        <div class="cuti-avatar"><?= cuti_initials($r->nama_lengkap ?? 'ASN') ?></div>
+                                    <?php endif; ?>
+                                    <div class="cuti-person-info">
+                                        <div class="cuti-person-name"><?= htmlspecialchars($r->nama_lengkap ?: 'Pegawai ASN') ?></div>
+                                        <div class="cuti-person-nip">NIP. <?= htmlspecialchars($r->nip ?: '-') ?></div>
+                                        <?php if (!empty($r->ptk_jabatan)): ?>
+                                            <div class="cuti-person-jabatan" title="<?= htmlspecialchars($r->ptk_jabatan) ?>">
+                                                <?= htmlspecialchars($r->ptk_jabatan) ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
-                            <?php endif; ?>
+                                <span class="cuti-type-badge <?= $jenis_cls ?>">
+                                    <?= htmlspecialchars($r->jenis_cuti) ?>
+                                </span>
+                            </div>
 
-                            <div class="p-2 bg-light rounded-3 small mb-2" style="font-size: 12px;">
-                                <div class="text-dark fw-bold">
-                                    <i class="bi bi-calendar-range text-success me-1"></i> <?= $tgl_mulai ?> &rarr; <?= $tgl_selesai ?>
+                            <!-- Jadwal & Alasan -->
+                            <div class="cuti-schedule-box">
+                                <div class="cuti-schedule-row">
+                                    <span class="cuti-date-range">
+                                        <i class="bi bi-calendar3 text-success"></i>
+                                        <span><?= $tgl_mulai ?> &ndash; <?= $tgl_selesai ?></span>
+                                    </span>
+                                    <span class="cuti-duration-chip">
+                                        <?= (int)$r->lama_cuti_jumlah ?> <?= htmlspecialchars($r->lama_cuti_satuan) ?>
+                                    </span>
                                 </div>
-                                <?php if(!empty($r->alasan_cuti)): ?>
-                                    <div class="text-muted mt-1 text-truncate" title="<?= htmlspecialchars($r->alasan_cuti) ?>">
-                                        <i class="bi bi-chat-left-text me-1"></i> <?= htmlspecialchars($r->alasan_cuti) ?>
+                                <?php if (!empty($r->alasan_cuti)): ?>
+                                    <div class="cuti-alasan-text" title="<?= htmlspecialchars($r->alasan_cuti) ?>">
+                                        <?= htmlspecialchars($r->alasan_cuti) ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
                         </div>
 
-                        <!-- FOOTER KARTU -->
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2 border-top mt-2">
-                            <div>
-                                <span class="kbm-status-pill <?= $status_pill_class ?>">
-                                    <?= $status_label ?>
-                                </span>
-                            </div>
-                            <div>
-                                <span class="badge bg-light text-muted border px-2 py-1 rounded-pill" title="Pencetakan formulir resmi BKN dilakukan oleh Tata Usaha atau melalui Akun Pegawai masing-masing." style="font-size: 10.5px; cursor: help;">
-                                    <i class="bi bi-lock-fill me-1"></i>Form Resmi BKN
-                                </span>
-                            </div>
+                        <!-- Footer Status & Tanggal Surat -->
+                        <div class="cuti-card-footer">
+                            <span class="kbm-status-pill <?= $status_pill_class ?>">
+                                <?= $status_label ?>
+                            </span>
+                            <span class="cuti-meta-date">
+                                <i class="bi bi-file-earmark-text me-1"></i><?= $tgl_surat ?>
+                            </span>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -734,82 +850,76 @@ if (!isset($stat_aktif) || $stat_aktif === 0) {
         </div>
 
         <!-- A.2 MODE TABEL LENGKAP -->
-        <div id="containerTableView" style="display: none;" class="card cuti-card-main mb-4">
+        <div id="containerTableView" style="display: none;" class="card cuti-card-main mb-4 overflow-hidden">
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0 table-monitoring">
-                        <thead style="background: #f1f5f9; color: #334155;">
+                        <thead style="background: #f8fafc; color: #475569; border-bottom: 1px solid #e2e8f0;">
                             <tr class="text-nowrap">
                                 <th class="text-center py-3" width="4%">No</th>
-                                <th width="10%">Tanggal</th>
-                                <th width="24%">Nama Pegawai &amp; NIP</th>
+                                <th width="11%">Tanggal Surat</th>
+                                <th width="26%">Nama Pegawai &amp; NIP</th>
                                 <th width="14%">Jenis Cuti</th>
-                                <th width="8%" class="text-center">Durasi</th>
+                                <th width="9%" class="text-center">Durasi</th>
                                 <th width="16%">Rentang Tanggal</th>
-                                <th width="12%">Alasan</th>
-                                <th width="12%" class="text-center">Status</th>
-                                <th width="10%" class="text-center">Hak Cetak</th>
+                                <th width="10%">Alasan</th>
+                                <th width="10%" class="text-center">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($riwayat_cuti)): ?>
                                 <tr>
-                                    <td colspan="9" class="text-center text-muted py-5">Belum ada permohonan cuti yang tercatat.</td>
+                                    <td colspan="8" class="text-center text-muted py-5">Belum ada permohonan cuti yang tercatat.</td>
                                 </tr>
                             <?php else: ?>
                                 <?php $no = 1; foreach ($riwayat_cuti as $r): ?>
                                     <?php
-                                    $tgl_surat = !empty($r->tanggal_surat) && $r->tanggal_surat != '0000-00-00' ? date('d/m/Y', strtotime($r->tanggal_surat)) : '-';
-                                    $tgl_mulai = !empty($r->tanggal_mulai) && $r->tanggal_mulai != '0000-00-00' ? date('d M Y', strtotime($r->tanggal_mulai)) : '-';
+                                    $tgl_surat   = !empty($r->tanggal_surat) && $r->tanggal_surat != '0000-00-00' ? date('d/m/Y', strtotime($r->tanggal_surat)) : '-';
+                                    $tgl_mulai   = !empty($r->tanggal_mulai) && $r->tanggal_mulai != '0000-00-00' ? date('d M Y', strtotime($r->tanggal_mulai)) : '-';
                                     $tgl_selesai = !empty($r->tanggal_selesai) && $r->tanggal_selesai != '0000-00-00' ? date('d M Y', strtotime($r->tanggal_selesai)) : '-';
 
                                     $search_text = strtolower(($r->nama_lengkap ?? '') . ' ' . ($r->nip ?? '') . ' ' . ($r->jenis_cuti ?? '') . ' ' . ($r->alasan_cuti ?? ''));
+                                    $jenis_cls   = cuti_jenis_badge_class($r->jenis_cuti ?? '');
 
-                                    $badge_class = 'bg-secondary';
-                                    $status_label = $r->status;
-                                    if ($r->status == 'Draft') {
-                                        $badge_class = 'bg-warning text-dark';
-                                        $status_label = '<i class="bi bi-clock-history me-1"></i>Menunggu TU';
-                                    } elseif ($r->status == 'Disetujui Kepala') {
-                                        $badge_class = 'bg-info text-dark';
-                                        $status_label = '<i class="bi bi-check-circle-fill me-1"></i>Disetujui Kamad';
+                                    $status_pill_class = 'pill-pending';
+                                    $status_label = '<i class="bi bi-clock-history"></i> Menunggu TU';
+                                    if ($r->status == 'Disetujui Kepala') {
+                                        $status_pill_class = 'pill-tugas-luar';
+                                        $status_label = '<i class="bi bi-check-circle-fill"></i> Disetujui Kamad';
                                     } elseif ($r->status == 'Aktif') {
-                                        $badge_class = 'bg-success';
-                                        $status_label = '<i class="bi bi-check-all me-1"></i>Disetujui (Aktif)';
+                                        $status_pill_class = 'pill-hadir';
+                                        $status_label = '<i class="bi bi-check-all"></i> Disetujui (Aktif)';
                                     } elseif ($r->status == 'Ditolak') {
-                                        $badge_class = 'bg-danger';
-                                        $status_label = '<i class="bi bi-x-circle-fill me-1"></i>Ditolak';
+                                        $status_pill_class = 'pill-sakit';
+                                        $status_label = '<i class="bi bi-x-circle-fill"></i> Ditolak';
                                     }
                                     ?>
                                     <tr class="table-monitoring-row monitoring-item" data-search="<?= htmlspecialchars($search_text) ?>" data-jenis="<?= htmlspecialchars($r->jenis_cuti) ?>" data-status="<?= htmlspecialchars($r->status) ?>">
                                         <td class="text-center text-muted small py-3"><?= $no++ ?></td>
-                                        <td class="small text-muted"><?= $tgl_surat ?></td>
+                                        <td class="small text-muted text-nowrap"><?= $tgl_surat ?></td>
                                         <td>
-                                            <div class="fw-bold" style="color: #0f172a; font-size: 14px;"><?= htmlspecialchars($r->nama_lengkap ?? '-') ?></div>
-                                            <div class="text-muted small">NIP. <?= htmlspecialchars($r->nip ?? '-') ?></div>
+                                            <div class="fw-bold" style="color: #0f172a; font-size: 13.5px;"><?= htmlspecialchars($r->nama_lengkap ?? '-') ?></div>
+                                            <div class="text-muted font-monospace" style="font-size: 11.5px;">NIP. <?= htmlspecialchars($r->nip ?? '-') ?></div>
                                         </td>
                                         <td>
-                                            <span class="badge bg-success-subtle text-success fw-semibold px-2 py-1 rounded-pill" style="font-size: 12px;">
+                                            <span class="cuti-type-badge <?= $jenis_cls ?>">
                                                 <?= htmlspecialchars($r->jenis_cuti) ?>
                                             </span>
                                         </td>
-                                        <td class="text-center fw-bold" style="font-size: 13.5px;">
-                                            <?= $r->lama_cuti_jumlah ?> <?= $r->lama_cuti_satuan ?>
+                                        <td class="text-center fw-bold text-nowrap" style="font-size: 13px;">
+                                            <?= (int)$r->lama_cuti_jumlah ?> <?= htmlspecialchars($r->lama_cuti_satuan) ?>
                                         </td>
-                                        <td class="small">
-                                            <div><?= $tgl_mulai ?></div>
+                                        <td class="small text-nowrap">
+                                            <div class="fw-semibold text-dark"><?= $tgl_mulai ?></div>
                                             <div class="text-muted">s.d <?= $tgl_selesai ?></div>
                                         </td>
-                                        <td class="small text-muted" style="max-width: 170px;">
-                                            <?= htmlspecialchars($r->alasan_cuti ?: '-') ?>
+                                        <td class="small text-muted" style="max-width: 190px;">
+                                            <div class="text-truncate" title="<?= htmlspecialchars($r->alasan_cuti ?: '-') ?>">
+                                                <?= htmlspecialchars($r->alasan_cuti ?: '-') ?>
+                                            </div>
                                         </td>
-                                        <td class="text-center">
-                                            <span class="badge <?= $badge_class ?> px-2 py-1 rounded-pill" style="font-size: 11.5px;"><?= $status_label ?></span>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="badge bg-light text-muted border px-2 py-1 rounded-pill" title="Pencetakan formulir resmi BKN dilakukan oleh Tata Usaha atau melalui Akun Pegawai masing-masing." style="cursor: help; font-size: 11px;">
-                                                <i class="bi bi-lock-fill me-1 text-secondary"></i>Via Akun/Admin
-                                            </span>
+                                        <td class="text-center text-nowrap">
+                                            <span class="kbm-status-pill <?= $status_pill_class ?>"><?= $status_label ?></span>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -818,6 +928,10 @@ if (!isset($stat_aktif) || $stat_aktif === 0) {
                     </table>
                 </div>
             </div>
+        </div>
+
+        <div class="text-muted small d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4 px-1">
+            <span><i class="bi bi-info-circle me-1"></i> Pencetakan formulir resmi BKN dilakukan oleh Tata Usaha atau melalui akun pegawai masing-masing.</span>
         </div>
 
     </div>

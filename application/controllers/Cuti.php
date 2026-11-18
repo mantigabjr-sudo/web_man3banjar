@@ -173,28 +173,35 @@ class Cuti extends CI_Controller {
 
         // Ambil riwayat seluruh permohonan cuti untuk langsung ditampilkan di monitoring tanpa harus input NIP
         $data['riwayat_cuti'] = $this->db
-            ->select('tu_cuti_asn.*, ptk.nama_lengkap, ptk.nip, ptk.jabatan as ptk_jabatan')
+            ->select('tu_cuti_asn.*, ptk.nama_lengkap, ptk.nip, ptk.jabatan as ptk_jabatan, ptk.foto as ptk_foto')
             ->from('tu_cuti_asn')
             ->join('ptk', 'ptk.id = tu_cuti_asn.ptk_id', 'left')
+            ->order_by('tu_cuti_asn.tanggal_mulai', 'DESC')
             ->order_by('tu_cuti_asn.id', 'DESC')
             ->limit(100)
             ->get()
             ->result();
 
         // Hitung statistik ringkasan untuk 4 kartu KPI
+        $today        = date('Y-m-d');
         $stat_total   = count($data['riwayat_cuti']);
         $stat_aktif   = 0;
         $stat_draft   = 0;
+        $stat_sedang  = 0;
         foreach ($data['riwayat_cuti'] as $rc) {
-            if (in_array($rc->status, ['Aktif', 'Disetujui Kepala'])) {
+            if ($rc->status == 'Aktif') {
                 $stat_aktif++;
-            } elseif ($rc->status == 'Draft') {
+                if (!empty($rc->tanggal_mulai) && !empty($rc->tanggal_selesai) && $today >= $rc->tanggal_mulai && $today <= $rc->tanggal_selesai) {
+                    $stat_sedang++;
+                }
+            } elseif (in_array($rc->status, ['Draft', 'Disetujui Kepala'])) {
                 $stat_draft++;
             }
         }
         $data['stat_total']   = $stat_total;
         $data['stat_aktif']   = $stat_aktif;
         $data['stat_draft']   = $stat_draft;
+        $data['stat_sedang']  = $stat_sedang;
         $data['stat_pegawai'] = count($data['pegawai_list']);
 
         // Cek status sesi login (apakah admin atau user login)

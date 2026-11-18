@@ -1046,50 +1046,122 @@ class Api_sync extends CI_Controller {
     public function sync_cuti_data(){
         $this->validate_key();
         $payload = json_decode($this->input->raw_input_stream, true);
+        if(!is_array($payload)){
+            echo json_encode(['status' => 'error', 'message' => 'Payload JSON tidak valid.']);
+            return;
+        }
 
         $synced_kuota = 0;
         $synced_libur = 0;
         $synced_asn   = 0;
+        $deleted_asn  = 0;
 
-        if(!empty($payload['kuota'])){
+        if(!empty($payload['kuota']) && $this->db->table_exists('tu_cuti_kuota')){
+            $valid_kuota_fields = array_flip($this->db->list_fields('tu_cuti_kuota'));
             foreach($payload['kuota'] as $k){
+                if(!is_array($k) || !isset($k['ptk_id'], $k['tahun'])) continue;
+                unset($k['id']);
+                $clean_k = array_intersect_key($k, $valid_kuota_fields);
                 $cek = $this->db->where('ptk_id', $k['ptk_id'])->where('tahun', $k['tahun'])->get('tu_cuti_kuota')->row();
                 if($cek){
-                    $this->db->where('id', $cek->id)->update('tu_cuti_kuota', ['jatah' => $k['jatah']]);
+                    $this->db->where('id', $cek->id)->update('tu_cuti_kuota', $clean_k);
                 } else {
-                    $this->db->insert('tu_cuti_kuota', $k);
+                    $this->db->insert('tu_cuti_kuota', $clean_k);
                 }
                 $synced_kuota++;
             }
         }
 
-        if(!empty($payload['hari_libur'])){
+        if(!empty($payload['hari_libur']) && $this->db->table_exists('presensi_hari_libur')){
+            $valid_libur_fields = array_flip($this->db->list_fields('presensi_hari_libur'));
             foreach($payload['hari_libur'] as $h){
+                if(!is_array($h) || empty($h['tanggal'])) continue;
+                unset($h['id']);
+                $clean_h = array_intersect_key($h, $valid_libur_fields);
                 $cek = $this->db->where('tanggal', $h['tanggal'])->get('presensi_hari_libur')->row();
                 if(!$cek){
-                    $this->db->insert('presensi_hari_libur', $h);
+                    $this->db->insert('presensi_hari_libur', $clean_h);
                 } else {
-                    $this->db->where('id', $cek->id)->update('presensi_hari_libur', ['keterangan' => $h['keterangan']]);
+                    $this->db->where('id', $cek->id)->update('presensi_hari_libur', $clean_h);
                 }
                 $synced_libur++;
             }
         }
 
-        if(!empty($payload['cuti_asn'])){
-            foreach($payload['cuti_asn'] as $c){
-                $cek = $this->db->where('ptk_id', $c['ptk_id'])->where('tanggal_mulai', $c['tanggal_mulai'])->get('tu_cuti_asn')->row();
-                if(!$cek){
-                    $this->db->insert('tu_cuti_asn', $c);
-                } else {
-                    $this->db->where('id', $cek->id)->update('tu_cuti_asn', $c);
+        if(!empty($payload['deleted_records']) && $this->db->table_exists('tu_cuti_asn')){
+            foreach($payload['deleted_records'] as $del){
+                if(empty($del['ptk_id']) || empty($del['tanggal_mulai'])) continue;
+                $this->db->where('ptk_id', $del['ptk_id'])->where('tanggal_mulai', $del['tanggal_mulai']);
+                if(!empty($del['jenis_cuti'])){
+                    $this->db->where('jenis_cuti', $del['jenis_cuti']);
                 }
-                $synced_asn++;
+                $this->db->delete('tu_cuti_asn');
+                $deleted_asn += $this->db->affected_rows();
             }
         }
 
+        if(isset($payload['cuti_asn']) && is_array($payload['cuti_asn']) && $this->db->table_exists('tu_cuti_asn')){
+            $valid_asn_fields = array_flip($this->db->list_fields('tu_cuti_asn'));
+            $incoming_keys = [];
+
+            foreach($payload['cuti_asn'] as $c){
+                if(!is_array($c) || empty($c['ptk_id']) || empty($c['tanggal_mulai'])) continue;
+                unset($c['id']);
+                $clean_c = array_intersect_key($c, $valid_asn_fields);
+                $jenis   = $c['jenis_cuti'] ?? '';
+                $key     = $c['ptk_id'] . '|' . $c['tanggal_mulai'] . '|' . $jenis;
+                $incoming_keys[$key] = true;
+
+                $cek = $this->db
+                    ->where('ptk_id', $c['ptk_id'])
+                    ->where('tanggal_mulai', $c['tanggal_mulai'])
+                    ->where('jenis_cuti', $jenis)
+                    ->get('tu_cuti_asn')
+                    ->row();
+
+                if(!$cek){
+                    $cek = $this->db
+                        ->where('ptk_id', $c['ptk_id'])
+                        ->where('tanggal_mulai', $c['tanggal_mulai'])
+                        ->get('tu_cuti_asn')
+                        ->row();
+                }
+
+                if(!$cek){
+                    $this->db->insert('tu_cuti_asn', $clean_c);
+                } else {
+                    $this->db->where('id', $cek->id)->update('tu_cuti_asn', $clean_c);
+                }
+                $synced_asn++;
+            }
+
+            // Mirror sync: bersihkan data di cloud yang sudah dihapus di server lokal
+            $mirror_sync  = !empty($payload['mirror_sync']);
+            $force_mirror = !empty($payload['force_mirror']);
+            if($mirror_sync || $force_mirror){
+                $all_cloud = $this->db->select('id, ptk_id, tanggal_mulai, jenis_cuti, status, created_at')->get('tu_cuti_asn')->result();
+                $cutoff_ts = time() - 86400; // Lindungi Draft baru dari pegawai online < 24 jam saat auto-sync biasa
+                foreach($all_cloud as $row){
+                    $row_key = $row->ptk_id . '|' . $row->tanggal_mulai . '|' . ($row->jenis_cuti ?? '');
+                    if(!isset($incoming_keys[$row_key])){
+                        $is_recent_online_draft = ($row->status === 'Draft' && !empty($row->created_at) && strtotime($row->created_at) >= $cutoff_ts);
+                        if($force_mirror || !$is_recent_online_draft){
+                            $this->db->where('id', $row->id)->delete('tu_cuti_asn');
+                            $deleted_asn++;
+                        }
+                    }
+                }
+            }
+        }
+
+        $del_msg = $deleted_asn > 0 ? ", {$deleted_asn} data lama dihapus" : "";
         echo json_encode([
             'status' => 'success',
-            'message' => "Sinkronisasi cuti: {$synced_kuota} kuota, {$synced_libur} hari libur, {$synced_asn} permohonan berhasil disinkronkan."
+            'synced_kuota' => $synced_kuota,
+            'synced_libur' => $synced_libur,
+            'synced_asn'   => $synced_asn,
+            'deleted_asn'  => $deleted_asn,
+            'message' => "Sinkronisasi cuti selesai: {$synced_asn} permohonan, {$synced_kuota} kuota, {$synced_libur} hari libur{$del_msg}."
         ]);
     }
 
