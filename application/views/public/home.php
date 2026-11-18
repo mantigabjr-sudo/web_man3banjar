@@ -25,14 +25,10 @@ if(!function_exists('web_limit')){
 
 if(!function_exists('web_youtube_embed')){
     function web_youtube_embed($url){
-        if(preg_match('/youtu\.be\/([^\?]+)/', $url, $match)){
-            return 'https://www.youtube.com/embed/'.$match[1];
-        }
-        if(preg_match('/v=([^&]+)/', $url, $match)){
-            return 'https://www.youtube.com/embed/'.$match[1];
-        }
-        if(strpos($url, 'embed') !== false){
-            return $url;
+        $url = trim((string)$url);
+        if($url === '') return '';
+        if(preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?|shorts|live)/|.*[?&]v=)|youtu\.be/)([a-zA-Z0-9_-]{11})%i', $url, $match)){
+            return 'https://www.youtube.com/embed/' . $match[1];
         }
         return '';
     }
@@ -118,6 +114,7 @@ $rdm_url = (strpos($rdm_raw, 'http://') === 0 || strpos($rdm_raw, 'https://') ==
     <meta charset="UTF-8">
     <title><?= $nama_madrasah ?> — Portal Resmi &amp; Layanan Digital Madrasah</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="description" content="Portal resmi <?= $nama_madrasah ?>. Informasi akademik terpadu, PPDB online, monitoring KBM realtime, profil guru dan layanan digital.">
 
     <link rel="icon" type="image/png" sizes="32x32" href="<?= base_url('assets/brand/logo-man3.png') ?>">
@@ -1118,6 +1115,9 @@ $rdm_url = (strpos($rdm_raw, 'http://') === 0 || strpos($rdm_raw, 'https://') ==
                         <div class="ratio ratio-16x9 rounded-3 overflow-hidden border mb-3">
                             <iframe src="<?= htmlspecialchars($video_embed, ENT_QUOTES, 'UTF-8') ?>" 
                                     title="Video Profil MAN 3 Banjar" 
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin"
                                     allowfullscreen loading="lazy"></iframe>
                         </div>
                         <div>
