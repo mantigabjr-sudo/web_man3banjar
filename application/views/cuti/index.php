@@ -465,7 +465,7 @@ if (!function_exists('cuti_jenis_badge_class')) {
     white-space: nowrap;
 }
 
-/* ═══ FORM & SALDO STYLING ═══ */
+/* ═══ FORM RINGKAS & MOBILE-FIRST STYLING ═══ */
 .cuti-card-main {
     border-radius: 16px;
     background: #ffffff;
@@ -473,42 +473,143 @@ if (!function_exists('cuti_jenis_badge_class')) {
     box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
 }
 
-.saldo-box {
+.cuti-compact-form-wrap {
+    max-width: 780px;
+    margin: 0 auto 28px auto;
+}
+
+.cuti-form-section {
+    padding: 18px 22px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.cuti-form-section:last-child {
+    border-bottom: none;
+}
+
+.cuti-step-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--cuti-ink);
+    margin-bottom: 12px;
+}
+
+.cuti-step-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+    font-size: 12px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cuti-form-input {
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    min-height: 44px;
+    background: #ffffff;
+    color: var(--cuti-ink);
+}
+
+.cuti-form-input:focus {
+    border-color: #15803d;
+    box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.12);
+}
+
+/* Ringkasan Pegawai + Saldo 1 Strip */
+.cuti-profile-strip {
+    margin-top: 12px;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 12px;
-    padding: 14px;
+    padding: 12px 14px;
+}
+
+.cuti-profile-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+.cuti-saldo-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.cuti-saldo-mini {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 7px 6px;
     text-align: center;
-    transition: border-color 0.2s ease;
 }
 
-.saldo-box:hover {
-    border-color: #15803d;
+.cuti-saldo-mini.is-total {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
 }
 
-.saldo-num {
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: #15803d;
+.cuti-saldo-mini small {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
     line-height: 1.2;
 }
 
-.saldo-label {
-    font-size: 0.75rem;
-    color: #64748b;
-    text-transform: uppercase;
-    font-weight: 700;
-    letter-spacing: 0.4px;
+.cuti-saldo-mini strong {
+    display: block;
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+    margin-top: 2px;
+    font-variant-numeric: tabular-nums;
+}
+
+.cuti-saldo-mini.is-total small,
+.cuti-saldo-mini.is-total strong {
+    color: #047857;
+}
+
+/* Pilihan Jenis Cuti Grid Kompak (2 kolom HP, 3 kolom desktop) */
+.cuti-jenis-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
 }
 
 .jenis-cuti-card {
     border: 1.5px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 14px 16px;
+    border-radius: 11px;
+    padding: 10px 12px;
+    min-height: 44px;
     cursor: pointer;
-    transition: all 0.18s ease;
-    height: 100%;
+    transition: all 0.16s ease;
     background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    user-select: none;
 }
 
 .jenis-cuti-card:hover {
@@ -522,11 +623,108 @@ if (!function_exists('cuti_jenis_badge_class')) {
     box-shadow: 0 0 0 1px #15803d;
 }
 
+.jenis-cuti-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--cuti-ink);
+    line-height: 1.2;
+}
+
+.jenis-cuti-card.active .jenis-cuti-title {
+    color: #047857;
+}
+
+.cuti-jenis-hint {
+    font-size: 12px;
+    color: #475569;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    padding: 8px 11px;
+    margin-top: 8px;
+}
+
+/* Segmented Kuota Tahunan (hanya muncul bila ada sisa N-1 / N-2) */
+.cuti-kuota-radios {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.cuti-kuota-opt {
+    position: relative;
+    margin: 0;
+}
+
+.cuti-kuota-opt input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.cuti-kuota-opt label {
+    display: block;
+    border: 1.5px solid #e2e8f0;
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 8px 10px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    color: #334155;
+    transition: all 0.15s ease;
+    min-height: 44px;
+}
+
+.cuti-kuota-opt input:checked + label {
+    border-color: #15803d;
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.cuti-kuota-opt input:disabled + label {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* Chip Alasan Cepat (Scrollable di HP) */
+.cuti-alasan-chips {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.cuti-alasan-chip {
+    white-space: nowrap;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #475569;
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.cuti-alasan-chip:hover,
+.cuti-alasan-chip:active {
+    background: #ecfdf5;
+    border-color: #15803d;
+    color: #047857;
+}
+
 .select2-container--bootstrap-5 .select2-selection {
     min-height: 46px;
     font-size: 0.95rem;
     border-radius: 10px;
     border: 1px solid #cbd5e1;
+    display: flex;
+    align-items: center;
 }
 
 .table-monitoring th {
@@ -546,22 +744,95 @@ if (!function_exists('cuti_jenis_badge_class')) {
     }
 }
 
-@media(max-width: 576px) {
-    .kbm-grid {
-        grid-template-columns: 1fr;
+@media(max-width: 767.98px) {
+    #cutiMonitoringWrapper {
+        padding-top: 14px !important;
+        padding-bottom: 20px !important;
     }
     .kbm-hero {
-        padding: 20px;
+        padding: 16px 18px;
+        border-radius: 16px;
+        margin-bottom: 14px;
+    }
+    .kbm-hero p {
+        display: none;
     }
     .live-clock-box {
-        width: 100%;
-        text-align: left;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        display: none;
     }
-    .live-clock {
-        font-size: 20px;
+    .hero-action-bar {
+        margin-top: 12px;
+        padding: 10px 12px;
+    }
+    .hero-action-bar > div:first-child {
+        display: none !important;
+    }
+    .hero-action-bar > div:last-child {
+        width: 100%;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+    }
+    .hero-action-bar .btn {
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12.5px;
+    }
+    .kbm-stats-grid {
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+    .kbm-stat-card {
+        padding: 12px;
+        gap: 10px;
+        border-radius: 14px;
+    }
+    .kbm-stat-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+        border-radius: 10px;
+    }
+    .kbm-stat-card small {
+        font-size: 10px;
+    }
+    .kbm-stat-card strong {
+        font-size: 16px;
+    }
+    .kbm-filter-bar {
+        padding: 12px;
+        margin-bottom: 14px;
+        border-radius: 14px;
+    }
+    .kbm-quick-pill {
+        min-height: 40px;
+        padding: 8px 13px;
+        font-size: 12.5px;
+    }
+    .kbm-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .cuti-form-section {
+        padding: 15px 14px;
+    }
+    .cuti-jenis-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .jenis-cuti-title {
+        font-size: 12.5px;
+    }
+    .cuti-saldo-mini strong {
+        font-size: 14.5px;
+    }
+    .cuti-kuota-radios {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+    }
+    .cuti-kuota-opt label {
+        padding: 7px 6px;
+        font-size: 11px;
     }
 }
 </style>
@@ -609,7 +880,7 @@ if (!function_exists('cuti_jenis_badge_class')) {
     </div>
 
     <!-- ═══ 2. 4 KPI STATS GRID ═══ -->
-    <div class="kbm-stats-grid">
+    <div class="kbm-stats-grid" id="cutiKpiStrip">
         <div class="kbm-stat-card">
             <div class="kbm-stat-icon" style="background: #f1f5f9; color: #334155;">
                 <i class="bi bi-folder2-open"></i>
@@ -936,332 +1207,208 @@ if (!function_exists('cuti_jenis_badge_class')) {
 
     </div>
 
-    <!-- ── SECTION B: FORMULIR PENGAJUAN MANDIRI ── -->
+    <!-- ── SECTION B: FORMULIR PENGAJUAN RINGKAS & RAMAH MOBILE ── -->
     <div id="section-form" style="display: none;">
+        <div class="cuti-compact-form-wrap">
+            <form action="<?= base_url('cuti/submit') ?>" method="POST" enctype="multipart/form-data" id="formCuti" class="cuti-card-main overflow-hidden">
 
-        <div class="alert alert-success border-0 shadow-sm d-flex align-items-center mb-4 py-3 px-4 rounded-4" style="background-color: #ecfdf5; border-left: 5px solid #10b981 !important;">
-            <i class="bi bi-info-circle-fill fs-3 text-success me-3"></i>
-            <div>
-                <strong class="d-block text-success" style="font-size: 15px;">Layanan Pengajuan Cuti Mandiri (Mode Terbuka / Tanpa Login)</strong>
-                <span class="text-secondary small">
-                    Silakan pilih nama atau masukkan NIP Anda di bawah. Sistem akan otomatis melengkapi profil, masa kerja, dan saldo cuti Anda. Pengajuan ini berstatus <strong>Menunggu Persetujuan</strong> dan akan diverifikasi oleh Kepala Madrasah &amp; Tata Usaha.
-                </span>
-            </div>
-        </div>
-
-        <form action="<?= base_url('cuti/submit') ?>" method="POST" enctype="multipart/form-data" id="formCuti">
-
-            <!-- LANGKAH 1: IDENTITAS PEGAWAI (AUTOCOMPLETE NIP) -->
-            <div class="card cuti-card-main mb-4">
-                <div class="card-body p-4 p-md-5">
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold" style="font-size: 12px;">
-                            <i class="bi bi-person-badge-fill me-1"></i> Langkah 1
-                        </span>
+                <!-- Header Ringkas Form -->
+                <div class="px-3 px-md-4 py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2" style="background: #f8fafc;">
+                    <div>
+                        <h5 class="fw-bold mb-0 text-dark" style="font-size: 16px;">Formulir Pengajuan Cuti Mandiri</h5>
+                        <small class="text-muted" style="font-size: 12px;">Tanpa login &bull; Data profil &amp; sisa cuti terisi otomatis.</small>
                     </div>
-                    <h4 class="fw-bold mb-1" style="color: #0f172a;">Identitas Pegawai Pemohon</h4>
-                    <p class="text-muted mb-4 small">Ketik nama lengkap atau 18 digit NIP Anda untuk mengisi data secara otomatis.</p>
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="switchViewSection('monitoring')">
+                        <i class="bi bi-arrow-left me-1"></i> Kembali
+                    </button>
+                </div>
 
-                    <div class="row g-3">
-                        <div class="col-md-12">
-                            <label class="form-label fw-bold text-secondary small">Pilih Pegawai / Masukkan NIP <span class="text-danger">*</span></label>
-                            <select class="form-select select2-pegawai" id="select_ptk" name="ptk_selector" required>
-                                <option value="">-- Ketik Nama atau NIP Anda di sini --</option>
-                                <?php foreach ($pegawai_list as $p): ?>
-                                    <option value="<?= $p->nip ?>" data-id="<?= $p->id ?>" data-nama="<?= htmlspecialchars($p->nama_lengkap) ?>">
-                                        <?= htmlspecialchars($p->nama_lengkap) ?> - NIP. <?= $p->nip ?: '(Non-NIP)' ?> (<?= $p->status_kepegawaian ?: 'ASN' ?>)
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
+                <!-- BLOK 1: PILIH PEGAWAI + RINGKASAN PROFIL & SALDO -->
+                <div class="cuti-form-section">
+                    <div class="cuti-step-label">
+                        <span class="cuti-step-num">1</span> Identitas Pegawai Pemohon
                     </div>
 
+                    <select class="form-select select2-pegawai" id="select_ptk" name="ptk_selector" required>
+                        <option value="">-- Ketik Nama Lengkap atau NIP Anda --</option>
+                        <?php foreach ($pegawai_list as $p): ?>
+                            <option value="<?= $p->nip ?>" data-id="<?= $p->id ?>" data-nama="<?= htmlspecialchars($p->nama_lengkap) ?>">
+                                <?= htmlspecialchars($p->nama_lengkap) ?> - <?= $p->nip ?: 'Non-NIP' ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                     <input type="hidden" name="ptk_id" id="val_ptk_id">
 
-                    <!-- DETAIL PEGAWAI (MUNCUL OTOMATIS) -->
-                    <div id="detail_pegawai_box" class="mt-4 pt-4 border-top" style="display: none;">
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label text-secondary small fw-bold">Nama Lengkap</label>
-                                <input type="text" class="form-control bg-light border-0 fw-bold py-2" id="res_nama" readonly style="border-radius: 12px;">
+                    <!-- Strip Ringkas Profil & Saldo (1 blok rapat, bukan 6 input!) -->
+                    <div id="detail_pegawai_box" class="cuti-profile-strip" style="display: none;">
+                        <div class="cuti-profile-meta">
+                            <div>
+                                <div class="fw-bold text-dark" style="font-size: 14px;" id="res_nama_txt">Memuat data...</div>
+                                <div class="small text-muted font-monospace" style="font-size: 11.5px;" id="res_nip_txt"></div>
+                                <div class="small text-muted mt-0.5" style="font-size: 12px;" id="res_jabatan_txt"></div>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label text-secondary small fw-bold">NIP</label>
-                                <input type="text" class="form-control bg-light border-0 py-2" id="res_nip" readonly style="border-radius: 12px;">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label text-secondary small fw-bold">Status Kepegawaian</label>
-                                <input type="text" class="form-control bg-light border-0 py-2" id="res_status" readonly style="border-radius: 12px;">
-                            </div>
-                            <div class="col-md-5">
-                                <label class="form-label text-secondary small fw-bold">Jabatan</label>
-                                <input type="text" class="form-control bg-light border-0 py-2" id="res_jabatan" readonly style="border-radius: 12px;">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label text-secondary small fw-bold">Pangkat / Golongan</label>
-                                <input type="text" class="form-control bg-light border-0 py-2" id="res_pangkat" readonly style="border-radius: 12px;">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label text-secondary small fw-bold">Masa Kerja (TMT NIP)</label>
-                                <input type="text" class="form-control bg-light border-0 fw-bold text-success py-2" id="res_masakerja" readonly style="border-radius: 12px;">
-                            </div>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1 fw-bold" style="font-size: 11px;" id="res_masakerja_badge">
+                                Masa Kerja: -
+                            </span>
                         </div>
 
-                        <!-- KOTAK REKAPITULASI SALDO CUTI BKN -->
-                        <div class="mt-4 p-4 rounded-4" style="background: #f8fafc; border: 1px solid #e2e8f0;">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <div class="fw-bold text-dark" style="font-size: 14.5px;">
-                                    <i class="bi bi-calculator text-success me-2"></i>Catatan Saldo Cuti Tahunan (Perka BKN No. 24/2017)
-                                </div>
-                                <span class="badge bg-success px-3 py-2 rounded-pill fw-bold" id="res_total_badge">Total Hak Cuti: 0 Hari</span>
+                        <div class="cuti-saldo-strip">
+                            <div class="cuti-saldo-mini">
+                                <small>N-2 (<?= date('Y')-2 ?>)</small>
+                                <strong id="res_sisa_n2">0</strong>
                             </div>
-                            <div class="row g-3">
-                                <div class="col-6 col-md-3">
-                                    <div class="saldo-box">
-                                        <div class="saldo-label">Tahun N-2 (<span id="lbl_thn_n2"><?= date('Y')-2 ?></span>)</div>
-                                        <div class="saldo-num" id="res_sisa_n2">-</div>
-                                        <div class="small text-muted" style="font-size: 11px;">Sisa (Maks 6 Hari)</div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-3">
-                                    <div class="saldo-box">
-                                        <div class="saldo-label">Tahun N-1 (<span id="lbl_thn_n1"><?= date('Y')-1 ?></span>)</div>
-                                        <div class="saldo-num" id="res_sisa_n1">-</div>
-                                        <div class="small text-muted" style="font-size: 11px;">Sisa (Maks 6 Hari)</div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-3">
-                                    <div class="saldo-box">
-                                        <div class="saldo-label">Tahun N (<span id="lbl_thn_n"><?= date('Y') ?></span>)</div>
-                                        <div class="saldo-num" id="res_sisa_n">12</div>
-                                        <div class="small text-muted" style="font-size: 11px;">Jatah Berjalan</div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-3">
-                                    <div class="saldo-box bg-success-subtle border-success">
-                                        <div class="saldo-label text-success">Total Tersedia</div>
-                                        <div class="saldo-num text-success" id="res_sisa_total">12</div>
-                                        <div class="small text-success fw-bold" style="font-size: 11px;">Hari Kerja Aktif</div>
-                                    </div>
-                                </div>
+                            <div class="cuti-saldo-mini">
+                                <small>N-1 (<?= date('Y')-1 ?>)</small>
+                                <strong id="res_sisa_n1">0</strong>
+                            </div>
+                            <div class="cuti-saldo-mini">
+                                <small>N (<?= date('Y') ?>)</small>
+                                <strong id="res_sisa_n">12</strong>
+                            </div>
+                            <div class="cuti-saldo-mini is-total">
+                                <small>Total Hak</small>
+                                <strong id="res_sisa_total">12</strong>
                             </div>
                         </div>
                     </div>
-
                 </div>
-            </div>
 
-            <!-- LANGKAH 2: PILIHAN JENIS CUTI RESMI BKN -->
-            <div class="card cuti-card-main mb-4">
-                <div class="card-body p-4 p-md-5">
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold" style="font-size: 12px;">
-                            <i class="bi bi-list-check me-1"></i> Langkah 2
-                        </span>
+                <!-- BLOK 2: JENIS CUTI, TANGGAL & ALASAN -->
+                <div class="cuti-form-section">
+                    <div class="cuti-step-label">
+                        <span class="cuti-step-num">2</span> Jenis, Tanggal &amp; Alasan Cuti
                     </div>
-                    <h4 class="fw-bold mb-1" style="color: #0f172a;">Jenis Cuti Yang Diambil</h4>
-                    <p class="text-muted mb-4 small">Pilih salah satu dari 6 jenis cuti ASN yang diatur pemerintah.</p>
 
-                    <div class="row g-3">
-                        <!-- Cuti Tahunan -->
-                        <div class="col-md-4 col-sm-6">
-                            <div class="jenis-cuti-card active" onclick="pilihJenisCuti('Cuti Tahunan', this)">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <h6 class="fw-bold mb-0 text-success">Cuti Tahunan</h6>
-                                    <i class="bi bi-check-circle-fill text-success check-icon fs-5"></i>
-                                </div>
-                                <small class="text-muted d-block" style="font-size: 12px;">12 hari kerja per tahun. Akumulasi N-1 &amp; N-2 maks 6 hari.</small>
-                            </div>
+                    <!-- Grid Chip Jenis Cuti (2 kolom HP, 3 kolom Desktop) -->
+                    <div class="cuti-jenis-grid">
+                        <div class="jenis-cuti-card active" onclick="pilihJenisCuti('Cuti Tahunan', this)" data-hint="Hak 12 hari kerja per tahun (akumulasi N-1 &amp; N-2 maks 6 hari).">
+                            <span class="jenis-cuti-title">Cuti Tahunan</span>
+                            <i class="bi bi-check-circle-fill text-success check-icon"></i>
                         </div>
-                        <!-- Cuti Besar -->
-                        <div class="col-md-4 col-sm-6">
-                            <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti Besar', this)">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <h6 class="fw-bold mb-0">Cuti Besar</h6>
-                                    <i class="bi bi-circle text-muted check-icon fs-5"></i>
-                                </div>
-                                <small class="text-muted d-block" style="font-size: 12px;">Masa kerja &ge; 5 tahun terus-menerus. Paling lama 3 bulan.</small>
-                            </div>
+                        <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti Sakit', this)" data-hint="Wajib melampirkan surat keterangan dokter / rumah sakit.">
+                            <span class="jenis-cuti-title">Cuti Sakit</span>
+                            <i class="bi bi-circle text-muted check-icon"></i>
                         </div>
-                        <!-- Cuti Sakit -->
-                        <div class="col-md-4 col-sm-6">
-                            <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti Sakit', this)">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <h6 class="fw-bold mb-0">Cuti Sakit</h6>
-                                    <i class="bi bi-circle text-muted check-icon fs-5"></i>
-                                </div>
-                                <small class="text-muted d-block" style="font-size: 12px;">Wajib melampirkan surat keterangan dokter / rumah sakit.</small>
-                            </div>
+                        <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti Alasan Penting', this)" data-hint="Keluarga sakit/wafat, menikah, bencana, atau istri sesar (maks 1 bulan).">
+                            <span class="jenis-cuti-title">Alasan Penting</span>
+                            <i class="bi bi-circle text-muted check-icon"></i>
                         </div>
-                        <!-- Cuti Melahirkan -->
-                        <div class="col-md-4 col-sm-6">
-                            <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti Melahirkan', this)">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <h6 class="fw-bold mb-0">Cuti Melahirkan</h6>
-                                    <i class="bi bi-circle text-muted check-icon fs-5"></i>
-                                </div>
-                                <small class="text-muted d-block" style="font-size: 12px;">Kelahiran anak ke-1 s.d ke-3. Lamanya 3 bulan penuh.</small>
-                            </div>
+                        <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti Besar', this)" data-hint="Masa kerja minimal 5 tahun terus-menerus (maksimal 3 bulan).">
+                            <span class="jenis-cuti-title">Cuti Besar</span>
+                            <i class="bi bi-circle text-muted check-icon"></i>
                         </div>
-                        <!-- Cuti Karena Alasan Penting -->
-                        <div class="col-md-4 col-sm-6">
-                            <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti Alasan Penting', this)">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <h6 class="fw-bold mb-0">Cuti Alasan Penting</h6>
-                                    <i class="bi bi-circle text-muted check-icon fs-5"></i>
-                                </div>
-                                <small class="text-muted d-block" style="font-size: 12px;">Keluarga sakit/wafat, nikah, bencana, istri sesar (maks 1 bulan).</small>
-                            </div>
+                        <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti Melahirkan', this)" data-hint="Kelahiran anak ke-1 s.d ke-3 (durasi 3 bulan penuh).">
+                            <span class="jenis-cuti-title">Melahirkan</span>
+                            <i class="bi bi-circle text-muted check-icon"></i>
                         </div>
-                        <!-- Cuti di Luar Tanggungan Negara -->
-                        <div class="col-md-4 col-sm-6">
-                            <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti diluar Tanggungan Negara', this)">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <h6 class="fw-bold mb-0">Cuti di Luar Tanggungan</h6>
-                                    <i class="bi bi-circle text-muted check-icon fs-5"></i>
-                                </div>
-                                <small class="text-muted d-block" style="font-size: 12px;">Masa kerja &ge; 5 tahun untuk alasan mendesak, s.d 3 tahun.</small>
-                            </div>
+                        <div class="jenis-cuti-card" onclick="pilihJenisCuti('Cuti diluar Tanggungan Negara', this)" data-hint="Masa kerja minimal 5 tahun untuk alasan mendesak (s.d 3 tahun).">
+                            <span class="jenis-cuti-title">Luar Tanggungan</span>
+                            <i class="bi bi-circle text-muted check-icon"></i>
                         </div>
                     </div>
 
+                    <div class="cuti-jenis-hint" id="cutiJenisHint">
+                        <i class="bi bi-info-circle text-success me-1"></i> Hak 12 hari kerja per tahun (akumulasi N-1 &amp; N-2 maks 6 hari).
+                    </div>
                     <input type="hidden" name="jenis_cuti" id="input_jenis_cuti" value="Cuti Tahunan">
 
-                    <!-- SUB-PILIHAN ALOKASI TAHUN (N / N-1 / N-2) -->
-                    <div id="sub_opsi_cuti_tahunan" class="mt-4 p-4 bg-light rounded-4 border">
-                        <label class="form-label fw-bold small text-dark mb-2">
-                            <i class="bi bi-sliders me-1 text-success"></i>Pilih Sumber Kuota Cuti Tahunan yang Digunakan:
+                    <!-- Sub-opsi sumber kuota tahunan (otomatis tampil HANYA jika pegawai punya sisa N-1 / N-2) -->
+                    <div id="sub_opsi_cuti_tahunan" class="mt-3" style="display: none;">
+                        <label class="form-label fw-bold small text-secondary mb-1.5" style="font-size: 12px;">Gunakan Sumber Kuota:</label>
+                        <div class="cuti-kuota-radios">
+                            <div class="cuti-kuota-opt">
+                                <input type="radio" name="alokasi_cuti_tahunan" id="opt_thn_n" value="Cuti Tahunan" checked onchange="ubahAlokasiCuti(this.value)">
+                                <label for="opt_thn_n">Tahun <?= date('Y') ?><br><span class="text-success">Sisa <span id="lbl_opt_sisa_n">12</span>h</span></label>
+                            </div>
+                            <div class="cuti-kuota-opt" id="box_opt_n1">
+                                <input type="radio" name="alokasi_cuti_tahunan" id="opt_thn_n1" value="Cuti Tahunan N-1" onchange="ubahAlokasiCuti(this.value)">
+                                <label for="opt_thn_n1">Sisa <?= date('Y')-1 ?><br><span class="text-primary">Sisa <span id="lbl_opt_sisa_n1">0</span>h</span></label>
+                            </div>
+                            <div class="cuti-kuota-opt" id="box_opt_n2">
+                                <input type="radio" name="alokasi_cuti_tahunan" id="opt_thn_n2" value="Cuti Tahunan N-2" onchange="ubahAlokasiCuti(this.value)">
+                                <label for="opt_thn_n2">Sisa <?= date('Y')-2 ?><br><span class="text-muted">Sisa <span id="lbl_opt_sisa_n2">0</span>h</span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rentang Tanggal (2 Kolom Sejajar Bahkan di HP) + Lama Cuti -->
+                    <div class="row g-2 mt-3">
+                        <div class="col-6 col-md-4">
+                            <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">Tanggal Mulai <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control cuti-form-input" name="tanggal_mulai" id="tgl_mulai" required onchange="onTanggalMulaiChange()">
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">Tanggal Selesai <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control cuti-form-input" name="tanggal_selesai" id="tgl_selesai" required onchange="hitungHariKerja()">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">Lama Cuti (Otomatis)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control cuti-form-input fw-bold text-success" name="lama_cuti_jumlah" id="lama_cuti_jumlah" value="1" min="1" required style="border-radius: 10px 0 0 10px;">
+                                <input type="text" class="form-control cuti-form-input text-muted text-center bg-light" name="lama_cuti_satuan" id="lama_cuti_satuan" value="Hari" readonly style="border-radius: 0 10px 10px 0; max-width: 76px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info Kalkulasi Hari Kerja -->
+                    <div id="info_hitung_hari" class="mt-2" style="display: none;">
+                        <div class="px-3 py-2 rounded-3 bg-success-subtle text-success-emphasis small" style="font-size: 12px;">
+                            <i class="bi bi-calendar-check me-1"></i><span id="txt_hitung_hari"></span>
+                        </div>
+                    </div>
+
+                    <!-- Alasan Cuti + Chip Cepat -->
+                    <div class="mt-3">
+                        <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">Alasan Cuti <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control cuti-form-input" name="alasan_cuti" id="input_alasan" placeholder="Tulis singkat alasan cuti Anda..." required>
+                        <div class="cuti-alasan-chips">
+                            <button type="button" class="cuti-alasan-chip" onclick="isiAlasan('Acara Keluarga')">Acara Keluarga</button>
+                            <button type="button" class="cuti-alasan-chip" onclick="isiAlasan('Pernikahan Keluarga')">Pernikahan</button>
+                            <button type="button" class="cuti-alasan-chip" onclick="isiAlasan('Mengantar anak ke pondok pesantren')">Antar Anak</button>
+                            <button type="button" class="cuti-alasan-chip" onclick="isiAlasan('Orangtua (Mertua) Sakit')">Orangtua Sakit</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BLOK 3: KONTAK, ALAMAT & LAMPIRAN -->
+                <div class="cuti-form-section">
+                    <div class="cuti-step-label">
+                        <span class="cuti-step-num">3</span> Kontak &amp; Alamat Selama Cuti
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="col-12 col-md-5">
+                            <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">No. HP / WhatsApp <span class="text-danger">*</span></label>
+                            <input type="tel" class="form-control cuti-form-input" name="telepon_cuti" id="input_telepon" placeholder="08xxxxxxxxxx" required>
+                        </div>
+                        <div class="col-12 col-md-7">
+                            <label class="form-label fw-bold text-secondary mb-1" style="font-size: 12px;">Alamat Selama Cuti <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control cuti-form-input" name="alamat_cuti" id="input_alamat" placeholder="Desa/Kelurahan, Kecamatan, Kab/Kota" required>
+                        </div>
+                    </div>
+
+                    <!-- Lampiran Dokumen (Ringkas; otomatis disorot jika Cuti Sakit) -->
+                    <div class="mt-3" id="boxLampiranCuti">
+                        <label class="form-label fw-bold text-secondary mb-1 d-flex justify-content-between align-items-center" style="font-size: 12px;">
+                            <span>Lampiran / Surat Dokter <span id="lampiranReqTag" class="fw-normal text-muted">(Opsional)</span></span>
+                            <span class="fw-normal text-muted" style="font-size: 11px;">PDF/JPG/PNG maks 5MB</span>
                         </label>
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <div class="form-check p-3 bg-white rounded-3 border h-100">
-                                    <input class="form-check-input ms-1" type="radio" name="alokasi_cuti_tahunan" id="opt_thn_n" value="Cuti Tahunan" checked onchange="ubahAlokasiCuti(this.value)">
-                                    <label class="form-check-label ms-2 small fw-semibold" for="opt_thn_n">
-                                        Tahun Berjalan (N / <?= date('Y') ?>)
-                                        <div class="text-success fw-bold">Sisa: <span id="lbl_opt_sisa_n">12</span> Hari</div>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-check p-3 bg-white rounded-3 border h-100" id="box_opt_n1">
-                                    <input class="form-check-input ms-1" type="radio" name="alokasi_cuti_tahunan" id="opt_thn_n1" value="Cuti Tahunan N-1" onchange="ubahAlokasiCuti(this.value)">
-                                    <label class="form-check-label ms-2 small fw-semibold" for="opt_thn_n1">
-                                        Sisa Tahun Lalu (N-1 / <?= date('Y')-1 ?>)
-                                        <div class="text-primary fw-bold">Sisa: <span id="lbl_opt_sisa_n1">-</span> Hari</div>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-check p-3 bg-white rounded-3 border h-100" id="box_opt_n2">
-                                    <input class="form-check-input ms-1" type="radio" name="alokasi_cuti_tahunan" id="opt_thn_n2" value="Cuti Tahunan N-2" onchange="ubahAlokasiCuti(this.value)">
-                                    <label class="form-check-label ms-2 small fw-semibold" for="opt_thn_n2">
-                                        Sisa 2 Thn Lalu (N-2 / <?= date('Y')-2 ?>)
-                                        <div class="text-muted fw-bold">Sisa: <span id="lbl_opt_sisa_n2">-</span> Hari</div>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
+                        <input type="file" class="form-control cuti-form-input py-2" name="file_lampiran" id="file_lampiran" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="font-size: 13px;">
                     </div>
                 </div>
-            </div>
 
-            <!-- LANGKAH 3: ALASAN, TANGGAL & DURASI CUTI -->
-            <div class="card cuti-card-main mb-4">
-                <div class="card-body p-4 p-md-5">
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold" style="font-size: 12px;">
-                            <i class="bi bi-calendar-range me-1"></i> Langkah 3
-                        </span>
+                <!-- FOOTER & TOMBOL SUBMIT -->
+                <div class="p-3 p-md-4 d-flex flex-column flex-md-row align-items-center justify-content-between gap-2" style="background: #f8fafc;">
+                    <div class="small text-muted text-center text-md-start" style="font-size: 12px;">
+                        <i class="bi bi-shield-check text-success me-1"></i> Diverifikasi oleh Kepala Madrasah &amp; Tata Usaha.
                     </div>
-                    <h4 class="fw-bold mb-1" style="color: #0f172a;">Waktu, Alasan, dan Durasi Cuti</h4>
-                    <p class="text-muted mb-4 small">Lama cuti kerja dihitung otomatis berdasarkan kalender kerja efektif madrasah.</p>
-
-                    <div class="row g-3">
-                        <div class="col-md-12">
-                            <label class="form-label fw-bold text-secondary small">Alasan Menjalankan Cuti <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control bg-light border-0 py-2" name="alasan_cuti" id="input_alasan" placeholder="Contoh: Acara Keluarga / Pernikahan / Menemani Orang Tua Sakit / Melahirkan" required style="border-radius: 12px; font-size: 14px;">
-                            <div class="d-flex gap-2 mt-2 flex-wrap">
-                                <button type="button" class="btn btn-sm btn-white border rounded-pill px-3 py-1 text-secondary" style="font-size: 12px;" onclick="isiAlasan('Acara Keluarga')">Acara Keluarga</button>
-                                <button type="button" class="btn btn-sm btn-white border rounded-pill px-3 py-1 text-secondary" style="font-size: 12px;" onclick="isiAlasan('Pernikahan Keluarga')">Pernikahan Keluarga</button>
-                                <button type="button" class="btn btn-sm btn-white border rounded-pill px-3 py-1 text-secondary" style="font-size: 12px;" onclick="isiAlasan('Mengantar anak ke pondok pesantren')">Antar Anak ke Pondok</button>
-                                <button type="button" class="btn btn-sm btn-white border rounded-pill px-3 py-1 text-secondary" style="font-size: 12px;" onclick="isiAlasan('Orangtua (Mertua) Sakit')">Orangtua Sakit</button>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold text-secondary small">Tanggal Mulai Cuti <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control bg-light border-0 py-2" name="tanggal_mulai" id="tgl_mulai" required style="border-radius: 12px; font-size: 14px;" onchange="hitungHariKerja()">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold text-secondary small">Tanggal Selesai Cuti <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control bg-light border-0 py-2" name="tanggal_selesai" id="tgl_selesai" required style="border-radius: 12px; font-size: 14px;" onchange="hitungHariKerja()">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold text-secondary small">Lamanya Cuti</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control bg-light border-0 fw-bold text-success py-2" name="lama_cuti_jumlah" id="lama_cuti_jumlah" value="1" min="1" required style="border-radius: 12px 0 0 12px; font-size: 15px;">
-                                <input type="text" class="form-control bg-light border-0 text-muted py-2" name="lama_cuti_satuan" id="lama_cuti_satuan" value="Hari" readonly style="border-radius: 0 12px 12px 0; max-width: 80px; font-size: 14px;">
-                            </div>
-                        </div>
-
-                        <!-- INFO KALKULASI HARI KERJA -->
-                        <div class="col-12" id="info_hitung_hari" style="display: none;">
-                            <div class="p-3 rounded-3 bg-light border text-dark small d-flex align-items-center">
-                                <i class="bi bi-info-circle-fill text-success me-2 fs-5"></i>
-                                <span id="txt_hitung_hari"></span>
-                            </div>
-                        </div>
-
-                        <!-- UPLOAD DOKUMEN PENDUKUNG -->
-                        <div class="col-md-12 mt-3">
-                            <label class="form-label fw-bold text-secondary small">Dokumen Pendukung / Surat Dokter (Opsional)</label>
-                            <input type="file" class="form-control bg-light border-0" name="file_lampiran" id="file_lampiran" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="border-radius: 12px; font-size: 13px;">
-                            <div class="form-text small text-muted">Format: PDF, JPG, PNG (Maksimal 5MB). Wajib dilampirkan jika mengajukan <strong>Cuti Sakit</strong>.</div>
-                        </div>
-                    </div>
+                    <button type="submit" class="btn btn-success fw-bold px-4 py-2.5 w-100 w-md-auto d-inline-flex align-items-center justify-content-center gap-2 shadow-sm" style="border-radius: 12px; background: #15803d; border-color: #15803d; min-height: 46px; font-size: 14.5px; max-width: 280px;">
+                        <i class="bi bi-send-fill"></i> Kirim Pengajuan Cuti
+                    </button>
                 </div>
-            </div>
 
-            <!-- LANGKAH 4: ALAMAT & NOMOR TELEPON SELAMA CUTI -->
-            <div class="card cuti-card-main mb-4">
-                <div class="card-body p-4 p-md-5">
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold" style="font-size: 12px;">
-                            <i class="bi bi-geo-alt-fill me-1"></i> Langkah 4
-                        </span>
-                    </div>
-                    <h4 class="fw-bold mb-1" style="color: #0f172a;">Alamat &amp; Kontak Selama Cuti</h4>
-                    <p class="text-muted mb-4 small">Alamat dan nomor telepon yang dapat dihubungi selama menjalankan cuti.</p>
-
-                    <div class="row g-3">
-                        <div class="col-md-8">
-                            <label class="form-label fw-bold text-secondary small">Alamat Lengkap Selama Cuti <span class="text-danger">*</span></label>
-                            <textarea class="form-control bg-light border-0 p-3" name="alamat_cuti" id="input_alamat" rows="3" placeholder="Tuliskan nama jalan, RT/RW, desa/kelurahan, kecamatan, kab/kota, provinsi" required style="border-radius: 14px; font-size: 14px;"></textarea>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold text-secondary small">Nomor Telepon / WhatsApp <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-0" style="border-radius: 12px 0 0 12px;"><i class="bi bi-whatsapp text-muted"></i></span>
-                                <input type="text" class="form-control bg-light border-0 py-2" name="telepon_cuti" id="input_telepon" placeholder="08xxxxxxxxxx" required style="border-radius: 0 12px 12px 0; font-size: 14px;">
-                            </div>
-                            <div class="form-text small text-muted mt-2">Pastikan nomor aktif dan dapat dihubungi jika ada keperluan mendesak.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TOMBOL KIRIM PENGAJUAN -->
-            <div class="text-center my-4 pb-4">
-                <button type="submit" class="btn btn-success px-5 py-3 fw-bold d-inline-flex align-items-center gap-2 shadow" style="border-radius: 14px; background: #059669; border-color: #059669; font-size: 16px;">
-                    <i class="bi bi-send-fill"></i> Kirim Pengajuan Cuti Mandiri
-                </button>
-                <div class="small text-muted mt-2">
-                    <i class="bi bi-info-circle text-primary me-1"></i>Permohonan akan berstatus <strong>Menunggu Persetujuan</strong> dan diverifikasi oleh Kepala Madrasah &amp; Admin TU.
-                </div>
-            </div>
-
-        </form>
-
+            </form>
+        </div>
     </div>
 
     <!-- ── SECTION C: CEK SALDO & LACAK STATUS PRIBADI ── -->
@@ -1458,36 +1605,44 @@ const dateElem = document.getElementById('liveDateDisplay');
 if(dateElem) dateElem.innerHTML = '<i class="bi bi-calendar3 me-1"></i> ' + dateStr;
 
 // 2. Switch View Section (Monitoring / Form / Lacak / Regulasi)
+let hasCarryOverSaldo = false;
+
 function switchViewSection(section) {
-    // Hide all
     $('#section-monitoring').hide();
     $('#section-form').hide();
     $('#section-lacak').hide();
     $('#section-regulasi').hide();
 
-    // Remove active pill
     $('.kbm-quick-pill').removeClass('active');
 
+    const isMobile = window.innerWidth < 768;
+
     if (section === 'monitoring') {
-        $('#section-monitoring').fadeIn(200);
+        $('#section-monitoring').fadeIn(180);
         $('#pill-monitoring').addClass('active');
         $('#filterSearchRow').show();
         $('#btnGroupTampilan').show();
+        $('#cutiKpiStrip').show();
     } else if (section === 'form') {
-        $('#section-form').fadeIn(200);
+        $('#section-form').fadeIn(180);
         $('#pill-form').addClass('active');
         $('#filterSearchRow').hide();
         $('#btnGroupTampilan').hide();
+        if (isMobile) $('#cutiKpiStrip').hide();
+        const formEl = document.getElementById('section-form');
+        if (formEl) formEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else if (section === 'lacak') {
-        $('#section-lacak').fadeIn(200);
+        $('#section-lacak').fadeIn(180);
         $('#pill-lacak').addClass('active');
         $('#filterSearchRow').hide();
         $('#btnGroupTampilan').hide();
+        if (isMobile) $('#cutiKpiStrip').hide();
     } else if (section === 'regulasi') {
-        $('#section-regulasi').fadeIn(200);
+        $('#section-regulasi').fadeIn(180);
         $('#pill-regulasi').addClass('active');
         $('#filterSearchRow').hide();
         $('#btnGroupTampilan').hide();
+        if (isMobile) $('#cutiKpiStrip').hide();
     }
 }
 
@@ -1548,10 +1703,11 @@ $(document).ready(function() {
             return;
         }
 
-        // Tampilkan loading skeleton / status
-        $('#detail_pegawai_box').slideDown(200);
-        $('#res_nama').val('Memuat data...');
-        $('#res_nip').val(nip);
+        // Tampilkan strip profil ringkas
+        $('#detail_pegawai_box').slideDown(180);
+        $('#res_nama_txt').text('Memuat data pegawai...');
+        $('#res_nip_txt').text('NIP. ' + nip);
+        $('#res_jabatan_txt').text('');
 
         $.ajax({
             url: '<?= base_url("cuti/ajax_get_ptk") ?>',
@@ -1562,14 +1718,13 @@ $(document).ready(function() {
                 if (res.status === 'success') {
                     const d = res.data;
                     $('#val_ptk_id').val(d.id);
-                    $('#res_nama').val(d.nama_lengkap);
-                    $('#res_nip').val(d.nip || '-');
-                    $('#res_status').val(d.status_kepegawaian);
-                    $('#res_jabatan').val(d.jabatan);
-                    $('#res_pangkat').val(d.pangkat_golongan);
-                    $('#res_masakerja').val(d.masa_kerja || '-');
+                    $('#res_nama_txt').text(d.nama_lengkap);
+                    $('#res_nip_txt').text('NIP. ' + (d.nip || '-') + (d.status_kepegawaian ? ' • ' + d.status_kepegawaian : ''));
+                    const jabParts = [d.jabatan, d.pangkat_golongan].filter(v => v && v !== '-');
+                    $('#res_jabatan_txt').text(jabParts.join(' • '));
+                    $('#res_masakerja_badge').text('Masa Kerja: ' + (d.masa_kerja || '-'));
 
-                    // Alamat & No HP jika ada
+                    // Alamat & No HP otomatis jika ada
                     if (d.alamat && !$('#input_alamat').val()) $('#input_alamat').val(d.alamat);
                     if (d.no_hp && !$('#input_telepon').val()) $('#input_telepon').val(d.no_hp);
 
@@ -1579,33 +1734,27 @@ $(document).ready(function() {
                     $('#res_sisa_n1').text(s.sisa_n1);
                     $('#res_sisa_n').text(s.sisa_n);
                     $('#res_sisa_total').text(s.total_tersedia);
-                    $('#res_total_badge').text('Total Hak Cuti: ' + s.total_tersedia + ' Hari');
 
                     // Label Opsi Cuti Tahunan
                     $('#lbl_opt_sisa_n').text(s.sisa_n);
                     $('#lbl_opt_sisa_n1').text(s.sisa_n1);
                     $('#lbl_opt_sisa_n2').text(s.sisa_n2);
 
-                    if (s.sisa_n1 <= 0) {
-                        $('#box_opt_n1').addClass('opacity-50');
-                        $('#opt_thn_n1').prop('disabled', true);
-                    } else {
-                        $('#box_opt_n1').removeClass('opacity-50');
-                        $('#opt_thn_n1').prop('disabled', false);
-                    }
+                    $('#opt_thn_n1').prop('disabled', s.sisa_n1 <= 0);
+                    $('#opt_thn_n2').prop('disabled', s.sisa_n2 <= 0);
 
-                    if (s.sisa_n2 <= 0) {
-                        $('#box_opt_n2').addClass('opacity-50');
-                        $('#opt_thn_n2').prop('disabled', true);
+                    hasCarryOverSaldo = (s.sisa_n1 > 0 || s.sisa_n2 > 0);
+                    const curJenis = $('#input_jenis_cuti').val();
+                    if (curJenis.indexOf('Cuti Tahunan') === 0 && hasCarryOverSaldo) {
+                        $('#sub_opsi_cuti_tahunan').slideDown(180);
                     } else {
-                        $('#box_opt_n2').removeClass('opacity-50');
-                        $('#opt_thn_n2').prop('disabled', false);
+                        $('#sub_opsi_cuti_tahunan').slideUp(180);
                     }
 
                     hitungHariKerja();
                 } else {
                     alert(res.message);
-                    $('#detail_pegawai_box').slideUp(200);
+                    $('#detail_pegawai_box').slideUp(180);
                 }
             },
             error: function() {
@@ -1625,12 +1774,35 @@ function pilihJenisCuti(jenis, el) {
 
     $('#input_jenis_cuti').val(jenis);
 
-    if (jenis === 'Cuti Tahunan') {
-        $('#sub_opsi_cuti_tahunan').slideDown(200);
-    } else {
-        $('#sub_opsi_cuti_tahunan').slideUp(200);
+    const hint = $(el).attr('data-hint') || '';
+    if (hint) {
+        $('#cutiJenisHint').html('<i class="bi bi-info-circle text-success me-1"></i> ' + hint);
     }
 
+    if (jenis === 'Cuti Tahunan' && hasCarryOverSaldo) {
+        $('#sub_opsi_cuti_tahunan').slideDown(180);
+    } else {
+        $('#sub_opsi_cuti_tahunan').slideUp(180);
+    }
+
+    if (jenis === 'Cuti Sakit') {
+        $('#lampiranReqTag').html('<span class="text-danger fw-bold">(Wajib Surat Dokter)</span>');
+        $('#file_lampiran').prop('required', true);
+    } else {
+        $('#lampiranReqTag').html('(Opsional)');
+        $('#file_lampiran').prop('required', false);
+    }
+
+    hitungHariKerja();
+}
+
+function onTanggalMulaiChange() {
+    const mulai = $('#tgl_mulai').val();
+    const selesai = $('#tgl_selesai').val();
+    if (mulai && (!selesai || selesai < mulai)) {
+        $('#tgl_selesai').val(mulai);
+    }
+    $('#tgl_selesai').attr('min', mulai);
     hitungHariKerja();
 }
 
